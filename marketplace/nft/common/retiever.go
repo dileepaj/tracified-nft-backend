@@ -1,4 +1,4 @@
-package commons
+package common
 
 import (
 	"github.com/dileepaj/tracified-nft-backend/marketplace/nft/etheruem"
@@ -21,51 +21,28 @@ type UserCreatedNFT struct {
 	OwnerPK        string
 }
 
+type NFTPriceHistory struct {
+	BlackChainName string
+	NFTTxnHash     string
+}
+
 func (bc *BlockChainNFT) GetAllSellingNFT() {
-	switch bc.BlackChainName {
-	case "POLYGON":
-		polygon.GetAllSaleNFTDB()
-	case "STELLAR":
-		stellar.GetAllSaleNFTDB()
-	case "ETHeruem":
-		etheruem.GetAllNotSaleNFTDB()
-	}
+	GetAllSaleNFTFromDB()
 }
 
 func (bc *UserOwnNFT) GetUserOwnNFT() {
-	switch bc.BlackChainName {
-	case "POLYGON":
-		polygon.GetAllUserOwnNFTDB()
-	case "STELLAR":
-		stellar.GetAllUserOwnNFTDB()
-	case "ETHeruem":
-		etheruem.GetAllUserOwnNFTDB()
-	}
+	GetAllUserOwnNFTFromDB()
 }
 
 func (bc *UserOwnNFT) GetUserCreatedNFT() {
-	switch bc.BlackChainName {
-	case "POLYGON":
-		polygon.GetAllUserCreatedNFTDB()
-	case "STELLAR":
-		stellar.GetAllUserCreatedNFTDB()
-	case "ETHeruem":
-		etheruem.GetAllUserCreatedNFTDB()
-	}
+	GetAllUserCreatedNFTFromDB()
 }
 
-func (bc *UserOwnNFT) GetAllNotSaleNFTDB() {
-	switch bc.BlackChainName {
-	case "POLYGON":
-		polygon.GetAllNotSaleNFTDB()
-	case "STELLAR":
-		stellar.GetAllNotSaleNFTDB()
-	case "ETHeruem":
-		etheruem.GetAllNotSaleNFTDB()
-	}
+func (bc *UserOwnNFT) GetAllNotSaleNFTFromDB() {
+	GetAllNotSaleNFTFromDB()
 }
 
-func (bc *UserOwnNFT) TraceNFT() {
+func (bc *UserOwnNFT) TraceHistoryNFT() {
 	switch bc.BlackChainName {
 	case "POLYGON":
 		polygon.TraceNFT()
@@ -76,5 +53,27 @@ func (bc *UserOwnNFT) TraceNFT() {
 	}
 }
 
-//get all NFT without considering the DB
+func (bc *UserOwnNFT) GetNFTPriceHistory() {
+	switch bc.BlackChainName {
+	case "POLYGON":
+		polygon.GetNFTPriceHistory()
+	case "STELLAR":
+		stellar.GetNFTPriceHistory()
+	case "ETHeruem":
+		etheruem.GetNFTPriceHistory()
+	}
+}
+
+func (bc *UserOwnNFT) ViewOneNFTProfile() {
+	switch bc.BlackChainName {
+	case "POLYGON":
+		polygon.ViewOneNFTProfile()
+	case "STELLAR":
+		stellar.ViewOneNFTProfile()
+	case "ETHeruem":
+		etheruem.ViewOneNFTProfile()
+	}
+}
+
+//get all NFT without considering the BC
 func GetAllNFTForSale() {}
