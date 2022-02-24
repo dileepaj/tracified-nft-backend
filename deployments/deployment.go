@@ -1,2 +1,0 @@
-//project deplyemnt
-package deplyment

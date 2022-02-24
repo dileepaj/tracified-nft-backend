@@ -1,0 +1,61 @@
+---
+- hosts: qa
+  environment:
+    PYTHONPATH: /home/{{ ansible_user }}/.local/lib/python2.7/site-packages
+  tasks:
+    - name: Add docker gpg key
+      become: true
+      apt_key:
+        id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+    - name: Check if docker repository is present
+      become: true
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+        state: present
+    - name: Install docker CE
+      become: true
+      apt:
+        name: docker-ce
+        state: present
+        update_cache: yes
+    - name: Install pip
+      become: true
+      apt:
+        name: python-pip
+        state: present
+        update_cache: yes
+    - name: Install docker-py
+      pip:
+        name: docker
+    - name: Install AWS CLI
+      pip:
+        name: awscli
+    - name: Get ECR login credentials and login with Docker
+      become: true
+      shell: "$(/home/{{ ansible_user }}/.local/bin/aws ecr get-login --no-include-email --region ap-south-1)"
+      environment:
+        AWS_ACCESS_KEY_ID: "{{ lookup('env','AWS_ACCESS_KEY_ID') }}"
+        AWS_SECRET_ACCESS_KEY : "{{ lookup('env','AWS_SECRET_ACCESS_KEY') }}"
+    - name: Create volume for docker
+      become: true
+      docker_volume:
+        name: nft-backend-logs
+    - name: Run docker
+      become: true
+      debugger: on_failed
+      docker_container:
+        name: tracified-nft-backend
+        image: 453230908534.dkr.ecr.ap-south-1.amazonaws.com/tracified/nft-backend-qa
+        published_ports: "3009:3009"
+        restart: yes
+        restart_policy: on-failure
+        state: started
+        pull: yes
+        volumes:
+          - nft_backend_logs:/app/logs
+        env:
+            BE_PORT: "{{ lookup('env','BE_PORT') }}"
+            BE_MONGOLAB_URI: "{{ lookup('env','BE_MONGOLAB_URI') }}"
+            BRANCH_NAME: "{{lookup('env','BRANCH_NAME')}}"
