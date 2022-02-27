@@ -13,4 +13,10 @@ var nftRoutes = models.Routers{
 		Path:    "/api/nft/save",
 		Handler: businessFacades.SaveNFT,
 	},
+	models.Router{
+		Name:    "GET NFTS By Selling status and filter by UserPK",
+		Method:  "Get",
+		Path:    "/api/nfts/get/selling/{status}/{userpk}",
+		Handler: businessFacades.GetAllONSaleNFT,
+	},
 }

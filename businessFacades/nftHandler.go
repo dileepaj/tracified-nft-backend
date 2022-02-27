@@ -2,6 +2,7 @@ package businessFacades
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/dileepaj/tracified-nft-backend/dao"
@@ -9,6 +10,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"github.com/dileepaj/tracified-nft-backend/utilities/validations"
 	"github.com/dileepaj/tracified-nft-backend/wrappers/requestWrappers"
+	"github.com/gorilla/mux"
 )
 
 func SaveNFT(w http.ResponseWriter, r *http.Request) {
@@ -40,4 +42,24 @@ func SaveNFT(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+}
+
+func GetAllONSaleNFT(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	vars := mux.Vars(r)
+	fmt.Println(vars["status"],vars["userpk"])
+	
+		results, err1 := dao.GetNFTBySellingStatusANDWithoutUserCreatedNFT(vars["status"],vars["userpk"])
+		if (err1 != nil ) {
+			ErrorMessage := err1.Error()
+			errors.BadRequest(w,ErrorMessage)
+			return
+		} else {
+			w.WriteHeader(http.StatusOK)
+			err := json.NewEncoder(w).Encode(results)
+			if err != nil {
+				logs.ErrorLogger.Println(err)
+			}
+			return
+		}
 }
