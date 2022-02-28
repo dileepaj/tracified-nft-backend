@@ -12,7 +12,7 @@ type Incident struct {
 type Offer struct {
 	ID              primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	NFTIdentifier   string             `json:"nftidentifier" bson:"nftidentifier" validate:"required"`
-	Blockchain      string             `json:"blockchain" bson:"blockchain" validate:"required`
+	Blockchain      string             `json:"blockchain" bson:"blockchain" validate:"required"`
 	Timestamp       primitive.DateTime `json:"timestamp" bson:"timestamp"`
 	Price           string             `json:"currentprice" bson:"currentprice,price"`
 	SellingStatus   string             `json:"sellingstatus" bson:"sellingstatus" validate:"required"`

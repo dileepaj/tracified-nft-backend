@@ -1,4 +1,4 @@
-package dao
+package controllers
 
 import (
 	"github.com/dileepaj/tracified-nft-backend/database/repository/userRepository"
