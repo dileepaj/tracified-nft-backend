@@ -12,27 +12,27 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/utilities/validations"
 )
 
-func CreateUser(w http.ResponseWriter, r *http.Request) {
+func CreateWatchList(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	var createUserObject models.User
+	var createWatchListObject models.WatchList
 	decoder := json.NewDecoder(r.Body)
-	err := decoder.Decode(&createUserObject)
+	err := decoder.Decode(&createWatchListObject)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 	}
-	fmt.Println(createUserObject)
-	err = validations.ValidateInsertUser(createUserObject)
+	fmt.Println(createWatchListObject)
+	err = validations.ValidateInsertWatchList(createWatchListObject)
 	if err != nil {
 		errors.BadRequest(w, err.Error())
 	} else {
-		_, err1 := controllers.CreateUser(createUserObject)
+		_, err1 := controllers.CreateWatchList(createWatchListObject)
 		if err1 != nil {
 			ErrorMessage := err1.Error()
 			errors.BadRequest(w, ErrorMessage)
 			return
 		} else {
 			w.WriteHeader(http.StatusOK)
-			message := "user created"
+			message := "SAVED WatchList"
 			err = json.NewEncoder(w).Encode(message)
 			if err != nil {
 				logs.ErrorLogger.Println(err)
