@@ -35,6 +35,15 @@ func ValidateInsertOwnership(e models.Ownership) error {
 	return nil
 }
 
+func ValidateMakeSale(e requestWrappers.UpdateNFTSALERequest) error {
+	validate = validator.New()
+	err := validate.Struct(e)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func ValidateCreateNFTObject(e requestWrappers.CreateNFTRequest) error {
 	validate = validator.New()
 	err := validate.Struct(e)

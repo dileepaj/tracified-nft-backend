@@ -1,9 +1,16 @@
 package models
 
+import "go.mongodb.org/mongo-driver/bson/primitive"
+
+type Account struct {
+	Timestamp  primitive.DateTime `json:"timestamp" bson:"timestamp"`
+	Blockchain string             `json:"blockchain" bson:"blockchain"`
+	Address    string             `json:"Address" bson:"Address"`
+}
 type User struct {
-	UserId    string `json:"userid" bson:"userid" validate:"required,string"`
-	Email     string `json:"email" bson:"email" validate:"required,email"`
-	Accounts  string `json:"accounts" bson:"accounts" validate:"required"`
-	Company   string `json:"company" bson:"companay" validate:"required"`
-	CreatedAt string `json:"createdat" bson:"createdat" validate:"required,timestamp"`
+	UserId     primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	Email      string             `json:"email" bson:"email" validate:"required,email"`
+	TenentName string             `json:"tenentname" bson:"tenentname" validate:"required"`
+	BCAccounts []Account			`json:"bcaccounts" bson:"bcaccounts"`
+	Timestamp  primitive.DateTime `json:"timestamp" bson:"timestamp"`
 }
