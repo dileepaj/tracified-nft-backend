@@ -1,7 +1,7 @@
 package marketPlace
 
 import (
-	"github.com/dileepaj/tracified-nft-backend/businessFacades"
+	"github.com/dileepaj/tracified-nft-backend/api"
 	"github.com/dileepaj/tracified-nft-backend/models"
 )
 
@@ -11,48 +11,48 @@ var NftRoutes = models.Routers{
 		Name:    "Save NFT",
 		Method:  "POST",
 		Path:    "/api/nft/save",
-		Handler: businessFacades.CreateNFT,
+		Handler: api.CreateNFT,
 	},
 	models.Router{
 		Name:    "GET NFTS By Selling status",
 		Method:  "Get",
 		Path:    "/api/nfts/get/selling/{status}",
-		Handler: businessFacades.GetAllONSaleNFT,
+		Handler: api.GetAllONSaleNFT,
 	},
 	models.Router{
 		Name:    "GET NFTS By Selling status and filter by UserPK",
 		Method:  "Get",
 		Path:    "/api/nfts/get/selling/{status}/{userpk}",
-		Handler: businessFacades.GetAllONSaleNFT,
+		Handler: api.GetAllONSaleNFT,
 	},
 	models.Router{
 		Name:    "GET NFTS By Tags",
 		Method:  "Get",
 		Path:    "/api/nfts/get/tags/{tags}",
-		Handler: businessFacades.GetNFTbyTags,
+		Handler: api.GetNFTbyTags,
 	},
 	models.Router{
 		Name:    "GET NFTS By Blockchain",
 		Method:  "Get",
 		Path:    "/api/nfts/get/blockchain/{blockchain}",
-		Handler: businessFacades.GetNFTbyBlockChain,
+		Handler: api.GetNFTbyBlockChain,
 	},
 	models.Router{
 		Name:    "GET Watch list NFTS By userId",
 		Method:  "Get",
 		Path:    "/api/nfts/get/watchlist/{userId}",
-		Handler: businessFacades.GetNFTFromWatchList,
+		Handler: api.GetNFTFromWatchList,
 	},
 	models.Router{
 		Name:    "GET NFTS By userId",
 		Method:  "Get",
 		Path:    "/api/nfts/get/userid/{userId}",
-		Handler: businessFacades.GetNFTByUserId,
+		Handler: api.GetNFTByUserId,
 	},
 	models.Router{
 		Name:    "GET NFTS By tenent Name",
 		Method:  "Get",
 		Path:    "/api/nfts/get/tenetname/{tenentname}",
-		Handler: businessFacades.GetNFTByTenentName,
+		Handler: api.GetNFTByTenentName,
 	},
 }

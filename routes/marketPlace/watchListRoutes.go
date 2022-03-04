@@ -1,7 +1,7 @@
 package marketPlace
 
 import (
-	"github.com/dileepaj/tracified-nft-backend/businessFacades"
+	"github.com/dileepaj/tracified-nft-backend/api"
 	"github.com/dileepaj/tracified-nft-backend/models"
 )
 
@@ -11,7 +11,7 @@ var WatchListRoutes = models.Routers{
 		Name:    "Create WatchList",
 		Method:  "POST",
 		Path:    "/api/watchList/save",
-		Handler: businessFacades.CreateWatchList,
+		Handler: api.CreateWatchList,
 	},
 
 }
