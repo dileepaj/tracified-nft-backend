@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/dileepaj/tracified-nft-backend/controllers"
+	"github.com/dileepaj/tracified-nft-backend/controllers/nftController"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"github.com/dileepaj/tracified-nft-backend/utilities/validations"
@@ -26,8 +26,8 @@ func CreateNFT(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		errors.BadRequest(w, err.Error())
 	} else {
-		_, err1 := controllers.CreateNFT(createNFTObject.NFT)
-		_, err2 := controllers.SaveOwnership(createNFTObject.Ownership)
+		_, err1 := nftController.CreateNFT(createNFTObject.NFT)
+		_, err2 := nftController.SaveOwnership(createNFTObject.Ownership)
 		if err1 != nil || err2 != nil {
 			ErrorMessage := err1.Error() + err2.Error()
 			errors.BadRequest(w, ErrorMessage)
@@ -56,7 +56,7 @@ func MakeSale(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		errors.BadRequest(w, err.Error())
 	} else {
-		_, err1 := controllers.MakeSaleNFT(udpateNFTObj)
+		_, err1 := nftController.MakeSaleNFT(udpateNFTObj)
 		if err1 != nil {
 			ErrorMessage := err1.Error()
 			errors.BadRequest(w, ErrorMessage)
@@ -78,7 +78,7 @@ func GetAllONSaleNFT(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	fmt.Println(vars["status"], vars["userpk"])
 
-	results, err1 := controllers.GetNFTBySellingStatusAndNotUserCreated(vars["status"], vars["userpk"])
+	results, err1 := nftController.GetNFTBySellingStatusAndNotUserCreated(vars["status"], vars["userpk"])
 	if err1 != nil {
 		ErrorMessage := err1.Error()
 		errors.BadRequest(w, ErrorMessage)
@@ -98,7 +98,7 @@ func GetNFTbyBlockChain(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	fmt.Println(vars["status"], vars["userpk"])
 
-	results, err1 := controllers.GetNFTbyBlockChain(vars["blockchain"])
+	results, err1 := nftController.GetNFTbyBlockChain(vars["blockchain"])
 	fmt.Println("results-----------------------", results)
 	if err1 != nil {
 		ErrorMessage := err1.Error()
@@ -121,7 +121,7 @@ func GetNFTbyTags(w http.ResponseWriter, r *http.Request) {
 	_ = json.Unmarshal([]byte(vars["tags"]), &arr)
 	fmt.Println(vars["tags"], arr)
 
-	results, err1 := controllers.GetNFTbyTags(arr)
+	results, err1 := nftController.GetNFTbyTags(arr)
 	if err1 != nil {
 		ErrorMessage := err1.Error()
 		errors.BadRequest(w, ErrorMessage)
@@ -139,13 +139,13 @@ func GetNFTbyTags(w http.ResponseWriter, r *http.Request) {
 func GetNFTFromWatchList(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	vars := mux.Vars(r)
-	results1, err1 := controllers.FindNFTIdentifieryByUserId(vars["userId"])
+	results1, err1 := nftController.FindNFTIdentifieryByUserId(vars["userId"])
 	if err1 != nil {
 		ErrorMessage := err1.Error()
 		errors.BadRequest(w, ErrorMessage)
 		return
 	} else {
-		result2, err2 := controllers.GetNFTbyNFTIdentifier(results1)
+		result2, err2 := nftController.GetNFTbyNFTIdentifier(results1)
 		if err2 != nil {
 			ErrorMessage := err1.Error()
 			errors.BadRequest(w, ErrorMessage)
@@ -164,14 +164,14 @@ func GetNFTFromWatchList(w http.ResponseWriter, r *http.Request) {
 func GetNFTByUserId(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	vars := mux.Vars(r)
-	results1, err1 := controllers.GetBCAccountPKByUserId(vars["userId"])
+	results1, err1 := nftController.GetBCAccountPKByUserId(vars["userId"])
 	if err1 != nil {
 		ErrorMessage := err1.Error()
 		errors.BadRequest(w, ErrorMessage)
 		return
 	} else {
 		if len(results1) != 0 {
-			result2, err2 := controllers.GetNFTbyAccount(results1)
+			result2, err2 := nftController.GetNFTbyAccount(results1)
 			if err2 != nil {
 				ErrorMessage := err1.Error()
 				errors.BadRequest(w, ErrorMessage)
@@ -198,14 +198,14 @@ func GetNFTByUserId(w http.ResponseWriter, r *http.Request) {
 func GetNFTByTenentName(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	vars := mux.Vars(r)
-	results1, err1 := controllers.GetBCAccountPKByTenetName(vars["tenentname"])
+	results1, err1 := nftController.GetBCAccountPKByTenetName(vars["tenentname"])
 	if err1 != nil {
 		ErrorMessage := err1.Error()
 		errors.BadRequest(w, ErrorMessage)
 		return
 	} else {
 		if len(results1) != 0 {
-			result2, err2 := controllers.GetNFTbyAccount(results1)
+			result2, err2 := nftController.GetNFTbyAccount(results1)
 			if err2 != nil {
 				ErrorMessage := err1.Error()
 				errors.BadRequest(w, ErrorMessage)

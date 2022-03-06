@@ -1,0 +1,993 @@
+<!--Tenant Detail Container-->
+<script type="text/javascript">
+  function parseJwt(token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+  };
+  let token = authorization();
+  let decodedToken = parseJwt(token);
+
+  //All tenant details
+  let tenantId = decodedToken.tenantID
+  let companyName = decodedToken.name
+  let itemsBytenant;
+
+
+
+  const options = {
+    url: "",
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json;charset=UTF-8',
+      'Authorization': 'Bearer ' + authorization()
+    }
+  };
+
+
+
+</script>
+
+<!--Display Filter Panel-->
+<script>
+  if (report.filterOptions) {
+
+
+    const filterPanel = document.createElement("div");
+    filterPanel.id = "filterPanel"
+    filterPanel.className = "filterPanel"
+
+    const formElement = document.createElement("form")
+    formElement.action = ""
+
+    const fieldContainer = document.createElement("div")
+    fieldContainer.className = "row"
+
+
+
+
+
+    if (report.filterOptions.fromDate) {
+      const fieldContainerNested = document.createElement("div")
+      fieldContainerNested.className = "col-sm-4"
+      fieldContainerNested.innerHTML = `<label for="forExample">fromDate </label><input type="text" class="form-control" id="datepickerFromDate" />`
+      fieldContainer.appendChild(fieldContainerNested)
+
+    }
+
+    if (report.filterOptions.toDate) {
+
+      const fieldContainerNested = document.createElement("div")
+      fieldContainerNested.className = "col-sm-4"
+      fieldContainerNested.innerHTML = `<label for="forExample">toDate </label><input type="text" class="form-control" id="datepickerToDate" />`
+      fieldContainer.appendChild(fieldContainerNested)
+
+    }
+
+    if (report.filterOptions.itemIds) {
+
+      const fieldContainerNested = document.createElement("div")
+      fieldContainerNested.className = "col-sm-4"
+      fieldContainerNested.innerHTML = `<label for="forExample">select Item </label>`
+      const selectDropDown = document.createElement("select")
+      selectDropDown.id = "itemDropDown"
+      selectDropDown.setAttribute("multiple", "multiple")
+      selectDropDown.setAttribute("data-multi-select-plugin", "data-multi-select-plugin")
+      fieldContainerNested.appendChild(selectDropDown)
+
+      options.url = "https://qa.admin.api.tracified.com/api/tracifieditembytenant"
+      axios(options).then(response => {
+        itemsBytenant = response.data
+        console.log(itemsBytenant)
+        itemsBytenant.map(item => {
+          console.log(item)
+          let optionField = document.createElement("option")
+          optionField.setAttribute("value", item.itemName)
+          optionField.setAttribute("itemID", item.itemID)
+          optionField.innerHTML = item.itemName
+          selectDropDown.appendChild(optionField)
+        })
+
+      }).catch(err => {
+        console.log(err)
+      });
+
+      fieldContainer.appendChild(fieldContainerNested)
+
+
+
+    }
+
+
+    formElement.appendChild(fieldContainer)
+
+    const btnContainer = document.createElement("div");
+    btnContainer.className = "row justify-content-end"
+    formElement.appendChild(btnContainer)
+    btnContainer.innerHTML = `<div class="col-sm-4 mt-2 col-12"><button type="button" class="btn btn-success btn-block" onclick="getFiltePaneValue()">Preview</button></div>`
+    filterPanel.appendChild(formElement)
+
+    document.getElementById("filterPanelContainer").appendChild(filterPanel)
+
+    console.log(filterPanel)
+  }
+</script>
+<!--End display filter panel-->
+
+<!--capture filter panel  values-->
+<script>
+  let fromDate = ""
+  let toDate = ""
+  let selectedItems
+  let selectedItemNames
+  let getFiltePaneValue = () => {
+    // console.log("Clicked")
+    fromDate = document.getElementById("datepickerFromDate").value
+    toDate = document.getElementById("datepickerToDate").value
+    selectedItemNames = $('#itemDropDown').val()
+
+    selectedItems = []
+    var options = [],
+      option;
+    var itemList = document.getElementById('itemDropDown');
+    var len = itemList.options.length;
+    console.clear();
+    for (var i = 0; i < len; i++) {
+      option = itemList.options[i];
+      if (option.selected) {
+        //options.push(option);
+        selectedItems.push(option.getAttribute('itemID'))
+        console.log(option.getAttribute('itemID'));
+      }
+    }
+
+
+    postRequest["fromDate"] = fromDate
+    postRequest["toDate"] = toDate
+    postRequest["itemIds"] = selectedItems
+    console.log(postRequest)
+    DisplaySummary();
+    startMain()
+
+  }
+</script>
+<!--end capture filter panel  values-->
+<!--Display Filter Panel Summmary-->
+<script>
+
+  function DisplaySummary() {
+    let summaryConntainer = document.getElementById('filterPanelSummaryContainer')
+    //clean old values
+    summaryConntainer.innerHTML = ''
+    let summary = document.createElement("div")
+    summary.className = "row filterPanelSummary"
+    summary.id = "summary"
+    summaryConntainer.appendChild(summary)
+
+    if (companyName) {
+      let companyNameDiv = document.createElement("div")
+      companyNameDiv.className = "col-sm-4"
+      companyNameDiv.innerHTML = "<h6>" + "Company Name : " + companyName + "</h6>"
+      summary.appendChild(companyNameDiv)
+    }
+
+    if (fromDate) {
+
+      let fromDateDiv = document.createElement("div")
+      fromDateDiv.className = "col-sm-4"
+      fromDateDiv.innerHTML = "<h6>" + "From Date : " + fromDate + "</h6>"
+      summary.appendChild(fromDateDiv)
+
+    }
+
+    if (toDate) {
+
+      let toDateDiv = document.createElement("div")
+      toDateDiv.className = "col-sm-4"
+      toDateDiv.innerHTML = "<h6>" + "To Date : " + toDate + "</h6>"
+      summary.appendChild(toDateDiv)
+
+    }
+
+    if (selectedItemNames) {
+
+      let itemDiv = document.createElement("div")
+      itemDiv.className = "col-sm-4"
+      itemDiv.innerHTML = "<h6>" + "Items : " + selectedItemNames.toString() + "</h6>"
+
+      summary.appendChild(itemDiv)
+    }
+
+  }
+
+
+  console.log(summaryConntainer)
+
+</script>
+<!--End Display Filte Panel Summary-->
+
+<!--Main Handler-->
+<script>
+  let startMain = () => {
+    //clean old values
+    document.getElementById("main").innerHTML = ''
+
+    report.widgets.map((w) => {
+      if (w.widgetType === "text") {
+        DisplayText(w);
+      } else if (w.widgetType === "image") {
+        DisplayImage(w);
+      } else {
+        QueryExecuter(w);
+      }
+    });
+
+    function QueryExecuter(widget) {
+
+
+      if (report.url === "https://qa.api.tracified.com/api/v2/reports/template") {
+
+        /**
+        * Traccified Report request configureation
+        * CAUTION : TenanId, itemIds and stage Ids are hard coded .
+        * 
+        */
+        let query = widget.request.query.replaceAll('\n', "\\n")
+        const options = {
+          url: report.url,
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json;charset=UTF-8',
+            'Authorization': 'Bearer ' + authorization()
+          },
+          data: {
+            ...postRequest,
+            "template": `{{${query}}}`
+          }
+        };
+        console.log(options)
+        axios(options)
+          .then(response => {
+            console.log(response);
+            if (widget.widgetType === "table") {
+
+              DisplayTable(widget, response.data)
+            }
+            else if (widget.widgetType === "gbar") {
+
+              DisplayGroupedBarchart(widget, response.data.data)
+
+            }
+          }).catch(err => {
+            console.log(err)
+          });
+
+
+      } else { }
+
+
+    }
+
+    function DisplayText(widget) {
+      const newDiv = document.createElement("div");
+      newDiv.id = widget.widgetName;
+      newDiv.className = widget.widgetName;
+      newDiv.textContent = widget.value;
+      document.getElementById("main").appendChild(newDiv);
+      console.log(newDiv);
+    }
+
+    function DisplayImage(widget) {
+      const newDiv = document.createElement("img");
+      newDiv.id = widget.widgetName;
+      newDiv.className = widget.widgetName;
+      newDiv.src = widget.url;
+      document.getElementById("main").appendChild(newDiv);
+      console.log(newDiv);
+    }
+    function DisplayBubbleChart(widget, data) {
+      const newDiv = document.createElement("div");
+      newDiv.id = widget.widgetName;
+      newDiv.className = widget.widgetName;
+      document.getElementById("main").appendChild(newDiv);
+      console.log(newDiv);
+
+      // set the dimensions and margins of the graph
+      var margin = { top: 10, right: 20, bottom: 30, left: 50 },
+        width = widget.width - margin.left - margin.right,
+        height = widget.height - margin.top - margin.bottom;
+
+      // append the svg object to the body of the page
+      var svg = d3
+        .select("#" + widget.widgetName)
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      function generateBubbleChart(data) {
+        // Add X axis
+        var x = d3.scaleLinear().domain([0, 10000]).range([0, width]);
+        svg
+          .append("g")
+          .attr("transform", "translate(0," + height + ")")
+          .call(d3.axisBottom(x));
+
+        // Add Y axis
+        var y = d3.scaleLinear().domain([0, 90]).range([height, 0]);
+        svg.append("g").call(d3.axisLeft(y));
+
+        // Add a scale for bubble size
+        var z = d3.scaleLinear().domain([200000, 1310000000]).range([1, 40]);
+
+        // Add dots
+        svg
+          .append("g")
+          .selectAll("dot")
+          .data(data)
+          .enter()
+          .append("circle")
+          .attr("cx", function (d) {
+            return x(d.gdpPercap);
+          })
+          .attr("cy", function (d) {
+            return y(d.lifeExp);
+          })
+          .attr("r", function (d) {
+            return z(d.pop);
+          })
+          .style("fill", "#69b3a2")
+          .style("opacity", "0.7")
+          .attr("stroke", "black");
+      }
+
+      generateBubbleChart(data);
+    }
+    function DisplayTable(widget, data) {
+      var tableNode = document.createElement("table");
+      tableNode.className = `table table-striped ${widget.widgetName}`;
+      tableNode.innerHTML = <table>
+        <tr>
+          <th>Company</th>
+          <th>Contact</th>
+          <th>Country</th>
+        </tr>
+        <tr>
+          <td>Alfreds Futterkiste</td>
+          <td>Maria Anders</td>
+          <td>Germany</td>
+        </tr>
+        <tr>
+          <td>Centro comercial Moctezuma</td>
+          <td>Francisco Chang</td>
+          <td>Mexico</td>
+        </tr>
+      </table>;
+      tableNode.width = widget.width;
+      tableNode.height = widget.height;
+      document.getElementById("main").appendChild(tableNode);
+    }
+
+    function DisplayBarchart(widget, data) {
+      const newDiv = document.createElement("div");
+      newDiv.id = widget.widgetName;
+      newDiv.className = widget.widgetName;
+      document.getElementById("main").appendChild(newDiv);
+      console.log(newDiv);
+
+      var margin = { top: 30, right: 30, bottom: 70, left: 80 },
+        width = widget.width - margin.left - margin.right,
+        height = widget.height - margin.top - margin.bottom;
+
+      // append the svg object to the body of the page
+      var svg = d3
+        .select("#" + widget.widgetName)
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      function genBarChart(data) {
+        function getMaxheight(data) {
+          let height = 0;
+          data.map((bar) => {
+            if (bar.value >= height) {
+              height = bar.value;
+            }
+          });
+          return height;
+        }
+
+        //add axis title label
+
+        svg
+          .append("text")
+          .attr("text-anchor", "middle")
+          .attr("transform", "translate(" + -35 + "," + 180 + ")rotate(-90)")
+          .text(widget.yAxis);
+
+        svg
+          .append("text")
+          .attr("text-anchor", "middle")
+          .attr("transform", "translate(" + 180 + "," + 370 + ")")
+          .text(widget.xAxis);
+
+        // X axis
+        var x = d3
+          .scaleBand()
+          .range([0, width])
+          .domain(
+            data.map(function (d) {
+              return d.name;
+            })
+          )
+          .padding(0.2);
+        svg
+          .append("g")
+          .attr("transform", "translate(0," + height + ")")
+          .call(d3.axisBottom(x))
+          .selectAll("text")
+          .attr("transform", "translate(-10,0)rotate(-45)")
+          .style("text-anchor", "end");
+
+        // Add Y axis
+        var y = d3
+          .scaleLinear()
+          .domain([0, getMaxheight(data)])
+          .range([height, 0]);
+        svg.append("g").call(d3.axisLeft(y));
+
+        // Bars
+        svg
+          .selectAll("mybar")
+          .data(data)
+          .enter()
+          .append("rect")
+          .attr("x", function (d) {
+            return x(d.name);
+          })
+          .attr("y", function (d) {
+            return y(d.value);
+          })
+          .attr("width", x.bandwidth())
+          .attr("height", function (d) {
+            return height - y(d.value);
+          })
+          .attr("fill", widget.color);
+      }
+
+      genBarChart(data);
+    }
+
+    function DisplayGroupedBarchart(widget, data) {
+      const newDiv = document.createElement("div");
+      newDiv.id = widget.widgetName;
+      newDiv.className = widget.widgetName;
+      document.getElementById("main").appendChild(newDiv);
+
+      // set the dimensions and margins of the graph
+      var margin = { top: 10, right: 30, bottom: 20, left: 50 },
+        width = widget.width - margin.left - margin.right,
+        height = widget.height - margin.top - margin.bottom;
+      // append the svg object to the body of the page
+      var svg = d3
+        .select("#" + widget.widgetName)
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom + 20)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      // Parse the Data
+
+      function display(data) {
+        function getsubgroups() {
+          let subgrp;
+          for (var key in data) {
+            let obj = data[key];
+            // delete obj['group']
+            const { group, ...filteredObject } = obj;
+
+            subgrp = Object.keys(filteredObject);
+
+            // subgrp = Object.keys(jsonWithoutId)
+          }
+
+          return subgrp;
+        }
+
+        // List of subgroups = header of the csv files = soil condition here
+        var subgroups = getsubgroups();
+        console.log(subgroups);
+
+        // List of groups = species here = value of the first column called group -> I show them on the X axis
+        var groups = d3
+          .map(data, function (d) {
+            return d.group;
+          })
+          .keys();
+
+        // Add X axis
+        var x = d3.scaleBand().domain(groups).range([0, width]).padding([0.2]);
+        svg
+          .append("g")
+          .attr("transform", "translate(0," + height + ")")
+          .call(d3.axisBottom(x).tickSize(0));
+
+        // Add Y axis
+        var y = d3.scaleLinear().domain([0, 40]).range([height, 0]);
+        svg.append("g").call(d3.axisLeft(y));
+
+        // Another scale for subgroup position?
+        var xSubgroup = d3
+          .scaleBand()
+          .domain(subgroups)
+          .range([0, x.bandwidth()])
+          .padding([0.05]);
+
+        // color palette = one color per subgroup
+        var color = d3.scaleOrdinal().domain(subgroups).range(widget.color);
+
+        //add axis title label
+
+        svg
+          .append("text")
+          .attr("text-anchor", "middle")
+          .attr("transform", "translate(" + -35 + "," + widget.height / 2 + ")rotate(-90)")
+
+          .text(widget.yAxis);
+
+        svg
+          .append("text")
+          .attr("text-anchor", "middle")
+
+          .attr("transform", "translate(" + widget.width / 3 + "," + (widget.height) + ")")
+
+          .text(widget.xAxis);
+
+        // Show the bars
+        svg
+          .append("g")
+          .selectAll("g")
+          // Enter in data = loop group per group
+          .data(data)
+          .enter()
+          .append("g")
+          .attr("transform", function (d) {
+            return "translate(" + x(d.group) + ",0)";
+          })
+          .selectAll("rect")
+          .data(function (d) {
+            return subgroups.map(function (key) {
+              return { key: key, value: d[key] };
+            });
+          })
+          .enter()
+          .append("rect")
+          .attr("x", function (d) {
+            return xSubgroup(d.key);
+          })
+          .attr("y", function (d) {
+            return y(d.value);
+          })
+          .attr("width", xSubgroup.bandwidth())
+          .attr("height", function (d) {
+            return height - y(d.value);
+          })
+          .attr("fill", function (d) {
+            return color(d.key);
+          });
+      }
+      display(data);
+    }
+  }
+</script>
+<!--End main handler-->
+
+<!--Filter UI elements-->
+<script>
+  $('#datepickerToDate').datepicker({
+    uiLibrary: 'bootstrap4'
+  });
+  $('#datepickerFromDate').datepicker({
+    uiLibrary: 'bootstrap4'
+  });
+
+</script>
+<script>
+  // Initialize function, create initial tokens with itens that are already selected by the user
+  function init(element) {
+    // Create div that wroaps all the elements inside (select, elements selected, search div) to put select inside
+    const wrapper = document.createElement("div");
+    wrapper.addEventListener("click", clickOnWrapper);
+    wrapper.classList.add("multi-select-component");
+
+    // Create elements of search
+    const search_div = document.createElement("div");
+    search_div.classList.add("search-container");
+    const input = document.createElement("input");
+    input.classList.add("selected-input");
+    input.setAttribute("autocomplete", "off");
+    input.setAttribute("tabindex", "0");
+    input.addEventListener("keyup", inputChange);
+    input.addEventListener("keydown", deletePressed);
+    input.addEventListener("click", openOptions);
+
+    const dropdown_icon = document.createElement("a");
+    dropdown_icon.setAttribute("href", "#");
+    dropdown_icon.classList.add("dropdown-icon");
+
+    dropdown_icon.addEventListener("click", clickDropdown);
+    const autocomplete_list = document.createElement("ul");
+    autocomplete_list.classList.add("autocomplete-list")
+    search_div.appendChild(input);
+    search_div.appendChild(autocomplete_list);
+    search_div.appendChild(dropdown_icon);
+
+    // set the wrapper as child (instead of the element)
+    element.parentNode.replaceChild(wrapper, element);
+    // set element as child of wrapper
+    wrapper.appendChild(element);
+    wrapper.appendChild(search_div);
+
+    createInitialTokens(element);
+    addPlaceholder(wrapper);
+  }
+
+  function removePlaceholder(wrapper) {
+    const input_search = wrapper.querySelector(".selected-input");
+    input_search.removeAttribute("placeholder");
+  }
+
+  function addPlaceholder(wrapper) {
+    const input_search = wrapper.querySelector(".selected-input");
+    const tokens = wrapper.querySelectorAll(".selected-wrapper");
+    if (!tokens.length && !(document.activeElement === input_search))
+      input_search.setAttribute("placeholder", "---------");
+  }
+
+
+  // Function that create the initial set of tokens with the options selected by the users
+  function createInitialTokens(select) {
+    let {
+      options_selected
+    } = getOptions(select);
+    const wrapper = select.parentNode;
+    for (let i = 0; i < options_selected.length; i++) {
+      createToken(wrapper, options_selected[i]);
+    }
+  }
+
+
+  // Listener of user search
+  function inputChange(e) {
+    const wrapper = e.target.parentNode.parentNode;
+    const select = wrapper.querySelector("select");
+    const dropdown = wrapper.querySelector(".dropdown-icon");
+
+    const input_val = e.target.value;
+
+
+    if (input_val) {
+      dropdown.classList.add("active");
+      populateAutocompleteList(select, input_val.trim());
+    } else {
+      dropdown.classList.remove("active");
+      const event = new Event('click');
+      dropdown.dispatchEvent(event);
+    }
+  }
+
+
+  // Listen for clicks on the wrapper, if click happens focus on the input
+  function clickOnWrapper(e) {
+    const wrapper = e.target;
+    if (wrapper.tagName == "DIV") {
+      const input_search = wrapper.querySelector(".selected-input");
+      const dropdown = wrapper.querySelector(".dropdown-icon");
+      if (!dropdown.classList.contains("active")) {
+        const event = new Event('click');
+        dropdown.dispatchEvent(event);
+      }
+      input_search.focus();
+      removePlaceholder(wrapper);
+    }
+
+  }
+
+  function openOptions(e) {
+    const input_search = e.target;
+    const wrapper = input_search.parentElement.parentElement;
+    const dropdown = wrapper.querySelector(".dropdown-icon");
+    if (!dropdown.classList.contains("active")) {
+      const event = new Event('click');
+      dropdown.dispatchEvent(event);
+    }
+    e.stopPropagation();
+
+  }
+
+  // Function that create a token inside of a wrapper with the given value
+  function createToken(wrapper, value) {
+    const search = wrapper.querySelector(".search-container");
+    // Create token wrapper
+    const token = document.createElement("div");
+    token.classList.add("selected-wrapper");
+    const token_span = document.createElement("span");
+    token_span.classList.add("selected-label");
+    token_span.innerText = value;
+    const close = document.createElement("a");
+    close.classList.add("selected-close");
+    close.setAttribute("tabindex", "-1");
+    close.setAttribute("data-option", value);
+    close.setAttribute("data-hits", 0);
+    close.setAttribute("href", "#");
+    close.innerText = "x";
+    close.addEventListener("click", removeToken)
+    token.appendChild(token_span);
+    token.appendChild(close);
+    wrapper.insertBefore(token, search);
+  }
+
+
+  // Listen for clicks in the dropdown option
+  function clickDropdown(e) {
+
+    const dropdown = e.target;
+    const wrapper = dropdown.parentNode.parentNode;
+    const input_search = wrapper.querySelector(".selected-input");
+    const select = wrapper.querySelector("select");
+    dropdown.classList.toggle("active");
+
+    if (dropdown.classList.contains("active")) {
+      removePlaceholder(wrapper);
+      input_search.focus();
+
+      if (!input_search.value) {
+        populateAutocompleteList(select, "", true);
+      } else {
+        populateAutocompleteList(select, input_search.value);
+
+      }
+    } else {
+      clearAutocompleteList(select);
+      addPlaceholder(wrapper);
+    }
+  }
+
+
+  // Clears the results of the autocomplete list
+  function clearAutocompleteList(select) {
+    const wrapper = select.parentNode;
+
+    const autocomplete_list = wrapper.querySelector(".autocomplete-list");
+    autocomplete_list.innerHTML = "";
+  }
+
+  // Populate the autocomplete list following a given query from the user
+  function populateAutocompleteList(select, query, dropdown = false) {
+    const {
+      autocomplete_options
+    } = getOptions(select);
+
+
+    let options_to_show;
+
+    if (dropdown)
+      options_to_show = autocomplete_options;
+    else
+      options_to_show = autocomplete(query, autocomplete_options);
+
+    const wrapper = select.parentNode;
+    const input_search = wrapper.querySelector(".search-container");
+    const autocomplete_list = wrapper.querySelector(".autocomplete-list");
+    autocomplete_list.innerHTML = "";
+    const result_size = options_to_show.length;
+
+    if (result_size == 1) {
+
+      const li = document.createElement("li");
+      li.innerText = options_to_show[0];
+      li.setAttribute('data-value', options_to_show[0]);
+      li.addEventListener("click", selectOption);
+      autocomplete_list.appendChild(li);
+      if (query.length == options_to_show[0].length) {
+        const event = new Event('click');
+        li.dispatchEvent(event);
+
+      }
+    } else if (result_size > 1) {
+
+      for (let i = 0; i < result_size; i++) {
+        const li = document.createElement("li");
+        li.innerText = options_to_show[i];
+        li.setAttribute('data-value', options_to_show[i]);
+        li.addEventListener("click", selectOption);
+        autocomplete_list.appendChild(li);
+      }
+    } else {
+      const li = document.createElement("li");
+      li.classList.add("not-cursor");
+      li.innerText = "No options found";
+      autocomplete_list.appendChild(li);
+    }
+  }
+
+
+  // Listener to autocomplete results when clicked set the selected property in the select option 
+  function selectOption(e) {
+    const wrapper = e.target.parentNode.parentNode.parentNode;
+    const input_search = wrapper.querySelector(".selected-input");
+    const option = wrapper.querySelector(`select option[value="${e.target.dataset.value}"]`);
+
+    option.setAttribute("selected", "");
+    createToken(wrapper, e.target.dataset.value);
+    if (input_search.value) {
+      input_search.value = "";
+    }
+
+    input_search.focus();
+
+    e.target.remove();
+    const autocomplete_list = wrapper.querySelector(".autocomplete-list");
+
+
+    if (!autocomplete_list.children.length) {
+      const li = document.createElement("li");
+      li.classList.add("not-cursor");
+      li.innerText = "No options found";
+      autocomplete_list.appendChild(li);
+    }
+
+    const event = new Event('keyup');
+    input_search.dispatchEvent(event);
+    e.stopPropagation();
+  }
+
+
+  // function that returns a list with the autcomplete list of matches
+  function autocomplete(query, options) {
+    // No query passed, just return entire list
+    if (!query) {
+      return options;
+    }
+    let options_return = [];
+
+    for (let i = 0; i < options.length; i++) {
+      if (query.toLowerCase() === options[i].slice(0, query.length).toLowerCase()) {
+        options_return.push(options[i]);
+      }
+    }
+    return options_return;
+  }
+
+
+  // Returns the options that are selected by the user and the ones that are not
+  function getOptions(select) {
+    // Select all the options available
+    const all_options = Array.from(
+      select.querySelectorAll("option")
+    ).map(el => el.value);
+
+    // Get the options that are selected from the user
+    const options_selected = Array.from(
+      select.querySelectorAll("option:checked")
+    ).map(el => el.value);
+
+    // Create an autocomplete options array with the options that are not selected by the user
+    const autocomplete_options = [];
+    all_options.forEach(option => {
+      if (!options_selected.includes(option)) {
+        autocomplete_options.push(option);
+      }
+    });
+
+    autocomplete_options.sort();
+
+    return {
+      options_selected,
+      autocomplete_options
+    };
+
+  }
+
+  // Listener for when the user wants to remove a given token.
+  function removeToken(e) {
+    // Get the value to remove
+    const value_to_remove = e.target.dataset.option;
+    const wrapper = e.target.parentNode.parentNode;
+    const input_search = wrapper.querySelector(".selected-input");
+    const dropdown = wrapper.querySelector(".dropdown-icon");
+    // Get the options in the select to be unselected
+    const option_to_unselect = wrapper.querySelector(`select option[value="${value_to_remove}"]`);
+    option_to_unselect.removeAttribute("selected");
+    // Remove token attribute
+    e.target.parentNode.remove();
+    input_search.focus();
+    dropdown.classList.remove("active");
+    const event = new Event('click');
+    dropdown.dispatchEvent(event);
+    e.stopPropagation();
+  }
+
+  // Listen for 2 sequence of hits on the delete key, if this happens delete the last token if exist
+  function deletePressed(e) {
+
+    const wrapper = e.target.parentNode.parentNode;
+    const input_search = e.target;
+    const key = e.keyCode || e.charCode;
+    const tokens = wrapper.querySelectorAll(".selected-wrapper");
+
+    if (tokens.length) {
+      const last_token_x = tokens[tokens.length - 1].querySelector("a");
+      let hits = +last_token_x.dataset.hits;
+
+      if (key == 8 || key == 46) {
+        if (!input_search.value) {
+
+          if (hits > 1) {
+            // Trigger delete event
+            const event = new Event('click');
+            last_token_x.dispatchEvent(event);
+          } else {
+            last_token_x.dataset.hits = 2;
+          }
+        }
+      } else {
+        last_token_x.dataset.hits = 0;
+      }
+    }
+    return true;
+  }
+
+  // You can call this function if you want to add new options to the select plugin
+  // Target needs to be a unique identifier from the select you want to append new option for example #multi-select-plugin
+  // Example of usage addOption("#multi-select-plugin", "tesla", "Tesla")
+  function addOption(target, val, text) {
+    const select = document.querySelector(target);
+    let opt = document.createElement('option');
+    opt.value = val;
+    opt.innerHTML = text;
+    select.appendChild(opt);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+
+    // get select that has the options available
+    const select = document.querySelectorAll("[data-multi-select-plugin]");
+    select.forEach(select => {
+
+      init(select);
+    });
+
+    // Dismiss on outside click
+    document.addEventListener('click', () => {
+      // get select that has the options available
+      const select = document.querySelectorAll("[data-multi-select-plugin]");
+      for (let i = 0; i < select.length; i++) {
+        if (event) {
+          var isClickInside = select[i].parentElement.parentElement.contains(event.target);
+
+          if (!isClickInside) {
+            const wrapper = select[i].parentElement.parentElement;
+            const dropdown = wrapper.querySelector(".dropdown-icon");
+            const autocomplete_list = wrapper.querySelector(".autocomplete-list");
+            //the click was outside the specifiedElement, do something
+            dropdown.classList.remove("active");
+            autocomplete_list.innerHTML = "";
+            addPlaceholder(wrapper);
+          }
+        }
+      }
+    });
+
+  });
+</script>

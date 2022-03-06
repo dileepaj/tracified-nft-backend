@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/dileepaj/tracified-nft-backend/controllers"
+	"github.com/dileepaj/tracified-nft-backend/controllers/nftController"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
@@ -25,7 +25,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		errors.BadRequest(w, err.Error())
 	} else {
-		_, err1 := controllers.CreateUser(createUserObject)
+		_, err1 := nftController.CreateUser(createUserObject)
 		if err1 != nil {
 			ErrorMessage := err1.Error()
 			errors.BadRequest(w, ErrorMessage)

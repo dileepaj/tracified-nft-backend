@@ -1,0 +1,14 @@
+[{"ROOT":{
+		"peoples":[
+            {	
+                "name":  "Tharindu",
+                "city": "Gampaha"
+            },{
+                "name":"rajeen",
+                "city":"Gampaha"
+            },{
+                "name":"dias",
+                "city":"Colombo"
+            }
+        ]}
+}]
