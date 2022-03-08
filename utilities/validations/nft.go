@@ -1,8 +1,8 @@
 package validations
 
 import (
+	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
-	"github.com/dileepaj/tracified-nft-backend/wrappers/requestWrappers"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -35,7 +35,7 @@ func ValidateInsertOwnership(e models.Ownership) error {
 	return nil
 }
 
-func ValidateMakeSale(e requestWrappers.UpdateNFTSALERequest) error {
+func ValidateMakeSale(e requestDtos.UpdateNFTSALERequest) error {
 	validate = validator.New()
 	err := validate.Struct(e)
 	if err != nil {
@@ -44,7 +44,7 @@ func ValidateMakeSale(e requestWrappers.UpdateNFTSALERequest) error {
 	return nil
 }
 
-func ValidateCreateNFTObject(e requestWrappers.CreateNFTRequest) error {
+func ValidateCreateNFTObject(e requestDtos.CreateNFTRequest) error {
 	validate = validator.New()
 	err := validate.Struct(e)
 	if err != nil {

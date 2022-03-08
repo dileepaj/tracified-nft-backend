@@ -5,10 +5,11 @@ import (
 	"time"
 
 	"github.com/dileepaj/tracified-nft-backend/connections"
+	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
+	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
+
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
-	"github.com/dileepaj/tracified-nft-backend/wrappers/requestWrappers"
-	"github.com/dileepaj/tracified-nft-backend/wrappers/responseWrappers"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -112,8 +113,8 @@ func (repository *NFTRepository) FindByFieldInMultipleValus(fields string, tags 
 	return nfts, nil
 }
 
-func (repository *NFTRepository) UpdateNFTSALE(nft requestWrappers.UpdateNFTSALERequest) (responseWrappers.ResponseNFTMakeSale, error) {
-	var responseMakeSaleNFT responseWrappers.ResponseNFTMakeSale
+func (repository *NFTRepository) UpdateNFTSALE(nft requestDtos.UpdateNFTSALERequest) (responseDtos.ResponseNFTMakeSale, error) {
+	var responseMakeSaleNFT responseDtos.ResponseNFTMakeSale
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	update := bson.M{

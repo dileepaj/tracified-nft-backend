@@ -2,9 +2,9 @@ package nftController
 
 import (
 	"github.com/dileepaj/tracified-nft-backend/database/repository/nftRepository"
+	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
+	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
-	"github.com/dileepaj/tracified-nft-backend/wrappers/requestWrappers"
-	"github.com/dileepaj/tracified-nft-backend/wrappers/responseWrappers"
 )
 
 var repository nftRepository.NFTRepository
@@ -13,7 +13,7 @@ func GetNFTBySellingStatusAndNotUserCreated(id string, userPK string) ([]models.
 	return repository.FindById1AndNotId2("sellingstatus", id, "currentownerpk", userPK)
 }
 
-func MakeSaleNFT(update requestWrappers.UpdateNFTSALERequest) (responseWrappers.ResponseNFTMakeSale, error) {
+func MakeSaleNFT(update requestDtos.UpdateNFTSALERequest) (responseDtos.ResponseNFTMakeSale, error) {
 	return repository.UpdateNFTSALE(update)
 }
 

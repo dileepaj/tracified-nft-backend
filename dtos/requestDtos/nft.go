@@ -1,4 +1,5 @@
-package responseDtos
+package requestDtos
+
 import (
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"go.mongodb.org/mongo-driver/bson/primitive"

@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
-	"github.com/dileepaj/tracified-nft-backend/wrappers/responseWrappers"
 )
 
 func BadRequest(w http.ResponseWriter,message string){
     w.WriteHeader(http.StatusBadRequest)
-	 response:=responseWrappers.ErrorResponse{
+	 response:=responseDtos.ErrorResponse{
 		Message: message,
 		Status:  http.StatusBadRequest,
 		Error:   "Bad request",
@@ -23,7 +23,7 @@ func BadRequest(w http.ResponseWriter,message string){
 
 func NotFound(w http.ResponseWriter,message string){
     w.WriteHeader(http.StatusNotFound)
-	response:=responseWrappers.ErrorResponse{
+	response:=responseDtos.ErrorResponse{
 		Message: message,
 		Status:  http.StatusNotFound,
 		Error:   "Not found",
@@ -36,7 +36,7 @@ func NotFound(w http.ResponseWriter,message string){
 
 func InternalError(w http.ResponseWriter,message string){
     w.WriteHeader(http.StatusInternalServerError)
-	response:=responseWrappers.ErrorResponse{
+	response:=responseDtos.ErrorResponse{
 		Message: message,
 		Status:  http.StatusInternalServerError,
 		Error:   "Internal server error",

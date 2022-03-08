@@ -6,16 +6,16 @@ import (
 	"net/http"
 
 	"github.com/dileepaj/tracified-nft-backend/controllers/nftController"
+	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"github.com/dileepaj/tracified-nft-backend/utilities/validations"
-	"github.com/dileepaj/tracified-nft-backend/wrappers/requestWrappers"
 	"github.com/gorilla/mux"
 )
 
 func CreateNFT(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	var createNFTObject requestWrappers.CreateNFTRequest
+	var createNFTObject requestDtos.CreateNFTRequest
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&createNFTObject)
 	if err != nil {
@@ -46,7 +46,7 @@ func CreateNFT(w http.ResponseWriter, r *http.Request) {
 
 func MakeSale(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	var udpateNFTObj requestWrappers.UpdateNFTSALERequest
+	var udpateNFTObj requestDtos.UpdateNFTSALERequest
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&udpateNFTObj)
 	if err != nil {
