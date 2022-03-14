@@ -3,6 +3,7 @@ package services
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 )
@@ -19,18 +20,17 @@ func WriteToFile(location string, fileName string, content string) {
 		logs.ErrorLogger.Println(err)
 	}
 	defer file.Close()
-
 }
 
 func ReadFromFile(location string) string {
 	fmt.Println(location)
 	content, err := os.ReadFile(location)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(location)
 		logs.ErrorLogger.Println(err.Error())
 	}
-
-	return string(content)
+	readLine := strings.TrimSuffix(string(content), "\r\n")
+	return readLine
 }
 
 func MakeDirectory(path string) {
