@@ -6,6 +6,6 @@ import (
 
 type HtmlGeneratorRequest struct {
 	HtmlGenerator models.HtmlGenerator
-	WeigetDetails []models.Weiget
+	WidgetDetails []models.Widget
 }
 

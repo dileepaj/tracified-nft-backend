@@ -4,7 +4,7 @@ import "go.mongodb.org/mongo-driver/bson/primitive"
 
 type Chart struct {
 	ChartTitle string      `json:"charttitle" bson:"charttitle"`
-	WeigetId   string      `json:"WeigetId" bson:"weigetid"`
+	WidgetId   string      `json:"WidgetId" bson:"widgetid"`
 	KeyTitle   string      `json:"Keytitle" bson:"keytitle"`
 	ChartData  []ChartData `json:"ChartData" bson:"chartdata"`
 	XAxis      string      `json:"Xaxis" bson:"xaxis"`
@@ -23,7 +23,7 @@ type ChartData struct {
 	Color  string `json:"Color" bson:"color"`
 }
 type Table struct {
-	WeigetId     string `json:"WeigetId" bson:"weigetid" validate:"required"`
+	WidgetId     string `json:"WidgetId" bson:"widgetid" validate:"required"`
 	TableTitle   string `json:"TableTitle" bson:"tabletitle"`
 	TableContent string `json:"TableContent" bson:"Tablecontent" validate:"required"`
 }
@@ -36,7 +36,7 @@ type StatData struct {
 
 type StataArray struct {
 	Title    string     `json:"Title" bson:"title"`
-	WeigetId string     `json:"WeigetId" bson:"weigetid" validate:"required"`
+	WidgetId string     `json:"WidgetId" bson:"widgetid" validate:"required"`
 	StatData []StatData `json:"StatData" bson:"statdata"`
 }
 
@@ -52,13 +52,13 @@ type BotBatch struct {
 }
 type ProofBotData struct {
 	BotTitle string     `json:"BotTitle" bson:"bottitle"`
-	WeigetId string     `json:"WeigetId" bson:"weigetid" validate:"required"`
+	WidgetId string     `json:"WidgetId" bson:"widgetid" validate:"required"`
 	Batch    []BotBatch `json:"Batch" bson:"batch"`
 }
 
 type ImageData struct {
 	Title       string `json:"Title" bson:"title"`
-	WeigetId    string `json:"WeigetId" bson:"weigetid" validate:"required"`
+	WidgetId    string `json:"WidgetId" bson:"widgetid" validate:"required"`
 	Type        string `json:"Type" bson:"type" validate:"required"`
 	Base64Image string `json:"Base64Image" bson:"base64image" validate:"required"`
 }
@@ -77,24 +77,25 @@ type HtmlGenerator struct {
 	ProjectName string             `json:"ProjectName" bson:"projectname" validate:"required"`
 	NFTName     string             `json:"NFTName" bson:"nftname" validate:"required"`
 	UserId      string             `json:"UserId" bson:"userid" validate:"required"`
+	TenentId    string             `json:"TenentId" bson:"tenentid" validate:"required"`
 	Timestamp   primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
 	CreatorName string             `json:"CreatorName" bson:"creatorname"`
 	NftContent  NFTContent
 }
 
-type Weiget struct {
+type Widget struct {
 	Id          primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
 	Timestamp   primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
-	WeigetId    string             `json:"WeigetId" bson:"weigetid" validate:"required"`
+	WidgetId    string             `json:"WidgetId" bson:"widgetid" validate:"required"`
 	BactchId    string             `json:"BactchId" bson:"batchid"`
 	ProductId   string             `json:"productId" bson:"productid"`
 	ProductName string             `json:"ProductName" bson:"productname" validate:"required"`
-	TenentName  string             `json:"TenentName" bson:"tenentname"`
+	TenentId    string             `json:"TenentId" bson:"tenentid" validate:"required"`
 	ProjectId   string             `json:"ProjectId" bson:"projectid" validate:"required"`
 	ProjectName string             `json:"ProjectName" bson:"projectname" validate:"required"`
 	UserId      string             `json:"UserId" bson:"userid" validate:"required"`
 	OTP         string             `json:"OTP" bson:"otp"`
 	OTPType     string             `json:"OTPType" bson:"otptype"`
 	Query       string             `json:"Query" bson:"query"`
-	WeigetType  string             `json:"WeigetType" bson:"weigettype"`
+	WidgetType  string             `json:"WidgetType" bson:"widgettype"`
 }

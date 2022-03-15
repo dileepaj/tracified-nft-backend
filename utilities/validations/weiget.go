@@ -6,7 +6,7 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-func ValidateInsertWeiget(e models.Weiget) error {
+func ValidateInsertWidget(e models.Widget) error {
 	validate = validator.New()
 	err := validate.Struct(e)
 	if err != nil {
@@ -15,7 +15,7 @@ func ValidateInsertWeiget(e models.Weiget) error {
 	return nil
 }
 
-func ValidateQueryExecuter(e requestDtos.RequestWeiget) error {
+func ValidateQueryExecuter(e requestDtos.RequestWidget) error {
 	validate = validator.New()
 	err := validate.Struct(e)
 	if err != nil {

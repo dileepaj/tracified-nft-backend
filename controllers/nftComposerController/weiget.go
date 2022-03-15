@@ -7,20 +7,20 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-var weigetRepository nftcomposerrepository.WeigetRepository
+var widgetRepository nftcomposerrepository.WidgetRepository
 
-func SaveWeigetList(weigets []models.Weiget) (string, error) {
-	return weigetRepository.SaveWeigetList(weigets)
+func SaveWidgetList(widgets []models.Widget) (string, error) {
+	return widgetRepository.SaveWidgetList(widgets)
 }
 
-func SaveWeiget(weiget models.Weiget) (string, error) {
-	return weigetRepository.SaveWeiget(weiget)
+func SaveWidget(widget models.Widget) (string, error) {
+	return widgetRepository.SaveWidget(widget)
 }
 
-func FindWeigetAndUpdateQuery(weiget requestDtos.RequestWeiget)(models.Weiget,error){
-	return weigetRepository.FindWeigetAndUpdate(weiget)
+func FindWidgetAndUpdateQuery(widget requestDtos.RequestWidget)(models.Widget,error){
+	return widgetRepository.FindWidgetAndUpdate(widget)
 }
 
-func FindWeigetById(id primitive.ObjectID)(models.Weiget,error){
-	return weigetRepository.FindWeigetById(id)
+func FindWidgetById(id primitive.ObjectID)(models.Widget,error){
+	return widgetRepository.FindWidgetById(id)
 }

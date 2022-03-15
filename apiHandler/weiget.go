@@ -11,20 +11,20 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/utilities/validations"
 )
 
-//Save the weiget data in a DB
-func SaveWeiget(w http.ResponseWriter, r *http.Request) {
+//Save the widget data in a DB
+func SaveWidget(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	var createWeigetObject models.Weiget
+	var createWidgetObject models.Widget
 	decoder := json.NewDecoder(r.Body)
-	err := decoder.Decode(&createWeigetObject)
+	err := decoder.Decode(&createWidgetObject)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 	}
-	err = validations.ValidateInsertWeiget(createWeigetObject)
+	err = validations.ValidateInsertWidget(createWidgetObject)
 	if err != nil {
 		errors.BadRequest(w, err.Error())
 	} else {
-		result, err1 := nftcomposercontroller.SaveWeiget(createWeigetObject)
+		result, err1 := nftcomposercontroller.SaveWidget(createWidgetObject)
 		if err1 != nil {
 			ErrorMessage := err1.Error()
 			errors.BadRequest(w, ErrorMessage)

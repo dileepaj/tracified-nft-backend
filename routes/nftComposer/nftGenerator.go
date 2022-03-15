@@ -19,10 +19,10 @@ var ComposerRoutes = models.Routers{
 		Handler: apiHandler.SaveHTMLData,
 	},
 	models.Router{
-		Name:    "Save the weiget with otp and query",
+		Name:    "Save the widget with otp and query",
 		Method:  "POST",
-		Path:    "/api/composer/save/weiget",
-		Handler: apiHandler.SaveWeiget,
+		Path:    "/api/composer/save/widget",
+		Handler: apiHandler.SaveWidget,
 	},
 	models.Router{
 		Name:    "Query get OTP base on id and execute query",

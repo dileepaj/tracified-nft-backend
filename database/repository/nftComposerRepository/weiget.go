@@ -13,17 +13,17 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type WeigetRepository struct{}
+type WidgetRepository struct{}
 
-//Save the multiple weigets
-func (r *WeigetRepository) SaveWeigetList(weigetList []models.Weiget) (string, error) {
+//Save the multiple widgets
+func (r *WidgetRepository) SaveWidgetList(widgetList []models.Widget) (string, error) {
 	var docs []interface{}
-	for _, t := range weigetList {
+	for _, t := range widgetList {
 		docs = append(docs, t)
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	_, err := connections.Connect().Collection("weiget").InsertMany(ctx, docs)
+	_, err := connections.Connect().Collection("widget").InsertMany(ctx, docs)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 		return "", err
@@ -32,22 +32,22 @@ func (r *WeigetRepository) SaveWeigetList(weigetList []models.Weiget) (string, e
 	}
 }
 
-//Save the weigets return the object Id
-func (r *WeigetRepository) SaveWeiget(weiget models.Weiget) (string, error) {
+//Save the widgets return the object Id
+func (r *WidgetRepository) SaveWidget(widget models.Widget) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	result, err := connections.Connect().Collection("weiget").InsertOne(ctx, weiget)
+	result, err := connections.Connect().Collection("widget").InsertOne(ctx, widget)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
-		return weiget.WeigetId, err
+		return widget.WidgetId, err
 	} else {
 		id := result.InsertedID.(primitive.ObjectID).Hex()
 		return id, nil
 	}
 }
 
-func (r *WeigetRepository) FindWeigetAndUpdate(weiget requestDtos.RequestWeiget) (models.Weiget, error) {
-	var weigetResponse models.Weiget
+func (r *WidgetRepository) FindWidgetAndUpdate(widget requestDtos.RequestWidget) (models.Widget, error) {
+	var widgetResponse models.Widget
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -58,27 +58,27 @@ func (r *WeigetRepository) FindWeigetAndUpdate(weiget requestDtos.RequestWeiget)
 		Upsert:         &upsert,
 	}
 	update := bson.M{
-		"$set": bson.M{"query": weiget.Query},
+		"$set": bson.M{"query": widget.Query},
 	}
-	err := connections.Connect().Collection("weiget").FindOneAndUpdate(ctx, bson.M{"_id": weiget.Id}, update, &opt).Decode(&weigetResponse)
+	err := connections.Connect().Collection("widget").FindOneAndUpdate(ctx, bson.M{"_id": widget.Id}, update, &opt).Decode(&widgetResponse)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
-		return weigetResponse, err
+		return widgetResponse, err
 	} else {
-		return weigetResponse, nil
+		return widgetResponse, nil
 	}
 }
 
-func (r *WeigetRepository) FindWeigetById(id primitive.ObjectID) (models.Weiget, error) {
-	var weiget models.Weiget
+func (r *WidgetRepository) FindWidgetById(id primitive.ObjectID) (models.Widget, error) {
+	var widget models.Widget
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	err := connections.Connect().Collection("weiget").FindOne(ctx, bson.M{"_id": id}).Decode(&weiget)
+	err := connections.Connect().Collection("widget").FindOne(ctx, bson.M{"_id": id}).Decode(&widget)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
-		return weiget, err
+		return widget, err
 	} else {
-		return weiget, nil
+		return widget, nil
 	}
 
 }
