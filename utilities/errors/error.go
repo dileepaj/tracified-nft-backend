@@ -46,3 +46,16 @@ func InternalError(w http.ResponseWriter,message string){
 		logs.ErrorLogger.Println(err)
 	}
 }
+
+func NoContent(w http.ResponseWriter,message string){
+    w.WriteHeader(http.StatusNoContent)
+	response:=responseDtos.ErrorResponse{
+		Message: message,
+		Status:  http.StatusNoContent,
+		Error:   "no documents in result",
+	}
+	var err=json.NewEncoder(w).Encode(response)
+	if err != nil {
+		logs.ErrorLogger.Println(err)
+	}
+}

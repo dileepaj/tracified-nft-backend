@@ -2,8 +2,8 @@ package routes
 
 import (
 	"github.com/dileepaj/tracified-nft-backend/models"
-	"github.com/dileepaj/tracified-nft-backend/routes/composer"
 	"github.com/dileepaj/tracified-nft-backend/routes/marketPlace"
+	"github.com/dileepaj/tracified-nft-backend/routes/nftComposer"
 )
 
 var ApplicationRoutes models.Routers
@@ -14,7 +14,7 @@ func init() {
 		marketPlace.NftRoutes,
 		marketPlace.UserRoutes,
 		marketPlace.WatchListRoutes,
-		composer.ComposerRoutes,
+		nftComposer.ComposerRoutes,
 	}
 
 	for _, r := range routes {

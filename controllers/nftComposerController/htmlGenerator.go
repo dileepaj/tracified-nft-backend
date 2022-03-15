@@ -7,6 +7,6 @@ import (
 
 var repository nftcomposerrepository.HTMLNFTRepository
 
-func SaveCreatedhtmlOfNFT(html models.HtmlGenerator) (string, error) {
-	return repository.SaveHTML(html)
+func SaveHtmlContentData(htmlData models.HtmlGenerator) (string, error) {
+	return repository.SaveHtmlData(htmlData)
 }

@@ -1,4 +1,4 @@
-package api
+package apiHandler
 
 import (
 	"encoding/json"
@@ -99,7 +99,6 @@ func GetNFTbyBlockChain(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(vars["status"], vars["userpk"])
 
 	results, err1 := nftController.GetNFTbyBlockChain(vars["blockchain"])
-	fmt.Println("results-----------------------", results)
 	if err1 != nil {
 		ErrorMessage := err1.Error()
 		errors.BadRequest(w, ErrorMessage)

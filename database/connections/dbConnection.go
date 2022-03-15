@@ -10,6 +10,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+/**
+build the Database connection with mongodb
+**/
 func Connect() *mongo.Database {
 	connectionString := os.Getenv("BE_MONGOLAB_URI")
 	clientOptions := options.Client().ApplyURI(connectionString)

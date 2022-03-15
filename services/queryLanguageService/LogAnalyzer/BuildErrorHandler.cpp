@@ -595,7 +595,7 @@ bool BuildErrorHandler::CheckEndLine(std::string line,int lineNumber,int totalLi
 
     if(lineNumber >= totalLine)
     {
-        if(line=="Do" || (line[0]=='I'&& line[1]=='f') || (line[0]=='W' && line[1]=='h'))
+        if(line=="Do" )
         {
             return false;
         }

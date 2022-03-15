@@ -1,7 +1,7 @@
 package marketPlace
 
 import (
-	"github.com/dileepaj/tracified-nft-backend/api"
+	"github.com/dileepaj/tracified-nft-backend/apiHandler"
 	"github.com/dileepaj/tracified-nft-backend/models"
 )
 
@@ -11,6 +11,6 @@ var UserRoutes = models.Routers{
 		Name:    "Get eds by id",
 		Method:  "POST",
 		Path:    "/api/user/create",
-		Handler: api.CreateUser,
+		Handler: apiHandler.CreateUser,
 	},
 }

@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/dileepaj/tracified-nft-backend/connections"
+	"github.com/dileepaj/tracified-nft-backend/database/connections"
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 

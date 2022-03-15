@@ -52,6 +52,15 @@ std::string FCLWrapper::GetBuildResult(const char *defFilePath){
 std::string  FCLWrapper::GetLogLDALResultV2(const char *defFilePath ,const char *query,const char *json ) {
     LDAL_Wrapper ldalWrapper;
     return  ldalWrapper.GetLOGLDALResultV2(defFilePath,query,json);
-
 }
 
+
+std::string  FCLWrapper::GetOTPResultV2(const char *defFilePath ,const char *query,const char *json ) {
+    LDAL_Wrapper ldalWrapper;
+    return  ldalWrapper.GetOTPResultV2(defFilePath,query,json);
+}
+
+std::string  FCLWrapper::GetTDPResultV2(const char *defFilePath ,const char *query,const char *json ) {
+    LDAL_Wrapper ldalWrapper;
+    return  ldalWrapper.GetTDPResultV2(defFilePath,query,json);
+}

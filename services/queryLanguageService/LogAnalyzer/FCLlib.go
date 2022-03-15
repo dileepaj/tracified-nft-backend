@@ -54,6 +54,14 @@ typedef _gostring_ swig_type_23;
 typedef _gostring_ swig_type_24;
 typedef _gostring_ swig_type_25;
 typedef _gostring_ swig_type_26;
+typedef _gostring_ swig_type_27;
+typedef _gostring_ swig_type_28;
+typedef _gostring_ swig_type_29;
+typedef _gostring_ swig_type_30;
+typedef _gostring_ swig_type_31;
+typedef _gostring_ swig_type_32;
+typedef _gostring_ swig_type_33;
+typedef _gostring_ swig_type_34;
 extern void _wrap_Swig_free_FCLlib_1ee54ad49562e6e8(uintptr_t arg1);
 extern uintptr_t _wrap_Swig_malloc_FCLlib_1ee54ad49562e6e8(swig_intgo arg1);
 extern uintptr_t _wrap_new_StringVector__SWIG_0_FCLlib_1ee54ad49562e6e8(void);
@@ -85,6 +93,8 @@ extern swig_type_17 _wrap_FCLWrapper_GetLogLDALResult_FCLlib_1ee54ad49562e6e8(ui
 extern swig_type_19 _wrap_FCLWrapper_GetOTPResult_FCLlib_1ee54ad49562e6e8(uintptr_t arg1, swig_type_20 arg2);
 extern swig_type_21 _wrap_FCLWrapper_GetBuildResult_FCLlib_1ee54ad49562e6e8(uintptr_t arg1, swig_type_22 arg2);
 extern swig_type_23 _wrap_FCLWrapper_GetLogLDALResultV2_FCLlib_1ee54ad49562e6e8(uintptr_t arg1, swig_type_24 arg2, swig_type_25 arg3, swig_type_26 arg4);
+extern swig_type_27 _wrap_FCLWrapper_GetTDPResultV2_FCLlib_1ee54ad49562e6e8(uintptr_t arg1, swig_type_28 arg2, swig_type_29 arg3, swig_type_30 arg4);
+extern swig_type_31 _wrap_FCLWrapper_GetOTPResultV2_FCLlib_1ee54ad49562e6e8(uintptr_t arg1, swig_type_32 arg2, swig_type_33 arg3, swig_type_34 arg4);
 extern uintptr_t _wrap_new_FCLWrapper_FCLlib_1ee54ad49562e6e8(void);
 extern void _wrap_delete_FCLWrapper_FCLlib_1ee54ad49562e6e8(uintptr_t arg1);
 #undef intgo
@@ -458,6 +468,50 @@ func (arg1 SwigcptrFCLWrapper) GetLogLDALResultV2(arg2 string, arg3 string, arg4
 	return swig_r_1
 }
 
+func (arg1 SwigcptrFCLWrapper) GetTDPResultV2(arg2 string, arg3 string, arg4 string) (_swig_ret string) {
+	var swig_r string
+	_swig_i_0 := arg1
+	_swig_i_1 := arg2
+	_swig_i_2 := arg3
+	_swig_i_3 := arg4
+	swig_r_p := C._wrap_FCLWrapper_GetTDPResultV2_FCLlib_1ee54ad49562e6e8(C.uintptr_t(_swig_i_0), *(*C.swig_type_28)(unsafe.Pointer(&_swig_i_1)), *(*C.swig_type_29)(unsafe.Pointer(&_swig_i_2)), *(*C.swig_type_30)(unsafe.Pointer(&_swig_i_3)))
+	swig_r = *(*string)(unsafe.Pointer(&swig_r_p))
+	if Swig_escape_always_false {
+		Swig_escape_val = arg2
+	}
+	if Swig_escape_always_false {
+		Swig_escape_val = arg3
+	}
+	if Swig_escape_always_false {
+		Swig_escape_val = arg4
+	}
+	var swig_r_1 string
+ swig_r_1 = swigCopyString(swig_r) 
+	return swig_r_1
+}
+
+func (arg1 SwigcptrFCLWrapper) GetOTPResultV2(arg2 string, arg3 string, arg4 string) (_swig_ret string) {
+	var swig_r string
+	_swig_i_0 := arg1
+	_swig_i_1 := arg2
+	_swig_i_2 := arg3
+	_swig_i_3 := arg4
+	swig_r_p := C._wrap_FCLWrapper_GetOTPResultV2_FCLlib_1ee54ad49562e6e8(C.uintptr_t(_swig_i_0), *(*C.swig_type_32)(unsafe.Pointer(&_swig_i_1)), *(*C.swig_type_33)(unsafe.Pointer(&_swig_i_2)), *(*C.swig_type_34)(unsafe.Pointer(&_swig_i_3)))
+	swig_r = *(*string)(unsafe.Pointer(&swig_r_p))
+	if Swig_escape_always_false {
+		Swig_escape_val = arg2
+	}
+	if Swig_escape_always_false {
+		Swig_escape_val = arg3
+	}
+	if Swig_escape_always_false {
+		Swig_escape_val = arg4
+	}
+	var swig_r_1 string
+ swig_r_1 = swigCopyString(swig_r) 
+	return swig_r_1
+}
+
 func NewFCLWrapper() (_swig_ret FCLWrapper) {
 	var swig_r FCLWrapper
 	swig_r = (FCLWrapper)(SwigcptrFCLWrapper(C._wrap_new_FCLWrapper_FCLlib_1ee54ad49562e6e8()))
@@ -479,6 +533,8 @@ type FCLWrapper interface {
 	GetOTPResult(arg2 string) (_swig_ret string)
 	GetBuildResult(arg2 string) (_swig_ret string)
 	GetLogLDALResultV2(arg2 string, arg3 string, arg4 string) (_swig_ret string)
+	GetTDPResultV2(arg2 string, arg3 string, arg4 string) (_swig_ret string)
+	GetOTPResultV2(arg2 string, arg3 string, arg4 string) (_swig_ret string)
 }
 
 

@@ -1,4 +1,4 @@
-package api
+package apiHandler
 
 import (
 	"encoding/json"

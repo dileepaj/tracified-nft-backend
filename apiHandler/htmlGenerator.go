@@ -1,4 +1,4 @@
-package api
+package apiHandler
 
 import (
 	"encoding/base64"
@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	nftcomposercontroller "github.com/dileepaj/tracified-nft-backend/controllers/nftComposerController"
-	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/services/htmlGeneretorService/htmlgenerator"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
@@ -42,10 +41,10 @@ func HTMLFileGenerator(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func SaveHTML(w http.ResponseWriter, r *http.Request) {
+func SaveHTMLData(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
-	var CreateHTMLOfNFTObject requestDtos.HtmlGeneratorRequest
+	var CreateHTMLOfNFTObject models.HtmlGenerator
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&CreateHTMLOfNFTObject)
 	if err != nil {
@@ -55,30 +54,29 @@ func SaveHTML(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		errors.BadRequest(w, err.Error())
 	} else {
-		_, err1 := nftcomposercontroller.SaveCreatedhtmlOfNFT(CreateHTMLOfNFTObject.HtmlGenerator)
-		_, err2 := nftcomposercontroller.SaveWeiget(CreateHTMLOfNFTObject.WeightDetails)
+		_, err1 := nftcomposercontroller.SaveHtmlContentData(CreateHTMLOfNFTObject)
 		//convert result to byte Array
-		if err1 != nil || err2 != nil {
-			ErrorMessage := err1.Error() + err2.Error()
+		if err1 != nil {
+			ErrorMessage := err1.Error()
 			errors.BadRequest(w, ErrorMessage)
 			return
 		} else {
-	//retrive the generated html template
-	results, err := htmlgenerator.GenerateNFTTemplate(CreateHTMLOfNFTObject.HtmlGenerator)
-	//convert result to byte Array
-	ByteResults := base64.StdEncoding.EncodeToString([]byte(results))
-	if err != nil {
-		ErrorMessage := err.Error()
-		errors.BadRequest(w, ErrorMessage)
-		return
-	} else {
-		w.WriteHeader(http.StatusOK)
-		err := json.NewEncoder(w).Encode(ByteResults)
-		if err != nil {
-			logs.ErrorLogger.Println(err)
-		}
-		return
-	}
+			//retrive the generated html template
+			results, err := htmlgenerator.GenerateNFTTemplate(CreateHTMLOfNFTObject)
+			//convert result to byte Array
+			ByteResults := base64.StdEncoding.EncodeToString([]byte(results))
+			if err != nil {
+				ErrorMessage := err.Error()
+				errors.BadRequest(w, ErrorMessage)
+				return
+			} else {
+				w.WriteHeader(http.StatusOK)
+				err := json.NewEncoder(w).Encode(ByteResults)
+				if err != nil {
+					logs.ErrorLogger.Println(err)
+				}
+				return
+			}
 		}
 	}
 }

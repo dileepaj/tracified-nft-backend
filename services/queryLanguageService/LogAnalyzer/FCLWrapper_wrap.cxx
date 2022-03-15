@@ -776,6 +776,74 @@ _gostring_ _wrap_FCLWrapper_GetLogLDALResultV2_FCLlib_1ee54ad49562e6e8(FCLWrappe
 }
 
 
+_gostring_ _wrap_FCLWrapper_GetTDPResultV2_FCLlib_1ee54ad49562e6e8(FCLWrapper *_swig_go_0, _gostring_ _swig_go_1, _gostring_ _swig_go_2, _gostring_ _swig_go_3) {
+  FCLWrapper *arg1 = (FCLWrapper *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *arg4 = (char *) 0 ;
+  std::string result;
+  _gostring_ _swig_go_result;
+  
+  arg1 = *(FCLWrapper **)&_swig_go_0; 
+  
+  arg2 = (char *)malloc(_swig_go_1.n + 1);
+  memcpy(arg2, _swig_go_1.p, _swig_go_1.n);
+  arg2[_swig_go_1.n] = '\0';
+  
+  
+  arg3 = (char *)malloc(_swig_go_2.n + 1);
+  memcpy(arg3, _swig_go_2.p, _swig_go_2.n);
+  arg3[_swig_go_2.n] = '\0';
+  
+  
+  arg4 = (char *)malloc(_swig_go_3.n + 1);
+  memcpy(arg4, _swig_go_3.p, _swig_go_3.n);
+  arg4[_swig_go_3.n] = '\0';
+  
+  
+  result = (arg1)->GetTDPResultV2((char const *)arg2,(char const *)arg3,(char const *)arg4);
+  _swig_go_result = Swig_AllocateString((&result)->data(), (&result)->length()); 
+  free(arg2); 
+  free(arg3); 
+  free(arg4); 
+  return _swig_go_result;
+}
+
+
+_gostring_ _wrap_FCLWrapper_GetOTPResultV2_FCLlib_1ee54ad49562e6e8(FCLWrapper *_swig_go_0, _gostring_ _swig_go_1, _gostring_ _swig_go_2, _gostring_ _swig_go_3) {
+  FCLWrapper *arg1 = (FCLWrapper *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *arg4 = (char *) 0 ;
+  std::string result;
+  _gostring_ _swig_go_result;
+  
+  arg1 = *(FCLWrapper **)&_swig_go_0; 
+  
+  arg2 = (char *)malloc(_swig_go_1.n + 1);
+  memcpy(arg2, _swig_go_1.p, _swig_go_1.n);
+  arg2[_swig_go_1.n] = '\0';
+  
+  
+  arg3 = (char *)malloc(_swig_go_2.n + 1);
+  memcpy(arg3, _swig_go_2.p, _swig_go_2.n);
+  arg3[_swig_go_2.n] = '\0';
+  
+  
+  arg4 = (char *)malloc(_swig_go_3.n + 1);
+  memcpy(arg4, _swig_go_3.p, _swig_go_3.n);
+  arg4[_swig_go_3.n] = '\0';
+  
+  
+  result = (arg1)->GetOTPResultV2((char const *)arg2,(char const *)arg3,(char const *)arg4);
+  _swig_go_result = Swig_AllocateString((&result)->data(), (&result)->length()); 
+  free(arg2); 
+  free(arg3); 
+  free(arg4); 
+  return _swig_go_result;
+}
+
+
 FCLWrapper *_wrap_new_FCLWrapper_FCLlib_1ee54ad49562e6e8() {
   FCLWrapper *result = 0 ;
   FCLWrapper *_swig_go_result;

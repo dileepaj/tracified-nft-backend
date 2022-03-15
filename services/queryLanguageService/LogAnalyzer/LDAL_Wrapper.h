@@ -17,6 +17,8 @@ public:
   MSTRING GetOTPResult(MSTRING defFilePath);
   MSTRING GetBuildResult(std::string defFilePath);
   MSTRING GetLOGLDALResultV2(MSTRING defFilePath,MSTRING query,MSTRING json);
+  MSTRING GetTDPResultV2(MSTRING defFilePath,MSTRING query,MSTRING json);
+  MSTRING GetOTPResultV2(MSTRING defFilePath,MSTRING query,MSTRING json);
 };
 
 

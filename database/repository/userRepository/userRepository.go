@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/dileepaj/tracified-nft-backend/connections"
+	"github.com/dileepaj/tracified-nft-backend/database/connections"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"go.mongodb.org/mongo-driver/bson"

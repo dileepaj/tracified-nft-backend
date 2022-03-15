@@ -6,6 +6,6 @@ import (
 
 type HtmlGeneratorRequest struct {
 	HtmlGenerator models.HtmlGenerator
-	WeightDetails []models.Weight
+	WeigetDetails []models.Weiget
 }
 

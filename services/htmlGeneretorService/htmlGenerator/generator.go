@@ -19,7 +19,7 @@ var (
 )
 
 /*
-*	Generate complete  HTML report template (css,javascript)
+*	Generate complete  HTML template for NFT (css,javascript)
 **/
 func GenerateNFTTemplate(htmlData models.HtmlGenerator) (string, error) {
 	// Parse the Data
@@ -32,6 +32,7 @@ func GenerateNFTTemplate(htmlData models.HtmlGenerator) (string, error) {
 	var bubbleCharts []models.Chart = htmlData.NftContent.BubbleCharts
 	var images []models.ImageData = htmlData.NftContent.Images
 
+	//take json data convert it to string
 	dataString, err := json.Marshal(htmlData)
 	if err != nil {
 		fmt.Println(err)

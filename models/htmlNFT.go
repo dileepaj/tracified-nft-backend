@@ -82,18 +82,19 @@ type HtmlGenerator struct {
 	NftContent  NFTContent
 }
 
-type Weight struct {
+type Weiget struct {
 	Id          primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
 	Timestamp   primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
 	WeigetId    string             `json:"WeigetId" bson:"weigetid" validate:"required"`
 	BactchId    string             `json:"BactchId" bson:"batchid"`
-	ProductId   string             `json:"productid" bson:"productid"`
-	ProductName string             `json:"ProductId" bson:"productname" validate:"required"`
-	TenentName  string             `json:"tenentname" bson:"tenentname"`
-	ProjectId   string             `json:"TenentName" bson:"projectid" validate:"required"`
+	ProductId   string             `json:"productId" bson:"productid"`
+	ProductName string             `json:"ProductName" bson:"productname" validate:"required"`
+	TenentName  string             `json:"TenentName" bson:"tenentname"`
+	ProjectId   string             `json:"ProjectId" bson:"projectid" validate:"required"`
+	ProjectName string             `json:"ProjectName" bson:"projectname" validate:"required"`
 	UserId      string             `json:"UserId" bson:"userid" validate:"required"`
 	OTP         string             `json:"OTP" bson:"otp"`
 	OTPType     string             `json:"OTPType" bson:"otptype"`
-	Query       []string           `json:"Query" bson:"query"`
+	Query       string             `json:"Query" bson:"query"`
 	WeigetType  string             `json:"WeigetType" bson:"weigettype"`
 }
