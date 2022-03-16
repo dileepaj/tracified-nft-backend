@@ -35,7 +35,7 @@ func FindOtpAndExecuteQuery(w http.ResponseWriter, r *http.Request) {
 			return
 		} else {
 			//pass the widget model to querylanguage service get result
-			queryResult := querylanguageservice.QueryExecuter(result)
+			queryResult := querylanguageservice.QueryExecuter(requestWidget.Query,result)
 			if strings.HasPrefix(queryResult.Result, "\nError") {
 				errors.NoContent(w, "invalid Query")
 			} else {

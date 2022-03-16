@@ -3,6 +3,7 @@ package apiHandler
 import (
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	nftcomposercontroller "github.com/dileepaj/tracified-nft-backend/controllers/nftComposerController"
@@ -11,9 +12,10 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"github.com/dileepaj/tracified-nft-backend/utilities/validations"
+	"github.com/gorilla/mux"
 )
 
-//handel the HTML generate POST request(create HTML NFT)
+//handel the HTML generate POST request(Generatee HTML NFT)
 func HTMLFileGenerator(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
@@ -41,6 +43,7 @@ func HTMLFileGenerator(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//save html version of NFt and save it's json verson on DB
 func SaveHTMLData(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
@@ -78,5 +81,49 @@ func SaveHTMLData(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		}
+	}
+}
+
+//Find project by user ID
+func GetRecentProjectsbyUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	vars := mux.Vars(r)
+	fmt.Println(vars["userid"])
+
+	results, err1 := nftcomposercontroller.GetRecntProjectByUser(vars["userid"])
+	
+	if err1 != nil {
+		ErrorMessage := err1.Error()
+		errors.BadRequest(w, ErrorMessage)
+		return
+	} else {
+		w.WriteHeader(http.StatusOK)
+		err := json.NewEncoder(w).Encode(results)
+		if err != nil {
+			logs.ErrorLogger.Println(err)
+		}
+		return
+	}
+}
+
+//Find project by user ID
+func GetRecentProjectDetailsByUserAndProjectId(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	vars := mux.Vars(r)
+	fmt.Println(vars["userid"])
+
+	results, err1 := nftcomposercontroller.GetRecntProjectByUser(vars["userid"])
+	
+	if err1 != nil {
+		ErrorMessage := err1.Error()
+		errors.BadRequest(w, ErrorMessage)
+		return
+	} else {
+		w.WriteHeader(http.StatusOK)
+		err := json.NewEncoder(w).Encode(results)
+		if err != nil {
+			logs.ErrorLogger.Println(err)
+		}
+		return
 	}
 }

@@ -30,4 +30,11 @@ var ComposerRoutes = models.Routers{
 		Path:    "/api/composer/query/execute",
 		Handler: apiHandler.FindOtpAndExecuteQuery,
 	},
+	models.Router{
+		Name:    "Get All Project base on user",
+		Method:  "GET",
+		Path:    "/api/composer/projcts/{userid}",
+		Handler: apiHandler.GetRecentProjectsbyUser,
+	},
+
 }

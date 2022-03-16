@@ -46,7 +46,7 @@ type BotUrl struct {
 }
 
 type BotBatch struct {
-	BatchTitle string   `json:"Batchtitle" bson:"batchtitle"`
+	BatchTitle string   `json:"BatchTitle" bson:"batchtitle"`
 	Title      string   `json:"Title" bson:"title"`
 	BotUrls    []BotUrl `json:"BotUrls" bson:"boturls"`
 }
@@ -75,9 +75,11 @@ type NFTContent struct {
 type HtmlGenerator struct {
 	Id          primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
 	ProjectName string             `json:"ProjectName" bson:"projectname" validate:"required"`
+	ProjectId   string             `json:"ProjectId" bson:"projectid" validate:"required"`
 	NFTName     string             `json:"NFTName" bson:"nftname" validate:"required"`
 	UserId      string             `json:"UserId" bson:"userid" validate:"required"`
 	TenentId    string             `json:"TenentId" bson:"tenentid" validate:"required"`
+	TenentName   string             `json:"TenentName" bson:"tenentname"`
 	Timestamp   primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
 	CreatorName string             `json:"CreatorName" bson:"creatorname"`
 	NftContent  NFTContent
