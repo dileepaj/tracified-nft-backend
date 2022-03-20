@@ -5,6 +5,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/models"
 )
 
+//This routes use to check the API status
 var testRoutes = models.Routers{
 
 	models.Router{

@@ -1,10 +1,9 @@
-package nftcomposercontroller
+package nftComposerBusinessFacade
 
 import (
 	nftcomposerrepository "github.com/dileepaj/tracified-nft-backend/database/repository/nftComposerRepository"
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 var widgetRepository nftcomposerrepository.WidgetRepository
@@ -21,6 +20,6 @@ func FindWidgetAndUpdateQuery(widget requestDtos.RequestWidget)(models.Widget,er
 	return widgetRepository.FindWidgetAndUpdate(widget)
 }
 
-func FindWidgetById(id primitive.ObjectID)(models.Widget,error){
-	return widgetRepository.FindWidgetById(id)
+func FindWidgetById(id string)(models.Widget,error){
+	return widgetRepository.FindWidgetId("widgetid",id)
 }

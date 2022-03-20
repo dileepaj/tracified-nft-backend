@@ -5,7 +5,7 @@ import (
 )
 
 type HtmlGeneratorRequest struct {
-	HtmlGenerator models.HtmlGenerator
+	HtmlGenerator models.NFTComposerProject
 	WidgetDetails []models.Widget
 }
 

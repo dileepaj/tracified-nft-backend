@@ -1,13 +1,12 @@
 package apiHandler
 
-
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
-	"github.com/dileepaj/tracified-nft-backend/controllers/nftController"
+	"github.com/dileepaj/tracified-nft-backend/businessFacade/marketplaceBusinessFacade"
 	"github.com/dileepaj/tracified-nft-backend/models"
+	"github.com/dileepaj/tracified-nft-backend/utilities/commonResponse"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"github.com/dileepaj/tracified-nft-backend/utilities/validations"
@@ -15,30 +14,21 @@ import (
 
 func CreateWatchList(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	var createWatchListObject models.WatchList
+	var requestCreateWatchList models.WatchList
 	decoder := json.NewDecoder(r.Body)
-	err := decoder.Decode(&createWatchListObject)
+	err := decoder.Decode(&requestCreateWatchList)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 	}
-	fmt.Println(createWatchListObject)
-	err = validations.ValidateInsertWatchList(createWatchListObject)
+	err = validations.ValidateInsertWatchList(requestCreateWatchList)
 	if err != nil {
 		errors.BadRequest(w, err.Error())
 	} else {
-		_, err1 := nftController.CreateWatchList(createWatchListObject)
+		result, err1 := marketplaceBusinessFacade.CreateWatchList(requestCreateWatchList)
 		if err1 != nil {
-			ErrorMessage := err1.Error()
-			errors.BadRequest(w, ErrorMessage)
-			return
+			errors.BadRequest(w, err.Error())
 		} else {
-			w.WriteHeader(http.StatusOK)
-			message := "SAVED WatchList"
-			err = json.NewEncoder(w).Encode(message)
-			if err != nil {
-				logs.ErrorLogger.Println(err)
-			}
-			return
+			commonResponse.SuccessStatus[string](w, result)
 		}
 	}
 }

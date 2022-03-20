@@ -44,7 +44,7 @@ func ValidateMakeSale(e requestDtos.UpdateNFTSALERequest) error {
 	return nil
 }
 
-func ValidateCreateNFTObject(e requestDtos.CreateNFTRequest) error {
+func ValidateRequestNFTObject(e requestDtos.CreateNFTRequest) error {
 	validate = validator.New()
 	err := validate.Struct(e)
 	if err != nil {

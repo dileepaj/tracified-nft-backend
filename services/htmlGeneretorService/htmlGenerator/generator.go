@@ -1,4 +1,4 @@
-package htmlgenerator
+package htmlGenerator
 
 import (
 	"encoding/json"
@@ -18,10 +18,12 @@ var (
 	endScript   = `</script>`
 )
 
-/*
+/**
 *	Generate complete  HTML template for NFT (css,javascript)
+* @function GenerateNFTTemplate
+*
 **/
-func GenerateNFTTemplate(htmlData models.HtmlGenerator) (string, error) {
+func GenerateHTMLTemplate(htmlData models.NFTComposerProject) (string, error) {
 	// Parse the Data
 	var jsScripts string
 	var barcharts []models.Chart = htmlData.NftContent.BarCharts

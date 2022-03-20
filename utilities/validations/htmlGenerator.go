@@ -5,7 +5,7 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-func ValidateInsertHtmlNft(e models.HtmlGenerator) error {
+func ValidateInsertHtmlNft(e models.NFTComposerProject) error {
 	validate = validator.New()
 	err := validate.Struct(e)
 	if err != nil {

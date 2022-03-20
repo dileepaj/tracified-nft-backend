@@ -72,10 +72,9 @@ type NFTContent struct {
 	Images       []ImageData    `json:"Images" bson:"images"`
 	ProofBot     []ProofBotData `json:"ProofBot" bson:"proofbot"`
 }
-type HtmlGenerator struct {
+type NFTComposerProject struct {
 	Id          primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
 	ProjectName string             `json:"ProjectName" bson:"projectname" validate:"required"`
-	ProjectId   string             `json:"ProjectId" bson:"projectid" validate:"required"`
 	NFTName     string             `json:"NFTName" bson:"nftname" validate:"required"`
 	UserId      string             `json:"UserId" bson:"userid" validate:"required"`
 	TenentId    string             `json:"TenentId" bson:"tenentid" validate:"required"`

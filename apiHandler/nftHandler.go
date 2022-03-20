@@ -2,11 +2,13 @@ package apiHandler
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
-	"github.com/dileepaj/tracified-nft-backend/controllers/nftController"
+	"github.com/dileepaj/tracified-nft-backend/businessFacade/marketplaceBusinessFacade"
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
+	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
+	"github.com/dileepaj/tracified-nft-backend/models"
+	"github.com/dileepaj/tracified-nft-backend/utilities/commonResponse"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"github.com/dileepaj/tracified-nft-backend/utilities/validations"
@@ -14,216 +16,133 @@ import (
 )
 
 func CreateNFT(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	var createNFTObject requestDtos.CreateNFTRequest
+	w.Header().Set("Content-Type", "application/json;")
+	var requestNFTObject requestDtos.CreateNFTRequest
 	decoder := json.NewDecoder(r.Body)
-	err := decoder.Decode(&createNFTObject)
+	err := decoder.Decode(&requestNFTObject)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 	}
-
-	err = validations.ValidateCreateNFTObject(createNFTObject)
+	err = validations.ValidateRequestNFTObject(requestNFTObject)
 	if err != nil {
 		errors.BadRequest(w, err.Error())
 	} else {
-		_, err1 := nftController.CreateNFT(createNFTObject.NFT)
-		_, err2 := nftController.SaveOwnership(createNFTObject.Ownership)
-		if err1 != nil || err2 != nil {
-			ErrorMessage := err1.Error() + err2.Error()
-			errors.BadRequest(w, ErrorMessage)
-			return
+		result, err := marketplaceBusinessFacade.StoreNFT(requestNFTObject)
+		if err != nil {
+			errors.BadRequest(w, err.Error())
 		} else {
-			w.WriteHeader(http.StatusOK)
-			message := "SAVED NFT"
-			err = json.NewEncoder(w).Encode(message)
-			if err != nil {
-				logs.ErrorLogger.Println(err)
-			}
-			return
+			commonResponse.SuccessStatus[string](w, result)
 		}
 	}
 }
 
 func MakeSale(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	var udpateNFTObj requestDtos.UpdateNFTSALERequest
+	w.Header().Set("Content-Type", "application/json;")
+	var makeSaleRequestObject requestDtos.UpdateNFTSALERequest
 	decoder := json.NewDecoder(r.Body)
-	err := decoder.Decode(&udpateNFTObj)
+	err := decoder.Decode(&makeSaleRequestObject)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 	}
-	err = validations.ValidateMakeSale(udpateNFTObj)
+	err = validations.ValidateMakeSale(makeSaleRequestObject)
 	if err != nil {
 		errors.BadRequest(w, err.Error())
 	} else {
-		_, err1 := nftController.MakeSaleNFT(udpateNFTObj)
-		if err1 != nil {
-			ErrorMessage := err1.Error()
-			errors.BadRequest(w, ErrorMessage)
-			return
+		result, err := marketplaceBusinessFacade.MakeSaleNFT(makeSaleRequestObject)
+		if err != nil {
+			errors.BadRequest(w, err.Error())
 		} else {
-			w.WriteHeader(http.StatusOK)
-			message := "SAVED NFT"
-			err = json.NewEncoder(w).Encode(message)
-			if err != nil {
-				logs.ErrorLogger.Println(err)
-			}
-			return
+			commonResponse.SuccessStatus[responseDtos.ResponseNFTMakeSale](w, result)
 		}
 	}
 }
 
 func GetAllONSaleNFT(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Content-Type", "application/json;")
 	vars := mux.Vars(r)
-	fmt.Println(vars["status"], vars["userpk"])
-
-	results, err1 := nftController.GetNFTBySellingStatusAndNotUserCreated(vars["status"], vars["userpk"])
-	if err1 != nil {
-		ErrorMessage := err1.Error()
-		errors.BadRequest(w, ErrorMessage)
-		return
-	} else {
-		w.WriteHeader(http.StatusOK)
-		err := json.NewEncoder(w).Encode(results)
+	if vars["status"] != "" || vars["userpk"] != "" {
+		results, err := marketplaceBusinessFacade.GetAllONSaleNFT(vars["status"], vars["userpk"])
 		if err != nil {
-			logs.ErrorLogger.Println(err)
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[[]models.NFT](w, results)
 		}
-		return
+	} else {
+		errors.BadRequest(w, "")
 	}
 }
 
-func GetNFTbyBlockChain(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+func GetBlockchainSpecificNFT(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
 	vars := mux.Vars(r)
-	fmt.Println(vars["status"], vars["userpk"])
-
-	results, err1 := nftController.GetNFTbyBlockChain(vars["blockchain"])
-	if err1 != nil {
-		ErrorMessage := err1.Error()
-		errors.BadRequest(w, ErrorMessage)
-		return
-	} else {
-		w.WriteHeader(http.StatusOK)
-		err := json.NewEncoder(w).Encode(results)
+	if vars["blockchain"] != "" {
+		results, err := marketplaceBusinessFacade.GetBlockchainSpecificNFT(vars["blockchain"])
 		if err != nil {
-			logs.ErrorLogger.Println(err)
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[[]models.NFT](w, results)
 		}
-		return
+	} else {
+		errors.BadRequest(w, "")
 	}
 }
 
 func GetNFTbyTags(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Content-Type", "application/json;")
 	vars := mux.Vars(r)
-	var arr []string
-	_ = json.Unmarshal([]byte(vars["tags"]), &arr)
-	fmt.Println(vars["tags"], arr)
-
-	results, err1 := nftController.GetNFTbyTags(arr)
-	if err1 != nil {
-		ErrorMessage := err1.Error()
-		errors.BadRequest(w, ErrorMessage)
-		return
-	} else {
-		w.WriteHeader(http.StatusOK)
-		err := json.NewEncoder(w).Encode(results)
+	if vars["tags"] != "" {
+		results, err := marketplaceBusinessFacade.GetNFTbyTagsName(vars["tags"])
 		if err != nil {
-			logs.ErrorLogger.Println(err)
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[[]models.NFT](w, results)
 		}
-		return
+	} else {
+		errors.BadRequest(w, "")
 	}
 }
 
-func GetNFTFromWatchList(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+func GetWatchListNFT(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
 	vars := mux.Vars(r)
-	results1, err1 := nftController.FindNFTIdentifieryByUserId(vars["userId"])
-	if err1 != nil {
-		ErrorMessage := err1.Error()
-		errors.BadRequest(w, ErrorMessage)
-		return
-	} else {
-		result2, err2 := nftController.GetNFTbyNFTIdentifier(results1)
-		if err2 != nil {
-			ErrorMessage := err1.Error()
-			errors.BadRequest(w, ErrorMessage)
-			return
+	if vars["userId"] != "" {
+		results, err := marketplaceBusinessFacade.GetWatchListNFT(vars["userId"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
 		} else {
-			w.WriteHeader(http.StatusOK)
-			err := json.NewEncoder(w).Encode(result2)
-			if err != nil {
-				logs.ErrorLogger.Println(err)
-			}
-			return
+			commonResponse.SuccessStatus[[]models.NFT](w, results)
 		}
+	} else {
+		errors.BadRequest(w, "")
 	}
 }
 
 func GetNFTByUserId(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Content-Type", "application/json;")
 	vars := mux.Vars(r)
-	results1, err1 := nftController.GetBCAccountPKByUserId(vars["userId"])
-	if err1 != nil {
-		ErrorMessage := err1.Error()
-		errors.BadRequest(w, ErrorMessage)
-		return
-	} else {
-		if len(results1) != 0 {
-			result2, err2 := nftController.GetNFTbyAccount(results1)
-			if err2 != nil {
-				ErrorMessage := err1.Error()
-				errors.BadRequest(w, ErrorMessage)
-				return
-			} else {
-				w.WriteHeader(http.StatusOK)
-				err := json.NewEncoder(w).Encode(result2)
-				if err != nil {
-					logs.ErrorLogger.Println(err)
-				}
-				return
-			}
+	if len(vars["userId"]) != 0 {
+		result, err := marketplaceBusinessFacade.GetNFTbyAccount(vars["userId"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
 		} else {
-			w.WriteHeader(http.StatusBadRequest)
-			err := json.NewEncoder(w).Encode("Can not find the accounts for given Tenet Name")
-			if err != nil {
-				logs.ErrorLogger.Println(err)
-			}
-			return
+			commonResponse.SuccessStatus[[]models.NFT](w, result)
 		}
+	} else {
+		errors.BadRequest(w, "")
 	}
 }
 
 func GetNFTByTenentName(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Content-Type", "application/json;")
 	vars := mux.Vars(r)
-	results1, err1 := nftController.GetBCAccountPKByTenetName(vars["tenentname"])
-	if err1 != nil {
-		ErrorMessage := err1.Error()
-		errors.BadRequest(w, ErrorMessage)
-		return
-	} else {
-		if len(results1) != 0 {
-			result2, err2 := nftController.GetNFTbyAccount(results1)
-			if err2 != nil {
-				ErrorMessage := err1.Error()
-				errors.BadRequest(w, ErrorMessage)
-				return
-			} else {
-				w.WriteHeader(http.StatusOK)
-				err := json.NewEncoder(w).Encode(result2)
-				if err != nil {
-					logs.ErrorLogger.Println(err)
-				}
-				return
-			}
+	if len(vars["tenentname"]) != 0 {
+		result, err := marketplaceBusinessFacade.GetNFTbyTenentName((vars["tenentname"]))
+		if err != nil {
+			errors.BadRequest(w, err.Error())
 		} else {
-			w.WriteHeader(http.StatusBadRequest)
-			err := json.NewEncoder(w).Encode("Can not find the accounts for given userId")
-			if err != nil {
-				logs.ErrorLogger.Println(err)
-			}
-			return
+			commonResponse.SuccessStatus[[]models.NFT](w, result)
 		}
+	} else {
+		errors.BadRequest(w, "")
 	}
 }

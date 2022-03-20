@@ -5,6 +5,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/models"
 )
 
+//This routes manage the all NFT related rotes in the marketpalce
 var NftRoutes = models.Routers{
 
 	models.Router{
@@ -14,19 +15,13 @@ var NftRoutes = models.Routers{
 		Handler: apiHandler.CreateNFT,
 	},
 	models.Router{
-		Name:    "GET NFTS By Selling status",
-		Method:  "Get",
-		Path:    "/api/nfts/get/selling/{status}",
-		Handler: apiHandler.GetAllONSaleNFT,
-	},
-	models.Router{
 		Name:    "GET NFTS By Selling status and filter by UserPK",
 		Method:  "Get",
 		Path:    "/api/nfts/get/selling/{status}/{userpk}",
 		Handler: apiHandler.GetAllONSaleNFT,
 	},
 	models.Router{
-		Name:    "GET NFTS By Tags",
+		Name:    "GET NFTS By Tag names",
 		Method:  "Get",
 		Path:    "/api/nfts/get/tags/{tags}",
 		Handler: apiHandler.GetNFTbyTags,
@@ -35,13 +30,13 @@ var NftRoutes = models.Routers{
 		Name:    "GET NFTS By Blockchain",
 		Method:  "Get",
 		Path:    "/api/nfts/get/blockchain/{blockchain}",
-		Handler: apiHandler.GetNFTbyBlockChain,
+		Handler: apiHandler.GetBlockchainSpecificNFT,
 	},
 	models.Router{
 		Name:    "GET Watch list NFTS By userId",
 		Method:  "Get",
 		Path:    "/api/nfts/get/watchlist/{userId}",
-		Handler: apiHandler.GetNFTFromWatchList,
+		Handler: apiHandler.GetWatchListNFT,
 	},
 	models.Router{
 		Name:    "GET NFTS By userId",
@@ -52,7 +47,7 @@ var NftRoutes = models.Routers{
 	models.Router{
 		Name:    "GET NFTS By tenent Name",
 		Method:  "Get",
-		Path:    "/api/nfts/get/tenetname/{tenentname}",
+		Path:    "/api/nfts/get/tenentname/{tenentname}",
 		Handler: apiHandler.GetNFTByTenentName,
 	},
 }
