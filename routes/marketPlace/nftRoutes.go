@@ -11,7 +11,7 @@ var NftRoutes = models.Routers{
 	models.Router{
 		Name:    "Save NFT",
 		Method:  "POST",
-		Path:    "/api/marketplace/save",
+		Path:    "/api/nft",
 		Handler: apiHandler.CreateNFT,
 	},
 	models.Router{
@@ -35,7 +35,7 @@ var NftRoutes = models.Routers{
 	models.Router{
 		Name:    "GET Watch list NFTS By userId",
 		Method:  "Get",
-		Path:    "/api/nfts/get/watchlist/{userId}",
+		Path:    "/api/watchlist/{userId}",
 		Handler: apiHandler.GetWatchListNFT,
 	},
 	models.Router{
