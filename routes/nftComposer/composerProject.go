@@ -34,13 +34,13 @@ var ComposerRoutes = models.Routers{
 	models.Router{
 		Name:    "Get All Project base on user",
 		Method:  "GET",
-		Path:    "/api/projcts/{userId}",
+		Path:    "/api/projects/{userId}",
 		Handler: apiHandler.GetRecentProjects,
 	},
 		models.Router{
 		Name:    "Get All Project base on user",
 		Method:  "GET",
-		Path:    "/api/projct/{projectId}",
+		Path:    "/api/project/{projectId}",
 		Handler: apiHandler.GetRecentProjectDetails,
 	},
 }
