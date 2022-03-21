@@ -6,10 +6,9 @@ import (
 
 	"github.com/dileepaj/tracified-nft-backend/database/connections"
 	"github.com/dileepaj/tracified-nft-backend/database/repository"
-	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
-	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type WidgetRepository struct{}
@@ -39,15 +38,16 @@ func (r *WidgetRepository) SaveWidget(widget models.Widget) (string, error) {
 	return widget.WidgetId, nil
 }
 
-func (r *WidgetRepository) FindWidgetAndUpdate(widget requestDtos.RequestWidget) (models.Widget, error) {
+func (r *WidgetRepository) FindWidgetAndUpdate(findBy string,id string,update primitive.M) (models.Widget, error) {
 	var widgetResponse models.Widget
-	update := bson.M{
-		"$set": bson.M{"query": widget.Query},
-	}
-	rst, err := repository.FindOneAndUpdate("widgetid", widget.WidgetId, update, Widget)
-	if err != nil || rst == "" {
-		logs.ErrorLogger.Println(err.Error())
-		return widgetResponse, err
+	rst := repository.FindOneAndUpdate(findBy, id, update, Widget)
+	if rst != nil {
+		err := rst.Decode(&widgetResponse)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return widgetResponse, err
+		}
+		return widgetResponse, nil
 	} else {
 		return widgetResponse, nil
 	}

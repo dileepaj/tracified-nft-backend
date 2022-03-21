@@ -11,7 +11,7 @@ var UserRoutes = models.Routers{
 	models.Router{
 		Name:    "Get eds by id",
 		Method:  "POST",
-		Path:    "/api/user/create",
+		Path:    "/api/marketplaceuser",
 		Handler: apiHandler.CreateUser,
 	},
 }

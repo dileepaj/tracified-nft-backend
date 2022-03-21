@@ -46,14 +46,20 @@ type BotUrl struct {
 }
 
 type BotBatch struct {
-	BatchTitle string   `json:"BatchTitle" bson:"batchtitle"`
-	Title      string   `json:"Title" bson:"title"`
-	BotUrls    []BotUrl `json:"BotUrls" bson:"boturls"`
+	BatchTitle  string   `json:"BatchTitle" bson:"batchtitle"`
+	Title       string   `json:"Title" bson:"title"`
+	BatchId     string   `json:"BatchId" bson:"batchid" `
+	TenentId    string   `json:"TenentId" bson:"tenentid"`
+	ProductId   string   `json:"productId" bson:"productid"`
+	ProductName string   `json:"ProductName" bson:"productname"`
+	BotUrls     []BotUrl `json:"BotUrls" bson:"boturls"`
 }
 type ProofBotData struct {
-	BotTitle string     `json:"BotTitle" bson:"bottitle"`
-	WidgetId string     `json:"WidgetId" bson:"widgetid" validate:"required"`
-	Batch    []BotBatch `json:"Batch" bson:"batch"`
+	BotTitle  string             `json:"BotTitle" bson:"bottitle"`
+	WidgetId  string             `json:"WidgetId" bson:"widgetid" validate:"required"`
+	Timestamp primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
+	NFTType   string             `json:"NFTType" bson:"nfttype" validate:"required"`
+	Batch     []BotBatch         `json:"Batch" bson:"batch"`
 }
 
 type ImageData struct {
@@ -74,11 +80,12 @@ type NFTContent struct {
 }
 type NFTComposerProject struct {
 	Id          primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
+	ProjectId   string             `json:"ProjectId" bson:"projectid" validate:"required"`
 	ProjectName string             `json:"ProjectName" bson:"projectname" validate:"required"`
 	NFTName     string             `json:"NFTName" bson:"nftname" validate:"required"`
 	UserId      string             `json:"UserId" bson:"userid" validate:"required"`
 	TenentId    string             `json:"TenentId" bson:"tenentid" validate:"required"`
-	TenentName   string             `json:"TenentName" bson:"tenentname"`
+	TenentName  string             `json:"TenentName" bson:"tenentname"`
 	Timestamp   primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
 	CreatorName string             `json:"CreatorName" bson:"creatorname"`
 	NftContent  NFTContent

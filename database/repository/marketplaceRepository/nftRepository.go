@@ -81,10 +81,14 @@ func (r *NFTRepository) UpdateNFTSALE(nft requestDtos.UpdateNFTSALERequest) (res
 	update := bson.M{
 		"$set": bson.M{"timestamp": nft.Timestamp, "sellingstatus": nft.SellingStatus, "sellingtype": nft.SellingType, "marketcontract": nft.MarketContract},
 	}
-	rst, err := repository.FindOneAndUpdate("nftidentifier", nft.NFTIdentifier, update, NFT)
-	if err != nil || rst == "" {
-		logs.ErrorLogger.Println(err.Error())
-		return responseMakeSaleNFT, err
+	rst:= repository.FindOneAndUpdate("nftidentifier", nft.NFTIdentifier, update, NFT)
+	if rst != nil {
+		err := rst.Decode(&responseMakeSaleNFT)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return responseMakeSaleNFT, err
+		}
+		return responseMakeSaleNFT, nil
 	} else {
 		return responseMakeSaleNFT, nil
 	}

@@ -94,22 +94,13 @@ func FindByFieldInMultipleValus(fields string, tags []string, collection string)
 	}
 }
 
-func FindOneAndUpdate(findBy string, value string, update primitive.M, collection string) (string, error) {
-	var widgetResponse models.Widget
+func FindOneAndUpdate(findBy string, value string, update primitive.M, collection string) *mongo.SingleResult {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-
-	upsert := false
 	after := options.After
 	opt := options.FindOneAndUpdateOptions{
 		ReturnDocument: &after,
-		Upsert:         &upsert,
 	}
-	err := connections.Connect().Collection(collection).FindOneAndUpdate(ctx, bson.M{findBy: value}, update, &opt).Decode(&widgetResponse)
-	if err != nil {
-		logs.ErrorLogger.Println(err.Error())
-		return "", err
-	} else {
-		return value, nil
-	}
+	err := connections.Connect().Collection(collection).FindOneAndUpdate(ctx, bson.M{findBy: value}, update, &opt)
+	return err
 }

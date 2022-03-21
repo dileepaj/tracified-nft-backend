@@ -11,25 +11,25 @@ var NftRoutes = models.Routers{
 	models.Router{
 		Name:    "Save NFT",
 		Method:  "POST",
-		Path:    "/api/nft/save",
+		Path:    "/api/marketplace/save",
 		Handler: apiHandler.CreateNFT,
 	},
 	models.Router{
 		Name:    "GET NFTS By Selling status and filter by UserPK",
 		Method:  "Get",
-		Path:    "/api/nfts/get/selling/{status}/{userpk}",
+		Path:    "/api/selling/{status}/{userpk}",
 		Handler: apiHandler.GetAllONSaleNFT,
 	},
 	models.Router{
 		Name:    "GET NFTS By Tag names",
 		Method:  "Get",
-		Path:    "/api/nfts/get/tags/{tags}",
+		Path:    "/api/tags/{tags}",
 		Handler: apiHandler.GetNFTbyTags,
 	},
 	models.Router{
 		Name:    "GET NFTS By Blockchain",
 		Method:  "Get",
-		Path:    "/api/nfts/get/blockchain/{blockchain}",
+		Path:    "/api/blockchain/{blockchain}",
 		Handler: apiHandler.GetBlockchainSpecificNFT,
 	},
 	models.Router{
@@ -41,13 +41,13 @@ var NftRoutes = models.Routers{
 	models.Router{
 		Name:    "GET NFTS By userId",
 		Method:  "Get",
-		Path:    "/api/nfts/get/userid/{userId}",
+		Path:    "/api/userid/{userId}",
 		Handler: apiHandler.GetNFTByUserId,
 	},
 	models.Router{
 		Name:    "GET NFTS By tenent Name",
 		Method:  "Get",
-		Path:    "/api/nfts/get/tenentname/{tenentname}",
+		Path:    "/api/tenentname/{tenentname}",
 		Handler: apiHandler.GetNFTByTenentName,
 	},
 }
