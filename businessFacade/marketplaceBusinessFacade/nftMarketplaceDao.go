@@ -10,7 +10,6 @@ import (
 
 func StoreNFT(createNFTObject requestDtos.CreateNFTRequest) (string, error) {
 	rst, err1 := nftRepository.SaveNFT(createNFTObject.NFT)
-
 	if err1 != nil {
 		return "NFT not saved", err1
 	} else {

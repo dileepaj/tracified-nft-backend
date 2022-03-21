@@ -24,7 +24,7 @@ func SaveProject(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 	}
-	err = validations.ValidateInsertHtmlNft(CreateProjectRequest)
+	err = validations.ValidateNFTProject(CreateProjectRequest)
 	if err != nil {
 		errors.BadRequest(w, err.Error())
 	} else {

@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
-	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	querylanguageservice "github.com/dileepaj/tracified-nft-backend/services/queryLanguageService"
 	"github.com/dileepaj/tracified-nft-backend/utilities/commonResponse"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
@@ -25,7 +24,7 @@ func QueryExecuter(w http.ResponseWriter, widget requestDtos.RequestWidget) {
 				errors.NoContent(w, err1.Error())
 				return
 			} else {
-				commonResponse.SuccessStatus[responseDtos.QueryResult](w, queryResult)
+				commonResponse.SuccessStatus(w, queryResult)
 				return
 			}
 		}

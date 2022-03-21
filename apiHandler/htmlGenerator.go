@@ -21,7 +21,7 @@ func HTMLFileGenerator(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 	}
-	err = validations.ValidateInsertHtmlNft(generateHTMLRequest)
+	err = validations.ValidateNFTProject(generateHTMLRequest)
 	if err != nil {
 		errors.BadRequest(w, err.Error())
 	}
