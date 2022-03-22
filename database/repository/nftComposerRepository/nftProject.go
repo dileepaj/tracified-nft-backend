@@ -22,7 +22,25 @@ func (r *NFTComposerProjectRepository) SaveNFTComposerProject(project models.NFT
 
 func (r *NFTComposerProjectRepository) FindNFTProjectById(idName string, id string) ([]responseDtos.ResponseProject, error) {
 	var projects []responseDtos.ResponseProject
+	rst, err := repository.FindById(idName, id, NFTComposerProject)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+		return projects, err
+	}
+	for rst.Next(context.TODO()) {
+		var project responseDtos.ResponseProject
+		err = rst.Decode(&project)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return projects, err
+		}
+		projects = append(projects, project)
+	}
+	return projects, nil
+}
 
+func (r *NFTComposerProjectRepository) FindNFTProjectById2(idName string, id string) ([]responseDtos.ResponseProject, error) {
+	var projects []responseDtos.ResponseProject
 	rst, err := repository.FindById(idName, id, NFTComposerProject)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())

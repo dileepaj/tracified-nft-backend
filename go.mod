@@ -11,6 +11,7 @@ require (
 )
 
 require (
+	github.com/TharinduBalasooriya/fcl-go-lib v0.1.2 // indirect
 	github.com/felixge/httpsnoop v1.0.2 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect

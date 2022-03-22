@@ -59,10 +59,10 @@ func GetRecentProjectDetails(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	if vars["projectId"] != "" {
 		results, err1 := nftComposerBusinessFacade.GetRecntProjectDetails(vars["projectId"])
-		if err1 != nil {
-			errors.BadRequest(w, err1.Error())
+		if err1 != "" {
+			errors.BadRequest(w, err1)
 		} else {
-			commonResponse.SuccessStatus[[]responseDtos.ResponseProject](w, results)
+			commonResponse.SuccessStatus[models.ProjectWithWidgets](w, results)
 		}
 	} else {
 		errors.BadRequest(w, "")

@@ -43,4 +43,10 @@ var ComposerRoutes = models.Routers{
 		Path:    "/api/project/{projectId}",
 		Handler: apiHandler.GetRecentProjectDetails,
 	},
+		models.Router{
+		Name:    "Update widget",
+		Method:  "PUT",
+		Path:    "/api/widget",
+		Handler: apiHandler.UpdateWidget,
+	},
 }

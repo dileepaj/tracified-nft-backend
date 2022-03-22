@@ -14,7 +14,7 @@ import (
 )
 
 func Save[T models.SaveType](model T, collection string) (string, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Second)
 	defer cancel()
 	rst, err := connections.Connect().Collection(collection).InsertOne(ctx, model)
 	if err != nil {
@@ -44,6 +44,7 @@ func InsertMany[T models.InsertManyType](model T, collection string) (string, er
 func FindById(idName string, id string, collection string) (*mongo.Cursor, error) {
 	findOptions := options.Find()
 	findOptions.SetSort(bson.D{{"timestamp", -1}})
+	findOptions.SetProjection(bson.M{"otp": 0})
 	rst, err := connections.Connect().Collection(collection).Find(context.TODO(), bson.D{{idName, id}}, findOptions)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
@@ -94,12 +95,14 @@ func FindByFieldInMultipleValus(fields string, tags []string, collection string)
 	}
 }
 
-func FindOneAndUpdate(findBy string, value string, update primitive.M, collection string) *mongo.SingleResult {
+func FindOneAndUpdate(findBy string, value string, update primitive.M, projectionData primitive.M, collection string) *mongo.SingleResult {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	after := options.After
+	projection := projectionData
 	opt := options.FindOneAndUpdateOptions{
 		ReturnDocument: &after,
+		Projection:     &projection,
 	}
 	err := connections.Connect().Collection(collection).FindOneAndUpdate(ctx, bson.M{findBy: value}, update, &opt)
 	return err

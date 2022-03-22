@@ -10,9 +10,25 @@ func SaveProject(project models.NFTComposerProject) (string, error) {
 }
 
 func GetRecntProjects(userid string) ([]responseDtos.ResponseProject, error) {
-	return nftProjectRepository.FindNFTProjectById("userid",userid)
+	return nftProjectRepository.FindNFTProjectById("userid", userid)
 }
 
-func GetRecntProjectDetails(userid string) ([]responseDtos.ResponseProject, error) {
-	return nftProjectRepository.FindNFTProjectById("userid",userid)
+func GetRecntProjectDetails(projectId string) (models.ProjectWithWidgets, string) {
+	var nftProject models.ProjectWithWidgets
+	resultProject, err := nftProjectRepository.FindNFTProjectOneById("projectid", projectId)
+	if err != nil {
+		return nftProject, err.Error()
+	} else if resultProject.ProjectId == "" {
+		return nftProject, "Invalid ProjectId"
+	} else {
+		resultWidgets, err := nftProjectRepository.FindWidgetsById("projectid", resultProject.ProjectId)
+		if err != nil {
+			return nftProject, err.Error()
+		}
+		responseProject := models.ProjectWithWidgets{
+			NFTComposerProject: resultProject,
+			WidgetDetails:      resultWidgets,
+		}
+		return responseProject,""
+	}
 }

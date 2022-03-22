@@ -91,19 +91,26 @@ type NFTComposerProject struct {
 	NftContent  NFTContent
 }
 
+// pie.bar.,bubble.Table
 type Widget struct {
-	Id          primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
-	Timestamp   primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
-	WidgetId    string             `json:"WidgetId" bson:"widgetid" validate:"required"`
-	BactchId    string             `json:"BactchId" bson:"batchid"`
-	ProductId   string             `json:"productId" bson:"productid"`
-	ProductName string             `json:"ProductName" bson:"productname" validate:"required"`
-	TenentId    string             `json:"TenentId" bson:"tenentid" validate:"required"`
-	ProjectId   string             `json:"ProjectId" bson:"projectid" validate:"required"`
-	ProjectName string             `json:"ProjectName" bson:"projectname" validate:"required"`
-	UserId      string             `json:"UserId" bson:"userid" validate:"required"`
-	OTP         string             `json:"OTP" bson:"otp"`
-	OTPType     string             `json:"OTPType" bson:"otptype"`
-	Query       string             `json:"Query" bson:"query"`
-	WidgetType  string             `json:"WidgetType" bson:"widgettype"`
+	Id         primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
+	ProjectId  string             `json:"ProjectId" bson:"projectid" validate:"required"`
+	WidgetId   string             `json:"WidgetId" bson:"widgetid" validate:"required"`
+	ArtifactId string             `json:"ArtifactId" bson:"artifactid"`
+	Timestamp  primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
+	BatchId   string             `json:"BatchId" bson:"bathid"`
+	ProductId  string             `json:"productId" bson:"productid"`
+	ProductName string			  `json:"productName" bson:"productname"`
+	TenentId   string             `json:"TenentId" bson:"tenentid" validate:"required"`
+	UserId     string             `json:"UserId" bson:"userid" validate:"required"`
+	OTP        string             `json:"OTP" bson:"otp"`
+	OTPType    string             `json:"OTPType" bson:"otptype"`
+	Query      string             `json:"Query" bson:"query"`
+	WidgetType string             `json:"WidgetType" bson:"widgettype"`
+}
+
+
+type ProjectWithWidgets struct {
+	NFTComposerProject NFTComposerProject
+	WidgetDetails []Widget
 }

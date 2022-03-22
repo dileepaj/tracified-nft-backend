@@ -1,6 +1,8 @@
 package responseDtos
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 type ResponseProject struct {
 	Id          primitive.ObjectID `json:"ProjectId" bson:"_id"`

@@ -11,7 +11,7 @@ import (
 )
 
 func QueryExecuter(w http.ResponseWriter, widget requestDtos.RequestWidget) {
-	result, err := FindWidgetById(widget.WidgetId)
+	result, err := FindWidgetByWidgetId(widget.WidgetId)
 	if err != nil {
 		errors.NoContent(w, err.Error())
 	} else {

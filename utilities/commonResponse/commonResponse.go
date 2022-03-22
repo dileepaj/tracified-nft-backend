@@ -10,13 +10,13 @@ import (
 )
 
 type resultType interface {
-	string | []string | responseDtos.ResponseNFTMakeSale | []models.NFT|responseDtos.QueryResult| []responseDtos.ResponseProject
+	responseDtos.WidgetSaveResponse | string | []string | responseDtos.ResponseNFTMakeSale | []models.NFT | responseDtos.QueryResult | []responseDtos.ResponseProject | models.Widget | models.ProjectWithWidgets
 }
 
 func SuccessStatus[T resultType](w http.ResponseWriter, result T) {
 	w.WriteHeader(http.StatusOK)
 	response := responseDtos.ResultResponse{
-		Status: http.StatusOK,
+		Status:   http.StatusOK,
 		Response: result,
 	}
 	err := json.NewEncoder(w).Encode(response)
