@@ -3,19 +3,19 @@ package nftComposerRepository
 import (
 	"context"
 
+	"github.com/dileepaj/tracified-nft-backend/database/connections"
 	"github.com/dileepaj/tracified-nft-backend/database/repository"
-	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
+	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type NFTComposerProjectRepository struct{}
 
 var NFTComposerProject = "nftComopserProject"
 
-/**
-Save the Json that used to create HTML file of NFT
-**/
 func (r *NFTComposerProjectRepository) SaveNFTComposerProject(project models.NFTComposerProject) (string, error) {
 	return repository.Save[models.NFTComposerProject](project, NFTComposerProject)
 }
@@ -37,12 +37,12 @@ func (r *NFTComposerProjectRepository) SaveProofBot(proofbot models.ProofBotData
 }
 
 func (r *NFTComposerProjectRepository) SaveImage(image models.ImageData) (string, error) {
-	return repository.Save[models.ImageData](image, "Images")
+	return repository.Save[models.ImageData](image, "images")
 }
 
 func (r *NFTComposerProjectRepository) FindChartById(idName string, id string) ([]models.Chart, error) {
 	var charts []models.Chart
-	rst, err := repository.FindById(idName, id, "chart")
+	rst, err := repository.FindById(idName, id, "charts")
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 		return charts, err
@@ -61,7 +61,7 @@ func (r *NFTComposerProjectRepository) FindChartById(idName string, id string) (
 
 func (r *NFTComposerProjectRepository) FindTableById(idName string, id string) ([]models.Table, error) {
 	var tables []models.Table
-	rst, err := repository.FindById(idName, id, "table")
+	rst, err := repository.FindById(idName, id, "tables")
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 		return tables, err
@@ -80,7 +80,7 @@ func (r *NFTComposerProjectRepository) FindTableById(idName string, id string) (
 
 func (r *NFTComposerProjectRepository) FindStatById(idName string, id string) ([]models.StataArray, error) {
 	var stats []models.StataArray
-	rst, err := repository.FindById(idName, id, "stat")
+	rst, err := repository.FindById(idName, id, "stats")
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 		return stats, err
@@ -118,7 +118,7 @@ func (r *NFTComposerProjectRepository) FindProofBotById(idName string, id string
 
 func (r *NFTComposerProjectRepository) FindImagesById(idName string, id string) ([]models.ImageData, error) {
 	var Images []models.ImageData
-	rst, err := repository.FindById(idName, id, "image")
+	rst, err := repository.FindById(idName, id, "images")
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 		return Images, err
@@ -135,15 +135,15 @@ func (r *NFTComposerProjectRepository) FindImagesById(idName string, id string) 
 	return Images, nil
 }
 
-func (r *NFTComposerProjectRepository) FindNFTProjectById(idName string, id string) ([]responseDtos.ResponseProject, error) {
-	var projects []responseDtos.ResponseProject
+func (r *NFTComposerProjectRepository) FindNFTProjectById(idName string, id string) ([]models.NFTComposerProject, error) {
+	var projects []models.NFTComposerProject
 	rst, err := repository.FindById(idName, id, NFTComposerProject)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 		return projects, err
 	}
 	for rst.Next(context.TODO()) {
-		var project responseDtos.ResponseProject
+		var project models.NFTComposerProject
 		err = rst.Decode(&project)
 		if err != nil {
 			logs.ErrorLogger.Println(err.Error())
@@ -166,5 +166,179 @@ func (r *NFTComposerProjectRepository) FindNFTProjectOneById(idName string, id s
 		return project, nil
 	} else {
 		return project, nil
+	}
+}
+
+func (r *NFTComposerProjectRepository) UpdateProject(update requestDtos.UpdateProjectRequest) (models.NFTComposerProject, error) {
+	var project models.NFTComposerProject
+	pByte, err := bson.Marshal(update)
+	if err != nil {
+		return project, err
+	}
+	var updateNew bson.M
+	err = bson.Unmarshal(pByte, &updateNew)
+	if err != nil {
+		return project, err
+	}
+	rst := connections.Connect().Collection(NFTComposerProject).FindOneAndUpdate(context.TODO(), bson.M{"projectid": update.ProjectId}, bson.D{{Key: "$set", Value: updateNew}})
+	if rst != nil {
+		err := rst.Decode(&project)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return project, err
+		}
+		return project, nil
+	} else {
+		return project, nil
+	}
+}
+
+func (r *NFTComposerProjectRepository) UpdateChart(chart requestDtos.UpdateChartRequest) (models.Chart, error) {
+	var chartdata models.Chart
+	pByte, err := bson.Marshal(chart)
+	if err != nil {
+		return chartdata, err
+	}
+	var updateNew bson.M
+	err = bson.Unmarshal(pByte, &updateNew)
+	if err != nil {
+		return chartdata, err
+	}
+		upsert := true
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+	rst := connections.Connect().Collection("charts").FindOneAndUpdate(context.TODO(), bson.M{"widgetid": chart.WidgetId}, bson.D{{Key: "$set", Value: updateNew}},&opt)
+	if rst != nil {
+		err := rst.Decode(&chartdata)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return chartdata, err
+		}
+		return chartdata, nil
+	} else {
+		return chartdata, nil
+	}
+}
+
+func (r *NFTComposerProjectRepository) UpdateTable(table requestDtos.UpdateTableRequest) (models.Table, error) {
+	var tabledata models.Table
+	pByte, err := bson.Marshal(table)
+	if err != nil {
+		return tabledata, err
+	}
+	var updateNew bson.M
+	err = bson.Unmarshal(pByte, &updateNew)
+	if err != nil {
+		return tabledata, err
+	}
+	upsert := true
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+	rst := connections.Connect().Collection("tables").FindOneAndUpdate(context.TODO(), bson.M{"widgetid": table.WidgetId}, bson.D{{Key: "$set", Value: updateNew}},&opt)
+	if rst != nil {
+		err := rst.Decode(&tabledata)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return tabledata, err
+		}
+		return tabledata, nil
+	} else {
+		return tabledata, nil
+	}
+}
+
+func (r *NFTComposerProjectRepository) UpdateImage(image requestDtos.UpdateImageRequest) (models.ImageData, error) {
+	var imageData models.ImageData
+	pByte, err := bson.Marshal(image)
+	if err != nil {
+		return imageData, err
+	}
+	var updateNew bson.M
+	err = bson.Unmarshal(pByte, &updateNew)
+	if err != nil {
+		return imageData, err
+	}
+		upsert := true
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+	rst := connections.Connect().Collection("tables").FindOneAndUpdate(context.TODO(), bson.M{"widgetid": image.WidgetId}, bson.D{{Key: "$set", Value: updateNew}},&opt)
+	if rst != nil {
+		err := rst.Decode(&imageData)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return imageData, err
+		}
+		return imageData, nil
+	} else {
+		return imageData, nil
+	}
+}
+
+func (r *NFTComposerProjectRepository) UpdateProofBot(proofbot requestDtos.UpdateProofBotRequest) (models.ProofBotData, error) {
+	var bot models.ProofBotData
+	pByte, err := bson.Marshal(proofbot)
+	if err != nil {
+		return bot, err
+	}
+	var updateNew bson.M
+	err = bson.Unmarshal(pByte, &updateNew)
+	if err != nil {
+		return bot, err
+	}
+		upsert := true
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+	rst := connections.Connect().Collection("proofbot").FindOneAndUpdate(context.TODO(), bson.M{"widgetid": proofbot.WidgetId}, bson.D{{Key: "$set", Value: updateNew}},&opt)
+	if rst != nil {
+		err := rst.Decode(&bot)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return bot, err
+		}
+		return bot, nil
+	} else {
+		return bot, nil
+	}
+}
+
+func (r *NFTComposerProjectRepository) UpdateStats(stat requestDtos.UpdateStatsRequest) (models.StataArray, error) {
+	var stastData models.StataArray
+	pByte, err := bson.Marshal(stat)
+	if err != nil {
+		return stastData, err
+	}
+	var updateNew bson.M
+	err = bson.Unmarshal(pByte, &updateNew)
+	if err != nil {
+		return stastData, err
+	}
+		upsert := true
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+	rst := connections.Connect().Collection("stats").FindOneAndUpdate(context.TODO(), bson.M{"widgetid": stat.WidgetId}, bson.D{{Key: "$set", Value: updateNew}},&opt)
+	if rst != nil {
+		err := rst.Decode(&stastData)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return stastData, err
+		}
+		return stastData, nil
+	} else {
+		return stastData, nil
 	}
 }

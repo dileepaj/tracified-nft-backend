@@ -23,6 +23,7 @@ func ValidateUpdateWidget(e requestDtos.UpdateWidgetRequest) error {
 	}
 	return nil
 }
+
 func ValidateQueryExecuter(e requestDtos.RequestWidget) error {
 	validate = validator.New()
 	err := validate.Struct(e)

@@ -61,7 +61,7 @@ func (r *WidgetRepository) FindWidgetOneById(idName string, id string) (models.W
 	err := rst.Decode(&widget)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
-		return widget, err
+		return models.Widget{}, err
 	} else {
 		return widget, nil
 	}

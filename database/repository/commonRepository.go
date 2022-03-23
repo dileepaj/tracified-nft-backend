@@ -107,3 +107,14 @@ func FindOneAndUpdate(findBy string, value string, update primitive.M, projectio
 	err := connections.Connect().Collection(collection).FindOneAndUpdate(ctx, bson.M{findBy: value}, update, &opt)
 	return err
 }
+
+func Remove(idName string, id, collection string) (int64, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	result, err := connections.Connect().Collection(collection).DeleteMany(ctx, bson.M{idName: id})
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+		return 0, err
+	}
+	return result.DeletedCount, nil
+}

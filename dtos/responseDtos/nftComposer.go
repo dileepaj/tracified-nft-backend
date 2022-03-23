@@ -9,3 +9,11 @@ type ResponseProject struct {
 	ProjectName string             `json:"ProjectName" bson:"projectname"`
 	Timestamp   primitive.DateTime `json:"Timestamp" bson:"timestamp"`
 }
+
+type UpdareProjectResponse struct {
+	ProjectId string
+	Error     string
+}
+type WidgetIdResponse struct{
+	WidgetId     string `json:"WidgetId" bson:"widgetid"`
+}

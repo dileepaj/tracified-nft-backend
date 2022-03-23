@@ -22,7 +22,3 @@ type ResponseNFTMakeSale struct {
 	MintedContract string             `json:"mintsmartcontract" bson:"mintsmartcontract"`
 	TokenType      string             `json:"tokentype" bson:"tokentype"`
 }
-
-type WidgetSaveResponse struct{
-	WidgetId string
-}

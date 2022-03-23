@@ -1,6 +1,7 @@
 package validations
 
 import (
+	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/go-playground/validator/v10"
 )
@@ -32,6 +33,74 @@ func ValidateChart(e models.Chart) error {
 	return nil
 }
 
+func ValidateUpdateProject(e requestDtos.UpdateProjectRequest) error {
+	validate = validator.New()
+	err := validate.Struct(e)
+	if err != nil {
+		return err
+	}
+	return nil
+
+}
+
+func ValidateUpdateTable(e requestDtos.UpdateTableRequest) error {
+	validate = validator.New()
+	err := validate.Struct(e)
+	if err != nil {
+		return err
+	}
+	return nil
+
+}
+
+func ValidateUpdateChart(e requestDtos.UpdateChartRequest) error {
+	validate = validator.New()
+	err := validate.Struct(e)
+	if err != nil {
+		return err
+	}
+	return nil
+
+}
+
+func ValidateUpdateProofBot(e requestDtos.UpdateProofBotRequest) error {
+	validate = validator.New()
+	err := validate.Struct(e)
+	if err != nil {
+		return err
+	}
+	return nil
+
+}
+
+func ValidateUpdateImage(e requestDtos.UpdateImageRequest) error {
+	validate = validator.New()
+	err := validate.Struct(e)
+	if err != nil {
+		return err
+	}
+	return nil
+
+}
+
+func ValidateUpdateStats(e requestDtos.UpdateStatsRequest) error {
+	validate = validator.New()
+	err := validate.Struct(e)
+	if err != nil {
+		return err
+	}
+	return nil
+
+}
+
+func ValidateContentOrderData(e []models.ContentOrderData) error {
+	validate = validator.New()
+	err := validate.Struct(e)
+	if err != nil {
+		return err
+	}
+	return nil
+}
 func ValidateImage(e models.ImageData) error {
 	validate = validator.New()
 	err := validate.Struct(e)

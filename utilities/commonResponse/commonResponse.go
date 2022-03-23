@@ -10,7 +10,7 @@ import (
 )
 
 type resultType interface {
-	responseDtos.WidgetSaveResponse | string | []string | responseDtos.ResponseNFTMakeSale | []models.NFT | responseDtos.QueryResult | []responseDtos.ResponseProject | models.Widget | models.ProjectDetail
+	models.Table | models.Chart | models.StataArray | models.ProofBotData | models.ImageData | models.NFTComposerProject | responseDtos.UpdareProjectResponse | []models.NFTComposerProject | responseDtos.WidgetIdResponse | string | []string | responseDtos.ResponseNFTMakeSale | []models.NFT | responseDtos.QueryResult | []responseDtos.ResponseProject | models.Widget | models.ProjectDetail
 }
 
 func SuccessStatus[T resultType](w http.ResponseWriter, result T) {
@@ -23,4 +23,24 @@ func SuccessStatus[T resultType](w http.ResponseWriter, result T) {
 	if err != nil {
 		logs.ErrorLogger.Println(err)
 	}
+}
+
+func NoContent(w http.ResponseWriter, message string) {
+	w.WriteHeader(http.StatusNoContent)
+	response := responseDtos.ErrorResponse{
+		Message: message,
+		Status:  http.StatusNoContent,
+		Error:   "No documents in result",
+	}
+	err := json.NewEncoder(w).Encode(response)
+	if err != nil {
+		logs.ErrorLogger.Println(err)
+	}
+}
+
+func RespondWithJSON(response http.ResponseWriter, statusCode int, data interface{}) {
+	result, _ := json.Marshal(data)
+	response.Header().Set("Content-Type", "application/json")
+	response.WriteHeader(statusCode)
+	response.Write(result)
 }

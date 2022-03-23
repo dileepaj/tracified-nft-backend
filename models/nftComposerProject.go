@@ -5,7 +5,7 @@ import "go.mongodb.org/mongo-driver/bson/primitive"
 type Chart struct {
 	WidgetId   string      `json:"WidgetId" bson:"widgetid" validate:"required"`
 	ProjectId  string      `json:"ProjectId" bson:"projectid" validate:"required"`
-	ChartTitle string      `json:"charttitle" bson:"charttitle"`
+	ChartTitle string      `json:"ChartTitle" bson:"charttitle"`
 	KeyTitle   string      `json:"Keytitle" bson:"keytitle"`
 	ChartData  []ChartData `json:"ChartData" bson:"chartdata"`
 	XAxis      string      `json:"Xaxis" bson:"xaxis"`
@@ -16,7 +16,20 @@ type Chart struct {
 	Height     string      `json:"Height" bson:"height"`
 	Type       string      `json:"Type" bson:"type" validate:"required"`
 }
+type ChartAndWidget struct {
+	Chart  Chart  `json:"Chart" bson:"chart"`
+	Widget Widget `json:"Widget" bson:"widget"`
+}
 
+type TableWithWidget struct {
+	Table Table  `json:"Table" bson:"table"`
+	Widget Widget `json:"Widget" bson:"widget"`
+}
+
+type BotWithWidget struct {
+	ProofBot ProofBotData `json:"ProofBot" bson:"proofbot"`
+	Widget   Widget       `json:"Widget" bson:"widget"`
+}
 type ChartData struct {
 	Name   string `json:"Name" bson:"name"`
 	Key    string `json:"Key" bson:"key"`
@@ -137,12 +150,11 @@ type Widget struct {
 
 type ProjectDetail struct {
 	Project      NFTComposerProject
-	Widgets      []Widget
-	BarCharts    []Chart        `json:"BarCharts" bson:"barcharts"`
-	PieCharts    []Chart        `json:"PieCharts" bson:"piecharts"`
-	BubbleCharts []Chart        `json:"BubbleCharts" bson:"bubblecharts"`
-	Stats        []StataArray   `json:"Stats" bson:"stats"`
-	Tables       []Table        `json:"Tables" bson:"tables"`
-	Images       []ImageData    `json:"Images" bson:"images"`
-	ProofBot     []ProofBotData `json:"ProofBot" bson:"proofbot"`
+	BarCharts    []ChartAndWidget `json:"BarCharts" bson:"barcharts"`
+	PieCharts    []ChartAndWidget `json:"PieCharts" bson:"piecharts"`
+	BubbleCharts []ChartAndWidget `json:"BubbleCharts" bson:"bubblecharts"`
+	Stats        []StataArray     `json:"Stats" bson:"stats"`
+	Tables       []TableWithWidget          `json:"Tables" bson:"tables"`
+	Images       []ImageData      `json:"Images" bson:"images"`
+	ProofBot     []BotWithWidget   `json:"ProofBot" bson:"proofbot"`
 }

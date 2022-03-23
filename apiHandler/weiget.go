@@ -6,7 +6,6 @@ import (
 
 	"github.com/dileepaj/tracified-nft-backend/businessFacade/nftComposerBusinessFacade"
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
-	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/commonResponse"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
@@ -31,7 +30,7 @@ func SaveWidget(w http.ResponseWriter, r *http.Request) {
 		if err != "" {
 			errors.BadRequest(w, err)
 		} else {
-			commonResponse.SuccessStatus[responseDtos.WidgetSaveResponse](w, result)
+			commonResponse.RespondWithJSON(w, http.StatusOK, result)
 		}
 	}
 }
