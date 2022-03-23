@@ -23,7 +23,7 @@ var (
 * @function GenerateNFTTemplate
 *
 **/
-func GenerateHTMLTemplate(htmlData models.NFTComposerProject) (string, error) {
+func GenerateHTMLTemplate(htmlData models.HtmlGenerator) (string, error) {
 	// Parse the Data
 	var jsScripts string
 	var barcharts []models.Chart = htmlData.NftContent.BarCharts

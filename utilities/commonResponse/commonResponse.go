@@ -10,7 +10,7 @@ import (
 )
 
 type resultType interface {
-	responseDtos.WidgetSaveResponse | string | []string | responseDtos.ResponseNFTMakeSale | []models.NFT | responseDtos.QueryResult | []responseDtos.ResponseProject | models.Widget | models.ProjectWithWidgets
+	responseDtos.WidgetSaveResponse | string | []string | responseDtos.ResponseNFTMakeSale | []models.NFT | responseDtos.QueryResult | []responseDtos.ResponseProject | models.Widget | models.ProjectDetail
 }
 
 func SuccessStatus[T resultType](w http.ResponseWriter, result T) {

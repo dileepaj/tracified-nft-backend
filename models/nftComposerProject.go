@@ -3,8 +3,9 @@ package models
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
 type Chart struct {
+	WidgetId   string      `json:"WidgetId" bson:"widgetid" validate:"required"`
+	ProjectId  string      `json:"ProjectId" bson:"projectid" validate:"required"`
 	ChartTitle string      `json:"charttitle" bson:"charttitle"`
-	WidgetId   string      `json:"WidgetId" bson:"widgetid"`
 	KeyTitle   string      `json:"Keytitle" bson:"keytitle"`
 	ChartData  []ChartData `json:"ChartData" bson:"chartdata"`
 	XAxis      string      `json:"Xaxis" bson:"xaxis"`
@@ -13,6 +14,7 @@ type Chart struct {
 	FontSize   string      `json:"Fontsize" bson:"fontsize"`
 	Width      string      `json:"Width" bson:"width"`
 	Height     string      `json:"Height" bson:"height"`
+	Type       string      `json:"Type" bson:"type" validate:"required"`
 }
 
 type ChartData struct {
@@ -24,6 +26,7 @@ type ChartData struct {
 }
 type Table struct {
 	WidgetId     string `json:"WidgetId" bson:"widgetid" validate:"required"`
+	ProjectId    string `json:"ProjectId" bson:"projectid" validate:"required"`
 	TableTitle   string `json:"TableTitle" bson:"tabletitle"`
 	TableContent string `json:"TableContent" bson:"Tablecontent" validate:"required"`
 }
@@ -35,9 +38,10 @@ type StatData struct {
 }
 
 type StataArray struct {
-	Title    string     `json:"Title" bson:"title"`
-	WidgetId string     `json:"WidgetId" bson:"widgetid" validate:"required"`
-	StatData []StatData `json:"StatData" bson:"statdata"`
+	WidgetId  string     `json:"WidgetId" bson:"widgetid" validate:"required"`
+	ProjectId string     `json:"ProjectId" bson:"projectid" validate:"required"`
+	Title     string     `json:"Title" bson:"title"`
+	StatData  []StatData `json:"StatData" bson:"statdata"`
 }
 
 type BotUrl struct {
@@ -55,18 +59,26 @@ type BotBatch struct {
 	BotUrls     []BotUrl `json:"BotUrls" bson:"boturls"`
 }
 type ProofBotData struct {
-	BotTitle  string             `json:"BotTitle" bson:"bottitle"`
 	WidgetId  string             `json:"WidgetId" bson:"widgetid" validate:"required"`
+	ProjectId string             `json:"ProjectId" bson:"projectid" validate:"required"`
+	BotTitle  string             `json:"BotTitle" bson:"bottitle"`
 	Timestamp primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
 	NFTType   string             `json:"NFTType" bson:"nfttype" validate:"required"`
 	Batch     []BotBatch         `json:"Batch" bson:"batch"`
 }
 
 type ImageData struct {
-	Title       string `json:"Title" bson:"title"`
 	WidgetId    string `json:"WidgetId" bson:"widgetid" validate:"required"`
+	ProjectId   string `json:"ProjectId" bson:"projectid" validate:"required"`
+	Title       string `json:"Title" bson:"title"`
 	Type        string `json:"Type" bson:"type" validate:"required"`
 	Base64Image string `json:"Base64Image" bson:"base64image" validate:"required"`
+}
+
+type ContentOrderData struct {
+	WidgetId        string `json:"WidgetId" bson:"widgetid" validate:"required"`
+	Type            string `json:"Type" bson:"type" validate:"required"`
+	CardOrderNumber int    `json:"cardOrderNumber" bson:"cardordernumber"`
 }
 
 type NFTContent struct {
@@ -78,39 +90,59 @@ type NFTContent struct {
 	Images       []ImageData    `json:"Images" bson:"images"`
 	ProofBot     []ProofBotData `json:"ProofBot" bson:"proofbot"`
 }
+
+type HtmlGenerator struct {
+	Id               primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
+	ProjectId        string             `json:"ProjectId" bson:"projectid" validate:"required"`
+	ProjectName      string             `json:"ProjectName" bson:"projectname" validate:"required"`
+	NFTName          string             `json:"NFTName" bson:"nftname" validate:"required"`
+	UserId           string             `json:"UserId" bson:"userid" validate:"required"`
+	TenentId         string             `json:"TenentId" bson:"tenentid" validate:"required"`
+	TenentName       string             `json:"TenentName" bson:"tenentname"`
+	Timestamp        primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
+	CreatorName      string             `json:"CreatorName" bson:"creatorname"`
+	ContentOrderData []ContentOrderData `json:"ContentOrderData" bson:"Contentorderdata" validate:"required"`
+	NftContent       NFTContent         `json:"NftContent" bson:"nftcontent" validate:"required"`
+}
 type NFTComposerProject struct {
-	Id          primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
-	ProjectId   string             `json:"ProjectId" bson:"projectid" validate:"required"`
-	ProjectName string             `json:"ProjectName" bson:"projectname" validate:"required"`
-	NFTName     string             `json:"NFTName" bson:"nftname" validate:"required"`
-	UserId      string             `json:"UserId" bson:"userid" validate:"required"`
-	TenentId    string             `json:"TenentId" bson:"tenentid" validate:"required"`
-	TenentName  string             `json:"TenentName" bson:"tenentname"`
-	Timestamp   primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
-	CreatorName string             `json:"CreatorName" bson:"creatorname"`
-	NftContent  NFTContent
+	Id               primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
+	ProjectId        string             `json:"ProjectId" bson:"projectid" validate:"required"`
+	ProjectName      string             `json:"ProjectName" bson:"projectname" validate:"required"`
+	NFTName          string             `json:"NFTName" bson:"nftname" validate:"required"`
+	UserId           string             `json:"UserId" bson:"userid" validate:"required"`
+	TenentId         string             `json:"TenentId" bson:"tenentid" validate:"required"`
+	TenentName       string             `json:"TenentName" bson:"tenentname"`
+	Timestamp        primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
+	CreatorName      string             `json:"CreatorName" bson:"creatorname"`
+	ContentOrderData []ContentOrderData `json:"ContentOrderData" bson:"Contentorderdata" validate:"required"`
 }
 
 // pie.bar.,bubble.Table
 type Widget struct {
-	Id         primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
-	ProjectId  string             `json:"ProjectId" bson:"projectid" validate:"required"`
-	WidgetId   string             `json:"WidgetId" bson:"widgetid" validate:"required"`
-	ArtifactId string             `json:"ArtifactId" bson:"artifactid"`
-	Timestamp  primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
-	BatchId   string             `json:"BatchId" bson:"bathid"`
-	ProductId  string             `json:"productId" bson:"productid"`
-	ProductName string			  `json:"productName" bson:"productname"`
-	TenentId   string             `json:"TenentId" bson:"tenentid" validate:"required"`
-	UserId     string             `json:"UserId" bson:"userid" validate:"required"`
-	OTP        string             `json:"OTP" bson:"otp"`
-	OTPType    string             `json:"OTPType" bson:"otptype"`
-	Query      string             `json:"Query" bson:"query"`
-	WidgetType string             `json:"WidgetType" bson:"widgettype"`
+	Id          primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
+	ProjectId   string             `json:"ProjectId" bson:"projectid" validate:"required"`
+	WidgetId    string             `json:"WidgetId" bson:"widgetid" validate:"required"`
+	ArtifactId  string             `json:"ArtifactId" bson:"artifactid"`
+	Timestamp   primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
+	BatchId     string             `json:"BatchId" bson:"bathid"`
+	ProductId   string             `json:"productId" bson:"productid"`
+	ProductName string             `json:"productName" bson:"productname"`
+	TenentId    string             `json:"TenentId" bson:"tenentid" validate:"required"`
+	UserId      string             `json:"UserId" bson:"userid" validate:"required"`
+	OTP         string             `json:"OTP" bson:"otp"`
+	OTPType     string             `json:"OTPType" bson:"otptype"`
+	Query       string             `json:"Query" bson:"query"`
+	WidgetType  string             `json:"WidgetType" bson:"widgettype"`
 }
 
-
-type ProjectWithWidgets struct {
-	NFTComposerProject NFTComposerProject
-	WidgetDetails []Widget
+type ProjectDetail struct {
+	Project      NFTComposerProject
+	Widgets      []Widget
+	BarCharts    []Chart        `json:"BarCharts" bson:"barcharts"`
+	PieCharts    []Chart        `json:"PieCharts" bson:"piecharts"`
+	BubbleCharts []Chart        `json:"BubbleCharts" bson:"bubblecharts"`
+	Stats        []StataArray   `json:"Stats" bson:"stats"`
+	Tables       []Table        `json:"Tables" bson:"tables"`
+	Images       []ImageData    `json:"Images" bson:"images"`
+	ProofBot     []ProofBotData `json:"ProofBot" bson:"proofbot"`
 }

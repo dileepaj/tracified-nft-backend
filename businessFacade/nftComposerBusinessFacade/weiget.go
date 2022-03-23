@@ -17,14 +17,15 @@ func SaveWidgetList(widgets []models.Widget) (string, error) {
 
 func SaveWidget(widget models.Widget) (responseDtos.WidgetSaveResponse, string) {
 	var response responseDtos.WidgetSaveResponse
-	var otpString string
+	var otpString string = ""
 	var err1 error
-	if widget.OTPType == "Batch" {
-		otpString, err1 = otpService.GetOtpForBatch(widget.ProductId, widget.BatchId, widget.OTPType)
-	} else {
-		otpString, err1 = otpService.GetOtpForArtifact(widget.ArtifactId, widget.OTPType)
+	if widget.WidgetType == "BarChart" || widget.WidgetType == "PieChart" || widget.WidgetType == "BubbleChart" || widget.WidgetType == "Table" {
+		if widget.OTPType == "Batch" {
+			otpString, err1 = otpService.GetOtpForBatch(widget.ProductId, widget.BatchId, widget.OTPType)
+		} else {
+			otpString, err1 = otpService.GetOtpForArtifact(widget.ArtifactId, widget.OTPType)
+		}
 	}
-
 	if err1 != nil {
 		return response, err1.Error()
 	} else if strings.HasPrefix(otpString, `{"err"`) {
@@ -48,40 +49,52 @@ func ChangeWidget(widget requestDtos.UpdateWidgetRequest) (models.Widget, error)
 	updateWidget := bson.M{}
 	var otpString string
 	var err error
-	if widget.OTPType == "Batch" {
-		otpString, err = otpService.GetOtpForBatch(widget.ProductId, widget.BatchId, widget.OTPType)
-		if err != nil {
-			return response, err
-		} else if strings.HasPrefix(otpString, `{"err"`) {
-			return response, errors.New(otpString)
-		} else {
-			updateWidget = bson.M{
-				"$set": bson.M{"timestamp": widget.Timestamp, "tenentid": widget.TenentId, "otptype": widget.OTPType, "artifactid": widget.ArtifactId, "otp": otpString},
-			}
-			rst2, err := widgetRepository.FindWidgetAndUpdate("widgetid", widget.WidgetId, updateWidget)
+	if widget.WidgetType == "BarChart" || widget.WidgetType == "PieChart" || widget.WidgetType == "BubbleChart" || widget.WidgetType == "Table" {
+		if widget.OTPType == "Batch" {
+			otpString, err = otpService.GetOtpForBatch(widget.ProductId, widget.BatchId, widget.OTPType)
 			if err != nil {
 				return response, err
+			} else if strings.HasPrefix(otpString, `{"err"`) {
+				return response, errors.New(otpString)
+			} else {
+				updateWidget = bson.M{
+					"$set": bson.M{"timestamp": widget.Timestamp, "tenentid": widget.TenentId, "otptype": widget.OTPType, "artifactid": widget.ArtifactId, "otp": otpString},
+				}
+				rst2, err := widgetRepository.FindWidgetAndUpdate("widgetid", widget.WidgetId, updateWidget)
+				if err != nil {
+					return response, err
+				}
+				response = rst2
+				return response, nil
 			}
-			response = rst2
-			return response, nil
+		} else {
+			otpString, err = otpService.GetOtpForArtifact(widget.ArtifactId, widget.OTPType)
+			if err != nil {
+				return response, err
+			} else if strings.HasPrefix(otpString, `{"err"`) {
+				return response, errors.New(otpString)
+			} else {
+				updateWidget = bson.M{
+					"$set": bson.M{"timestamp": widget.Timestamp, "batchid": widget.BatchId, "productid": widget.ProductId, "productname": widget.ProductName, "tenentid": widget.TenentId},
+				}
+				rst2, err := widgetRepository.FindWidgetAndUpdate("widgetid", widget.WidgetId, updateWidget)
+				if err != nil {
+					return response, err
+				}
+				response = rst2
+				return response, nil
+			}
 		}
 	} else {
-		otpString, err = otpService.GetOtpForArtifact(widget.ArtifactId, widget.OTPType)
+		updateWidget = bson.M{
+			"$set": bson.M{"timestamp": widget.Timestamp, "batchid": widget.BatchId, "productid": widget.ProductId, "productname": widget.ProductName, "tenentid": widget.TenentId, "artifactid": widget.ArtifactId,"otp":otpString},
+		}
+		rst2, err := widgetRepository.FindWidgetAndUpdate("widgetid", widget.WidgetId, updateWidget)
 		if err != nil {
 			return response, err
-		} else if strings.HasPrefix(otpString, `{"err"`) {
-			return response, errors.New(otpString)
-		} else {
-			updateWidget = bson.M{
-				"$set": bson.M{"timestamp": widget.Timestamp, "batchid": widget.BatchId, "productid": widget.ProductId, "productname": widget.ProductName, "tenentid": widget.TenentId, "otptype": widget.OTPType, "otp": otpString},
-			}
-			rst2, err := widgetRepository.FindWidgetAndUpdate("widgetid", widget.WidgetId, updateWidget)
-			if err != nil {
-				return response, err
-			}
-			response = rst2
-			return response, nil
 		}
+		response = rst2
+		return response, nil
 	}
 }
 

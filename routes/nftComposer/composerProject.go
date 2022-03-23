@@ -37,16 +37,46 @@ var ComposerRoutes = models.Routers{
 		Path:    "/api/projects/{userId}",
 		Handler: apiHandler.GetRecentProjects,
 	},
-		models.Router{
+	models.Router{
 		Name:    "Get All Project base on user",
 		Method:  "GET",
 		Path:    "/api/project/{projectId}",
 		Handler: apiHandler.GetRecentProjectDetails,
 	},
-		models.Router{
+	models.Router{
 		Name:    "Update widget",
 		Method:  "PUT",
 		Path:    "/api/widget",
 		Handler: apiHandler.UpdateWidget,
+	},
+	models.Router{
+		Name:    "Save Chart",
+		Method:  "POST",
+		Path:    "/api/html/chart",
+		Handler: apiHandler.SaveChart,
+	},
+	models.Router{
+		Name:    "Save table",
+		Method:  "POST",
+		Path:    "/api/html/table",
+		Handler: apiHandler.SaveTable,
+	},
+	models.Router{
+		Name:    "Save proofbot",
+		Method:  "POST",
+		Path:    "/api/html/proofbot",
+		Handler: apiHandler.SaveProofBot,
+	},
+	models.Router{
+		Name:    "Save stat",
+		Method:  "POST",
+		Path:    "/api/html/stat",
+		Handler: apiHandler.SaveStat,
+	},
+	models.Router{
+		Name:    "Save image",
+		Method:  "POST",
+		Path:    "/api/html/image",
+		Handler: apiHandler.SaveImage,
 	},
 }

@@ -16,4 +16,5 @@ type UpdateWidgetRequest struct {
 	TenentId    string             `json:"TenentId" bson:"tenentid" validate:"required"`
 	OTPType     string             `json:"OTPType" bson:"otptype" validate:"required"`
 	ArtifactId  string             `json:"ArtifactId" bson:"artifactid"`
+	WidgetType  string             `json:"WidgetType" bson:"widgettype" validate:"required"`
 }

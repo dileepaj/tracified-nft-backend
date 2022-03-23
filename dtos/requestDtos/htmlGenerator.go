@@ -8,4 +8,3 @@ type HtmlGeneratorRequest struct {
 	NFTComposerProject models.NFTComposerProject
 	WidgetDetails []models.Widget
 }
-

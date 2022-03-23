@@ -37,6 +37,116 @@ func SaveProject(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func SaveChart(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+
+	var chartRequest models.Chart
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&chartRequest)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+	}
+	err = validations.ValidateChart(chartRequest)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		result, err1 := nftComposerBusinessFacade.SaveChart(chartRequest)
+		if err1 != nil {
+			errors.BadRequest(w, err1.Error())
+		} else {
+			commonResponse.SuccessStatus[string](w, result)
+		}
+	}
+}
+
+func SaveTable(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+
+	var tableRequest models.Table
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&tableRequest)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+	}
+	err = validations.ValidateTable(tableRequest)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		result, err1 := nftComposerBusinessFacade.SaveTable(tableRequest)
+		if err1 != nil {
+			errors.BadRequest(w, err1.Error())
+		} else {
+			commonResponse.SuccessStatus[string](w, result)
+		}
+	}
+}
+
+func SaveStat(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+
+	var statRequest models.StataArray
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&statRequest)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+	}
+	err = validations.ValidateStat(statRequest)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		result, err1 := nftComposerBusinessFacade.SaveStats(statRequest)
+		if err1 != nil {
+			errors.BadRequest(w, err1.Error())
+		} else {
+			commonResponse.SuccessStatus[string](w, result)
+		}
+	}
+}
+
+func SaveProofBot(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+
+	var proofbotRequest models.ProofBotData
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&proofbotRequest)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+	}
+	err = validations.ValidateProofBot(proofbotRequest)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		result, err1 := nftComposerBusinessFacade.SaveProofBot(proofbotRequest)
+		if err1 != nil {
+			errors.BadRequest(w, err1.Error())
+		} else {
+			commonResponse.SuccessStatus[string](w, result)
+		}
+	}
+}
+
+func SaveImage(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+
+	var imageRequest models.ImageData
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&imageRequest)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+	}
+	err = validations.ValidateImage(imageRequest)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		result, err1 := nftComposerBusinessFacade.SaveImages(imageRequest)
+		if err1 != nil {
+			errors.BadRequest(w, err1.Error())
+		} else {
+			commonResponse.SuccessStatus[string](w, result)
+		}
+	}
+}
+
 // Find project by user ID
 func GetRecentProjects(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
@@ -62,7 +172,7 @@ func GetRecentProjectDetails(w http.ResponseWriter, r *http.Request) {
 		if err1 != "" {
 			errors.BadRequest(w, err1)
 		} else {
-			commonResponse.SuccessStatus[models.ProjectWithWidgets](w, results)
+			commonResponse.SuccessStatus[models.ProjectDetail](w, results)
 		}
 	} else {
 		errors.BadRequest(w, "")
