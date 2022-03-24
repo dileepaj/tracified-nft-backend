@@ -13,7 +13,9 @@ func QueryExecuter(w http.ResponseWriter, widget requestDtos.RequestWidget) {
 	result, err := FindWidgetByWidgetId(widget.WidgetId)
 	if err != nil {
 		commonResponse.NoContent(w, err.Error())
-	} else {
+	} else if result.OTP == "" {
+		commonResponse.RespondWithJSON(w, http.StatusNoContent, "Invalid id")
+	} else if strings.HasPrefix(result.OTP, "[{") {
 		queryResult := querylanguageservice.QueryExecuter(widget.Query, result)
 		if strings.HasPrefix(queryResult.Result, "\nError") {
 			commonResponse.SuccessStatus(w, "invalid Query")
@@ -27,5 +29,7 @@ func QueryExecuter(w http.ResponseWriter, widget requestDtos.RequestWidget) {
 				return
 			}
 		}
+	} else {
+		commonResponse.RespondWithJSON(w, http.StatusInternalServerError, "Invalid tracibility Data fromat")
 	}
 }
