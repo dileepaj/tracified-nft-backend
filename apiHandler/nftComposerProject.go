@@ -286,7 +286,7 @@ func RemoveProjet(w http.ResponseWriter, r *http.Request) {
 	if vars["projectId"] != "" {
 		nftComposerBusinessFacade.RemoveProjet(w, vars["projectId"])
 	} else {
-		commonResponse.RespondWithJSON(w, http.StatusBadRequest,"" )
+		commonResponse.RespondWithJSON(w, http.StatusBadRequest, "")
 	}
 }
 
@@ -295,7 +295,7 @@ func RemoveChart(w http.ResponseWriter, r *http.Request) {
 	if vars["widgetId"] != "" {
 		nftComposerBusinessFacade.RemoveChart(w, vars["widgetId"])
 	} else {
-		commonResponse.RespondWithJSON(w, http.StatusBadRequest,"" )
+		commonResponse.RespondWithJSON(w, http.StatusBadRequest, "")
 	}
 }
 
@@ -304,7 +304,7 @@ func RemoveTable(w http.ResponseWriter, r *http.Request) {
 	if vars["widgetId"] != "" {
 		nftComposerBusinessFacade.RemoveTable(w, vars["widgetId"])
 	} else {
-		commonResponse.RespondWithJSON(w, http.StatusBadRequest,"" )
+		commonResponse.RespondWithJSON(w, http.StatusBadRequest, "")
 	}
 }
 
@@ -313,7 +313,7 @@ func RemoveProofBot(w http.ResponseWriter, r *http.Request) {
 	if vars["widgetId"] != "" {
 		nftComposerBusinessFacade.RemoveProofBot(w, vars["widgetId"])
 	} else {
-		commonResponse.RespondWithJSON(w, http.StatusBadRequest,"" )
+		commonResponse.RespondWithJSON(w, http.StatusBadRequest, "")
 	}
 }
 
@@ -322,7 +322,7 @@ func RemoveImage(w http.ResponseWriter, r *http.Request) {
 	if vars["widgetId"] != "" {
 		nftComposerBusinessFacade.RemoveImage(w, vars["widgetId"])
 	} else {
-		commonResponse.RespondWithJSON(w, http.StatusBadRequest,"" )
+		commonResponse.RespondWithJSON(w, http.StatusBadRequest, "")
 	}
 }
 
@@ -331,6 +331,6 @@ func RemoveStats(w http.ResponseWriter, r *http.Request) {
 	if vars["widgetId"] != "" {
 		nftComposerBusinessFacade.RemoveImage(w, vars["widgetId"])
 	} else {
-		commonResponse.RespondWithJSON(w, http.StatusBadRequest,"" )
+		commonResponse.RespondWithJSON(w, http.StatusBadRequest, "")
 	}
 }
