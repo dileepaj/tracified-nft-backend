@@ -4,17 +4,18 @@ import "go.mongodb.org/mongo-driver/bson/primitive"
 
 type Chart struct {
 	WidgetId   string      `json:"WidgetId" bson:"widgetid" validate:"required"`
-	ProjectId  string      `json:"ProjectId" bson:"projectid" validate:"required"`
+	ProjectId   string      `json:"ProjectId" bson:"projectid" validate:"required"`
 	ChartTitle string      `json:"ChartTitle" bson:"charttitle"`
-	KeyTitle   string      `json:"Keytitle" bson:"keytitle"`
 	ChartData  []ChartData `json:"ChartData" bson:"chartdata"`
-	XAxis      string      `json:"Xaxis" bson:"xaxis"`
-	YAxis      string      `json:"Yaxis" bson:"yaxis"`
-	FontColor  string      `json:"Fontcolor" bson:"fontcolor"`
-	FontSize   string      `json:"Fontsize" bson:"fontsize"`
-	Width      string      `json:"Width" bson:"width"`
-	Height     string      `json:"Height" bson:"height"`
+	Color      []string    `json:"Color" bson:"color"`
+	XAxis      string      `json:"XAxis" bson:"xaxis"`
+	YAxis      string      `json:"YAxis" bson:"yaxis"`
+	FontColor  string      `json:"FontColor" bson:"fontcolor"`
+	FontSize   float32      `json:"FontSize" bson:"fontsize"`
+	Width      float32      `json:"Width" bson:"width"`
+	Height     float32      `json:"Height" bson:"height"`
 	Type       string      `json:"Type" bson:"type" validate:"required"`
+	Domain     []float32       `json:"Domain" bson:"domain"`
 }
 type ChartAndWidget struct {
 	Chart  Chart  `json:"Chart" bson:"chart"`
@@ -22,7 +23,7 @@ type ChartAndWidget struct {
 }
 
 type TableWithWidget struct {
-	Table Table  `json:"Table" bson:"table"`
+	Table  Table  `json:"Table" bson:"table"`
 	Widget Widget `json:"Widget" bson:"widget"`
 }
 
@@ -31,11 +32,10 @@ type BotWithWidget struct {
 	Widget   Widget       `json:"Widget" bson:"widget"`
 }
 type ChartData struct {
-	Name   string `json:"Name" bson:"name"`
-	Key    string `json:"Key" bson:"key"`
-	Value  string `json:"Value" bson:"value"`
-	Radius string `json:"Radius" bson:"radius"`
-	Color  string `json:"Color" bson:"color"`
+	Name  string `json:"Name" bson:"name"`
+	X     float32 `json:"X" bson:"x"`
+	Value float32 `json:"Value" bson:"value"`
+	Y     float32 `json:"Y" bson:"y"`
 }
 type Table struct {
 	WidgetId     string `json:"WidgetId" bson:"widgetid" validate:"required"`
@@ -150,11 +150,11 @@ type Widget struct {
 
 type ProjectDetail struct {
 	Project      NFTComposerProject
-	BarCharts    []ChartAndWidget `json:"BarCharts" bson:"barcharts"`
-	PieCharts    []ChartAndWidget `json:"PieCharts" bson:"piecharts"`
-	BubbleCharts []ChartAndWidget `json:"BubbleCharts" bson:"bubblecharts"`
-	Stats        []StataArray     `json:"Stats" bson:"stats"`
-	Tables       []TableWithWidget          `json:"Tables" bson:"tables"`
-	Images       []ImageData      `json:"Images" bson:"images"`
+	BarCharts    []ChartAndWidget  `json:"BarCharts" bson:"barcharts"`
+	PieCharts    []ChartAndWidget  `json:"PieCharts" bson:"piecharts"`
+	BubbleCharts []ChartAndWidget  `json:"BubbleCharts" bson:"bubblecharts"`
+	Stats        []StataArray      `json:"Stats" bson:"stats"`
+	Tables       []TableWithWidget `json:"Tables" bson:"tables"`
+	Images       []ImageData       `json:"Images" bson:"images"`
 	ProofBot     []BotWithWidget   `json:"ProofBot" bson:"proofbot"`
 }
