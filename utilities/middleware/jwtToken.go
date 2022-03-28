@@ -49,7 +49,7 @@ func HasPermissions(reqToken string) PermissionStatus {
 					case reflect.Slice:
 						s := reflect.ValueOf(v)
 						for i := 0; i < s.Len(); i++ {
-							if s.Index(i).Interface().(string) == "94"{//Todo create permission in admin
+							if s.Index(i).Interface().(string) == "10"{//Todo create permission in admin
 								ps.Status = true
 							}
 						}
