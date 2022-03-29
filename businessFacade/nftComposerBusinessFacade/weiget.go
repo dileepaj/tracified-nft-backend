@@ -14,16 +14,23 @@ import (
 func SaveWidgetList(widgets []models.Widget) (string, error) {
 	return widgetRepository.SaveWidgetList(widgets)
 }
-
+/**
+*@fun SaveWidget() this method basically  do a insert widget to widget collecon
+*! Before insert
+*? 1.check widget type  if WidgetType eqila only (BarChart,PieChart,Table.ProofBot) it will check the OTPTtpe 
+* if OTPType equal to "Batch" it will fetch the BatchOTP from backend using itemId and batchId ,after assign it to otpString and send to InsertWidgetMethod with OTP 
+*!  if OTPType equal to "Artifact" we do not keep th OTP in DB 
+*
+*? 2.For Other widget type does not have the OTP
+*
+**/
 func SaveWidget(widget models.Widget) (responseDtos.WidgetIdResponse, string) {
 	var response responseDtos.WidgetIdResponse
 	var otpString string = ""
 	var err1 error
-	if widget.WidgetType == "BarChart" || widget.WidgetType == "PieChart" || widget.WidgetType == "BubbleChart" || widget.WidgetType == "Table" {
+	if widget.WidgetType == "BarChart" || widget.WidgetType == "PieChart" || widget.WidgetType == "BubbleChart" || widget.WidgetType == "Table" || widget.WidgetType == "ProofBot" {
 		if widget.OTPType == "Batch" {
 			otpString, err1 = otpService.GetOtpForBatch(widget.ProductId, widget.BatchId, widget.OTPType)
-		} else {
-			otpString, err1 = otpService.GetOtpForArtifact(widget.ArtifactId, widget.OTPType)
 		}
 	}
 	if err1 != nil {
@@ -112,4 +119,8 @@ func FindWidgetAndUpdateQuery(widget requestDtos.RequestWidget) (models.Widget, 
 
 func FindWidgetByWidgetId(id string) (models.Widget, error) {
 	return widgetRepository.FindWidgetOneById("widgetid", id)
+}
+
+func FindWidgetByWidgetIdWithOTP(id string) (models.Widget, error) {
+	return widgetRepository.FindWidgetOneByIdWithOtp("widgetid", id)
 }

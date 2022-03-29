@@ -40,7 +40,7 @@ func HasPermissions(reqToken string) PermissionStatus {
 				ps.TenantId = fmt.Sprintf("%v", val)
 			}
 			if key == "permissions" {
-				v, ok := val.(map[string]interface{})["0"]//Todo create permission in admin
+				v, ok := val.(map[string]interface{})["0"]
 				if !ok {
 					logs.ErrorLogger.Println("Permissions not found")
 				}
@@ -49,7 +49,7 @@ func HasPermissions(reqToken string) PermissionStatus {
 					case reflect.Slice:
 						s := reflect.ValueOf(v)
 						for i := 0; i < s.Len(); i++ {
-							if s.Index(i).Interface().(string) == "10"{//Todo create permission in admin
+							if s.Index(i).Interface().(string) == "10"{
 								ps.Status = true
 							}
 						}

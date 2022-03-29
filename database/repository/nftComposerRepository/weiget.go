@@ -55,6 +55,20 @@ func (r *WidgetRepository) FindWidgetAndUpdate(findBy string, id string, update 
 	}
 }
 
+func (r *WidgetRepository) FindWidgetOneByIdWithOtp(idName string, id string) (models.Widget, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	var widget models.Widget
+	rst := connections.Connect().Collection(Widget).FindOne(ctx, bson.D{{idName, id}})
+	err := rst.Decode(&widget)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+		return models.Widget{}, err
+	} else {
+		return widget, nil
+	}
+}
+
 func (r *WidgetRepository) FindWidgetOneById(idName string, id string) (models.Widget, error) {
 	var widget models.Widget
 	rst := repository.FindOne[string](idName, id, Widget)
