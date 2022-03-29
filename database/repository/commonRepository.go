@@ -55,7 +55,9 @@ func FindById(idName string, id string, collection string) (*mongo.Cursor, error
 }
 
 func FindOne[T models.FindOneType](idName string, id T, collection string) *mongo.SingleResult {
-	rst := connections.Connect().Collection(collection).FindOne(context.TODO(), bson.D{{idName, id}})
+	findOptions := options.FindOne()
+	findOptions.SetProjection(bson.M{"otp": 0})
+	rst := connections.Connect().Collection(collection).FindOne(context.TODO(), bson.D{{idName, id}}, findOptions)
 	return rst
 }
 
