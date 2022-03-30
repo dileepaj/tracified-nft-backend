@@ -11,7 +11,6 @@ import (
 *
 **/
 func QueryExecuter(query string,widget models.Widget)(responseDtos.QueryResult) {
-
 	var result string = fcl.NewFCLWrapper().GetCommonJSON("services/queryLanguageService/Defs.txt",query,widget.OTP)
 	var queryResult =responseDtos.QueryResult{
 		Result :result,

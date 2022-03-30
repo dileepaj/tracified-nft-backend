@@ -32,7 +32,8 @@ func QueryExecuter(w http.ResponseWriter, widget requestDtos.RequestWidget) {
 		} else if artifactOTP == "" {
 			commonResponse.RespondWithJSON(w, http.StatusNoContent, "Invalid artifact id")
 		} else if strings.HasPrefix(artifactOTP, "[{") {
-			queryResult = querylanguageservice.QueryExecuter(artifactOTP, result)
+			result.OTP = artifactOTP
+			queryResult = querylanguageservice.QueryExecuter(widget.Query, result)
 		} else {
 			commonResponse.RespondWithJSON(w, http.StatusInternalServerError, "Invalid tracibility Data fromat")
 		}
