@@ -1,3 +1,0 @@
-package routes
-
-func NewRouter() {}

@@ -1,0 +1,34 @@
+package apiHandler
+
+import (
+	"encoding/json"
+	"net/http"
+
+	"github.com/dileepaj/tracified-nft-backend/businessFacade/marketplaceBusinessFacade"
+	"github.com/dileepaj/tracified-nft-backend/models"
+	"github.com/dileepaj/tracified-nft-backend/utilities/commonResponse"
+	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
+	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
+	"github.com/dileepaj/tracified-nft-backend/utilities/validations"
+)
+
+func CreateWatchList(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	var requestCreateWatchList models.WatchList
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&requestCreateWatchList)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+	}
+	err = validations.ValidateInsertWatchList(requestCreateWatchList)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		result, err1 := marketplaceBusinessFacade.CreateWatchList(requestCreateWatchList)
+		if err1 != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[string](w, result)
+		}
+	}
+}
