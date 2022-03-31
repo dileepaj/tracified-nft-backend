@@ -37,7 +37,7 @@ func (r *NFTRepository) FindNFTById1AndNotId2(idName1 string, id1 string, idName
 
 func (r *NFTRepository) FindNFTsById(idName string, id string) ([]models.NFT, error) {
 	var nfts []models.NFT
-	rst, err := repository.FindById(idName, id, "nft")
+	rst, err := repository.FindById(idName, id, NFT)
 	if err != nil {
 		return nfts, err
 	}
@@ -81,7 +81,8 @@ func (r *NFTRepository) UpdateNFTSALE(nft requestDtos.UpdateNFTSALERequest) (res
 	update := bson.M{
 		"$set": bson.M{"timestamp": nft.Timestamp, "sellingstatus": nft.SellingStatus, "sellingtype": nft.SellingType, "marketcontract": nft.MarketContract},
 	}
-	rst:= repository.FindOneAndUpdate("nftidentifier", nft.NFTIdentifier, update, NFT)
+	projection := bson.M{}
+	rst := repository.FindOneAndUpdate("nftidentifier", nft.NFTIdentifier, projection, update, NFT)
 	if rst != nil {
 		err := rst.Decode(&responseMakeSaleNFT)
 		if err != nil {

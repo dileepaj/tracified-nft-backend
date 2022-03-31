@@ -7,7 +7,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/services/htmlGeneretorService/htmlGenerator"
 )
 
-func GenerateHTMLFile(htmlJson models.NFTComposerProject) (string, error) {
+func GenerateHTMLFile(htmlJson models.HtmlGenerator) (string, error) {
 	result, err := htmlGenerator.GenerateHTMLTemplate(htmlJson)
 	if err != nil {
 		return "", err
