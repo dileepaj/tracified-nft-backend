@@ -3,7 +3,7 @@ node {
     currentBuild.result = "SUCCESS"
     env.AWS_ECR_LOGIN = true
     checkout scm
-    docker.image('golang:1.17').inside('-u root') {
+    docker.image('golang:1.18').inside('-u root') {
         stage('Setup') {
                    echo 'Setting up environment'
                    echo env.BRANCH_NAME
