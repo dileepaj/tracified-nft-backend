@@ -1,4 +1,4 @@
-FROM golang:1.18-alpine AS base
+FROM golang:1.18-alpine
 RUN apk add --update cmake gcc g++ git  make  tar wget python3
 RUN go version
 # Set destination for COPY
