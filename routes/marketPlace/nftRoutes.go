@@ -15,6 +15,18 @@ var NftRoutes = models.Routers{
 		Handler: apiHandler.CreateNFT,
 	},
 	models.Router{
+		Name:    "Save Ownership",
+		Method:  "POST",
+		Path:    "/api/marketplace/owner",
+		Handler: apiHandler.CreateOwner,
+	},
+	models.Router{
+		Name:    "Save Tags",
+		Method:  "POST",
+		Path:    "/api/tags/save",
+		Handler: apiHandler.CreateTags,
+	},
+	models.Router{
 		Name:    "GET NFTS By Selling status and filter by UserPK",
 		Method:  "Get",
 		Path:    "/api/selling/{status}/{userpk}",
@@ -49,5 +61,17 @@ var NftRoutes = models.Routers{
 		Method:  "Get",
 		Path:    "/api/tenentname/{tenentname}",
 		Handler: apiHandler.GetNFTByTenentName,
+	},
+	models.Router{
+		Name:    "GET Tags by NftIdentifier",
+		Method:  "Get",
+		Path:    "/api/tags/nft/{nftidentifier}",
+		Handler: apiHandler.GetTagsByNFTIdentifier,
+	},
+	models.Router{
+		Name:    "GET All Collections",
+		Method:  "Get",
+		Path:    "/api/tags",
+		Handler: apiHandler.GetAllTags,
 	},
 }

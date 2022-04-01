@@ -2,3 +2,80 @@ ERROR: 2022/03/21 17:51:44 collectionsHandler.go:27: parsing time "\"\"" as "\"2
 ERROR: 2022/03/21 17:56:13 collectionsHandler.go:27: parsing time "\"\"" as "\"2006-01-02T15:04:05Z07:00\"": cannot parse "\"" as "2006"
 ERROR: 2022/03/21 18:15:33 collectionsHandler.go:150: EOF
 ERROR: 2022/03/21 18:18:09 collectionsHandler.go:150: EOF
+ERROR: 2022/03/28 20:07:09 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/28 20:09:27 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/28 20:25:42 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/28 20:25:42 nftHandler.go:33: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/28 21:26:37 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/28 21:26:37 nftHandler.go:33: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/28 21:26:37 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/28 21:26:37 nftHandler.go:33: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/28 21:30:02 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/28 21:30:02 nftHandler.go:33: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/28 21:30:02 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/28 21:30:02 nftHandler.go:33: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/28 21:47:09 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/28 21:47:09 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/28 21:50:23 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/29 09:36:41 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/29 09:40:37 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/29 09:40:37 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/29 09:47:50 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/29 09:47:50 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/29 09:49:22 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/29 09:49:22 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/29 09:56:41 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/29 10:19:49 nftHandler.go:195: invalid character '}' looking for beginning of object key string
+ERROR: 2022/03/29 10:31:46 nftHandler.go:195: invalid character '}' looking for beginning of object key string
+ERROR: 2022/03/29 10:46:10 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/29 10:53:16 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/29 11:02:35 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/30 14:53:42 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/30 14:53:52 commonRepository.go:22: server selection error: context deadline exceeded, current topology: { Type: ReplicaSetNoPrimary, Servers: [{ Addr: cluster0-shard-00-00.a8gdv.mongodb.net:27017, Type: RSSecondary, Tag sets: nodeType=ELECTABLE,workloadType=OPERATIONAL,provider=AWS,region=AP_SOUTH_1, Average RTT: 3029027000 }, { Addr: cluster0-shard-00-02.a8gdv.mongodb.net:27017, Type: RSSecondary, Tag sets: provider=AWS,region=AP_SOUTH_1,nodeType=ELECTABLE,workloadType=OPERATIONAL, Average RTT: 2880761700 }, { Addr: cluster0-shard-00-01.a8gdv.mongodb.net:27017, Type: Unknown }, ] }
+ERROR: 2022/03/30 14:53:52 commonRepository.go:22: server selection error: context deadline exceeded, current topology: { Type: ReplicaSetNoPrimary, Servers: [{ Addr: cluster0-shard-00-00.a8gdv.mongodb.net:27017, Type: RSSecondary, Tag sets: nodeType=ELECTABLE,provider=AWS,region=AP_SOUTH_1,workloadType=OPERATIONAL, Average RTT: 2907029700 }, { Addr: cluster0-shard-00-02.a8gdv.mongodb.net:27017, Type: RSSecondary, Tag sets: region=AP_SOUTH_1,nodeType=ELECTABLE,workloadType=OPERATIONAL,provider=AWS, Average RTT: 1989612900 }, { Addr: cluster0-shard-00-01.a8gdv.mongodb.net:27017, Type: Unknown }, ] }
+ERROR: 2022/03/30 14:53:52 commonRepository.go:22: server selection error: context deadline exceeded, current topology: { Type: ReplicaSetNoPrimary, Servers: [{ Addr: cluster0-shard-00-00.a8gdv.mongodb.net:27017, Type: RSSecondary, Tag sets: nodeType=ELECTABLE,workloadType=OPERATIONAL,provider=AWS,region=AP_SOUTH_1, Average RTT: 1063293900 }, { Addr: cluster0-shard-00-02.a8gdv.mongodb.net:27017, Type: RSSecondary, Tag sets: nodeType=ELECTABLE,workloadType=OPERATIONAL,provider=AWS,region=AP_SOUTH_1, Average RTT: 2799954500 }, { Addr: cluster0-shard-00-01.a8gdv.mongodb.net:27017, Type: Unknown }, ] }
+ERROR: 2022/03/30 15:00:04 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/30 15:00:14 commonRepository.go:22: server selection error: context deadline exceeded, current topology: { Type: ReplicaSetNoPrimary, Servers: [{ Addr: cluster0-shard-00-00.a8gdv.mongodb.net:27017, Type: Unknown }, { Addr: cluster0-shard-00-02.a8gdv.mongodb.net:27017, Type: Unknown }, { Addr: cluster0-shard-00-01.a8gdv.mongodb.net:27017, Type: Unknown }, ] }
+ERROR: 2022/03/30 15:00:14 commonRepository.go:22: server selection error: context deadline exceeded, current topology: { Type: ReplicaSetNoPrimary, Servers: [{ Addr: cluster0-shard-00-00.a8gdv.mongodb.net:27017, Type: Unknown }, { Addr: cluster0-shard-00-02.a8gdv.mongodb.net:27017, Type: Unknown }, { Addr: cluster0-shard-00-01.a8gdv.mongodb.net:27017, Type: Unknown }, ] }
+ERROR: 2022/03/30 15:00:14 commonRepository.go:22: server selection error: context deadline exceeded, current topology: { Type: ReplicaSetNoPrimary, Servers: [{ Addr: cluster0-shard-00-00.a8gdv.mongodb.net:27017, Type: Unknown }, { Addr: cluster0-shard-00-02.a8gdv.mongodb.net:27017, Type: Unknown }, { Addr: cluster0-shard-00-01.a8gdv.mongodb.net:27017, Type: Unknown }, ] }
+ERROR: 2022/03/30 15:06:12 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/30 15:06:22 commonRepository.go:22: server selection error: context deadline exceeded, current topology: { Type: ReplicaSetNoPrimary, Servers: [{ Addr: cluster0-shard-00-00.a8gdv.mongodb.net:27017, Type: Unknown }, { Addr: cluster0-shard-00-01.a8gdv.mongodb.net:27017, Type: Unknown }, { Addr: cluster0-shard-00-02.a8gdv.mongodb.net:27017, Type: Unknown }, ] }
+ERROR: 2022/03/30 15:06:22 commonRepository.go:22: server selection error: context deadline exceeded, current topology: { Type: ReplicaSetNoPrimary, Servers: [{ Addr: cluster0-shard-00-00.a8gdv.mongodb.net:27017, Type: Unknown }, { Addr: cluster0-shard-00-01.a8gdv.mongodb.net:27017, Type: Unknown }, { Addr: cluster0-shard-00-02.a8gdv.mongodb.net:27017, Type: Unknown }, ] }
+ERROR: 2022/03/30 15:06:22 commonRepository.go:22: server selection error: context deadline exceeded, current topology: { Type: ReplicaSetNoPrimary, Servers: [{ Addr: cluster0-shard-00-00.a8gdv.mongodb.net:27017, Type: Unknown }, { Addr: cluster0-shard-00-01.a8gdv.mongodb.net:27017, Type: Unknown }, { Addr: cluster0-shard-00-02.a8gdv.mongodb.net:27017, Type: Unknown }, ] }
+ERROR: 2022/03/30 15:09:25 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/30 15:09:43 commonRepository.go:22: server selection error: context deadline exceeded, current topology: { Type: Unknown, Servers: [{ Addr: cluster0-shard-00-01.a8gdv.mongodb.net:27017, Type: Unknown }, { Addr: cluster0-shard-00-02.a8gdv.mongodb.net:27017, Type: Unknown }, { Addr: cluster0-shard-00-00.a8gdv.mongodb.net:27017, Type: Unknown }, ] }
+ERROR: 2022/03/30 15:09:43 commonRepository.go:22: server selection error: context deadline exceeded, current topology: { Type: Unknown, Servers: [{ Addr: cluster0-shard-00-01.a8gdv.mongodb.net:27017, Type: Unknown }, { Addr: cluster0-shard-00-02.a8gdv.mongodb.net:27017, Type: Unknown }, { Addr: cluster0-shard-00-00.a8gdv.mongodb.net:27017, Type: Unknown }, ] }
+ERROR: 2022/03/30 15:09:43 commonRepository.go:22: server selection error: context deadline exceeded, current topology: { Type: Unknown, Servers: [{ Addr: cluster0-shard-00-01.a8gdv.mongodb.net:27017, Type: Unknown }, { Addr: cluster0-shard-00-02.a8gdv.mongodb.net:27017, Type: Unknown }, { Addr: cluster0-shard-00-00.a8gdv.mongodb.net:27017, Type: Unknown }, ] }
+ERROR: 2022/03/30 15:25:23 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/30 15:31:04 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/30 17:14:18 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/30 17:26:09 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/30 17:29:50 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/30 17:35:01 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/30 17:40:58 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/30 17:52:04 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/30 17:54:18 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/30 17:56:27 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/30 18:07:27 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/30 18:10:13 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/30 18:15:50 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/30 18:57:23 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/30 18:59:43 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/30 20:23:02 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/30 20:23:26 commonRepository.go:22: server selection error: context deadline exceeded, current topology: { Type: Unknown, Servers: [{ Addr: cluster0-shard-00-01.a8gdv.mongodb.net:27017, Type: Unknown }, { Addr: cluster0-shard-00-02.a8gdv.mongodb.net:27017, Type: Unknown }, { Addr: cluster0-shard-00-00.a8gdv.mongodb.net:27017, Type: Unknown }, ] }
+ERROR: 2022/03/30 20:23:26 commonRepository.go:22: server selection error: context deadline exceeded, current topology: { Type: Unknown, Servers: [{ Addr: cluster0-shard-00-01.a8gdv.mongodb.net:27017, Type: Unknown }, { Addr: cluster0-shard-00-02.a8gdv.mongodb.net:27017, Type: Unknown }, { Addr: cluster0-shard-00-00.a8gdv.mongodb.net:27017, Type: Unknown }, ] }
+ERROR: 2022/03/30 20:23:26 commonRepository.go:22: server selection error: context deadline exceeded, current topology: { Type: Unknown, Servers: [{ Addr: cluster0-shard-00-01.a8gdv.mongodb.net:27017, Type: Unknown }, { Addr: cluster0-shard-00-02.a8gdv.mongodb.net:27017, Type: Unknown }, { Addr: cluster0-shard-00-00.a8gdv.mongodb.net:27017, Type: Unknown }, ] }
+ERROR: 2022/03/30 20:33:09 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/30 20:41:12 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/30 20:43:20 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/30 20:46:00 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/31 09:47:23 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/31 10:35:39 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/31 10:42:11 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/31 11:04:38 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/31 11:09:54 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/31 11:20:53 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/31 11:26:18 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/31 11:33:36 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/31 11:43:10 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/03/31 11:55:26 nftHandler.go:28: json: cannot unmarshal string into Go struct field NFT.tags of type []string

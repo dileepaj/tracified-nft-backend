@@ -1,6 +1,8 @@
 package validations
 
 import (
+	"log"
+
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/go-playground/validator/v10"
@@ -44,7 +46,8 @@ func ValidateMakeSale(e requestDtos.UpdateNFTSALERequest) error {
 	return nil
 }
 
-func ValidateRequestNFTObject(e requestDtos.CreateNFTRequest) error {
+func ValidateRequestNFTObject(e models.NFT) error {
+	log.Println("------------------in validation---------------")
 	validate = validator.New()
 	err := validate.Struct(e)
 	if err != nil {
