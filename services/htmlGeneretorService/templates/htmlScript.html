@@ -72,7 +72,7 @@
         createCard(cardId, "Image")
         let image = document.createElement("img")
         image.alt = ""
-        image.src = `data:image/${data.Type};base64,${data.Base64Image}`
+        image.src = data.Base64Image
         image.width = '500'
         image.height = '400'
         let imageNode = document.getElementById(cardId);
