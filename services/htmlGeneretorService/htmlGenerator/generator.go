@@ -2,7 +2,6 @@ package htmlGenerator
 
 import (
 	"encoding/json"
-	"fmt"
 	"strconv"
 
 	"github.com/dileepaj/tracified-nft-backend/models"
@@ -114,8 +113,7 @@ func GenerateHTMLTemplate(htmlData models.HtmlGenerator) (string, error) {
 						}
 					}
 				}
-			}else{
-
+			} else {
 			}
 		}
 	}
@@ -130,6 +128,5 @@ func GenerateHTMLTemplate(htmlData models.HtmlGenerator) (string, error) {
 	` + endScript + `
 	` + documentEnd
 
-	fmt.Println("--------------", jsScripts)
 	return template, nil
 }

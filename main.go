@@ -11,10 +11,10 @@ import (
 
 func main() {
 	fmt.Println("Tracified Backend")
-	configs.LoadEnv()
+
 	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization", "Token"})
 	originsOk := handlers.AllowedOrigins([]string{"*"})
-	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT","DELETE", "OPTIONS"})
+	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"})
 	// Start API
 	router := routes.NewRouter()
 	http.Handle("/api/", router)
