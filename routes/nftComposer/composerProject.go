@@ -132,25 +132,25 @@ var ComposerRoutes = models.Routers{
 	models.Router{
 		Name:    "Remove Table",
 		Method:  "DELETE",
-		Path:    "/api/html/table/{widgetId",
+		Path:    "/api/html/table/{widgetId}",
 		Handler: apiHandler.RemoveTable,
 	},
 	models.Router{
 		Name:    "Remove Proofbot",
 		Method:  "DELETE",
-		Path:    "/api/html/proofbot/{widgetId",
+		Path:    "/api/html/proofbot/{widgetId}",
 		Handler: apiHandler.RemoveProofBot,
 	},
 	models.Router{
 		Name:    "Remove Stats",
 		Method:  "DELETE",
-		Path:    "/api/html/stats/{widgetId",
+		Path:    "/api/html/stats/{widgetId}",
 		Handler: apiHandler.RemoveStats,
 	},
 	models.Router{
 		Name:    "Remove Image",
 		Method:  "DELETE",
-		Path:    "/api/html/image/{widgetId",
+		Path:    "/api/html/image/{widgetId}",
 		Handler: apiHandler.RemoveImage,
 	},
 }
