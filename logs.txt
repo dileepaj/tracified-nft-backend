@@ -1,0 +1,20 @@
+ERROR: 2022/03/29 00:08:24 main.go:26: Error loading .env1 file
+ERROR: 2022/03/29 00:10:08 main.go:26: Error loading .env1 file
+ERROR: 2022/03/29 00:14:23 main.go:26: Error loading .env1 file
+ERROR: 2022/03/29 00:34:18 main.go:26: Error loading .env1 file
+ERROR: 2022/03/29 09:17:09 main.go:26: Error loading .env1 file
+ERROR: 2022/04/01 13:58:57 commonRepository.go:49: server selection error: server selection timeout, current topology: { Type: ReplicaSetNoPrimary, Servers: [{ Addr: cluster0-shard-00-00.a8gdv.mongodb.net:27017, Type: Unknown, Last error: connection() error occured during connection handshake: dial tcp 35.154.119.205:27017: i/o timeout }, { Addr: cluster0-shard-00-01.a8gdv.mongodb.net:27017, Type: Unknown, Last error: connection() error occured during connection handshake: dial tcp 13.234.58.23:27017: i/o timeout }, { Addr: cluster0-shard-00-02.a8gdv.mongodb.net:27017, Type: Unknown, Last error: connection() error occured during connection handshake: dial tcp 13.235.41.124:27017: i/o timeout }, ] }
+ERROR: 2022/04/01 13:58:57 reviewRepository.go:32: server selection error: server selection timeout, current topology: { Type: ReplicaSetNoPrimary, Servers: [{ Addr: cluster0-shard-00-00.a8gdv.mongodb.net:27017, Type: Unknown, Last error: connection() error occured during connection handshake: dial tcp 35.154.119.205:27017: i/o timeout }, { Addr: cluster0-shard-00-01.a8gdv.mongodb.net:27017, Type: Unknown, Last error: connection() error occured during connection handshake: dial tcp 13.234.58.23:27017: i/o timeout }, { Addr: cluster0-shard-00-02.a8gdv.mongodb.net:27017, Type: Unknown, Last error: connection() error occured during connection handshake: dial tcp 13.235.41.124:27017: i/o timeout }, ] }
+ERROR: 2022/04/04 12:10:03 reviewhandler.go:24: json: cannot unmarshal string into Go struct field Review.rating of type uint
+ERROR: 2022/04/04 12:10:14 reviewhandler.go:24: json: cannot unmarshal string into Go struct field Review.rating of type uint
+ERROR: 2022/04/04 12:12:49 reviewhandler.go:24: json: cannot unmarshal number 7.5 into Go struct field Review.rating of type uint
+ERROR: 2022/04/04 12:13:34 reviewhandler.go:24: json: cannot unmarshal number 7.6 into Go struct field Review.rating of type uint
+ERROR: 2022/04/04 12:14:44 reviewhandler.go:24: json: cannot unmarshal string into Go struct field Review.rating of type float32
+ERROR: 2022/04/04 12:15:31 reviewhandler.go:24: json: cannot unmarshal string into Go struct field Review.rating of type float32
+ERROR: 2022/04/04 12:15:35 reviewhandler.go:24: json: cannot unmarshal string into Go struct field Review.rating of type float32
+ERROR: 2022/04/04 12:15:40 reviewhandler.go:24: json: cannot unmarshal string into Go struct field Review.rating of type float32
+ERROR: 2022/04/04 12:20:01 reviewhandler.go:24: json: cannot unmarshal string into Go struct field Review.rating of type float32
+ERROR: 2022/04/04 12:21:47 reviewhandler.go:24: json: cannot unmarshal string into Go struct field Review.rating of type float32
+ERROR: 2022/04/04 12:30:18 reviewhandler.go:24: json: cannot unmarshal string into Go struct field Review.rating of type float32
+ERROR: 2022/04/04 12:31:41 reviewhandler.go:24: json: cannot unmarshal string into Go struct field Review.rating of type float32
+ERROR: 2022/04/04 12:45:22 reviewhandler.go:24: json: cannot unmarshal string into Go struct field Review.rating of type float32
