@@ -3,7 +3,7 @@ node {
     currentBuild.result = "SUCCESS"
     env.AWS_ECR_LOGIN = true
     checkout scm
-    docker.image('golang:1.17').inside('-u root') {
+    docker.image('golang:1.18').inside('-u root') {
         stage('Setup') {
                    echo 'Setting up environment'
                    echo env.BRANCH_NAME
@@ -37,7 +37,7 @@ node {
                 docker.withRegistry('https://453230908534.dkr.ecr.ap-south-1.amazonaws.com/tracified/nft-backend', 'ecr:ap-south-1:aws-ecr-credentials') {
                   echo 'Building image'
                   echo "${env.BUILD_ID}"
-                  def releaseImage = docker.build("tracified/nft-backend-qa:${env.BUILD_ID}")
+                  def releaseImage = docker.build("tracified/nft-backend:${env.BUILD_ID}")
                   releaseImage.push()
                   releaseImage.push('latest')
                 }

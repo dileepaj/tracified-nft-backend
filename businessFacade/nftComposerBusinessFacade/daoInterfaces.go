@@ -3,3 +3,4 @@ package nftComposerBusinessFacade
 import "github.com/dileepaj/tracified-nft-backend/database/repository/nftComposerRepository"
 
 var nftProjectRepository nftComposerRepository.NFTComposerProjectRepository
+var widgetRepository nftComposerRepository.WidgetRepository

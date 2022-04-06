@@ -47,8 +47,8 @@
       debugger: on_failed
       docker_container:
         name: tracified-nft-backend
-        image: 453230908534.dkr.ecr.ap-south-1.amazonaws.com/tracified/nft-backend-qa
-        published_ports: "3009:3009"
+        image: 453230908534.dkr.ecr.ap-south-1.amazonaws.com/tracified/nft-backend
+        published_ports: "6081:6081"
         restart: yes
         restart_policy: on-failure
         state: started
@@ -59,3 +59,5 @@
             BE_PORT: "{{ lookup('env','BE_PORT') }}"
             BE_MONGOLAB_URI: "{{ lookup('env','BE_MONGOLAB_URI') }}"
             BRANCH_NAME: "{{lookup('env','BRANCH_NAME')}}"
+            BACKENDTOKEN: "{{lookup('env','BACKEND_TOKEN')}}"
+            BACKENDBASEURL: "{{lookup('env','BACKEND_BASEURL')}}"
