@@ -137,6 +137,7 @@ func UpdateCollection(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
 func DeleteCollectionById(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	log.Println("-----------------------------------------test 1----------------------------------------")

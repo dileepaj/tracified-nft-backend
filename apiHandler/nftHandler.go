@@ -255,3 +255,30 @@ func GetTagsByNFTIdentifier(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+func UpdateMinter(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	log.Println("-----------------------------inside update handler-------------------")
+	var updateObj requestDtos.UpdateMint
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&updateObj)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+	} else {
+		log.Println("--------------------------------------", updateObj)
+		_, err1 := marketplaceBusinessFacade.UpdateNFT(updateObj)
+		if err1 != nil {
+			ErrorMessage := err1.Error()
+			errors.BadRequest(w, ErrorMessage)
+			return
+		} else {
+			w.WriteHeader(http.StatusOK)
+			message := "Minter updated successfully."
+			err = json.NewEncoder(w).Encode(message)
+			if err != nil {
+				logs.ErrorLogger.Println(err)
+			}
+			return
+		}
+	}
+}
