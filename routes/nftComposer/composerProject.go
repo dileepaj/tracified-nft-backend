@@ -85,6 +85,12 @@ var ComposerRoutes = models.Routers{
 		Path:    "/api/html/image",
 		Handler: apiHandler.SaveImage,
 	},
+	models.Router{
+		Name:    "Save TimeLine",
+		Method:  "POST",
+		Path:    "/api/html/timeline",
+		Handler: apiHandler.SaveTimeline,
+	},
 	// update
 	models.Router{
 		Name:    "Update Chart",
@@ -115,6 +121,12 @@ var ComposerRoutes = models.Routers{
 		Method:  "PUT",
 		Path:    "/api/html/image",
 		Handler: apiHandler.UpdateImage,
+	},
+		models.Router{
+		Name:    "Update Timeline",
+		Method:  "PUT",
+		Path:    "/api/html/timeline",
+		Handler: apiHandler.UpdateTimeline,
 	},
 	// remove
 	models.Router{

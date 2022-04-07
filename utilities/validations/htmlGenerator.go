@@ -80,7 +80,15 @@ func ValidateUpdateImage(e requestDtos.UpdateImageRequest) error {
 		return err
 	}
 	return nil
+}
 
+func ValidateTimelineRequest(e requestDtos.UpdateTimelineRequest) error {
+	validate = validator.New()
+	err := validate.Struct(e)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func ValidateUpdateStats(e requestDtos.UpdateStatsRequest) error {
@@ -101,7 +109,17 @@ func ValidateContentOrderData(e []models.ContentOrderData) error {
 	}
 	return nil
 }
+
 func ValidateImage(e models.ImageData) error {
+	validate = validator.New()
+	err := validate.Struct(e)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func ValidateTimeline(e models.Timeline) error {
 	validate = validator.New()
 	err := validate.Struct(e)
 	if err != nil {

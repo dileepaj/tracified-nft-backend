@@ -4,18 +4,18 @@ import "go.mongodb.org/mongo-driver/bson/primitive"
 
 type Chart struct {
 	WidgetId   string      `json:"WidgetId" bson:"widgetid" validate:"required"`
-	ProjectId   string      `json:"ProjectId" bson:"projectid" validate:"required"`
+	ProjectId  string      `json:"ProjectId" bson:"projectid" validate:"required"`
 	ChartTitle string      `json:"ChartTitle" bson:"charttitle"`
 	ChartData  []ChartData `json:"ChartData" bson:"chartdata"`
 	Color      []string    `json:"Color" bson:"color"`
 	XAxis      string      `json:"XAxis" bson:"xaxis"`
 	YAxis      string      `json:"YAxis" bson:"yaxis"`
 	FontColor  string      `json:"FontColor" bson:"fontcolor"`
-	FontSize   float32      `json:"FontSize" bson:"fontsize"`
-	Width      float32      `json:"Width" bson:"width"`
-	Height     float32      `json:"Height" bson:"height"`
+	FontSize   float32     `json:"FontSize" bson:"fontsize"`
+	Width      float32     `json:"Width" bson:"width"`
+	Height     float32     `json:"Height" bson:"height"`
 	Type       string      `json:"Type" bson:"type" validate:"required"`
-	Domain     []float32       `json:"Domain" bson:"domain"`
+	Domain     []float32   `json:"Domain" bson:"domain"`
 }
 type ChartAndWidget struct {
 	Chart  Chart  `json:"Chart" bson:"chart"`
@@ -32,7 +32,7 @@ type BotWithWidget struct {
 	Widget   Widget       `json:"Widget" bson:"widget"`
 }
 type ChartData struct {
-	Name  string `json:"Name" bson:"name"`
+	Name  string  `json:"Name" bson:"name"`
 	X     float32 `json:"X" bson:"x"`
 	Value float32 `json:"Value" bson:"value"`
 	Y     float32 `json:"Y" bson:"y"`
@@ -102,6 +102,7 @@ type NFTContent struct {
 	Tables       []Table        `json:"Tables" bson:"tables"`
 	Images       []ImageData    `json:"Images" bson:"images"`
 	ProofBot     []ProofBotData `json:"ProofBot" bson:"proofbot"`
+	TimeLine     []Timeline     `json:"Timeline" bson:"timeline"`
 }
 
 type HtmlGenerator struct {
@@ -157,4 +158,28 @@ type ProjectDetail struct {
 	Tables       []TableWithWidget `json:"Tables" bson:"tables"`
 	Images       []ImageData       `json:"Images" bson:"images"`
 	ProofBot     []BotWithWidget   `json:"ProofBot" bson:"proofbot"`
+	Timeline     []Timeline        `json:"Timeline" bson:"timeline"`
+}
+
+type Timeline struct {
+	Id           primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
+	ProjectId    string             `json:"ProjectId" bson:"projectid" validate:"required"`
+	WidgetId     string             `json:"WidgetId" bson:"widgetid" validate:"required"`
+	ArtifactId   string             `json:"ArtifactId" bson:"artifactid"`
+	Timestamp    primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
+	ProductId    string             `json:"productId" bson:"productid"` // item id
+	ProductName  string             `json:"productName" bson:"productname"`
+	TimelineData []TimelineData
+	WidgetType   string `json:"WidgetType" bson:"widgettype"`
+}
+
+type TimelineData struct {
+	Title    string `json:"Title" bson:"title" `
+	Children []Children
+	Icon     string `json:"Icon" bson:"icon" `
+}
+
+type Children struct {
+	Key   string `json:"Key" bson:"Key" `
+	Value string `json:"Value" bson:"value" `
 }

@@ -54,3 +54,12 @@ type UpdateProofBotRequest struct {
 	NFTType   string             `json:"NFTType" bson:"nfttype" validate:"required"`
 	Batch     []models.BotBatch         `json:"Batch" bson:"batch"`
 }
+
+type UpdateTimelineRequest struct {
+	WidgetId     string             `json:"WidgetId" bson:"widgetid" validate:"required"`
+	ArtifactId   string             `json:"ArtifactId" bson:"artifactid"`
+	Timestamp    primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
+	ProductId    string             `json:"productId" bson:"productid"` // item id
+	ProductName  string             `json:"productName" bson:"productname"`
+	TimelineData []models.TimelineData
+}

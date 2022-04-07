@@ -10,7 +10,7 @@ import (
 )
 
 type resultType interface {
-	models.Table | models.Chart | models.StataArray | models.ProofBotData | models.ImageData | models.NFTComposerProject | responseDtos.UpdareProjectResponse | []models.NFTComposerProject | responseDtos.WidgetIdResponse | string | []string | responseDtos.ResponseNFTMakeSale | []models.NFT | responseDtos.QueryResult | []responseDtos.ResponseProject | models.Widget | models.ProjectDetail
+ models.Timeline |	models.Table | models.Chart | models.StataArray | models.ProofBotData | models.ImageData | models.NFTComposerProject | responseDtos.UpdareProjectResponse | []models.NFTComposerProject | responseDtos.WidgetIdResponse | string | []string | responseDtos.ResponseNFTMakeSale | []models.NFT | responseDtos.QueryResult | []responseDtos.ResponseProject | models.Widget | models.ProjectDetail
 }
 
 func SuccessStatus[T resultType](w http.ResponseWriter, result T) {

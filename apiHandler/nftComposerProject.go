@@ -3,6 +3,7 @@ package apiHandler
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/dileepaj/tracified-nft-backend/businessFacade/nftComposerBusinessFacade"
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
@@ -178,8 +179,35 @@ func SaveImage(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+func SaveTimeline(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
+	if ps.Status {
+		var timelineRequest models.Timeline
+		decoder := json.NewDecoder(r.Body)
+		err := decoder.Decode(&timelineRequest)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+		}
+		err = validations.ValidateTimeline(timelineRequest)
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			result, err1 := nftComposerBusinessFacade.SaveTimeline(timelineRequest)
+			if err1 != nil {
+				errors.BadRequest(w, err1.Error())
+			} else {
+				commonResponse.SuccessStatus[string](w, result)
+			}
+		}
+	}
+	w.WriteHeader(http.StatusUnauthorized)
+	logs.ErrorLogger.Println("Status Unauthorized")
+	return
+}
 // Find project by user ID
 func GetRecentProjects(w http.ResponseWriter, r *http.Request) {
+	time.Sleep(1 * time.Second) //for fixing jwt token validation server time issue 
 	w.Header().Set("Content-Type", "application/json;")
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if ps.Status {
@@ -335,6 +363,28 @@ func UpdateImage(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+func UpdateTimeline(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
+	if ps.Status {
+		var updateTimelineRequest requestDtos.UpdateTimelineRequest
+		decoder := json.NewDecoder(r.Body)
+		err := decoder.Decode(&updateTimelineRequest)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+		}
+		err = validations.ValidateTimelineRequest(updateTimelineRequest)
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			nftComposerBusinessFacade.UpdateTimeline(w, updateTimelineRequest)
+		}
+	}
+	w.WriteHeader(http.StatusUnauthorized)
+	logs.ErrorLogger.Println("Status Unauthorized")
+	return
+}
+
 func UpdateStats(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
@@ -358,7 +408,7 @@ func UpdateStats(w http.ResponseWriter, r *http.Request) {
 }
 
 func RemoveProjet(w http.ResponseWriter, r *http.Request) {
-//	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
+	//	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if true {
 		vars := mux.Vars(r)
 		if vars["projectId"] != "" {
@@ -373,7 +423,7 @@ func RemoveProjet(w http.ResponseWriter, r *http.Request) {
 }
 
 func RemoveChart(w http.ResponseWriter, r *http.Request) {
-//	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
+	//	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if true {
 		vars := mux.Vars(r)
 		if vars["widgetId"] != "" {
@@ -388,7 +438,7 @@ func RemoveChart(w http.ResponseWriter, r *http.Request) {
 }
 
 func RemoveTable(w http.ResponseWriter, r *http.Request) {
-//	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
+	//	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if true {
 		vars := mux.Vars(r)
 		if vars["widgetId"] != "" {
@@ -403,7 +453,7 @@ func RemoveTable(w http.ResponseWriter, r *http.Request) {
 }
 
 func RemoveProofBot(w http.ResponseWriter, r *http.Request) {
-	//ps := middleware.HasPermissions(r.Header.Get("Authorization"))
+	// ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if true {
 		vars := mux.Vars(r)
 		if vars["widgetId"] != "" {
@@ -418,7 +468,7 @@ func RemoveProofBot(w http.ResponseWriter, r *http.Request) {
 }
 
 func RemoveImage(w http.ResponseWriter, r *http.Request) {
-	//ps := middleware.HasPermissions(r.Header.Get("Authorization"))
+	// ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if true {
 		vars := mux.Vars(r)
 		if vars["widgetId"] != "" {
@@ -433,11 +483,26 @@ func RemoveImage(w http.ResponseWriter, r *http.Request) {
 }
 
 func RemoveStats(w http.ResponseWriter, r *http.Request) {
-	//ps := middleware.HasPermissions(r.Header.Get("Authorization"))
+	// ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if true {
 		vars := mux.Vars(r)
 		if vars["widgetId"] != "" {
-			nftComposerBusinessFacade.RemoveImage(w, vars["widgetId"])
+			nftComposerBusinessFacade.RemoveStats(w, vars["widgetId"])
+		} else {
+			commonResponse.RespondWithJSON(w, http.StatusBadRequest, "")
+		}
+	}
+	w.WriteHeader(http.StatusUnauthorized)
+	logs.ErrorLogger.Println("Status Unauthorized")
+	return
+}
+
+func RemoveTimeline(w http.ResponseWriter, r *http.Request) {
+	// ps := middleware.HasPermissions(r.Header.Get("Authorization"))
+	if true {
+		vars := mux.Vars(r)
+		if vars["widgetId"] != "" {
+			nftComposerBusinessFacade.RemoveTimeline(w, vars["widgetId"])
 		} else {
 			commonResponse.RespondWithJSON(w, http.StatusBadRequest, "")
 		}

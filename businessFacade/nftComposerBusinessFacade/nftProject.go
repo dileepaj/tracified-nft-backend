@@ -28,6 +28,10 @@ func SaveImages(project models.ImageData) (string, error) {
 	return nftProjectRepository.SaveImage(project)
 }
 
+func SaveTimeline(timeline models.Timeline) (string, error) {
+	return nftProjectRepository.SaveTimeline(timeline)
+}
+
 func SaveProofBot(project models.ProofBotData) (string, error) {
 	return nftProjectRepository.SaveProofBot(project)
 }
@@ -59,8 +63,9 @@ func GetRecntProjectDetails(projectId string) (models.ProjectDetail, string) {
 		resultStats, err4 := nftProjectRepository.FindStatById("projectid", resultProject.ProjectId)
 		resultImages, err5 := nftProjectRepository.FindImagesById("projectid", resultProject.ProjectId)
 		resultProofbot, err6 := nftProjectRepository.FindProofBotById("projectid", resultProject.ProjectId)
+		resultTimeline, err7 := nftProjectRepository.FindTimelineById("projectid", resultProject.ProjectId)
 
-		if err2 != nil || err3 != nil || err4 != nil || err5 != nil || err6 != nil {
+		if err2 != nil || err3 != nil || err4 != nil || err5 != nil || err6 != nil || err7 != nil {
 			return nftProject, err.Error()
 		}
 
@@ -137,6 +142,7 @@ func GetRecntProjectDetails(projectId string) (models.ProjectDetail, string) {
 			Tables:       tableWithWidget,
 			Images:       resultImages,
 			ProofBot:     botWithWidget,
+			Timeline:     resultTimeline,
 		}
 
 		return responseProject, ""
@@ -198,6 +204,17 @@ func UpdateImages(w http.ResponseWriter, updateImage requestDtos.UpdateImageRequ
 	}
 }
 
+func UpdateTimeline(w http.ResponseWriter, updateTimeline requestDtos.UpdateTimelineRequest) {
+	rst, err := nftProjectRepository.UpdateTimeline(updateTimeline)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else if rst.ProjectId == "" {
+		commonResponse.NoContent(w, "Invalid WidgetId")
+	} else {
+		commonResponse.SuccessStatus(w, rst)
+	}
+}
+
 func UpdateStats(w http.ResponseWriter, updateStat requestDtos.UpdateStatsRequest) {
 	rst, err := nftProjectRepository.UpdateStats(updateStat)
 	if err != nil {
@@ -238,6 +255,10 @@ func RemoveProjet(w http.ResponseWriter, id string) {
 		}
 		_, err6 := repository.Remove("projectid", id, "widget")
 		if err6 != nil {
+			logs.ErrorLogger.Fatalln(err1)
+		}
+		_, err7 := repository.Remove("projectid", id, "timeline")
+		if err7 != nil {
 			logs.ErrorLogger.Fatalln(err1)
 		}
 		commonResponse.SuccessStatus(w, id)
@@ -302,6 +323,19 @@ func RemoveImage(w http.ResponseWriter, id string) {
 
 func RemoveStats(w http.ResponseWriter, id string) {
 	rst, err := repository.Remove("widgetid", id, "stats")
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else if rst <= 0 {
+		commonResponse.NoContent(w, "Invalid WidgetId")
+	} else {
+		commonResponse.RespondWithJSON(w, http.StatusOK, responseDtos.WidgetIdResponse{
+			WidgetId: id,
+		})
+	}
+}
+
+func RemoveTimeline(w http.ResponseWriter, id string) {
+	rst, err := repository.Remove("widgetid", id, "timeline")
 	if err != nil {
 		errors.BadRequest(w, err.Error())
 	} else if rst <= 0 {

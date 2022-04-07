@@ -40,6 +40,10 @@ func (r *NFTComposerProjectRepository) SaveImage(image models.ImageData) (string
 	return repository.Save[models.ImageData](image, "images")
 }
 
+func (r *NFTComposerProjectRepository) SaveTimeline(timeline models.Timeline) (string, error) {
+	return repository.Save[models.Timeline](timeline, "timeline")
+}
+
 func (r *NFTComposerProjectRepository) FindChartById(idName string, id string) ([]models.Chart, error) {
 	var charts []models.Chart
 	rst, err := repository.FindById(idName, id, "charts")
@@ -125,6 +129,25 @@ func (r *NFTComposerProjectRepository) FindImagesById(idName string, id string) 
 	}
 	for rst.Next(context.TODO()) {
 		var image models.ImageData
+		err = rst.Decode(&image)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return Images, err
+		}
+		Images = append(Images, image)
+	}
+	return Images, nil
+}
+
+func (r *NFTComposerProjectRepository) FindTimelineById(idName string, id string) ([]models.Timeline, error) {
+	var Images []models.Timeline
+	rst, err := repository.FindById(idName, id, "timeline")
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+		return Images, err
+	}
+	for rst.Next(context.TODO()) {
+		var image models.Timeline
 		err = rst.Decode(&image)
 		if err != nil {
 			logs.ErrorLogger.Println(err.Error())
@@ -280,6 +303,36 @@ func (r *NFTComposerProjectRepository) UpdateImage(image requestDtos.UpdateImage
 		return imageData, nil
 	} else {
 		return imageData, nil
+	}
+}
+
+func (r *NFTComposerProjectRepository) UpdateTimeline(timeline requestDtos.UpdateTimelineRequest) (models.Timeline, error) {
+	var timelineData models.Timeline
+	pByte, err := bson.Marshal(timeline)
+	if err != nil {
+		return timelineData, err
+	}
+	var updateNew bson.M
+	err = bson.Unmarshal(pByte, &updateNew)
+	if err != nil {
+		return timelineData, err
+	}
+		upsert := true
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+	rst := connections.Connect().Collection("timeline").FindOneAndUpdate(context.TODO(), bson.M{"widgetid": timeline.WidgetId}, bson.D{{Key: "$set", Value: updateNew}},&opt)
+	if rst != nil {
+		err := rst.Decode(&timelineData)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return timelineData, err
+		}
+		return timelineData, nil
+	} else {
+		return timelineData, nil
 	}
 }
 
