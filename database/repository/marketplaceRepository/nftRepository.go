@@ -3,6 +3,7 @@ package marketplaceRepository
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/dileepaj/tracified-nft-backend/database/connections"
 	"github.com/dileepaj/tracified-nft-backend/database/repository"
@@ -105,6 +106,26 @@ func (r *NFTRepository) UpdateNFTSALE(nft requestDtos.UpdateNFTSALERequest) (res
 	} else {
 		return responseMakeSaleNFT, nil
 	}
+}
+
+func (repository *NFTRepository) UpdateNFTMinter(nft requestDtos.UpdateMint) (responseDtos.ResponseNFTMinter, error) {
+	var responseNFT responseDtos.ResponseNFTMinter
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	update := bson.M{
+		"$set": bson.M{"nftissuerpk": nft.NFTIssuerPK},
+	}
+	upsert := false
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+	err := connections.Connect().Collection("nft").FindOneAndUpdate(ctx, bson.M{"imagebase64": nft.Imagebase64}, update, &opt).Decode(&responseNFT)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+	}
+	return responseNFT, err
 }
 
 func (repository *NFTRepository) FindTagsbyNFTIdentifier(idName1 string, id1 string) ([]models.Tags, error) {

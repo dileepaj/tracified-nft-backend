@@ -90,3 +90,7 @@ func GetTagsByNFTIdentifier(nftid string) ([]models.Tags, error) {
 	return nftRepository.FindTagsbyNFTIdentifier("nftidentifier", nftid)
 
 }
+
+func UpdateNFT(update requestDtos.UpdateMint) (responseDtos.ResponseNFTMinter, error) {
+	return nftRepository.UpdateNFTMinter(update)
+}

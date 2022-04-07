@@ -15,6 +15,12 @@ var NftRoutes = models.Routers{
 		Handler: apiHandler.CreateNFT,
 	},
 	models.Router{
+		Name:    "Update NFT",
+		Method:  "PUT",
+		Path:    "/api/marketplace/nft",
+		Handler: apiHandler.UpdateMinter,
+	},
+	models.Router{
 		Name:    "Save Ownership",
 		Method:  "POST",
 		Path:    "/api/marketplace/owner",
