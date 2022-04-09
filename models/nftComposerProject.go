@@ -139,8 +139,8 @@ type Widget struct {
 	ArtifactId  string             `json:"ArtifactId" bson:"artifactid"`
 	Timestamp   primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
 	BatchId     string             `json:"BatchId" bson:"bathid"`
-	ProductId   string             `json:"productId" bson:"productid"`
-	ProductName string             `json:"productName" bson:"productname"`
+	ProductId   string             `json:"ProductId" bson:"productid"`
+	ProductName string             `json:"ProductName" bson:"productname"`
 	TenentId    string             `json:"TenentId" bson:"tenentid" validate:"required"`
 	UserId      string             `json:"UserId" bson:"userid" validate:"required"`
 	OTP         string             `json:"OTP" bson:"otp"`
@@ -167,8 +167,8 @@ type Timeline struct {
 	WidgetId     string             `json:"WidgetId" bson:"widgetid" validate:"required"`
 	ArtifactId   string             `json:"ArtifactId" bson:"artifactid"`
 	Timestamp    primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
-	ProductId    string             `json:"productId" bson:"productid"` // item id
-	ProductName  string             `json:"productName" bson:"productname"`
+	ProductId    string             `json:"ProductId" bson:"productid"` // item id
+	ProductName  string             `json:"ProductName" bson:"productname"`
 	TimelineData []TimelineData
 	WidgetType   string `json:"WidgetType" bson:"widgettype"`
 }

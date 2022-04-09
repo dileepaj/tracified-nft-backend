@@ -12,6 +12,7 @@ import (
 var (
 	documentStart = services.ReadFromFile("services/htmlGeneretorService/templates/htmlHeader.txt")
 	documentEnd   = `</html>`
+	headeEnd      = `</header>`
 	styleStart    = services.ReadFromFile("services/htmlGeneretorService/templates/htmlStyles.css")
 	body          = services.ReadFromFile("services/htmlGeneretorService/templates/htmlBody.html")
 	mainHandler   = services.ReadFromFile("services/htmlGeneretorService/templates/htmlScript.html")
@@ -34,6 +35,7 @@ func GenerateHTMLTemplate(htmlData models.HtmlGenerator) (string, error) {
 	var proofbot []models.ProofBotData = htmlData.NftContent.ProofBot
 	var bubbleCharts []models.Chart = htmlData.NftContent.BubbleCharts
 	var images []models.ImageData = htmlData.NftContent.Images
+	var Timelines []models.Timeline = htmlData.NftContent.TimeLine
 	var contentOrderData []models.ContentOrderData = htmlData.ContentOrderData
 
 	// take json data convert it to string
@@ -113,13 +115,26 @@ func GenerateHTMLTemplate(htmlData models.HtmlGenerator) (string, error) {
 						}
 					}
 				}
+			} else if element.Type == "Timeline" {
+				if len(Timelines) != 0 {
+					for i, timelineData := range Timelines {
+						if element.WidgetId == timelineData.WidgetId {
+							jsScripts += `
+			displayTimeline(data.NftContent.Timeline[
+		` + strconv.Itoa(i) + `])`
+						}
+					}
+				}
 			} else {
 			}
 		}
 	}
 
 	template := documentStart + `
+	` + `<style>` + `
 	` + styleStart + `
+	` + `</style>` + `
+	` + headeEnd + `
 	` + body + `
 	` + mainHandler + `
 	` + stratScript + `

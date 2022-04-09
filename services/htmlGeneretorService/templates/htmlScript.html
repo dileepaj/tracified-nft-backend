@@ -242,4 +242,46 @@
             }
         });
     }
+
+    function displayTimeline(data) {
+        let cardId = "tracified" + data.WidgetId
+        createCard(cardId, "Timeline")
+        let timelineNode = document.getElementById(cardId);
+
+        let timeline = document.createElement('div')
+        timeline.className = "text-start row"
+        timeline.style = "width: 500px;"
+        let timelineHeader = document.createElement('h3')
+        timelineHeader.appendChild(document.createTextNode("Compnay"));
+        let ulHeader = document.createElement('ul')
+        timeline.append(timelineHeader)
+        data.TimelineData.forEach(tdata => {
+            ulHeader.className = "timeline"
+            let liHeader = document.createElement('li')
+            let llHeader = document.createElement('p')
+            liHeader.className = "timeline-header"
+            liHeader.appendChild(document.createTextNode(tdata.Title))
+            let ul = document.createElement('ul')
+            ul.className = "point"
+            tdata.Children.forEach(data => {
+                let li = document.createElement('li')
+                let p = document.createElement('p')
+                let spanKey = document.createElement('span')
+                spanKey.className = "timeline-key"
+                spanKey.appendChild(document.createTextNode(data.Key))
+                p.appendChild(spanKey)
+                let spanValue = document.createElement('span')
+                spanValue.className = "timeline-value"
+                spanValue.appendChild(document.createTextNode(data.Value))
+                p.appendChild(spanValue)
+                li.appendChild(p)
+                ul.appendChild(li)
+            })
+            ulHeader.append(liHeader)
+            ulHeader.append(ul)
+            timeline.append(ulHeader)
+        })
+        timelineNode.append(timeline)
+    }
+
 </script>
