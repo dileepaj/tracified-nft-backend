@@ -408,8 +408,8 @@ func UpdateStats(w http.ResponseWriter, r *http.Request) {
 }
 
 func RemoveProjet(w http.ResponseWriter, r *http.Request) {
-	//	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
-	if true {
+	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
+	if ps.Status {
 		vars := mux.Vars(r)
 		if vars["projectId"] != "" {
 			nftComposerBusinessFacade.RemoveProjet(w, vars["projectId"])
@@ -423,8 +423,8 @@ func RemoveProjet(w http.ResponseWriter, r *http.Request) {
 }
 
 func RemoveChart(w http.ResponseWriter, r *http.Request) {
-	//	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
-	if true {
+	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
+	if ps.Status {
 		vars := mux.Vars(r)
 		if vars["widgetId"] != "" {
 			nftComposerBusinessFacade.RemoveChart(w, vars["widgetId"])
@@ -438,8 +438,8 @@ func RemoveChart(w http.ResponseWriter, r *http.Request) {
 }
 
 func RemoveTable(w http.ResponseWriter, r *http.Request) {
-	//	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
-	if true {
+	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
+	if ps.Status {
 		vars := mux.Vars(r)
 		if vars["widgetId"] != "" {
 			nftComposerBusinessFacade.RemoveTable(w, vars["widgetId"])
@@ -453,8 +453,8 @@ func RemoveTable(w http.ResponseWriter, r *http.Request) {
 }
 
 func RemoveProofBot(w http.ResponseWriter, r *http.Request) {
-	// ps := middleware.HasPermissions(r.Header.Get("Authorization"))
-	if true {
+	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
+	if ps.Status {
 		vars := mux.Vars(r)
 		if vars["widgetId"] != "" {
 			nftComposerBusinessFacade.RemoveProofBot(w, vars["widgetId"])
@@ -468,8 +468,8 @@ func RemoveProofBot(w http.ResponseWriter, r *http.Request) {
 }
 
 func RemoveImage(w http.ResponseWriter, r *http.Request) {
-	// ps := middleware.HasPermissions(r.Header.Get("Authorization"))
-	if true {
+	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
+	if ps.Status {
 		vars := mux.Vars(r)
 		if vars["widgetId"] != "" {
 			nftComposerBusinessFacade.RemoveImage(w, vars["widgetId"])
@@ -483,8 +483,8 @@ func RemoveImage(w http.ResponseWriter, r *http.Request) {
 }
 
 func RemoveStats(w http.ResponseWriter, r *http.Request) {
-	// ps := middleware.HasPermissions(r.Header.Get("Authorization"))
-	if true {
+	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
+	if ps.Status {
 		vars := mux.Vars(r)
 		if vars["widgetId"] != "" {
 			nftComposerBusinessFacade.RemoveStats(w, vars["widgetId"])
@@ -498,8 +498,8 @@ func RemoveStats(w http.ResponseWriter, r *http.Request) {
 }
 
 func RemoveTimeline(w http.ResponseWriter, r *http.Request) {
-	// ps := middleware.HasPermissions(r.Header.Get("Authorization"))
-	if true {
+	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
+	if ps.Status {
 		vars := mux.Vars(r)
 		if vars["widgetId"] != "" {
 			nftComposerBusinessFacade.RemoveTimeline(w, vars["widgetId"])
