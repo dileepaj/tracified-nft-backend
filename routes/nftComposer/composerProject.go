@@ -165,4 +165,10 @@ var ComposerRoutes = models.Routers{
 		Path:    "/api/html/image/{widgetId}",
 		Handler: apiHandler.RemoveImage,
 	},
+		models.Router{
+		Name:    "Remove Tilemine",
+		Method:  "DELETE",
+		Path:    "/api/html/timeline/{widgetId}",
+		Handler: apiHandler.RemoveTimeline,
+	},
 }
