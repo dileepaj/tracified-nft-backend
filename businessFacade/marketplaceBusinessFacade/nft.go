@@ -3,7 +3,6 @@ package marketplaceBusinessFacade
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
@@ -77,7 +76,6 @@ func GetNFTbyTenentName(tenentName string) ([]models.NFT, error) {
 }
 
 func CreateTags(tags models.Tags) (string, error) {
-	log.Println("------------------------------------testing 7 ---------------------------------------------------")
 	return nftRepository.SaveTags(tags)
 }
 
@@ -86,7 +84,6 @@ func GetAllTags() ([]models.Tags, error) {
 	return nftRepository.GetAllTags()
 }
 func GetTagsByNFTIdentifier(nftid string) ([]models.Tags, error) {
-	log.Println("---------------------------------------test 2------------------------------", nftid)
 	return nftRepository.FindTagsbyNFTIdentifier("nftidentifier", nftid)
 
 }
