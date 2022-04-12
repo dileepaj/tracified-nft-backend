@@ -22,7 +22,7 @@ func Save[T models.SaveType](model T, collection string) (string, error) {
 		logs.ErrorLogger.Println(err.Error())
 		return "", err
 	}
-	log.Println("----------------------data saved-------------------------")
+	log.Println("----------------------data saved--common repo-----------------------")
 	id := rst.InsertedID.(primitive.ObjectID)
 	return id.Hex(), nil
 }
