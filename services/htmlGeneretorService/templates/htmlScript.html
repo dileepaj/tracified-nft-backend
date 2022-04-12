@@ -1,0 +1,287 @@
+<script type="text/javascript">
+
+    function displayTable(data) {
+
+        if (!!data.TableContent) {
+            let cardId = "tracified" + data.WidgetId
+            createCard(cardId, "Table")
+            //craete boostarp cards Node and it to barchart 
+            let tableDiv = document.createElement("div")
+            tableDiv.style = "width:500px; heigth:fit-content;"
+            let tableNode = document.createElement("table");
+            tableNode.className = `table table-bordered`;
+            tableNode.innerHTML = data.TableContent
+            tableDiv.append(tableNode)
+            document.getElementById(cardId).appendChild(tableDiv);
+        }
+
+    }
+
+    function displayProofBot(dataArray) {
+        let cardId = "tracified" + dataArray.WidgetId
+        createCard(cardId, "Table")
+        let botNode = document.getElementById(cardId)
+        dataArray.Batch.map((proofBotUrlbatchSpecific, i) => {
+            let batchTitle = document.createElement("h5");
+            batchTitle.className = "text-start"
+            batchTitle.append(document.createTextNode(proofBotUrlbatchSpecific.BatchTitle))
+            botNode.append(batchTitle)
+            proofBotUrlbatchSpecific.BotUrls.map((data) => {
+                const ul = document.createElement("ul");
+                ul.id = `list-group`;
+                ul.className = `list-group mb-4 text-start`;
+                let textNode = document.createTextNode(data.Type)
+                ul.append()
+                data.Urls.map((proof) => {
+                    const li = document.createElement("li");
+                    li.className = `list-group-item`
+                    const textnode = document.createTextNode(proof);
+                    li.appendChild(textnode);
+                    ul.append(li);
+                })
+                let prooftype = document.createElement("div")
+                prooftype.className = `card-title  text-start`;
+                prooftype.append(textNode)
+                botNode.append(prooftype)
+                botNode.append(ul)
+            })
+
+        })
+    }
+
+    function displayStat(data) {
+        let cardId = "tracified" + data.WidgetId
+        createCard(cardId, "Stat")
+        let statNode = document.getElementById(cardId);
+
+        data.StatData.map((detail, i) => {
+            const newDiv = document.createElement("div");
+            newDiv.id = `stat`;
+            newDiv.className = `mb-2`;
+            newDiv.style = `height:70px; width:500px`
+            newDiv.innerHTML = `<h5 style="background-color:${detail.Color}">${detail.Key}</h5>
+                        <h6 >${detail.Value}</h6> `
+            statNode.append(newDiv)
+        })
+
+    }
+
+    function displayImages(data) {
+        let cardId = "tracified" + data.WidgetId
+
+        createCard(cardId, "Image")
+        let image = document.createElement("img")
+        image.alt = ""
+        image.src = data.Base64Image
+        image.width = '500'
+        image.height = '400'
+        let imageNode = document.getElementById(cardId);
+        imageNode.append(image)
+    }
+
+    function createCard(cardId, name) {
+        let card = document.createElement("div")
+        card.className = `card text-center justify-content-center m-3`;
+        card.style = "min-width: 20rem; max-height: fit-content; "
+        let cardTitle = document.createElement("h5")
+        cardTitle.className = "card-header"
+        cardTitle.appendChild(document.createTextNode(name));
+        card.appendChild(cardTitle);
+        let cardBody = document.createElement("div");
+        cardBody.className = "card-body text-center  justify-content-center"
+        cardBody.id = cardId
+        card.append(cardBody)
+        document.getElementById("container").appendChild(card);
+    }
+
+    function createDomCardForCanvas(cardId, name) {
+        let card = document.createElement("div")
+        card.className = `card text-center justify-content-center m-3`;
+        card.style = "min-width: 20rem; max-height: fit-content; "
+        let cardTitle = document.createElement("h5")
+        cardTitle.className = "card-header"
+        cardTitle.appendChild(document.createTextNode(name));
+        card.appendChild(cardTitle);
+        let cardBody = document.createElement("div");
+        cardBody.className = "card-body text-center  justify-content-center"
+        cardBody.id = cardId + `nft`
+        let canv = document.createElement("canvas");
+        canv.id = cardId
+        canv.width = "500"
+        canv.height = "400"
+        cardBody.append(canv)
+        card.append(cardBody)
+        document.getElementById("container").appendChild(card);
+    }
+
+    function displayBarchart(data) {
+        let cardId = "tracified" + data.WidgetId
+        createDomCardForCanvas(cardId, "BarChart")
+        lables = []
+        dataValue = []
+        data.ChartData.forEach(element => {
+            lables.push(element.Name)
+            dataValue.push(element.Value)
+        })
+        let barChartStruct = {
+            labels: lables,
+            datasets: [{
+                label: data.ChartTitle,
+                data: dataValue,
+                backgroundColor: data.Color,
+                borderWidth: 1
+            }]
+        }
+
+        const ctx = document.getElementById(cardId).getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'bar', data: barChartStruct
+            ,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    function displayPiechart(data) {
+        let cardId = "tracified" + data.WidgetId
+        createDomCardForCanvas(cardId, "PieChart")
+        lables = []
+        dataValue = []
+        data.ChartData.forEach(element => {
+            lables.push(element.Name)
+            dataValue.push(element.Value)
+        })
+        let pieChartStruct = {
+            labels: lables,
+            datasets: [{
+                label: data.ChartTitle,
+                data: dataValue,
+                backgroundColor: data.Color,
+                borderWidth: 1
+            }]
+        }
+
+        const ctx = document.getElementById(cardId).getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'pie', data: pieChartStruct
+            ,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    function displayBubblechart(data) {
+        let cardId = "tracified" + data.WidgetId
+        createDomCardForCanvas(cardId, "bubbleChart")
+        lables = []
+        dataValue = []
+        console.log('dataValue', dataValue)
+        data.ChartData.forEach(element => {
+
+            if (element.Value < 50) {
+                lables.push(element.Name)
+                dataValue.push({
+                    x: element.X,
+                    y: element.Y,
+                    r: element.Value
+                })
+            } else if (element.Value > 50 && element.Value < 10000) {
+                lables.push(element.Name)
+                dataValue.push({
+                    x: element.X,
+                    y: element.Y,
+                    r: element.Value / 100
+                })
+            } else if (element.Value > 10000 && element.Value < 100000) {
+                lables.push(element.Name)
+                dataValue.push({
+                    x: element.X,
+                    y: element.Y,
+                    r: element.Value / 10000
+                })
+            } else {
+                lables.push(element.Name)
+                dataValue.push({
+
+                    x: element.X,
+                    y: element.Y,
+                    r: (element.Value) / 100000
+                })
+            }
+        })
+        let bubbleChartStruct = {
+            labels: lables,
+            datasets: [{
+                label: data.ChartTitle,
+                data: dataValue,
+                backgroundColor: data.Color,
+                borderWidth: 1
+            }]
+        }
+
+        const ctx = document.getElementById(cardId).getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'bubble', data: bubbleChartStruct
+            ,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    function displayTimeline(data) {
+        let cardId = "tracified" + data.WidgetId
+        createCard(cardId, "Timeline")
+        let timelineNode = document.getElementById(cardId);
+
+        let timeline = document.createElement('div')
+        timeline.className = "text-start row"
+        timeline.style = "width: 500px;"
+        let timelineHeader = document.createElement('h3')
+        timelineHeader.appendChild(document.createTextNode("Compnay"));
+        let ulHeader = document.createElement('ul')
+        timeline.append(timelineHeader)
+        data.TimelineData.forEach(tdata => {
+            ulHeader.className = "timeline"
+            let liHeader = document.createElement('li')
+            let llHeader = document.createElement('p')
+            liHeader.className = "timeline-header"
+            liHeader.appendChild(document.createTextNode(tdata.Title))
+            let ul = document.createElement('ul')
+            ul.className = "point"
+            tdata.Children.forEach(data => {
+                let li = document.createElement('li')
+                let p = document.createElement('p')
+                let spanKey = document.createElement('span')
+                spanKey.className = "timeline-key"
+                spanKey.appendChild(document.createTextNode(data.Key))
+                p.appendChild(spanKey)
+                let spanValue = document.createElement('span')
+                spanValue.className = "timeline-value"
+                spanValue.appendChild(document.createTextNode(data.Value))
+                p.appendChild(spanValue)
+                li.appendChild(p)
+                ul.appendChild(li)
+            })
+            ulHeader.append(liHeader)
+            ulHeader.append(ul)
+            timeline.append(ulHeader)
+        })
+        timelineNode.append(timeline)
+    }
+
+</script>
