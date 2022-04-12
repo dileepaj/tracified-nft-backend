@@ -20,21 +20,16 @@ import (
 func CreateNFT(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;charset=UTF-8")
 	var test models.NFT
-
-	//var requestNFTObject requestDtos.CreateNFTRequest
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&test)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 	}
 
-	log.Println("---------------------test-------------", test)
-	log.Println("--------------------------------------------------------------inside nft store---------------------", test)
 	err = validations.ValidateRequestNFTObject(test)
 	if err != nil {
 		errors.BadRequest(w, err.Error())
 	} else {
-
 		result, err := marketplaceBusinessFacade.StoreNFT(test)
 		if err != nil {
 			errors.BadRequest(w, err.Error())
@@ -47,15 +42,11 @@ func CreateNFT(w http.ResponseWriter, r *http.Request) {
 func CreateOwner(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	var test2 models.Ownership
-	log.Println("-------------------------------------------testing 1 ------------------------------------")
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&test2)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 	}
-	log.Println("-------------------------------------------testing 2 ------------------------------------")
-	fmt.Println(test2)
-	log.Println("------------------------------------testing 6 ---------------------------------------------------")
 	_, err1 := marketplaceBusinessFacade.StoreOwner(test2)
 	if err1 != nil {
 		ErrorMessage := err1.Error()
@@ -71,7 +62,6 @@ func CreateOwner(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-
 }
 
 func MakeSale(w http.ResponseWriter, r *http.Request) {
@@ -187,14 +177,12 @@ func GetNFTByTenentName(w http.ResponseWriter, r *http.Request) {
 
 func CreateTags(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	log.Println("-------------------------------------------testing 1 ------------------------------------")
 	var tags models.Tags
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&tags)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 	}
-	log.Println("-------------------------------------------testing 2 ------------------------------------")
 	fmt.Println(tags)
 	_, err1 := marketplaceBusinessFacade.CreateTags(tags)
 	if err1 != nil {
@@ -211,7 +199,6 @@ func CreateTags(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-
 }
 
 func GetAllTags(w http.ResponseWriter, r *http.Request) {
@@ -224,7 +211,6 @@ func GetAllTags(w http.ResponseWriter, r *http.Request) {
 		errors.BadRequest(w, ErrorMessage)
 		return
 	} else {
-		fmt.Println("results-----------------------", results)
 		w.WriteHeader(http.StatusOK)
 		err := json.NewEncoder(w).Encode(results)
 		if err != nil {
@@ -237,10 +223,8 @@ func GetAllTags(w http.ResponseWriter, r *http.Request) {
 func GetTagsByNFTIdentifier(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
 	vars := mux.Vars(r)
-	log.Println("---------------------------------------test 1------------------------------")
 	fmt.Println(vars["nftidentifier"])
 	results, err1 := marketplaceBusinessFacade.GetTagsByNFTIdentifier(vars["nftidentifier"])
-	fmt.Println("results-----------------------", results)
 	if err1 != nil {
 		ErrorMessage := err1.Error()
 		errors.BadRequest(w, ErrorMessage)
@@ -253,19 +237,16 @@ func GetTagsByNFTIdentifier(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-
 }
 
 func UpdateMinter(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	log.Println("-----------------------------inside update handler-------------------")
 	var updateObj requestDtos.UpdateMint
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&updateObj)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 	} else {
-		log.Println("--------------------------------------", updateObj)
 		_, err1 := marketplaceBusinessFacade.UpdateNFT(updateObj)
 		if err1 != nil {
 			ErrorMessage := err1.Error()

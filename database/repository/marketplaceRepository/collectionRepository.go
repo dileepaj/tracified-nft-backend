@@ -3,12 +3,10 @@ package marketplaceRepository
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/dileepaj/tracified-nft-backend/database/connections"
 	"github.com/dileepaj/tracified-nft-backend/database/repository"
-
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
@@ -96,15 +94,12 @@ func (repository *CollectionRepository) UpdateCollection(collection requestDtos.
 }
 
 func (repository *CollectionRepository) DeleteCollectionByUserPK(collection requestDtos.DeleteCollectionByUserPK) error {
-	log.Println("-----------------------------------------test 5----------------------------------------")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	log.Println("-----------------------------------------test 6----------------------------------------")
 	result, err := connections.Connect().Collection("collections").DeleteOne(ctx, bson.M{"userid": collection.UserId})
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 	}
-	log.Println("-----------------------------------------test 7----------------------------------------")
 	fmt.Printf("Delete One removed %v document(s)\n", result.DeletedCount)
 	return err
 }
@@ -112,19 +107,16 @@ func (repository *CollectionRepository) DeleteCollectionByUserPK(collection requ
 func (repository *CollectionRepository) DeleteCollectionById(collection requestDtos.DeleteCollectionById) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	log.Println("-----------------------------------------test 6----------------------------------------", collection.Id)
 	result, err := connections.Connect().Collection("collections").DeleteOne(ctx, bson.M{"_id": collection.Id})
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 	}
-	log.Println("-----------------------------------------test 7----------------------------------------")
 	fmt.Printf("DeleteOne removed %v document(s)\n", result.DeletedCount)
 	return err
 }
 
 func (repository *CollectionRepository) FindCollectionbyId(_id string) ([]models.NFTCollection, error) {
 	var collections []models.NFTCollection
-	log.Println("---------------------------------------test 3------------------------------", _id)
 	if _id != "" {
 		findOptions := options.Find()
 		objectId, err := primitive.ObjectIDFromHex(_id)
@@ -138,7 +130,6 @@ func (repository *CollectionRepository) FindCollectionbyId(_id string) ([]models
 			logs.ErrorLogger.Println(err.Error())
 			return collections, err
 		}
-		log.Println("---------------------------------------test 4------------------------------")
 		for rst.Next(context.TODO()) {
 			var collection models.NFTCollection
 			err = rst.Decode((&collection))
@@ -149,7 +140,6 @@ func (repository *CollectionRepository) FindCollectionbyId(_id string) ([]models
 			collections = append(collections, collection)
 
 		}
-		log.Println("---------------------------------------test 5------------------------------", collections)
 		return collections, nil
 	} else {
 		return collections, nil

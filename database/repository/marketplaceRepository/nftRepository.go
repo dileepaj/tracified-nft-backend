@@ -9,7 +9,6 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/database/repository"
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
-
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"go.mongodb.org/mongo-driver/bson"
@@ -110,6 +109,7 @@ func (r *NFTRepository) UpdateNFTSALE(nft requestDtos.UpdateNFTSALERequest) (res
 
 func (repository *NFTRepository) UpdateNFTMinter(nft requestDtos.UpdateMint) (responseDtos.ResponseNFTMinter, error) {
 	var responseNFT responseDtos.ResponseNFTMinter
+	fmt.Println("------------------------inside repo", nft)
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	update := bson.M{
@@ -125,6 +125,7 @@ func (repository *NFTRepository) UpdateNFTMinter(nft requestDtos.UpdateMint) (re
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 	}
+	fmt.Println("-------------------response", responseNFT)
 	return responseNFT, err
 }
 
@@ -132,7 +133,6 @@ func (repository *NFTRepository) FindTagsbyNFTIdentifier(idName1 string, id1 str
 	var tags []models.Tags
 	if idName1 != "" {
 		findOptions := options.Find()
-		//findOptions.SetSort(bson.D{{"nftidentifier", -1}})
 		rst, err := connections.Connect().Collection("tags").Find(context.TODO(), bson.D{{idName1, id1}}, findOptions)
 		if err != nil {
 			logs.ErrorLogger.Println(err.Error())
