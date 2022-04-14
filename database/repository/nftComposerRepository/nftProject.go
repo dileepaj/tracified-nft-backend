@@ -227,7 +227,7 @@ func (r *NFTComposerProjectRepository) UpdateChart(chart requestDtos.UpdateChart
 	if err != nil {
 		return chartdata, err
 	}
-		upsert := true
+		upsert := false
 	after := options.After
 	opt := options.FindOneAndUpdateOptions{
 		ReturnDocument: &after,
@@ -257,7 +257,7 @@ func (r *NFTComposerProjectRepository) UpdateTable(table requestDtos.UpdateTable
 	if err != nil {
 		return tabledata, err
 	}
-	upsert := true
+	upsert := false
 	after := options.After
 	opt := options.FindOneAndUpdateOptions{
 		ReturnDocument: &after,
@@ -287,7 +287,7 @@ func (r *NFTComposerProjectRepository) UpdateImage(image requestDtos.UpdateImage
 	if err != nil {
 		return imageData, err
 	}
-		upsert := true
+		upsert := false
 	after := options.After
 	opt := options.FindOneAndUpdateOptions{
 		ReturnDocument: &after,
@@ -317,7 +317,7 @@ func (r *NFTComposerProjectRepository) UpdateTimeline(timeline requestDtos.Updat
 	if err != nil {
 		return timelineData, err
 	}
-		upsert := true
+		upsert := false
 	after := options.After
 	opt := options.FindOneAndUpdateOptions{
 		ReturnDocument: &after,
@@ -347,7 +347,7 @@ func (r *NFTComposerProjectRepository) UpdateProofBot(proofbot requestDtos.Updat
 	if err != nil {
 		return bot, err
 	}
-		upsert := true
+		upsert := false
 	after := options.After
 	opt := options.FindOneAndUpdateOptions{
 		ReturnDocument: &after,
@@ -377,7 +377,7 @@ func (r *NFTComposerProjectRepository) UpdateStats(stat requestDtos.UpdateStatsR
 	if err != nil {
 		return stastData, err
 	}
-		upsert := true
+		upsert := false
 	after := options.After
 	opt := options.FindOneAndUpdateOptions{
 		ReturnDocument: &after,

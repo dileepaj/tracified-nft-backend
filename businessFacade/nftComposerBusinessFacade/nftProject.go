@@ -50,7 +50,6 @@ func GetRecntProjectDetails(projectId string) (models.ProjectDetail, string) {
 	var piechart []models.ChartAndWidget
 	var bubblechart []models.ChartAndWidget
 	var tableWithWidget []models.TableWithWidget
-	var botWithWidget []models.BotWithWidget
 	resultProject, err := nftProjectRepository.FindNFTProjectOneById("projectid", projectId)
 	if err != nil {
 		return nftProject, err.Error()
@@ -62,7 +61,7 @@ func GetRecntProjectDetails(projectId string) (models.ProjectDetail, string) {
 		resultTables, err3 := nftProjectRepository.FindTableById("projectid", resultProject.ProjectId)
 		resultStats, err4 := nftProjectRepository.FindStatById("projectid", resultProject.ProjectId)
 		resultImages, err5 := nftProjectRepository.FindImagesById("projectid", resultProject.ProjectId)
-		resultProofbot, err6 := nftProjectRepository.FindProofBotById("projectid", resultProject.ProjectId)
+		ProoBotData, err6 := nftProjectRepository.FindProofBotById("projectid", resultProject.ProjectId)
 		resultTimeline, err7 := nftProjectRepository.FindTimelineById("projectid", resultProject.ProjectId)
 
 		if err2 != nil || err3 != nil || err4 != nil || err5 != nil || err6 != nil || err7 != nil {
@@ -118,21 +117,6 @@ func GetRecntProjectDetails(projectId string) (models.ProjectDetail, string) {
 				tableWithWidget = append(tableWithWidget, table)
 			}
 		}
-
-		if len(resultProofbot) != 0 {
-			for _, bot := range resultProofbot {
-				resultWidget, err1 := FindWidgetByWidgetId(bot.WidgetId)
-				if err != nil {
-					logs.ErrorLogger.Println(err1)
-				}
-				bot := models.BotWithWidget{
-					ProofBot: bot,
-					Widget:   resultWidget,
-				}
-				botWithWidget = append(botWithWidget, bot)
-			}
-		}
-
 		responseProject := models.ProjectDetail{
 			Project:      resultProject,
 			BarCharts:    barchart,
@@ -141,7 +125,7 @@ func GetRecntProjectDetails(projectId string) (models.ProjectDetail, string) {
 			Stats:        resultStats,
 			Tables:       tableWithWidget,
 			Images:       resultImages,
-			ProofBot:     botWithWidget,
+			ProofBot:     ProoBotData,
 			Timeline:     resultTimeline,
 		}
 

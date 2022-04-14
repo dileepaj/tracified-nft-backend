@@ -19,33 +19,41 @@
 
     function displayProofBot(dataArray) {
         let cardId = "tracified" + dataArray.WidgetId
-        createCard(cardId, "Table")
+        createCard(cardId, "ProofBot")
         let botNode = document.getElementById(cardId)
-        dataArray.Batch.map((proofBotUrlbatchSpecific, i) => {
-            let batchTitle = document.createElement("h5");
-            batchTitle.className = "text-start"
-            batchTitle.append(document.createTextNode(proofBotUrlbatchSpecific.BatchTitle))
-            botNode.append(batchTitle)
-            proofBotUrlbatchSpecific.BotUrls.map((data) => {
-                const ul = document.createElement("ul");
-                ul.id = `list-group`;
-                ul.className = `list-group mb-4 text-start`;
-                let textNode = document.createTextNode(data.Type)
-                ul.append()
-                data.Urls.map((proof) => {
-                    const li = document.createElement("li");
-                    li.className = `list-group-item`
-                    const textnode = document.createTextNode(proof);
-                    li.appendChild(textnode);
-                    ul.append(li);
-                })
-                let prooftype = document.createElement("div")
-                prooftype.className = `card-title  text-start`;
-                prooftype.append(textNode)
-                botNode.append(prooftype)
-                botNode.append(ul)
-            })
+        dataArray.Data.map((proofBotUrlbatchSpecific, i) => {
+            let botSubcard = document.createElement('div')
+            botSubcard.className = "card"
+            botNode.append(botSubcard)
+            let p = document.createElement('p')
+            p.className = "text-start"
+            p.append(document.createTextNode(`TxnHash :${proofBotUrlbatchSpecific.TxnHash}`))
+            let p1 = document.createElement('p')
+            p1.className = "text-start"
+            p1.append(document.createTextNode(`ProductName :${dataArray.ProductName}`))
+            botNode.appendChild(p)
+            let p2 = document.createElement('p')
+            p2.className = "text-start"
+            p2.append(document.createTextNode(`Timestamp :${dataArray.Timestamp}`))
+            let p3 = document.createElement('p')
+            p3.className = "text-start"
+            p3.append(document.createTextNode(`Availble Proofs :`))
+            botNode.appendChild(p)
+            botNode.appendChild(p1)
+            botNode.appendChild(p2)
+            botNode.appendChild(p3)
+            if (!!proofBotUrlbatchSpecific.Urls) {
+                proofBotUrlbatchSpecific.Urls.map((data) => {
+                    let p = document.createElement("p");
+                    p.className = "text-start"
+                    let anchor = document.createElement('a');
+                    anchor.href = data.Url;
+                    anchor.innerText = data.Type;
+                    p.appendChild(anchor);
+                    botNode.append(p);
 
+                })
+            }
         })
     }
 

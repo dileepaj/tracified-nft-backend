@@ -48,11 +48,15 @@ type UpdateImageRequest struct {
 	Base64Image string `json:"Base64Image" bson:"base64image" validate:"required"`
 }
 type UpdateProofBotRequest struct {
-	WidgetId  string             `json:"WidgetId" bson:"widgetid" validate:"required"`
-	BotTitle  string             `json:"BotTitle" bson:"bottitle"`
-	Timestamp primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
-	NFTType   string             `json:"NFTType" bson:"nfttype" validate:"required"`
-	Batch     []models.BotBatch         `json:"Batch" bson:"batch"`
+	WidgetId    string             `json:"WidgetId" bson:"widgetid" validate:"required"`
+	Timestamp   primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
+	ArtifactId  string             `json:"ArtifactId" bson:"artifactid"`
+	ProductId   string             `json:"ProductId" bson:"productid"`
+	ProductName string             `json:"ProductName" bson:"productname"`
+	TenentId    string             `json:"TenentId" bson:"tenentid" validate:"required"`
+	OTPType     string             `json:"OTPType" bson:"otptype"`
+	WidgetType  string             `json:"WidgetType" bson:"widgettype"`
+	Data        []models.ProofData
 }
 
 type UpdateTimelineRequest struct {
