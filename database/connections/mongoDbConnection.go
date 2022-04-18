@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"time"
+
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -20,6 +21,7 @@ func Connect() *mongo.Database {
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
 		log.Fatal("Error while connecting to the DB : " + err.Error())
+		panic(err)
 	}
 	return client.Database("nftBackendQa")
 }
