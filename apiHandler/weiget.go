@@ -18,6 +18,7 @@ import (
 func SaveWidget(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
+	
 	if ps.Status {
 		var createWidgetResponse models.Widget
 		decoder := json.NewDecoder(r.Body)
@@ -29,9 +30,9 @@ func SaveWidget(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			errors.BadRequest(w, err.Error())
 		} else {
-			result, err := nftComposerBusinessFacade.SaveWidget(createWidgetResponse)
-			if err != "" {
-				errors.BadRequest(w, err)
+			result, err := nftComposerBusinessFacade.SaveWidget(createWidgetResponse,r.Header.Get("Authorization"))
+			if err != nil {
+				errors.BadRequest(w, err.Error())
 			} else {
 				commonResponse.RespondWithJSON(w, http.StatusOK, result)
 			}
@@ -56,7 +57,7 @@ func UpdateWidget(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			errors.BadRequest(w, err.Error())
 		} else {
-			result, err := nftComposerBusinessFacade.ChangeWidget(updateWidgetResponse)
+			result, err := nftComposerBusinessFacade.ChangeWidget(updateWidgetResponse,r.Header.Get("Authorization"))
 			if err != nil {
 				errors.BadRequest(w, err.Error())
 			} else {

@@ -10,17 +10,24 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-/**
-build the Database connection with mongodb
-**/
-func Connect() *mongo.Database {
-	connectionString := os.Getenv("BE_MONGOLAB_URI")
-	clientOptions := options.Client().ApplyURI(connectionString)
+var mgoSession mongo.Session
+var DbName="nftBackendQa"
+
+func GetMongoSession() (mongo.Session, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	client, err := mongo.Connect(ctx, clientOptions)
-	if err != nil {
-		log.Println("Error while connecting to the DB : " + err.Error())
+	connectionString := os.Getenv("BE_MONGOLAB_URI")
+	if mgoSession == nil {
+		var err error
+		mongoClient, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionString))
+		if err != nil {
+			return nil, err
+		}
+		mgoSession, err = mongoClient.StartSession()
+		if err != nil {
+			log.Println("Error while connecting to the DB : " + err.Error())
+			return nil, err
+		}
 	}
-	return client.Database("nftBackendQa")
+	return mgoSession, nil
 }

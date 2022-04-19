@@ -1,19 +1,19 @@
 package otpService
 
 import (
+	"encoding/json"
 	"errors"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/dileepaj/tracified-nft-backend/configs"
+	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 )
 
-var (
-	baseUrl = configs.GetBackeBaseUrl() + "/traceabilityProfiles/ecommerce/nft/"
-	token   = configs.GetBackenToken()
-)
+var baseUrl = configs.GetBackeBaseUrl() + "/traceabilityProfiles/ecommerce/nft/"
 
-func GetOtpForBatch(productId string, batchId string, otpType string) (string, error) {
+func GetOtpForBatchURL(productId string, batchId string, otpType string, token string) (string, error) {
 	if otpType == "Batch" && productId != "" && batchId != "" {
 		url := baseUrl + productId + "/" + batchId
 		req, err := http.NewRequest("GET", url, nil)
@@ -34,7 +34,7 @@ func GetOtpForBatch(productId string, batchId string, otpType string) (string, e
 	}
 }
 
-func GetOtpForArtifact(artifactId string, otpType string) (string, error) {
+func GetOtpForArtifactURL(artifactId string, otpType string, token string) (string, error) {
 	if otpType == "Artifact" && artifactId != "" {
 		url := baseUrl + "artifact/id/" + artifactId
 		req, err := http.NewRequest("GET", url, nil)
@@ -52,5 +52,27 @@ func GetOtpForArtifact(artifactId string, otpType string) (string, error) {
 		return string(body), nil
 	} else {
 		return "", errors.New("Invalied OTP Type or artifact")
+	}
+}
+
+func GetOtpJSON(otpUrl string, bearerToken string) (string, error) {
+	var otp responseDtos.OTP
+	json.Unmarshal([]byte(otpUrl), &otp)
+	req, err := http.NewRequest("GET", otp.Url, nil)
+	if err != nil {
+		return "", err
+	}
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer res.Body.Close()
+	req.Header.Add("authorization", bearerToken)
+	req.Header.Add("cache-control", "no-cache")
+	body, _ := ioutil.ReadAll(res.Body)
+	if strings.HasPrefix(string(body), "[{") {
+		return string(body), nil
+	} else {
+		return "", errors.New("Invalid Json Formate")
 	}
 }
