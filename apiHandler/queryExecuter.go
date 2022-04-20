@@ -27,7 +27,7 @@ func QueryExecuter(w http.ResponseWriter, r *http.Request) {
 			errors.BadRequest(w, err.Error())
 			return
 		} else {
-			nftComposerBusinessFacade.QueryExecuter(w, requestWidget)
+			nftComposerBusinessFacade.QueryExecuter(w, requestWidget,r.Header.Get("Authorization"))
 			return
 		}
 	}

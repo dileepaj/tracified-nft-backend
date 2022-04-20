@@ -1,4 +1,4 @@
-package querylanguageservice
+package queryLanguageService
 
 import (
 	fcl "github.com/TharinduBalasooriya/fcl-go-lib"
@@ -10,12 +10,12 @@ import (
 *This method extract the data from OTP using  query , otp and defs file
 *
 **/
-func QueryExecuter(query string,widget models.Widget)(responseDtos.QueryResult) {
-	var result string = fcl.NewFCLWrapper().GetCommonJSON("services/queryLanguageService/Defs.txt",query,widget.OTP)
-	var queryResult =responseDtos.QueryResult{
-		Result :result,
-		OTPType:widget.OTPType,
-		WidgetId:widget.WidgetId,
+func QueryExecuter(query string, widget models.Widget,OTPJSON string) responseDtos.QueryResult {
+	var result string = fcl.NewFCLWrapper().GetCommonJSON("services/queryLanguageService/Defs.txt", query, OTPJSON)
+	queryResult := responseDtos.QueryResult{
+		Result:   result,
+		OTPType:  widget.OTPType,
+		WidgetId: widget.WidgetId,
 	}
 	return queryResult
 }
