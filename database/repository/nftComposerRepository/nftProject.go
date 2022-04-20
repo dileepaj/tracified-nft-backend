@@ -317,7 +317,7 @@ func (r *NFTComposerProjectRepository) UpdateImage(image requestDtos.UpdateImage
 		ReturnDocument: &after,
 		Upsert:         &upsert,
 	}
-	rst := session.Client().Database(connections.DbName).Collection("tables").FindOneAndUpdate(context.TODO(), bson.M{"widgetid": image.WidgetId}, bson.D{{Key: "$set", Value: updateNew}}, &opt)
+	rst := session.Client().Database(connections.DbName).Collection("images").FindOneAndUpdate(context.TODO(), bson.M{"widgetid": image.WidgetId}, bson.D{{Key: "$set", Value: updateNew}}, &opt)
 	if rst != nil {
 		err := rst.Decode(&imageData)
 		if err != nil {
