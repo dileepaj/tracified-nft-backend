@@ -24,7 +24,7 @@ type UpdateChartRequest struct {
 	WidgetId   string             `json:"WidgetId" bson:"widgetid" validate:"required"`
 	ChartTitle string             `json:"charttitle" bson:"charttitle"`
 	Color      []string           `json:"Color" bson:"color"`
-	ChartData  []models.ChartData `json:"ChartData" bson:"chartdata"`
+	ChartData  []models.ChartData `json:"ChartData" bson:"chartdata" validate:"required"`
 	XAxis      string             `json:"Xaxis" bson:"xaxis"`
 	YAxis      string             `json:"Yaxis" bson:"yaxis"`
 	FontColor  string             `json:"Fontcolor" bson:"fontcolor"`
