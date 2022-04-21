@@ -29,7 +29,7 @@ func SaveWidget(widget models.Widget,token string) (responseDtos.WidgetIdRespons
 	var response responseDtos.WidgetIdResponse
 	var otpString string = ""
 	var err error
-	if widget.WidgetType == "BarChart" || widget.WidgetType == "PieChart" || widget.WidgetType == "BubbleChart" || widget.WidgetType == "Table" || widget.WidgetType == "ProofBot" {
+	if widget.WidgetType == "BarChart" || widget.WidgetType == "PieChart" || widget.WidgetType == "BubbleChart" || widget.WidgetType == "Table"{
 		if widget.OTPType == "Batch" {
 			otpString, err = otpService.GetOtpForBatchURL(widget.ProductId, widget.BatchId, widget.OTPType,token)
 		} else if widget.OTPType == "Artifact" {
@@ -70,7 +70,7 @@ func ChangeWidget(widget requestDtos.UpdateWidgetRequest,token string) (models.W
 	if err != nil {
 		return response, err
 	}
-	if rst.WidgetType == "BarChart" || rst.WidgetType == "PieChart" || rst.WidgetType == "BubbleChart" || rst.WidgetType == "Table" {
+	if rst.WidgetType == "BarChart" || rst.WidgetType == "PieChart" || rst.WidgetType == "BubbleChart"{
 		if widget.OTPType == "Batch" {
 			otpString, err = otpService.GetOtpForBatchURL(widget.ProductId, widget.BatchId, widget.OTPType,token)
 			if err != nil {

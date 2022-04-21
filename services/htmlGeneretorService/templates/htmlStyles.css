@@ -62,3 +62,16 @@ ul.timeline>li:before {
     margin-left: 15px;
     font-style: italic;
 }
+.botCard {
+    background-color: rgba(176, 221, 176, 0.137);
+    margin: 5px;
+}
+
+.botCard p {
+    font-weight: 500;
+    font-size: 12px;
+    margin-top: 1px;
+    margin-bottom: 1px;
+    margin-left: 5px;
+    margin-right: 5px;
+}

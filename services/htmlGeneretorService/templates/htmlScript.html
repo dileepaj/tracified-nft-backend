@@ -23,7 +23,7 @@
         let botNode = document.getElementById(cardId)
         dataArray.Data.map((proofBotUrlbatchSpecific, i) => {
             let botSubcard = document.createElement('div')
-            botSubcard.className = "card"
+            botSubcard.className = "card botCard"
             botNode.append(botSubcard)
             let p = document.createElement('p')
             p.className = "text-start"
@@ -38,10 +38,10 @@
             let p3 = document.createElement('p')
             p3.className = "text-start"
             p3.append(document.createTextNode(`Availble Proofs :`))
-            botNode.appendChild(p)
-            botNode.appendChild(p1)
-            botNode.appendChild(p2)
-            botNode.appendChild(p3)
+            botSubcard.appendChild(p)
+            botSubcard.appendChild(p1)
+            botSubcard.appendChild(p2)
+            botSubcard.appendChild(p3)
             if (!!proofBotUrlbatchSpecific.Urls) {
                 proofBotUrlbatchSpecific.Urls.map((data) => {
                     let p = document.createElement("p");
@@ -50,7 +50,7 @@
                     anchor.href = data.Url;
                     anchor.innerText = data.Type;
                     p.appendChild(anchor);
-                    botNode.append(p);
+                    botSubcard.append(p);
 
                 })
             }
