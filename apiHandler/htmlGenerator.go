@@ -11,10 +11,12 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"github.com/dileepaj/tracified-nft-backend/utilities/middleware"
 	"github.com/dileepaj/tracified-nft-backend/utilities/validations"
+	"github.com/gorilla/context"
 )
 
 // handel the HTML generate POST request(Generatee HTML NFT)
 func HTMLFileGenerator(w http.ResponseWriter, r *http.Request) {
+	defer context.Clear(r)
 	w.Header().Set("Content-Type", "application/json;")
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if ps.Status {
