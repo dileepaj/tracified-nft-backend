@@ -6,9 +6,11 @@ import (
 	"time"
 
 	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
+	"github.com/gorilla/context"
 )
 
 func HealthCheck(w http.ResponseWriter, r *http.Request) {
+	defer context.Clear(r)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	resp := responseDtos.HealthCheckResponse{
 		Note:    "Tracified nft backend up and running",

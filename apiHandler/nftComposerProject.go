@@ -13,11 +13,13 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"github.com/dileepaj/tracified-nft-backend/utilities/middleware"
 	"github.com/dileepaj/tracified-nft-backend/utilities/validations"
+	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
 )
 
 // save html version of NFt and save it's json verson on DB
 func SaveProject(w http.ResponseWriter, r *http.Request) {
+	defer context.Clear(r)
 	w.Header().Set("Content-Type", "application/json;")
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if ps.Status {
@@ -45,6 +47,7 @@ func SaveProject(w http.ResponseWriter, r *http.Request) {
 }
 
 func SaveChart(w http.ResponseWriter, r *http.Request) {
+	defer context.Clear(r)
 	w.Header().Set("Content-Type", "application/json;")
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if ps.Status {
@@ -72,6 +75,7 @@ func SaveChart(w http.ResponseWriter, r *http.Request) {
 }
 
 func SaveTable(w http.ResponseWriter, r *http.Request) {
+	defer context.Clear(r)
 	w.Header().Set("Content-Type", "application/json;")
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if ps.Status {
@@ -99,6 +103,7 @@ func SaveTable(w http.ResponseWriter, r *http.Request) {
 }
 
 func SaveStat(w http.ResponseWriter, r *http.Request) {
+	defer context.Clear(r)
 	w.Header().Set("Content-Type", "application/json;")
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if ps.Status {
@@ -126,6 +131,7 @@ func SaveStat(w http.ResponseWriter, r *http.Request) {
 }
 
 func SaveProofBot(w http.ResponseWriter, r *http.Request) {
+	defer context.Clear(r)
 	w.Header().Set("Content-Type", "application/json;")
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if ps.Status {
@@ -153,6 +159,7 @@ func SaveProofBot(w http.ResponseWriter, r *http.Request) {
 }
 
 func SaveImage(w http.ResponseWriter, r *http.Request) {
+	defer context.Clear(r)
 	w.Header().Set("Content-Type", "application/json;")
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if ps.Status {
@@ -180,6 +187,7 @@ func SaveImage(w http.ResponseWriter, r *http.Request) {
 }
 
 func SaveTimeline(w http.ResponseWriter, r *http.Request) {
+	defer context.Clear(r)
 	w.Header().Set("Content-Type", "application/json;")
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if ps.Status {
@@ -207,6 +215,7 @@ func SaveTimeline(w http.ResponseWriter, r *http.Request) {
 }
 // Find project by user ID
 func GetRecentProjects(w http.ResponseWriter, r *http.Request) {
+	defer context.Clear(r)
 	time.Sleep(1 * time.Second) //for fixing jwt token validation server time issue 
 	w.Header().Set("Content-Type", "application/json;")
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
@@ -230,6 +239,7 @@ func GetRecentProjects(w http.ResponseWriter, r *http.Request) {
 
 // Find project by user ID
 func GetRecentProjectDetails(w http.ResponseWriter, r *http.Request) {
+	defer context.Clear(r)
 	w.Header().Set("Content-Type", "application/json;")
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if ps.Status {
@@ -251,6 +261,7 @@ func GetRecentProjectDetails(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateProject(w http.ResponseWriter, r *http.Request) {
+	defer context.Clear(r)
 	w.Header().Set("Content-Type", "application/json;")
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if ps.Status {
@@ -273,6 +284,7 @@ func UpdateProject(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateChart(w http.ResponseWriter, r *http.Request) {
+	defer context.Clear(r)
 	w.Header().Set("Content-Type", "application/json;")
 
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
@@ -297,6 +309,7 @@ func UpdateChart(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateTable(w http.ResponseWriter, r *http.Request) {
+	defer context.Clear(r)
 	w.Header().Set("Content-Type", "application/json;")
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if ps.Status {
@@ -319,6 +332,7 @@ func UpdateTable(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateProofBot(w http.ResponseWriter, r *http.Request) {
+	defer context.Clear(r)
 	w.Header().Set("Content-Type", "application/json;")
 
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
@@ -342,6 +356,7 @@ func UpdateProofBot(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateImage(w http.ResponseWriter, r *http.Request) {
+	defer context.Clear(r)
 	w.Header().Set("Content-Type", "application/json;")
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if ps.Status {
@@ -364,6 +379,7 @@ func UpdateImage(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateTimeline(w http.ResponseWriter, r *http.Request) {
+	defer context.Clear(r)
 	w.Header().Set("Content-Type", "application/json;")
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if ps.Status {
@@ -386,6 +402,7 @@ func UpdateTimeline(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateStats(w http.ResponseWriter, r *http.Request) {
+	defer context.Clear(r)
 	w.Header().Set("Content-Type", "application/json;")
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if ps.Status {
@@ -408,6 +425,7 @@ func UpdateStats(w http.ResponseWriter, r *http.Request) {
 }
 
 func RemoveProjet(w http.ResponseWriter, r *http.Request) {
+	defer context.Clear(r)
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if ps.Status {
 		vars := mux.Vars(r)
@@ -423,6 +441,7 @@ func RemoveProjet(w http.ResponseWriter, r *http.Request) {
 }
 
 func RemoveChart(w http.ResponseWriter, r *http.Request) {
+	defer context.Clear(r)
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if ps.Status {
 		vars := mux.Vars(r)
@@ -438,6 +457,7 @@ func RemoveChart(w http.ResponseWriter, r *http.Request) {
 }
 
 func RemoveTable(w http.ResponseWriter, r *http.Request) {
+	defer context.Clear(r)
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if ps.Status {
 		vars := mux.Vars(r)
@@ -453,6 +473,7 @@ func RemoveTable(w http.ResponseWriter, r *http.Request) {
 }
 
 func RemoveProofBot(w http.ResponseWriter, r *http.Request) {
+	defer context.Clear(r)
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if ps.Status {
 		vars := mux.Vars(r)
@@ -468,6 +489,7 @@ func RemoveProofBot(w http.ResponseWriter, r *http.Request) {
 }
 
 func RemoveImage(w http.ResponseWriter, r *http.Request) {
+	defer context.Clear(r)
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if ps.Status {
 		vars := mux.Vars(r)
@@ -483,6 +505,7 @@ func RemoveImage(w http.ResponseWriter, r *http.Request) {
 }
 
 func RemoveStats(w http.ResponseWriter, r *http.Request) {
+	defer context.Clear(r)
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if ps.Status {
 		vars := mux.Vars(r)
@@ -498,6 +521,7 @@ func RemoveStats(w http.ResponseWriter, r *http.Request) {
 }
 
 func RemoveTimeline(w http.ResponseWriter, r *http.Request) {
+	defer context.Clear(r)
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if ps.Status {
 		vars := mux.Vars(r)
