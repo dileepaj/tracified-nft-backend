@@ -11,11 +11,17 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+/*
+	This package include the crud opration doe widget collection
+	some crud opetraions use the common repository's crud operations
+*/
+
 type WidgetRepository struct{}
 
+// Widget mongo collection name
 var Widget = "widget"
 
-// Save the multiple widgets
+// Insert the multiple widgets
 func (r *WidgetRepository) SaveWidgetList(widgetList []models.Widget) (string, error) {
 	rst, err := repository.InsertMany[[]models.Widget](widgetList, Widget)
 	if err != nil {
@@ -26,7 +32,7 @@ func (r *WidgetRepository) SaveWidgetList(widgetList []models.Widget) (string, e
 	}
 }
 
-// Save the widgets return the object Id
+// Insert widget return the object Id
 func (r *WidgetRepository) SaveWidget(widget models.Widget) (string, error) {
 	session, err := connections.GetMongoSession()
 	if err != nil {
@@ -43,6 +49,7 @@ func (r *WidgetRepository) SaveWidget(widget models.Widget) (string, error) {
 	return widget.WidgetId, nil
 }
 
+// Find Widgets and update
 func (r *WidgetRepository) FindWidgetAndUpdate(findBy string, id string, update primitive.M) (models.Widget, error) {
 	var widgetResponse models.Widget
 	projection := bson.M{"otp": 0}
@@ -59,6 +66,7 @@ func (r *WidgetRepository) FindWidgetAndUpdate(findBy string, id string, update 
 	}
 }
 
+// Find Widget with otp
 func (r *WidgetRepository) FindWidgetOneByIdWithOtp(idName string, id string) (models.Widget, error) {
 	session, err := connections.GetMongoSession()
 	if err != nil {
@@ -77,6 +85,7 @@ func (r *WidgetRepository) FindWidgetOneByIdWithOtp(idName string, id string) (m
 	}
 }
 
+// Find Widget () without Otp
 func (r *WidgetRepository) FindWidgetOneById(idName string, id string) (models.Widget, error) {
 	var widget models.Widget
 	rst := repository.FindOne[string](idName, id, Widget)
@@ -89,6 +98,7 @@ func (r *WidgetRepository) FindWidgetOneById(idName string, id string) (models.W
 	}
 }
 
+// Find Widgets () without Otp
 func (r *NFTComposerProjectRepository) FindWidgetsById(idName string, id string) ([]models.Widget, error) {
 	var widgets []models.Widget
 	rst, err := repository.FindById(idName, id, Widget)

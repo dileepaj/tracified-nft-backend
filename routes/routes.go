@@ -7,7 +7,7 @@ import (
 )
 
 var ApplicationRoutes models.Routers
-
+//initialize the all routes
 func init() {
 	routes := []models.Routers{
 		testRoutes,

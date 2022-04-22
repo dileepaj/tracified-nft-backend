@@ -12,6 +12,23 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+/*
+	Common crud operations with MongoDB
+	Can execute crud oprations Passing DB name and colletion name
+	Save
+	FindOne
+	Find
+	FindOneAndUpdate
+	Update
+	UpdateOne
+	FindById
+	FindById1AndId2
+	FindIdOneAndNotId2
+	FindByMultipleValue
+	Remove
+*/
+
+// Insert Document
 func Save[T models.SaveType](model T, collection string) (string, error) {
 	session, err := connections.GetMongoSession()
 	if err != nil {
@@ -28,6 +45,7 @@ func Save[T models.SaveType](model T, collection string) (string, error) {
 	return id.Hex(), nil
 }
 
+// Insert Documets
 func InsertMany[T models.InsertManyType](model T, collection string) (string, error) {
 	session, err := connections.GetMongoSession()
 	if err != nil {
@@ -48,6 +66,7 @@ func InsertMany[T models.InsertManyType](model T, collection string) (string, er
 	return id.String(), nil
 }
 
+// Find Documets by Id
 func FindById(idName string, id string, collection string) (*mongo.Cursor, error) {
 	session, err := connections.GetMongoSession()
 	if err != nil {
@@ -67,6 +86,7 @@ func FindById(idName string, id string, collection string) (*mongo.Cursor, error
 	}
 }
 
+// Find One Documets
 func FindOne[T models.FindOneType](idName string, id T, collection string) *mongo.SingleResult {
 	session, err := connections.GetMongoSession()
 	if err != nil {
@@ -80,6 +100,7 @@ func FindOne[T models.FindOneType](idName string, id T, collection string) *mong
 	return rst
 }
 
+// Retrive the Documents filter bt the Id1 and Id2
 func FindById1AndId2(idName1 string, id1 string, idName2 string, id2 string, collection string) (*mongo.Cursor, error) {
 	session, err := connections.GetMongoSession()
 	if err != nil {
@@ -98,6 +119,7 @@ func FindById1AndId2(idName1 string, id1 string, idName2 string, id2 string, col
 	}
 }
 
+// Retrive all document bt Id1 and Not equal to Id2
 func FindById1AndNotId2(idName1 string, id1 string, idName2 string, id2 string, collection string) (*mongo.Cursor, error) {
 	session, err := connections.GetMongoSession()
 	if err != nil {
@@ -116,6 +138,7 @@ func FindById1AndNotId2(idName1 string, id1 string, idName2 string, id2 string, 
 	}
 }
 
+// Find Document using multiple ids
 func FindByFieldInMultipleValus(fields string, tags []string, collection string) (*mongo.Cursor, error) {
 	session, err := connections.GetMongoSession()
 	if err != nil {
@@ -134,6 +157,7 @@ func FindByFieldInMultipleValus(fields string, tags []string, collection string)
 	}
 }
 
+// Find Documet and Update
 func FindOneAndUpdate(findBy string, value string, update primitive.M, projectionData primitive.M, collection string) *mongo.SingleResult {
 	session, err := connections.GetMongoSession()
 	if err != nil {
@@ -151,6 +175,7 @@ func FindOneAndUpdate(findBy string, value string, update primitive.M, projectio
 	return rst
 }
 
+// Delete Document
 func Remove(idName string, id, collection string) (int64, error) {
 	session, err := connections.GetMongoSession()
 	if err != nil {

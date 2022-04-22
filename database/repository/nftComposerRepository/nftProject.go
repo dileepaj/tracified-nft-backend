@@ -12,8 +12,20 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+/*
+	This package include the crud opration for
+	project
+	charts (chart colletion include the barChart,BubbleChart,pieChart)
+	tables
+	images
+	proofbot
+	timelione collection
+	all crud opetraions use the common repository's crud operations
+*/
+
 type NFTComposerProjectRepository struct{}
 
+// NFTComposerProject mongo collection name
 var NFTComposerProject = "nftComopserProject"
 
 func (r *NFTComposerProjectRepository) SaveNFTComposerProject(project models.NFTComposerProject) (string, error) {

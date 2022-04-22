@@ -21,9 +21,11 @@ var (
 )
 
 /**
-*	Generate complete  HTML template for NFT (css,javascript)
-* @function GenerateNFTTemplate
-*
+*	Generate complete  HTML template for NFT with css,javascript
+*   @function GenerateNFTTemplate() this take models.HtmlGenerator as the paramter acording the create the html file response
+*	Steps
+		create the html file by reading the pre defined stryle,js and header files
+		js file method calling step write base on models.HtmlGenerator request data
 **/
 func GenerateHTMLTemplate(htmlData models.HtmlGenerator) (string, error) {
 	// Parse the Data

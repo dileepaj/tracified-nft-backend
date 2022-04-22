@@ -12,51 +12,61 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 )
 
+// Insert Prject details to DB
 func SaveProject(project models.NFTComposerProject) (string, error) {
 	return nftProjectRepository.SaveNFTComposerProject(project)
 }
 
+// Insert Chart details to DB
 func SaveChart(project models.Chart) (string, error) {
 	return nftProjectRepository.SaveChart(project)
 }
 
+// Insert table details to DB
 func SaveTable(project models.Table) (string, error) {
 	return nftProjectRepository.SaveTable(project)
 }
 
+// Insert image details to DB
 func SaveImages(project models.ImageData) (string, error) {
 	return nftProjectRepository.SaveImage(project)
 }
 
+// Insert timeline details to DB
 func SaveTimeline(timeline models.Timeline) (string, error) {
 	return nftProjectRepository.SaveTimeline(timeline)
 }
 
+// Insert proobot details to DB
 func SaveProofBot(project models.ProofBotData) (string, error) {
 	return nftProjectRepository.SaveProofBot(project)
 }
 
+// Insert proobot details to DB
 func SaveStats(project models.StataArray) (string, error) {
 	return nftProjectRepository.SaveStat(project)
 }
 
+// Retrive all project By UserId
 func GetRecntProjects(userid string) ([]models.NFTComposerProject, error) {
 	return nftProjectRepository.FindNFTProjectById("userid", userid)
 }
 
+// Retrive Project with widgets details by projectId
 func GetRecntProjectDetails(projectId string) (models.ProjectDetail, string) {
 	var nftProject models.ProjectDetail
 	var barchart []models.ChartAndWidget
 	var piechart []models.ChartAndWidget
 	var bubblechart []models.ChartAndWidget
 	var tableWithWidget []models.TableWithWidget
+	// find the project by projectId
 	resultProject, err := nftProjectRepository.FindNFTProjectOneById("projectid", projectId)
 	if err != nil {
 		return nftProject, err.Error()
 	} else if resultProject.ProjectId == "" {
 		return nftProject, "Invalid ProjectId"
 	} else {
-
+		// find the charts,tables,images,proofbots,timelines from the specific colection by poject Id
 		resultCharts, err2 := nftProjectRepository.FindChartById("projectid", resultProject.ProjectId)
 		resultTables, err3 := nftProjectRepository.FindTableById("projectid", resultProject.ProjectId)
 		resultStats, err4 := nftProjectRepository.FindStatById("projectid", resultProject.ProjectId)
@@ -64,10 +74,15 @@ func GetRecntProjectDetails(projectId string) (models.ProjectDetail, string) {
 		ProoBotData, err6 := nftProjectRepository.FindProofBotById("projectid", resultProject.ProjectId)
 		resultTimeline, err7 := nftProjectRepository.FindTimelineById("projectid", resultProject.ProjectId)
 
+		// check the error in DB calls
 		if err2 != nil || err3 != nil || err4 != nil || err5 != nil || err6 != nil || err7 != nil {
 			return nftProject, err.Error()
 		}
-
+		/*
+			check the chart length and loop it
+			according to ChartType retrive the specifie widgets to chat from DB(widget collection)
+			both Chart and widget append to Chart array's Chart 
+		*/
 		if len(resultCharts) != 0 {
 			for _, chart := range resultCharts {
 				if chart.Type == "BarChart" {
@@ -103,7 +118,11 @@ func GetRecntProjectDetails(projectId string) (models.ProjectDetail, string) {
 				}
 			}
 		}
-
+		/*
+			check the table length and loop it
+			retrive the specifie widgets to table from DB(widget collection)
+			both Chart and widget append to Chart array's Chart 
+		*/
 		if len(resultTables) != 0 {
 			for _, table := range resultTables {
 				resultWidget, err1 := FindWidgetByWidgetId(table.WidgetId)
