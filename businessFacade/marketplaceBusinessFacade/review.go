@@ -6,6 +6,9 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/models"
 )
 
+/*
+Functions mentioned below passes data to the reviewrepository to execute respective queries.
+*/
 func CreateReview(review models.Review) (string, error) {
 	return reviewRepository.CreateReview(review)
 }

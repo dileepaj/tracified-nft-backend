@@ -2,7 +2,6 @@ package apiHandler
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/dileepaj/tracified-nft-backend/businessFacade/marketplaceBusinessFacade"
@@ -15,15 +14,17 @@ import (
 	"github.com/gorilla/mux"
 )
 
+/*
+These functions decode the json sent via api and passes data to the review businessfacade class
+*/
 func CreateReview(W http.ResponseWriter, r *http.Request) {
 	W.Header().Set("Content-Type", "application/json; charset-UTF-8")
 	var requestCreateReview models.Review
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&requestCreateReview)
 	if err != nil {
-		logs.ErrorLogger.Println(err.Error())
+		logs.ErrorLogger.Println("Error occured while decoding JSON in CreateReview(reviewHandler): ", err.Error())
 	}
-	fmt.Println("value recived : ", requestCreateReview)
 	err = validations.ValidatReview(requestCreateReview)
 	if err != nil {
 		errors.BadRequest(W, err.Error())
@@ -40,7 +41,6 @@ func CreateReview(W http.ResponseWriter, r *http.Request) {
 func GetNFTReviewByNFT(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
 	vars := mux.Vars(r)
-	fmt.Println(vars["nftidentifier"])
 	results, err1 := marketplaceBusinessFacade.GetReviewByNFT(vars["nftidentifier"])
 	if err1 != nil {
 		errors.BadRequest(w, err1.Error())
@@ -48,10 +48,9 @@ func GetNFTReviewByNFT(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		err := json.NewEncoder(w).Encode(results)
 		if err != nil {
-			logs.ErrorLogger.Println(err)
+			logs.ErrorLogger.Println("Error occured while encoding JSON in GetNFTReviewByNFT(reviewHandler): ", err.Error())
 		}
 	}
-	fmt.Println("Results : ", results)
 }
 
 func GetAllReviews(w http.ResponseWriter, r *http.Request) {
@@ -65,7 +64,7 @@ func GetAllReviews(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		err := json.NewEncoder(w).Encode(results)
 		if err != nil {
-			logs.ErrorLogger.Println(err)
+			logs.ErrorLogger.Println("Error occured while encoding JSON in GetAllReviews(reviewHandler): ", err.Error())
 		}
 		return
 	}
@@ -77,7 +76,7 @@ func UpdateReviewStatus(w http.ResponseWriter, r *http.Request) {
 	decorder := json.NewDecoder(r.Body)
 	err := decorder.Decode((&updateReviewStatus))
 	if err != nil {
-		logs.ErrorLogger.Println(err.Error())
+		logs.ErrorLogger.Println("Error occured while decoding JSON in UpdateReviewStatus(reviewHandler):", err.Error())
 	} else {
 		_, err := marketplaceBusinessFacade.UpdateReviewStatus(updateReviewStatus)
 		if err != nil {
@@ -89,7 +88,7 @@ func UpdateReviewStatus(w http.ResponseWriter, r *http.Request) {
 			message := "Review Status has been Updated"
 			err := json.NewEncoder(w).Encode(message)
 			if err != nil {
-				logs.ErrorLogger.Println(err)
+				logs.ErrorLogger.Println("Error occured while encoding JSON in UpdateReviewStatus(reviewHandler):", err.Error())
 			}
 			return
 		}
@@ -102,7 +101,7 @@ func DeleteReview(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&deleteReviewObj)
 	if err != nil {
-		logs.ErrorLogger.Println(err.Error())
+		logs.ErrorLogger.Println("Error occured while decoding JSON in DeleteReview(reviewHandler):", err.Error())
 	} else {
 		err1 := marketplaceBusinessFacade.DeleteReview(deleteReviewObj)
 		if err1 != nil {
@@ -114,7 +113,7 @@ func DeleteReview(w http.ResponseWriter, r *http.Request) {
 			message := "review has been deleted"
 			err = json.NewEncoder(w).Encode(message)
 			if err != nil {
-				logs.ErrorLogger.Println(err)
+				logs.ErrorLogger.Println("Error occured while encode JSON in UpdateReviewStatus(reviewHandler):", err.Error())
 			}
 			return
 		}
