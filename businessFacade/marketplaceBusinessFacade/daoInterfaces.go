@@ -5,9 +5,10 @@ import (
 )
 
 var (
-	nftRepository       marketplaceRepository.NFTRepository
-	ownershipRepository marketplaceRepository.OwnershipRepository
-	watchListRepository marketplaceRepository.WatchListRepository
-	userRepository marketplaceRepository.UserRepository
-	offerRepository marketplaceRepository.OfferRepository
+	nftRepository        marketplaceRepository.NFTRepository
+	ownershipRepository  marketplaceRepository.OwnershipRepository
+	watchListRepository  marketplaceRepository.WatchListRepository
+	userRepository       marketplaceRepository.UserRepository
+	offerRepository      marketplaceRepository.OfferRepository
+	newsletterRepository marketplaceRepository.NewsLetterRepository
 )
