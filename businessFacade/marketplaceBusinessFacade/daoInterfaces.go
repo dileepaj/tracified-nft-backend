@@ -11,4 +11,5 @@ var (
 	userRepository      marketplaceRepository.UserRepository
 	offerRepository     marketplaceRepository.OfferRepository
 	reviewRepository    marketplaceRepository.ReviewRepository
+	faqRepository       marketplaceRepository.FaqRepository
 )
