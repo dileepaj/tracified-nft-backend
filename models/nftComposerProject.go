@@ -16,6 +16,7 @@ type Chart struct {
 	Height     float32     `json:"Height" bson:"height"`
 	Type       string      `json:"Type" bson:"type" validate:"required"`
 	Domain     []float32   `json:"Domain" bson:"domain"`
+	ChartImage	string	`json:"ChartImage" bson:"chartimage" validate:"required"`
 }
 type ChartAndWidget struct {
 	Chart  Chart  `json:"Chart" bson:"chart"`
@@ -123,7 +124,7 @@ type HtmlGenerator struct {
 }
 type NFTComposerProject struct {
 	Id               primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
-	ProjectId        string             `json:"ProjectId" bson:"projectid" validate:"required"`
+	ProjectId        string             `json:"ProjectId" bson:"projectid"`
 	ProjectName      string             `json:"ProjectName" bson:"projectname" validate:"required"`
 	NFTName          string             `json:"NFTName" bson:"nftname" validate:"required"`
 	UserId           string             `json:"UserId" bson:"userid" validate:"required"`
@@ -131,7 +132,7 @@ type NFTComposerProject struct {
 	TenentName       string             `json:"TenentName" bson:"tenentname"`
 	Timestamp        primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
 	CreatorName      string             `json:"CreatorName" bson:"creatorname"`
-	ContentOrderData []ContentOrderData `json:"ContentOrderData" bson:"Contentorderdata" validate:"required"`
+	ContentOrderData []ContentOrderData `json:"ContentOrderData" bson:"Contentorderdata" `
 }
 
 // pie.bar.,bubble.Table
@@ -172,15 +173,26 @@ type Timeline struct {
 	Timestamp    primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
 	ProductId    string             `json:"ProductId" bson:"productid"` // item id
 	ProductName  string             `json:"ProductName" bson:"productname"`
-	Title       string             `json:"Title" bson:"title"`
+	Title        string             `json:"Title" bson:"title"`
 	TimelineData []TimelineData
 	WidgetType   string `json:"WidgetType" bson:"widgettype"`
 }
 
 type TimelineData struct {
-	Title    string `json:"Title" bson:"title" `
-	Children []Children
+	Title    string `json:"Title" bson:"title"`
 	Icon     string `json:"Icon" bson:"icon" `
+	SubTitle    string `json:"SubTitle" bson:"subtitle" `	
+	Description  string `json:"Description" bson:"description"`
+	Style TimelineStyle
+	Images []string
+	Children []Children
+}
+
+type TimelineStyle struct{
+	PrimaryColor  string `json:"PrimaryColor" bson:"primarycolor"`
+	TitleColor string `json:"TitleColor" bson:"titlecolor"`
+	SubtleColor string `json:"SubtitleColor" bson:"subtitlecolor"`
+
 }
 
 type Children struct {
