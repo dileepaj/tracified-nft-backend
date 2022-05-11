@@ -124,7 +124,7 @@ type HtmlGenerator struct {
 }
 type NFTComposerProject struct {
 	Id               primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
-	ProjectId        string             `json:"ProjectId" bson:"projectid"`
+	ProjectId        string             `json:"ProjectId" bson:"projectid" validate:"required"`
 	ProjectName      string             `json:"ProjectName" bson:"projectname" validate:"required"`
 	NFTName          string             `json:"NFTName" bson:"nftname" validate:"required"`
 	UserId           string             `json:"UserId" bson:"userid" validate:"required"`
@@ -135,7 +135,7 @@ type NFTComposerProject struct {
 	ContentOrderData []ContentOrderData `json:"ContentOrderData" bson:"Contentorderdata" `
 }
 
-// pie.bar.,bubble.Table
+// pie.bar.,bubble
 type Widget struct {
 	Id          primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
 	ProjectId   string             `json:"ProjectId" bson:"projectid" validate:"required"`
@@ -183,18 +183,9 @@ type TimelineData struct {
 	Icon     string `json:"Icon" bson:"icon" `
 	SubTitle    string `json:"SubTitle" bson:"subtitle" `	
 	Description  string `json:"Description" bson:"description"`
-	Style TimelineStyle
-	Images []string
+	Images []string	`json:"Images" bson:"images"`
 	Children []Children
 }
-
-type TimelineStyle struct{
-	PrimaryColor  string `json:"PrimaryColor" bson:"primarycolor"`
-	TitleColor string `json:"TitleColor" bson:"titlecolor"`
-	SubtleColor string `json:"SubtitleColor" bson:"subtitlecolor"`
-
-}
-
 type Children struct {
 	Key   string `json:"Key" bson:"Key" `
 	Value string `json:"Value" bson:"value" `
