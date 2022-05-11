@@ -130,6 +130,7 @@ func SaveStat(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+//save proofbot widget
 func SaveProofBot(w http.ResponseWriter, r *http.Request) {
 	defer context.Clear(r)
 	w.Header().Set("Content-Type", "application/json;")
@@ -158,6 +159,7 @@ func SaveProofBot(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// save image widget
 func SaveImage(w http.ResponseWriter, r *http.Request) {
 	defer context.Clear(r)
 	w.Header().Set("Content-Type", "application/json;")

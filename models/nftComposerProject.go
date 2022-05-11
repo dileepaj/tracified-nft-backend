@@ -16,6 +16,7 @@ type Chart struct {
 	Height     float32     `json:"Height" bson:"height"`
 	Type       string      `json:"Type" bson:"type" validate:"required"`
 	Domain     []float32   `json:"Domain" bson:"domain"`
+	ChartImage	string	`json:"ChartImage" bson:"chartimage" validate:"required"`
 }
 type ChartAndWidget struct {
 	Chart  Chart  `json:"Chart" bson:"chart"`
@@ -80,6 +81,7 @@ type ProofBotData struct {
 	TenentId    string             `json:"TenentId" bson:"tenentid" validate:"required"`
 	OTPType     string             `json:"OTPType" bson:"otptype"`
 	WidgetType  string             `json:"WidgetType" bson:"widgettype" validate:"required"`
+	Title       string             `json:"Title" bson:"title"`
 	Data        []ProofData
 }
 
@@ -92,8 +94,8 @@ type ImageData struct {
 }
 
 type ContentOrderData struct {
-	WidgetId        string `json:"WidgetId" bson:"widgetid" validate:"required"`
-	Type            string `json:"Type" bson:"type" validate:"required"`
+	WidgetId string `json:"WidgetId" bson:"widgetid" validate:"required"`
+	Type     string `json:"Type" bson:"type" validate:"required"`
 }
 
 type NFTContent struct {
@@ -130,10 +132,10 @@ type NFTComposerProject struct {
 	TenentName       string             `json:"TenentName" bson:"tenentname"`
 	Timestamp        primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
 	CreatorName      string             `json:"CreatorName" bson:"creatorname"`
-	ContentOrderData []ContentOrderData `json:"ContentOrderData" bson:"Contentorderdata" validate:"required"`
+	ContentOrderData []ContentOrderData `json:"ContentOrderData" bson:"Contentorderdata" `
 }
 
-// pie.bar.,bubble.Table
+// pie.bar.,bubble
 type Widget struct {
 	Id          primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
 	ProjectId   string             `json:"ProjectId" bson:"projectid" validate:"required"`
@@ -159,7 +161,7 @@ type ProjectDetail struct {
 	Stats        []StataArray      `json:"Stats" bson:"stats"`
 	Tables       []TableWithWidget `json:"Tables" bson:"tables"`
 	Images       []ImageData       `json:"Images" bson:"images"`
-	ProofBot     []ProofBotData   `json:"ProofBot" bson:"proofbot"`
+	ProofBot     []ProofBotData    `json:"ProofBot" bson:"proofbot"`
 	Timeline     []Timeline        `json:"Timeline" bson:"timeline"`
 }
 
@@ -171,18 +173,20 @@ type Timeline struct {
 	Timestamp    primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
 	ProductId    string             `json:"ProductId" bson:"productid"` // item id
 	ProductName  string             `json:"ProductName" bson:"productname"`
+	Title        string             `json:"Title" bson:"title"`
 	TimelineData []TimelineData
 	WidgetType   string `json:"WidgetType" bson:"widgettype"`
 }
 
 type TimelineData struct {
-	Title    string `json:"Title" bson:"title" `
-	Children []Children
+	Title    string `json:"Title" bson:"title"`
 	Icon     string `json:"Icon" bson:"icon" `
+	SubTitle    string `json:"SubTitle" bson:"subtitle" `	
+	Description  string `json:"Description" bson:"description"`
+	Images []string	`json:"Images" bson:"images"`
+	Children []Children
 }
-
 type Children struct {
 	Key   string `json:"Key" bson:"Key" `
 	Value string `json:"Value" bson:"value" `
 }
-

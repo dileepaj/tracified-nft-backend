@@ -1,5 +1,6 @@
 <script type="text/javascript">
 
+
     function displayTable(data) {
 
         if (!!data.TableContent) {
@@ -21,6 +22,11 @@
         let cardId = "tracified" + dataArray.WidgetId
         createCard(cardId, "ProofBot")
         let botNode = document.getElementById(cardId)
+        let h5 = document.createElement('p')
+        h5.append(document.createTextNode(dataArray.Title))
+        h5.style = "margin-bottom:5px; font-weight:bold;"
+        botNode.appendChild(h5)
+        botNode.append(h5)
         dataArray.Data.map((proofBotUrlbatchSpecific, i) => {
             let botSubcard = document.createElement('div')
             botSubcard.className = "card botCard"
@@ -57,26 +63,8 @@
         })
     }
 
-    function displayStat(data) {
-        let cardId = "tracified" + data.WidgetId
-        createCard(cardId, "Stat")
-        let statNode = document.getElementById(cardId);
-
-        data.StatData.map((detail, i) => {
-            const newDiv = document.createElement("div");
-            newDiv.id = `stat`;
-            newDiv.className = `mb-2`;
-            newDiv.style = `height:70px; width:500px`
-            newDiv.innerHTML = `<h5 style="background-color:${detail.Color}">${detail.Key}</h5>
-                        <h6 >${detail.Value}</h6> `
-            statNode.append(newDiv)
-        })
-
-    }
-
     function displayImages(data) {
         let cardId = "tracified" + data.WidgetId
-
         createCard(cardId, "Image")
         let image = document.createElement("img")
         image.alt = ""
@@ -193,7 +181,6 @@
         createDomCardForCanvas(cardId, "bubbleChart")
         lables = []
         dataValue = []
-        console.log('dataValue', dataValue)
         data.ChartData.forEach(element => {
 
             if (element.Value < 50) {
@@ -255,41 +242,57 @@
         let cardId = "tracified" + data.WidgetId
         createCard(cardId, "Timeline")
         let timelineNode = document.getElementById(cardId);
+        let centerCard = document.createElement('div')
+        centerCard.className = "text-start row"
+        centerCard.style = "width: 500px;"
+        let timeline = document.createElement('ul')
+        timeline.className = "timeline"
+        centerCard.appendChild(timeline)
+        if (data.TimelineData.length > 0) {
+            data.TimelineData.forEach(tdata => {
+                let liHeader = document.createElement('li')
+                liHeader.className = "timeline-header"
+                let headerIcon = document.createElement('img')
+                headerIcon.className = "timeline-icon"
+                headerIcon.src = tdata.Icon
+                headerSpan = document.createElement('span')
+                headerSpan.className = "timeline-stage"
+                headerSpan.appendChild(document.createTextNode(tdata.Title))
+                liHeader.appendChild(headerIcon)
+                liHeader.appendChild(headerSpan)
+                point = document.createElement('div')
+                point.className = "card p-3 point"
+                if (tdata.Children.length > 0) {
+                    tdata.Children.forEach(data => {
+                        let keyTimeline = document.createElement('span')
+                        keyTimeline.className = "timeline-key"
+                        keyTimeline.appendChild(document.createTextNode(data.Key))
+                        point.appendChild(keyTimeline)
 
-        let timeline = document.createElement('div')
-        timeline.className = "text-start row"
-        timeline.style = "width: 500px;"
-        let timelineHeader = document.createElement('h3')
-        timelineHeader.appendChild(document.createTextNode("Compnay"));
-        let ulHeader = document.createElement('ul')
-        timeline.append(timelineHeader)
-        data.TimelineData.forEach(tdata => {
-            ulHeader.className = "timeline"
-            let liHeader = document.createElement('li')
-            let llHeader = document.createElement('p')
-            liHeader.className = "timeline-header"
-            liHeader.appendChild(document.createTextNode(tdata.Title))
-            let ul = document.createElement('ul')
-            ul.className = "point"
-            tdata.Children.forEach(data => {
-                let li = document.createElement('li')
-                let p = document.createElement('p')
-                let spanKey = document.createElement('span')
-                spanKey.className = "timeline-key"
-                spanKey.appendChild(document.createTextNode(data.Key))
-                p.appendChild(spanKey)
-                let spanValue = document.createElement('span')
-                spanValue.className = "timeline-value"
-                spanValue.appendChild(document.createTextNode(data.Value))
-                p.appendChild(spanValue)
-                li.appendChild(p)
-                ul.appendChild(li)
+                        let p = document.createElement('p')
+                        let ValueTimeline = document.createElement('span')
+                        ValueTimeline.className = "timeline-value"
+                        ValueTimeline.appendChild(document.createTextNode(data.Key))
+                        p.appendChild(ValueTimeline)
+                        point.appendChild(p)
+                    })
+                    if (tdata.Images.length > 0) {
+                        tdata.Images.forEach(image => {
+                            let timelineImage = document.createElement('img')
+                            timelineImage.style="margin-bottom:5px;"
+                            timelineImage.src = image
+                            point.appendChild(timelineImage)
+                        })
+                    }
+                    timeline.append(liHeader)
+                    timeline.appendChild(point)
+                }
+                // timeline.append(liHeader)
+
             })
-            ulHeader.append(liHeader)
-            ulHeader.append(ul)
-            timeline.append(ulHeader)
-        })
-        timelineNode.append(timeline)
+        }
+        centerCard.appendChild(timeline)
+        timelineNode.appendChild(centerCard)
+        timelineNode.append(centerCard)
     }
-
 </script>
