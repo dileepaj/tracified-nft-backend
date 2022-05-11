@@ -80,6 +80,7 @@ type ProofBotData struct {
 	TenentId    string             `json:"TenentId" bson:"tenentid" validate:"required"`
 	OTPType     string             `json:"OTPType" bson:"otptype"`
 	WidgetType  string             `json:"WidgetType" bson:"widgettype" validate:"required"`
+	Title       string             `json:"Title" bson:"title"`
 	Data        []ProofData
 }
 
@@ -92,8 +93,8 @@ type ImageData struct {
 }
 
 type ContentOrderData struct {
-	WidgetId        string `json:"WidgetId" bson:"widgetid" validate:"required"`
-	Type            string `json:"Type" bson:"type" validate:"required"`
+	WidgetId string `json:"WidgetId" bson:"widgetid" validate:"required"`
+	Type     string `json:"Type" bson:"type" validate:"required"`
 }
 
 type NFTContent struct {
@@ -159,7 +160,7 @@ type ProjectDetail struct {
 	Stats        []StataArray      `json:"Stats" bson:"stats"`
 	Tables       []TableWithWidget `json:"Tables" bson:"tables"`
 	Images       []ImageData       `json:"Images" bson:"images"`
-	ProofBot     []ProofBotData   `json:"ProofBot" bson:"proofbot"`
+	ProofBot     []ProofBotData    `json:"ProofBot" bson:"proofbot"`
 	Timeline     []Timeline        `json:"Timeline" bson:"timeline"`
 }
 
@@ -171,6 +172,7 @@ type Timeline struct {
 	Timestamp    primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
 	ProductId    string             `json:"ProductId" bson:"productid"` // item id
 	ProductName  string             `json:"ProductName" bson:"productname"`
+	Title       string             `json:"Title" bson:"title"`
 	TimelineData []TimelineData
 	WidgetType   string `json:"WidgetType" bson:"widgettype"`
 }
@@ -185,4 +187,3 @@ type Children struct {
 	Key   string `json:"Key" bson:"Key" `
 	Value string `json:"Value" bson:"value" `
 }
-

@@ -54,6 +54,7 @@ type UpdateProofBotRequest struct {
 	ArtifactId  string             `json:"ArtifactId" bson:"artifactid"`
 	ProductId   string             `json:"ProductId" bson:"productid"`
 	ProductName string             `json:"ProductName" bson:"productname"`
+	Title       string             `json:"Title" bson:"title"`
 	TenentId    string             `json:"TenentId" bson:"tenentid" validate:"required"`
 	OTPType     string             `json:"OTPType" bson:"otptype"`
 	WidgetType  string             `json:"WidgetType" bson:"widgettype"`
@@ -66,5 +67,6 @@ type UpdateTimelineRequest struct {
 	Timestamp    primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
 	ProductId    string             `json:"productId" bson:"productid"` // item id
 	ProductName  string             `json:"productName" bson:"productname"`
+	Title       string             `json:"Title" bson:"title"`
 	TimelineData []models.TimelineData
 }

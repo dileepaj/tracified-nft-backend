@@ -1,5 +1,6 @@
 <script type="text/javascript">
 
+
     function displayTable(data) {
 
         if (!!data.TableContent) {
@@ -21,6 +22,11 @@
         let cardId = "tracified" + dataArray.WidgetId
         createCard(cardId, "ProofBot")
         let botNode = document.getElementById(cardId)
+        let h5 = document.createElement('p')
+        h5.append(document.createTextNode(dataArray.Title))
+        h5.style = "margin-bottom:5px; font-weight:bold;"
+        botNode.appendChild(h5)
+        botNode.append(h5)
         dataArray.Data.map((proofBotUrlbatchSpecific, i) => {
             let botSubcard = document.createElement('div')
             botSubcard.className = "card botCard"
@@ -57,26 +63,8 @@
         })
     }
 
-    function displayStat(data) {
-        let cardId = "tracified" + data.WidgetId
-        createCard(cardId, "Stat")
-        let statNode = document.getElementById(cardId);
-
-        data.StatData.map((detail, i) => {
-            const newDiv = document.createElement("div");
-            newDiv.id = `stat`;
-            newDiv.className = `mb-2`;
-            newDiv.style = `height:70px; width:500px`
-            newDiv.innerHTML = `<h5 style="background-color:${detail.Color}">${detail.Key}</h5>
-                        <h6 >${detail.Value}</h6> `
-            statNode.append(newDiv)
-        })
-
-    }
-
     function displayImages(data) {
         let cardId = "tracified" + data.WidgetId
-
         createCard(cardId, "Image")
         let image = document.createElement("img")
         image.alt = ""
@@ -193,7 +181,6 @@
         createDomCardForCanvas(cardId, "bubbleChart")
         lables = []
         dataValue = []
-        console.log('dataValue', dataValue)
         data.ChartData.forEach(element => {
 
             if (element.Value < 50) {
@@ -260,7 +247,7 @@
         timeline.className = "text-start row"
         timeline.style = "width: 500px;"
         let timelineHeader = document.createElement('h3')
-        timelineHeader.appendChild(document.createTextNode("Compnay"));
+        timelineHeader.appendChild(document.createTextNode(data.Title));
         let ulHeader = document.createElement('ul')
         timeline.append(timelineHeader)
         data.TimelineData.forEach(tdata => {
@@ -291,5 +278,4 @@
         })
         timelineNode.append(timeline)
     }
-
 </script>
