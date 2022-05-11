@@ -31,6 +31,7 @@ type UpdateChartRequest struct {
 	FontSize   float32            `json:"Fontsize" bson:"fontsize"`
 	Width      float32            `json:"Width" bson:"width"`
 	Height     float32            `json:"Height" bson:"height"`
+	ChartImage	string	`json:"ChartImage" bson:"chartimage" validate:"required"`
 }
 type UpdateTableRequest struct {
 	WidgetId     string `json:"WidgetId" bson:"widgetid" validate:"required"`

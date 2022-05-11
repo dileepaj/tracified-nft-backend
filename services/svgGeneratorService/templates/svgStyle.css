@@ -1,0 +1,92 @@
+ul.timeline {
+  list-style-type: none;
+  position: relative;
+}
+
+ul.timeline:before {
+  content: " ";
+  background: #47da34;
+  display: inline-block;
+  position: absolute;
+  left: 29px;
+  width: 2px;
+  height: 100%;
+  z-index: 400;
+}
+
+ul.timeline>li {
+  margin: 20px 0;
+  margin-left: 25px;
+  padding-left: 20px;
+}
+
+ul.point>li {
+  margin-left: 50px;
+  padding-left: 5px;
+}
+
+.timeline-date {
+  color: rgb(56, 56, 56);
+}
+
+.timeline-header {
+  color: #000000;
+  font-size: 28px;
+  font-weight: 500;
+}
+
+.timeline-key {
+  font-size: 20px;
+  color: #a6a7a6;
+  font-weight: 500;
+}
+
+.timeline-value {
+  font-size: 20px;
+  color: #242424;
+  font-style: italic;
+}
+
+.timeline-value p {
+  margin: 0;
+  padding: 0;
+}
+
+.timeline-key p {
+  margin: 0;
+  padding: 0;
+}
+
+.timeline-header img {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  margin-left: -53px;
+  z-index: 500;
+}
+
+.point {
+  margin-left: 60px;
+}
+
+.timeline-stage {
+  margin-left: 10px;
+}
+
+.timeline-icon {
+  z-index: 400;
+}
+
+.botCard {
+  background-color: rgba(176, 221, 176, 0.137);
+  margin: 5px;
+}
+
+.botCard p {
+  font-weight: 500;
+  font-size: 12px;
+  margin-top: 1px;
+  margin-bottom: 1px;
+  margin-left: 5px;
+  margin-right: 5px;
+}

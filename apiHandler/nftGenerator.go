@@ -41,3 +41,32 @@ func HTMLFileGenerator(w http.ResponseWriter, r *http.Request) {
 	logs.ErrorLogger.Println("Status Unauthorized")
 	return
 }
+
+
+// handel the svg generate POST request(Generatee HTML NFT)
+func SVGFileGenerator(w http.ResponseWriter, r *http.Request) {
+	defer context.Clear(r)
+	w.Header().Set("Content-Type", "application/json;")
+	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
+	if ps.Status {
+		var generateSVGRequest models.HtmlGenerator
+		decoder := json.NewDecoder(r.Body)
+		err := decoder.Decode(&generateSVGRequest)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+		}
+		err = validations.ValidateHtmlGenerator(generateSVGRequest)
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			result, err := nftComposerBusinessFacade.GenerateSVGFile(generateSVGRequest)
+			if err != nil {
+				errors.BadRequest(w, err.Error())
+			}
+			commonResponse.SuccessStatus[string](w, result)
+		}
+	}
+	w.WriteHeader(http.StatusUnauthorized)
+	logs.ErrorLogger.Println("Status Unauthorized")
+	return
+}
