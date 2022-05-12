@@ -7,7 +7,7 @@ import (
 
 var (
 	documentStart = services.ReadFromFile("services/svgGeneratorService/templates/svgHeader.txt")
-	documentEnd   = services.ReadFromFile("services/svgGeneratorService/templates/svgfooter.txt")
+	documentEnd   = services.ReadFromFile("services/svgGeneratorService/templates/svgFooter.txt")
 	style         = services.ReadFromFile("services/svgGeneratorService/templates/svgStyle.css")
 	styleStart    = `<style>`
 	styleEnd      = `</style>`
