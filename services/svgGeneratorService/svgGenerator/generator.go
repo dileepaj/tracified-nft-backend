@@ -1,6 +1,9 @@
 package svgGenerator
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/services"
 )
@@ -135,10 +138,14 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 															<p class="text-start"> TxnHash :` + data.TxnHash + `</p>
 															<p class="text-start">Availble Proofs :</p>`
 									for _, proofUrl := range data.Urls {
+										if(proofUrl.Urls!=""){
+										var removeAndsymble string=strings.Replace(proofUrl.Urls, "&", "&amp;", -1)
+									
 										htmlBotcard += `<p class="text-start">
-															<a href="` + proofUrl.Urls + `">
+															<a href="` + removeAndsymble + `">
 															` + proofUrl.Type + `</a>
 															</p>`
+														}
 									}
 									htmlBotcard += `</div>`
 								}
@@ -188,5 +195,6 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 		}
 	}
 	template := documentStart + styleStart + style + styleEnd + htmlStart + htmlBody + documentEnd
+	fmt.Println("ssssasasa ",template)
 	return template, nil
 }
