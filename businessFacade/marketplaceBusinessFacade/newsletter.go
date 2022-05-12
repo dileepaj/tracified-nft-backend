@@ -16,3 +16,6 @@ func GetAllNewsLetters() ([]models.NewsLetter, error) {
 func GetNewsLetterByAuthor(authorname string) ([]models.NewsLetter, error) {
 	return newsletterRepository.GetNewsLetterByAuthor(authorname)
 }
+func GetNewsletterByID(newsletterID string) (models.NewsLetter, error) {
+	return newsletterRepository.GetNewsletterbyID(newsletterID)
+}

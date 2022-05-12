@@ -8,6 +8,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -17,7 +18,7 @@ var NewsLetter = "newsletter"
 
 func (r *NewsLetterRepository) SaveNewsLetter(newsLetter models.NewsLetter) (string, error) {
 	//Calling the common repository save method and passing model class and collection name.
-	return repository.Save[models.NewsLetter](newsLetter, NewsLetter)
+	return repository.Save(newsLetter, NewsLetter)
 }
 
 //retreving all nesletters from DB
@@ -68,4 +69,31 @@ func (r *NewsLetterRepository) GetNewsLetterByAuthor(authorname string) ([]model
 		}
 		return newsLetters, nil
 	}
+}
+func (r *NewsLetterRepository) GetNewsletterbyID(newsLetterID string) (models.NewsLetter, error) {
+	var newsletter models.NewsLetter
+
+	session, err := connections.GetMongoSession()
+	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session " + err.Error())
+	}
+	defer session.EndSession(context.TODO())
+
+	objectID, err := primitive.ObjectIDFromHex(newsLetterID)
+	if err != nil {
+		logs.WarningLogger.Println("Error Occured when trying to convert hex string in to Object(ID) in getNewsletterbyID : NewsletterRepository: ", err.Error())
+	}
+	rst, err := session.Client().Database(connections.DbName).Collection("newsletter").Find(context.TODO(), bson.M{"_id": objectID})
+	if err != nil {
+		return newsletter, err
+	}
+	for rst.Next(context.TODO()) {
+		err = rst.Decode(&newsletter)
+		if err != nil {
+			logs.ErrorLogger.Println("Error occured while retreving data from collection newsletter in getNewsletterbyID : NewsletterRepository:: ", err.Error())
+			return newsletter, err
+		}
+	}
+	return newsletter, err
+
 }

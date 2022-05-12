@@ -69,3 +69,18 @@ func GetNewslettersByAuthor(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+func GetNewsletterByID(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
+	vars := mux.Vars(r)
+	results, err := marketplaceBusinessFacade.GetNewsletterByID(vars["_id"])
+	logs.InfoLogger.Println("val returned : ", results)
+	if err != nil {
+		ErrorMessage := err.Error()
+		errors.BadRequest(w, ErrorMessage)
+		return
+	} else {
+		commonResponse.SuccessStatus[models.NewsLetter](w, results)
+		return
+	}
+}
