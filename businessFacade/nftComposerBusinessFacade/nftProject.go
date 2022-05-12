@@ -1,6 +1,7 @@
 package nftComposerBusinessFacade
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/dileepaj/tracified-nft-backend/database/repository"
@@ -145,6 +146,7 @@ func UpdateProject(w http.ResponseWriter, updateProject requestDtos.UpdateProjec
 }
 
 func UpdateChart(w http.ResponseWriter, updateChart requestDtos.UpdateChartRequest) {
+	fmt.Println(updateChart)
 	rst, err := nftProjectRepository.UpdateChart(updateChart)
 	if err != nil {
 		errors.BadRequest(w, err.Error())

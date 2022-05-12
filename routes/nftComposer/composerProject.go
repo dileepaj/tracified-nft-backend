@@ -14,6 +14,12 @@ var ComposerRoutes = models.Routers{
 		Handler: apiHandler.HTMLFileGenerator,
 	},
 	models.Router{
+		Name:    "Generate SVG of NFT",
+		Method:  "POST",
+		Path:    "/generate/svg",
+		Handler: apiHandler.SVGFileGenerator,
+	},
+	models.Router{
 		Name:    "Save Project",
 		Method:  "POST",
 		Path:    "/project",
