@@ -1,7 +1,6 @@
 package svgGenerator
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/dileepaj/tracified-nft-backend/models"
@@ -195,6 +194,5 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 		}
 	}
 	template := documentStart + styleStart + style + styleEnd + htmlStart + htmlBody + documentEnd
-	fmt.Println("ssssasasa ",template)
 	return template, nil
 }
