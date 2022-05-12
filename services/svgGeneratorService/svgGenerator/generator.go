@@ -94,6 +94,7 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 							htmlBody += `<div class="card text-center justify-content-center m-3" style="min-width: 500px; max-height: fit-content;">
 											<div class="card-header">Table</div>
 												<div class="card-body text-center justify-content-center"  style="min-width: 500px;" >
+												<p style="margin-bottom:10px; font-weight:bold;">`+ table.TableTitle +`</p>
 												<table class="table table-bordered">` + table.TableContent + `</table>
 											</div>
 										</div>`
@@ -125,7 +126,8 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 								var htmlBotcard string
 								htmlBotHeader := `<div class="card text-center justify-content-center m-3" style="min-width: 500px; max-height: fit-content;">
 														<div class="card-header">PrrofBot</div>
-														<div class="card-body text-center justify-content-center">`
+														<div class="card-body text-center justify-content-center">
+														<p style="margin-bottom:10px; font-weight:bold;">`+ botData.Title +`</p>`
 								for _, data := range botData.Data {
 									htmlBotcard += `<div class="card botCard">
 															<p class="text-start">ProductName :` + botData.ProductName + `</p>
@@ -159,14 +161,13 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 														<div class="card-header">Timeline</div>
 														<div class="card-body text-center justify-content-center">
 															<div class="text-start row" style="width: 500px">
-																<h3>` + timelineData.ProductName + `</h3>
 																<ul class="timeline">`
 							for _, data := range timelineData.TimelineData {
 								htmlTimelineBody += ` <li class="timeline-header">
                                 <img class="timeline-icon"
                                     src="`+ data.Icon+`" />
                                 <span class="timeline-stage">`+data.Title+`</span></li>
-                        <div class="card p-3 point">`
+                        		<div class="card p-3 point">`
 								for _, timelineChild := range data.Children {
 									htmlTimelineBody += `<span class="timeline-key">` + timelineChild.Key + `</span><p><span class="timeline-value">` + timelineChild.Value + `</span></p>`
 								}
