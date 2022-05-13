@@ -8,10 +8,10 @@ ul.timeline:before {
     background: #47da34;
     display: inline-block;
     position: absolute;
-    left: 29px;
-    width: 2px;
+    left: 27px;
+    width: 4px;
     height: 100%;
-    z-index: 400;
+    z-index: 1;
 }
 
 ul.timeline>li {
@@ -74,7 +74,8 @@ ul.point>li {
 }
 
 .timeline-icon {
-    z-index: 400;
+    position: absolute;
+    z-index: 4000;
 }
 
 .botCard {
