@@ -1,21 +1,22 @@
 <script type="text/javascript">
 
-
     function displayTable(data) {
-
         if (!!data.TableContent) {
             let cardId = "tracified" + data.WidgetId
             createCard(cardId, "Table")
             //craete boostarp cards Node and it to barchart 
             let tableDiv = document.createElement("div")
             tableDiv.style = "width:500px; heigth:fit-content;"
+            let h5 = document.createElement('p')
+            h5.append(document.createTextNode(data.TableTitle))
+            h5.style = "margin-bottom:10px; font-weight:bold;"
+            tableDiv.appendChild(h5)
             let tableNode = document.createElement("table");
             tableNode.className = `table table-bordered`;
             tableNode.innerHTML = data.TableContent
             tableDiv.append(tableNode)
             document.getElementById(cardId).appendChild(tableDiv);
         }
-
     }
 
     function displayProofBot(dataArray) {
@@ -135,9 +136,28 @@
             ,
             options: {
                 scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: data.XAxis,
+                            font: {
+                                size: data.FontSize,
+                            },
+                            color: data.FontColor
+                        },
+                    },
                     y: {
-                        beginAtZero: true
-                    }
+                        display: true,
+                        title: {
+                            display: true,
+                            text: data.YAxis,
+                            font: {
+                                size: data.FontSize,
+                            },
+                            color: data.FontColor,
+                        },
+                    },
                 }
             }
         });
@@ -279,7 +299,7 @@
                     if (tdata.Images.length > 0) {
                         tdata.Images.forEach(image => {
                             let timelineImage = document.createElement('img')
-                            timelineImage.style="margin-bottom:5px;"
+                            timelineImage.style = "margin-bottom:5px;"
                             timelineImage.src = image
                             point.appendChild(timelineImage)
                         })

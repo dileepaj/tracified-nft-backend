@@ -15,7 +15,8 @@ func init() {
 		marketPlace.UserRoutes,
 		marketPlace.WatchListRoutes,
 		nftComposer.ComposerRoutes,
-		marketPlace.ReviewRoutes,
+    marketPlace.ReviewRoutes,
+    marketPlace.NewsLetterRoutes,
 		marketPlace.FaqRoutes,
 	}
 
