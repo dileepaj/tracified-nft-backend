@@ -21,6 +21,12 @@ var NftRoutes = models.Routers{
 		Handler: apiHandler.UpdateMinter,
 	},
 	models.Router{
+		Name:    "Update NFT",
+		Method:  "PUT",
+		Path:    "/api/marketplace/txn",
+		Handler: apiHandler.UpdateTXN,
+	},
+	models.Router{
 		Name:    "Save Ownership",
 		Method:  "POST",
 		Path:    "/api/marketplace/owner",
@@ -37,6 +43,12 @@ var NftRoutes = models.Routers{
 		Method:  "Get",
 		Path:    "/api/selling/{status}/{userpk}",
 		Handler: apiHandler.GetAllONSaleNFT,
+	},
+	models.Router{
+		Name:    "GET NFTS By Selling status and filter by NFTIdentifier",
+		Method:  "Get",
+		Path:    "/api/buying/{sellingstatus}/{nftidentifier}/{blockchain}",
+		Handler: apiHandler.GetOneONSaleNFT,
 	},
 	models.Router{
 		Name:    "GET NFTS By Tag names",
@@ -59,8 +71,14 @@ var NftRoutes = models.Routers{
 	models.Router{
 		Name:    "GET NFTS By userId",
 		Method:  "Get",
-		Path:    "/api/userid/{userId}",
+		Path:    "/api/userid/{creatoruserid}",
 		Handler: apiHandler.GetNFTByUserId,
+	},
+	models.Router{
+		Name:    "GET Last NFT By userId",
+		Method:  "Get",
+		Path:    "/api/userid/{creatoruserid}",
+		Handler: apiHandler.GetLastNFTByUserId,
 	},
 	models.Router{
 		Name:    "GET NFTS By tenent Name",
@@ -79,5 +97,23 @@ var NftRoutes = models.Routers{
 		Method:  "Get",
 		Path:    "/api/tags",
 		Handler: apiHandler.GetAllTags,
+	},
+	models.Router{
+		Name:    "Update Sale Status",
+		Method:  "PUT",
+		Path:    "/api/nft/sale",
+		Handler: apiHandler.MakeSale,
+	},
+	models.Router{
+		Name:    "Create SVG",
+		Method:  "POST",
+		Path:    "/api/svg/save",
+		Handler: apiHandler.CreateSVG,
+	},
+	models.Router{
+		Name:    "Create TXN",
+		Method:  "POST",
+		Path:    "/api/txn/save",
+		Handler: apiHandler.SaveTXN,
 	},
 }

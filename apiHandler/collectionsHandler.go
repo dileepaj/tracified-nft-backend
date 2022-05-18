@@ -50,6 +50,41 @@ func CreateCollection(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
+func CreateSVG(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	log.Println("-------------------------------------------testing 1 ------------------------------------")
+	var createSVGObject models.SVG
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&createSVGObject)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+	}
+	log.Println("-------------------------------------------testing 2 ------------------------------------")
+	fmt.Println(createSVGObject)
+	err = validations.ValidateInsertSVG(createSVGObject)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		log.Println("------------------------------------testing 6 ---------------------------------------------------")
+		_, err1 := marketplaceBusinessFacade.CreateSVG(createSVGObject)
+		if err1 != nil {
+			ErrorMessage := err1.Error()
+			errors.BadRequest(w, ErrorMessage)
+			return
+		} else {
+
+			w.WriteHeader(http.StatusOK)
+			message := "New SVG Added"
+			err = json.NewEncoder(w).Encode(message)
+			if err != nil {
+				logs.ErrorLogger.Println(err)
+			}
+			return
+		}
+	}
+}
+
 func GetCollectionByUserPK(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
 	vars := mux.Vars(r)

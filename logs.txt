@@ -1,0 +1,237 @@
+ERROR: 2022/04/15 10:02:39 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/15 10:07:25 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/15 10:07:27 commonRepository.go:22: connection() error occured during connection handshake: handshake failure: connection(cluster0-shard-00-01.a8gdv.mongodb.net:27017[-50]) socket was unexpectedly closed: EOF
+ERROR: 2022/04/15 10:07:55 nftRepository.go:126: connection() error occured during connection handshake: handshake failure: connection(cluster0-shard-00-01.a8gdv.mongodb.net:27017[-60]) socket was unexpectedly closed: EOF
+ERROR: 2022/04/15 10:10:07 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/15 10:10:17 commonRepository.go:22: server selection error: context deadline exceeded, current topology: { Type: ReplicaSetNoPrimary, Servers: [{ Addr: cluster0-shard-00-01.a8gdv.mongodb.net:27017, Type: Unknown, Last error: connection() error occured during connection handshake: connection(cluster0-shard-00-01.a8gdv.mongodb.net:27017[-126]) socket was unexpectedly closed: EOF }, { Addr: cluster0-shard-00-00.a8gdv.mongodb.net:27017, Type: RSSecondary, Tag sets: region=AP_SOUTH_1,workloadType=OPERATIONAL,nodeType=ELECTABLE,provider=AWS, Average RTT: 111449500 }, { Addr: cluster0-shard-00-02.a8gdv.mongodb.net:27017, Type: RSSecondary, Tag sets: provider=AWS,workloadType=OPERATIONAL,nodeType=ELECTABLE,region=AP_SOUTH_1, Average RTT: 101821600 }, ] }
+ERROR: 2022/04/15 10:10:17 commonRepository.go:22: server selection error: context deadline exceeded, current topology: { Type: ReplicaSetNoPrimary, Servers: [{ Addr: cluster0-shard-00-01.a8gdv.mongodb.net:27017, Type: Unknown, Last error: connection() error occured during connection handshake: connection(cluster0-shard-00-01.a8gdv.mongodb.net:27017[-127]) socket was unexpectedly closed: EOF }, { Addr: cluster0-shard-00-00.a8gdv.mongodb.net:27017, Type: RSSecondary, Tag sets: region=AP_SOUTH_1,workloadType=OPERATIONAL,nodeType=ELECTABLE,provider=AWS, Average RTT: 93760660 }, { Addr: cluster0-shard-00-02.a8gdv.mongodb.net:27017, Type: RSSecondary, Tag sets: provider=AWS,workloadType=OPERATIONAL,nodeType=ELECTABLE,region=AP_SOUTH_1, Average RTT: 96905260 }, ] }
+ERROR: 2022/04/15 10:10:17 commonRepository.go:22: server selection error: context deadline exceeded, current topology: { Type: ReplicaSetNoPrimary, Servers: [{ Addr: cluster0-shard-00-01.a8gdv.mongodb.net:27017, Type: Unknown, Last error: connection() error occured during connection handshake: connection(cluster0-shard-00-01.a8gdv.mongodb.net:27017[-128]) socket was unexpectedly closed: EOF }, { Addr: cluster0-shard-00-00.a8gdv.mongodb.net:27017, Type: RSSecondary, Tag sets: region=AP_SOUTH_1,workloadType=OPERATIONAL,nodeType=ELECTABLE,provider=AWS, Average RTT: 109196000 }, { Addr: cluster0-shard-00-02.a8gdv.mongodb.net:27017, Type: RSSecondary, Tag sets: provider=AWS,workloadType=OPERATIONAL,nodeType=ELECTABLE,region=AP_SOUTH_1, Average RTT: 93177240 }, ] }
+ERROR: 2022/04/15 10:10:42 nftRepository.go:126: server selection error: context deadline exceeded, current topology: { Type: ReplicaSetNoPrimary, Servers: [{ Addr: cluster0-shard-00-01.a8gdv.mongodb.net:27017, Type: Unknown, Last error: connection() error occured during connection handshake: connection(cluster0-shard-00-01.a8gdv.mongodb.net:27017[-168]) socket was unexpectedly closed: EOF }, { Addr: cluster0-shard-00-00.a8gdv.mongodb.net:27017, Type: RSSecondary, Tag sets: workloadType=OPERATIONAL,nodeType=ELECTABLE,provider=AWS,region=AP_SOUTH_1, Average RTT: 106604200 }, { Addr: cluster0-shard-00-02.a8gdv.mongodb.net:27017, Type: RSSecondary, Tag sets: region=AP_SOUTH_1,nodeType=ELECTABLE,provider=AWS,workloadType=OPERATIONAL, Average RTT: 97391540 }, ] }
+ERROR: 2022/04/15 10:13:44 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/15 10:17:05 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/15 10:18:18 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/17 17:33:04 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/17 17:34:27 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/17 17:36:04 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/17 17:37:03 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/17 17:39:53 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/20 13:55:13 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/20 14:10:44 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/20 14:12:26 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/20 14:13:24 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/20 14:14:42 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/20 14:16:46 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/20 14:25:03 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/20 14:25:27 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/20 14:27:04 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/21 08:57:14 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/22 15:14:21 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/22 15:15:51 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/22 15:17:30 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/27 14:49:33 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/27 14:53:31 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/27 14:57:26 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/27 15:05:09 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/27 15:10:10 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/27 15:27:16 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/27 15:27:28 nftHandler.go:288: json: cannot unmarshal object into Go struct field UpdateMintTXN.nfttxnhash of type string
+ERROR: 2022/04/27 15:31:28 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/27 15:35:07 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/27 15:38:18 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/27 16:01:08 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/27 16:04:59 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/27 16:10:31 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/27 16:37:03 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/27 16:44:32 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/27 16:45:19 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/27 16:46:16 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/27 21:15:24 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/27 21:16:47 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/27 21:20:15 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/27 21:23:22 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/28 09:56:44 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/28 10:02:04 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/28 10:08:58 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/28 10:19:20 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/28 10:25:25 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/28 10:28:36 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/28 10:29:04 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/28 10:32:40 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/28 10:59:06 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/28 11:14:15 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/28 11:22:29 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/28 11:32:38 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/28 11:57:11 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/28 12:00:40 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/28 12:02:35 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/28 17:38:29 nftHandler.go:74: parsing time "\"2022-4-20:17:28\"" as "\"2006-01-02T15:04:05Z07:00\"": cannot parse "4-20:17:28\"" as "01"
+ERROR: 2022/04/28 17:49:30 nftHandler.go:74: parsing time "\"2022-4-20:17:28\"" as "\"2006-01-02T15:04:05Z07:00\"": cannot parse "4-20:17:28\"" as "01"
+ERROR: 2022/04/29 11:41:37 nftHandler.go:74: parsing time "\"2022-4-20:17:28\"" as "\"2006-01-02T15:04:05Z07:00\"": cannot parse "4-20:17:28\"" as "01"
+ERROR: 2022/04/29 11:44:31 nftHandler.go:74: parsing time "\"2022-4-20:17:28\"" as "\"2006-01-02T15:04:05Z07:00\"": cannot parse "4-20:17:28\"" as "01"
+ERROR: 2022/04/29 15:12:15 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/29 15:19:00 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/29 15:30:57 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/29 15:40:55 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/29 15:54:10 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/29 15:57:05 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/29 16:00:37 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/29 16:01:57 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/29 16:21:24 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/29 16:23:25 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/04/30 16:27:08 nftHandler.go:75: parsing time "\"2022-4-20:17:28\"" as "\"2006-01-02T15:04:05Z07:00\"": cannot parse "4-20:17:28\"" as "01"
+ERROR: 2022/04/30 16:56:34 nftHandler.go:75: parsing time "\"2022-4-20:17:28\"" as "\"2006-01-02T15:04:05Z07:00\"": cannot parse "4-20:17:28\"" as "01"
+ERROR: 2022/04/30 17:05:21 nftHandler.go:77: parsing time "\"2022-4-20:17:28\"" as "\"2006-01-02T15:04:05Z07:00\"": cannot parse "4-20:17:28\"" as "01"
+ERROR: 2022/04/30 17:14:10 nftHandler.go:77: json: cannot unmarshal number into Go struct field UpdateNFTSALERequest.currentprice of type string
+ERROR: 2022/04/30 17:14:11 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/04/30 17:18:49 nftHandler.go:77: json: cannot unmarshal number into Go struct field UpdateNFTSALERequest.currentprice of type string
+ERROR: 2022/04/30 17:18:50 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/04/30 17:20:42 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/04/30 17:22:09 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/04/30 17:29:02 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/04/30 17:37:04 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/04/30 17:40:25 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/04/30 18:33:38 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/04/30 18:41:57 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/04/30 19:36:48 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/04/30 23:01:54 nftRepository.go:35: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/04/30 23:03:45 nftRepository.go:35: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/01 19:09:10 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/02 23:18:15 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/03 11:31:25 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/03 11:34:09 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/03 11:45:27 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/03 11:46:51 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/03 11:54:27 nftHandler.go:26: json: cannot unmarshal number into Go struct field NFT.copies of type string
+ERROR: 2022/05/03 12:06:04 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/03 12:07:48 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/03 12:09:11 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/03 12:10:00 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/03 12:14:50 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 10:19:25 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 10:19:25 nftHandler.go:49: json: cannot unmarshal number into Go struct field Ownership.nftidentifier of type string
+ERROR: 2022/05/04 10:47:59 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 10:47:59 nftHandler.go:49: json: cannot unmarshal number into Go struct field Ownership.nftidentifier of type string
+ERROR: 2022/05/04 11:07:29 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 11:07:29 nftHandler.go:49: json: cannot unmarshal number into Go struct field Ownership.nftidentifier of type string
+ERROR: 2022/05/04 11:20:08 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 11:20:08 nftHandler.go:49: json: cannot unmarshal number into Go struct field Ownership.nftidentifier of type string
+ERROR: 2022/05/04 11:25:25 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 11:25:25 nftHandler.go:49: json: cannot unmarshal number into Go struct field Ownership.nftidentifier of type string
+ERROR: 2022/05/04 11:27:00 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 11:27:00 nftHandler.go:49: json: cannot unmarshal number into Go struct field Ownership.nftidentifier of type string
+ERROR: 2022/05/04 12:56:01 nftHandler.go:49: json: cannot unmarshal number into Go struct field Ownership.nftidentifier of type string
+ERROR: 2022/05/04 12:56:01 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 13:09:46 nftHandler.go:49: json: cannot unmarshal number into Go struct field Ownership.nftidentifier of type string
+ERROR: 2022/05/04 13:09:46 nftHandler.go:26: json: cannot unmarshal number into Go struct field NFT.copies of type string
+ERROR: 2022/05/04 13:14:59 nftHandler.go:49: json: cannot unmarshal number into Go struct field Ownership.nftidentifier of type string
+ERROR: 2022/05/04 13:14:59 nftHandler.go:26: json: cannot unmarshal number into Go struct field NFT.copies of type string
+ERROR: 2022/05/04 13:17:20 nftHandler.go:26: json: cannot unmarshal number into Go struct field NFT.copies of type string
+ERROR: 2022/05/04 13:17:20 nftHandler.go:49: json: cannot unmarshal number into Go struct field Ownership.nftidentifier of type string
+ERROR: 2022/05/04 14:15:20 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 14:15:20 nftHandler.go:49: json: cannot unmarshal number into Go struct field Ownership.nftidentifier of type string
+ERROR: 2022/05/04 14:16:43 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 14:16:43 nftHandler.go:49: json: cannot unmarshal number into Go struct field Ownership.nftidentifier of type string
+ERROR: 2022/05/04 14:19:01 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 14:19:01 nftHandler.go:49: json: cannot unmarshal number into Go struct field Ownership.nftidentifier of type string
+ERROR: 2022/05/04 14:20:17 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 14:20:17 nftHandler.go:49: json: cannot unmarshal number into Go struct field Ownership.nftidentifier of type string
+ERROR: 2022/05/04 14:21:30 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 14:21:30 nftHandler.go:49: json: cannot unmarshal number into Go struct field Ownership.nftidentifier of type string
+ERROR: 2022/05/04 14:29:02 nftHandler.go:26: json: cannot unmarshal number into Go struct field NFT.copies of type string
+ERROR: 2022/05/04 14:29:02 nftHandler.go:49: json: cannot unmarshal number into Go struct field Ownership.nftidentifier of type string
+ERROR: 2022/05/04 14:32:53 nftHandler.go:26: json: cannot unmarshal number into Go struct field NFT.copies of type string
+ERROR: 2022/05/04 14:32:53 nftHandler.go:49: json: cannot unmarshal number into Go struct field Ownership.nftidentifier of type string
+ERROR: 2022/05/04 14:58:50 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 15:09:52 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 15:20:00 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 15:22:20 nftHandler.go:26: json: cannot unmarshal number into Go struct field NFT.copies of type string
+ERROR: 2022/05/04 15:26:02 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 15:29:13 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 15:39:12 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 15:43:35 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 15:47:43 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 15:51:55 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 16:18:02 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 16:19:28 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 16:20:25 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 16:27:18 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 16:33:05 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 16:43:26 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 16:53:27 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 16:55:58 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 17:13:33 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 17:44:31 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 18:06:10 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 21:29:34 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/04 22:00:34 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/05 12:38:13 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/05 12:42:42 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/05 12:44:52 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/05 12:49:01 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/05 12:51:43 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/05 12:53:56 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/05 13:07:11 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/05 13:09:52 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/05 13:12:10 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/05 13:20:45 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/05 13:29:09 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/05 16:11:34 nftHandler.go:26: json: cannot unmarshal number into Go struct field NFT.copies of type string
+ERROR: 2022/05/05 16:16:32 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/05 17:16:07 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/05 17:17:56 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/06 10:32:27 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/06 10:35:17 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/06 11:15:49 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/06 11:16:32 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/06 11:34:18 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/06 11:52:00 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/06 11:59:25 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/06 12:02:11 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/06 12:05:43 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/06 12:08:15 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/06 12:30:05 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/06 12:34:10 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/06 12:39:03 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/06 12:49:25 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/06 14:57:14 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/06 14:58:44 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/06 16:25:05 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/06 16:25:58 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/06 16:39:08 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/06 16:40:39 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/06 23:37:12 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/06 23:51:20 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/09 11:20:25 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/09 11:23:09 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/09 11:24:04 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/09 11:28:05 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/09 11:37:54 nftRepository.go:118: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/09 12:50:51 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/09 12:53:17 nftRepository.go:139: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/09 18:05:46 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/09 18:09:33 nftRepository.go:139: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/09 22:08:03 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/09 22:12:22 nftRepository.go:139: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/09 22:40:44 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/09 22:42:06 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/09 22:48:53 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/09 23:15:42 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/09 23:20:01 nftRepository.go:139: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/10 09:11:49 nftRepository.go:139: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/10 11:28:23 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/10 11:30:59 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/10 11:44:16 nftRepository.go:139: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/10 11:58:33 nftRepository.go:139: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/10 12:06:03 nftRepository.go:139: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/10 12:16:11 nftRepository.go:139: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/11 13:42:59 nftRepository.go:139: mongo: no documents in result
+ERROR: 2022/05/11 13:45:48 nftRepository.go:139: mongo: no documents in result
+ERROR: 2022/05/11 13:56:14 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/11 14:02:37 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/11 14:12:02 nftRepository.go:139: mongo: no documents in result
+ERROR: 2022/05/11 14:24:34 nftRepository.go:139: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/12 13:45:27 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/12 15:14:06 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string
+ERROR: 2022/05/12 16:28:47 nftRepository.go:139: mongo: no documents in result
+ERROR: 2022/05/12 16:43:25 nftRepository.go:139: error decoding key timestamp: cannot decode string into a DateTime
+ERROR: 2022/05/17 14:47:33 nftHandler.go:26: json: cannot unmarshal string into Go struct field NFT.tags of type []string

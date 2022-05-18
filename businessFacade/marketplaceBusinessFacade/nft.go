@@ -18,6 +18,15 @@ func StoreNFT(createNFTObject models.NFT) (string, error) {
 
 }
 
+func StoreTXN(createTXNObject models.TXN) (string, error) {
+	rst, err1 := nftRepository.SaveTXN(createTXNObject)
+	if err1 != nil {
+		return "TXNs not saved", err1
+	}
+	return rst, nil
+
+}
+
 func StoreOwner(createOwner models.Ownership) (string, error) {
 	rst, err1 := nftRepository.SaveOwner(createOwner)
 	if err1 != nil {
@@ -28,6 +37,10 @@ func StoreOwner(createOwner models.Ownership) (string, error) {
 
 func GetAllONSaleNFT(id string, userPK string) ([]models.NFT, error) {
 	return nftRepository.FindNFTById1AndNotId2("sellingstatus", id, "currentownerpk", userPK)
+}
+
+func GetOneONSaleNFT(id string, identifier string, blockchain string) ([]models.NFT, error) {
+	return nftRepository.FindNFTByIdId2Id3("sellingstatus", id, "nftidentifier", identifier, "blockchain", blockchain)
 }
 
 func MakeSaleNFT(update requestDtos.UpdateNFTSALERequest) (responseDtos.ResponseNFTMakeSale, error) {
@@ -66,6 +79,16 @@ func GetNFTbyAccount(userId string) ([]models.NFT, error) {
 	}
 }
 
+func GetLastNFTbyUserId(userId string) ([]models.NFT, error) {
+	return nftRepository.FindLastNFTById("creatoruserid", userId)
+
+}
+
+func GetNFTbyUserId(userId string) ([]models.NFT, error) {
+	return nftRepository.FindNFTsById("creatoruserid", userId)
+
+}
+
 func GetNFTbyTenentName(tenentName string) ([]models.NFT, error) {
 	results, err := GetBCAccountPKByTenetName(tenentName)
 	if err != nil || len(results) == 0 {
@@ -90,4 +113,8 @@ func GetTagsByNFTIdentifier(nftid string) ([]models.Tags, error) {
 
 func UpdateNFT(update requestDtos.UpdateMint) (responseDtos.ResponseNFTMinter, error) {
 	return nftRepository.UpdateNFTMinter(update)
+}
+
+func UpdateNFTTXN(update requestDtos.UpdateMintTXN) (responseDtos.ResponseNFTMintTXN, error) {
+	return nftRepository.UpdateNFTTXN(update)
 }

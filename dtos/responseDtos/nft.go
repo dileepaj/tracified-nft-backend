@@ -29,4 +29,15 @@ type ResponseNFTMinter struct {
 	Blockchain    string `json:"blockchain" bson:"blockchain" `
 	NFTName       string `json:"nftname" bson:"nftname"`
 	NftContentURL string `json:"nftcontenturl" bson:"nftcontenturl"`
+	NFTIdentifier string `json:"nftidentifier" bson:"nftidentifier" `
+	NFTTxnHash    string `json:"nfttxnhash" bson:"nfttxnhash" `
+}
+
+type ResponseNFTMintTXN struct {
+	Imagebase64   string `json:"imagebase64" bson:"imagebase64" `
+	NFTIssuerPK   string `json:"nftissuerpk" bson:"nftissuerpk" `
+	Blockchain    string `json:"blockchain" bson:"blockchain" `
+	NFTName       string `json:"nftname" bson:"nftname"`
+	NftContentURL string `json:"nftcontenturl" bson:"nftcontenturl"`
+	NFTTxnHash    string `json:"nfttxnhash" bson:"nfttxnhash" `
 }

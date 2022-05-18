@@ -11,6 +11,7 @@ require (
 )
 
 require (
+	github.com/chebyrash/promise v0.0.0-20220413100515-8177bd2d894c
 	github.com/felixge/httpsnoop v1.0.2 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect

@@ -3,9 +3,12 @@ package marketplaceRepository
 import (
 	"context"
 
+	//"github.com/chebyrash/promise"
 	"github.com/dileepaj/tracified-nft-backend/database/repository"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
+
+	//"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -16,6 +19,9 @@ var User = "user"
 func (r *UserRepository) FindById() {}
 
 // User id --> find useraccount --> extract BC account from it
+
+//Get Last NFT
+
 func (r *UserRepository) FindBCAccountPKByUserId(id string) ([]string, error) {
 	var accounts []string
 	// convert id string to ObjectId

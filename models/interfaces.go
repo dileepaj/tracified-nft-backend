@@ -5,7 +5,7 @@ import (
 )
 
 type SaveType interface {
-	WatchList | User | NFT | Ownership | Offer | Widget | NFTComposerProject | NFTCollection | Tags
+	WatchList | User | NFT | Ownership | Offer | Widget | NFTComposerProject | NFTCollection | Tags | SVG | TXN
 }
 
 type InsertManyType interface {

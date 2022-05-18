@@ -11,6 +11,11 @@ import (
 func CreateCollection(collection models.NFTCollection) (string, error) {
 	return CollectionRepository.SaveCollection(collection)
 }
+
+func CreateSVG(svg models.SVG) (string, error) {
+	return CollectionRepository.SaveSVG(svg)
+}
+
 func GetAllCollections() ([]models.NFTCollection, error) {
 	fmt.Println("Calling repo...")
 	return CollectionRepository.GetAllCollections()

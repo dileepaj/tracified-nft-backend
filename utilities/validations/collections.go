@@ -21,6 +21,19 @@ func ValidateInsertCollection(e models.NFTCollection) error {
 	return nil
 }
 
+func ValidateInsertSVG(e models.SVG) error {
+	log.Println("------------------------------------testing 3 ---------------------------------------------------")
+	validate = validator.New()
+	err := validate.Struct(e)
+	log.Println("------------------------------------testing 4 ---------------------------------------------------")
+	if err != nil {
+		log.Println("------------------------------------err ---------------------------------------------------", err)
+		return err
+	}
+	log.Println("------------------------------------testing 5 ---------------------------------------------------")
+	return nil
+}
+
 func ValidateUpdateRequestCollection(e requestDtos.UpdateCollection) error {
 	validate = validator.New()
 	err := validate.Struct(e)

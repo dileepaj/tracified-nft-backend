@@ -55,3 +55,13 @@ func ValidateRequestNFTObject(e models.NFT) error {
 	}
 	return nil
 }
+
+func ValidateRequestTXNObject(e models.TXN) error {
+	log.Println("------------------in validation---------------")
+	validate = validator.New()
+	err := validate.Struct(e)
+	if err != nil {
+		return err
+	}
+	return nil
+}

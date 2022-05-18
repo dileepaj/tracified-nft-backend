@@ -19,9 +19,15 @@ import (
 type CollectionRepository struct{}
 
 var Collection = "collections"
+var Svg = "svg"
+var Txn = "txn"
 
 func (r *CollectionRepository) SaveCollection(collection models.NFTCollection) (string, error) {
 	return repository.Save[models.NFTCollection](collection, Collection)
+}
+
+func (r *CollectionRepository) SaveSVG(svg models.SVG) (string, error) {
+	return repository.Save[models.SVG](svg, Svg)
 }
 
 func (repository *CollectionRepository) FindCollectionbyUserPK(idName1 string, id1 string) ([]models.NFTCollection, error) {
