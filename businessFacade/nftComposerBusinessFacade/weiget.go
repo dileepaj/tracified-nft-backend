@@ -70,7 +70,7 @@ func ChangeWidget(widget requestDtos.UpdateWidgetRequest,token string) (models.W
 	if err != nil {
 		return response, err
 	}
-	if rst.WidgetType == "BarChart" || rst.WidgetType == "PieChart" || rst.WidgetType == "BubbleChart"{
+	if rst.WidgetType == "BarChart" || rst.WidgetType == "PieChart" || rst.WidgetType == "BubbleChart" || rst.WidgetType == "Table"{
 		if widget.OTPType == "Batch" {
 			otpString, err = otpService.GetOtpForBatchURL(widget.ProductId, widget.BatchId, widget.OTPType,token)
 			if err != nil {
