@@ -110,8 +110,10 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 							htmlBody += `<div class="card text-center justify-content-center m-3" style="min-width: 500px; max-height: fit-content;">
 							<div class="card-header">Image</div>
 							<div class="card-body">
+							<p class="img-widget-title">`+ image.Title +`</p>
 							  <img
-								style="max-width: 500px; max-height: 400px"
+							  	width="500" height="281.5"
+								style="min-width: 500px; min-height: 281.25px"
 								src="` + image.Base64Image + `"
 								alt=""
 							  />
@@ -179,7 +181,7 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 								}
 								for _,image:=range data.Images{
 									htmlTimelineBody += `
-									<img src="`+ image +`" width="300" height="250" alt=""/>
+									<img src="`+ image +`" width="300" height="250" alt="" style="margin-bottom:5px;"/>
 									`
 								}
 								htmlTimelineBody += `</div>`

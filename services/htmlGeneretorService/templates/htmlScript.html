@@ -71,8 +71,12 @@
         image.alt = ""
         image.src = data.Base64Image
         image.width = '500'
-        image.height = '400'
+        image.height = '281.25'
+        let imgTitle = document.createElement('p')
+        imgTitle.append(document.createTextNode(data.Title))
+        imgTitle.className="img-widget-title"
         let imageNode = document.getElementById(cardId);
+        imageNode.appendChild(imgTitle)
         imageNode.append(image)
     }
 

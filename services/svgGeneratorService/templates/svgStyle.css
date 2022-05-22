@@ -91,3 +91,9 @@ ul.point>li {
   margin-left: 5px;
   margin-right: 5px;
 }
+
+.img-widget-title{
+  font-size:12px; 
+  margin-bottom:5px; 
+  font-weight:500;
+}
