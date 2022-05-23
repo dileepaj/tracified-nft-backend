@@ -9,7 +9,7 @@
             tableDiv.style = "width:500px; heigth:fit-content;"
             let h5 = document.createElement('p')
             h5.append(document.createTextNode(data.TableTitle))
-            h5.style = "margin-bottom:10px; font-weight:bold;"
+            h5.style = "common-widget-title"
             tableDiv.appendChild(h5)
             let tableNode = document.createElement("table");
             tableNode.className = `table table-bordered`;
@@ -23,11 +23,10 @@
         let cardId = "tracified" + dataArray.WidgetId
         createCard(cardId, "ProofBot")
         let botNode = document.getElementById(cardId)
-        let h5 = document.createElement('p')
-        h5.append(document.createTextNode(dataArray.Title))
-        h5.style = "margin-bottom:5px; font-weight:bold;"
-        botNode.appendChild(h5)
-        botNode.append(h5)
+        let botMainTitle = document.createElement('p')
+        botMainTitle.append(document.createTextNode(dataArray.Title))
+        botMainTitle.className = "common-widget-title"
+        botNode.appendChild(botMainTitle)
         dataArray.Data.map((proofBotUrlbatchSpecific, i) => {
             let botSubcard = document.createElement('div')
             botSubcard.className = "card botCard"
@@ -67,17 +66,19 @@
     function displayImages(data) {
         let cardId = "tracified" + data.WidgetId
         createCard(cardId, "Image")
-        let image = document.createElement("img")
-        image.alt = ""
-        image.src = data.Base64Image
-        image.width = '500'
-        image.height = '281.25'
+        createCard(cardId, "Image")
+        let a=document.createElement("a")
+        a.href=data.Base64Image
+        let image = document.createElement("div")
+        image.className = "img-widget-image"
+        image.style = `background-image: url("`+ data.Base64Image +`");`
         let imgTitle = document.createElement('p')
         imgTitle.append(document.createTextNode(data.Title))
-        imgTitle.className="img-widget-title"
+        imgTitle.className = "common-widget-title"
         let imageNode = document.getElementById(cardId);
         imageNode.appendChild(imgTitle)
-        imageNode.append(image)
+        a.appendChild(image)
+        imageNode.append(a)
     }
 
     function createCard(cardId, name) {
@@ -194,6 +195,12 @@
                 scales: {
                     y: {
                         beginAtZero: true
+                    }
+                }, 
+                plugins: {
+                    title: {
+                        display: true,
+                        text: data.ChartTitle,
                     }
                 }
             }
@@ -315,7 +322,11 @@
 
             })
         }
+        let timelineTitle = document.createElement('p')
+        timelineTitle.append(document.createTextNode(data.Title))
+        timelineTitle.style = "common-widget-title"
         centerCard.appendChild(timeline)
+        timelineNode.appendChild(timelineTitle)
         timelineNode.appendChild(centerCard)
         timelineNode.append(centerCard)
     }
