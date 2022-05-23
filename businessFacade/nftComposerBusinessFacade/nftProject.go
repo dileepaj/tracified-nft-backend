@@ -11,6 +11,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/utilities/commonResponse"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func SaveProject(project models.NFTComposerProject) (string, error) {
@@ -51,19 +52,23 @@ func GetRecntProjectDetails(projectId string) (models.ProjectDetail, string) {
 	var piechart []models.ChartAndWidget
 	var bubblechart []models.ChartAndWidget
 	var tableWithWidget []models.TableWithWidget
-	resultProject, err := nftProjectRepository.FindNFTProjectOneById("projectid", projectId)
+	objID, err := primitive.ObjectIDFromHex(projectId)
+	if err !=nil{
+		return nftProject, "Invalid ProjectId"
+	}
+	resultProject, err := nftProjectRepository.FindNFTProjectOneById("_id", objID)
 	if err != nil {
 		return nftProject, err.Error()
-	} else if resultProject.ProjectId == "" {
+	} else if resultProject.Id.Hex() == "" {
 		return nftProject, "Invalid ProjectId"
 	} else {
 
-		resultCharts, err2 := nftProjectRepository.FindChartById("projectid", resultProject.ProjectId)
-		resultTables, err3 := nftProjectRepository.FindTableById("projectid", resultProject.ProjectId)
-		resultStats, err4 := nftProjectRepository.FindStatById("projectid", resultProject.ProjectId)
-		resultImages, err5 := nftProjectRepository.FindImagesById("projectid", resultProject.ProjectId)
-		ProoBotData, err6 := nftProjectRepository.FindProofBotById("projectid", resultProject.ProjectId)
-		resultTimeline, err7 := nftProjectRepository.FindTimelineById("projectid", resultProject.ProjectId)
+		resultCharts, err2 := nftProjectRepository.FindChartById("projectid", resultProject.Id.Hex())
+		resultTables, err3 := nftProjectRepository.FindTableById("projectid", resultProject.Id.Hex())
+		resultStats, err4 := nftProjectRepository.FindStatById("projectid", resultProject.Id.Hex())
+		resultImages, err5 := nftProjectRepository.FindImagesById("projectid", resultProject.Id.Hex())
+		ProoBotData, err6 := nftProjectRepository.FindProofBotById("projectid", resultProject.Id.Hex())
+		resultTimeline, err7 := nftProjectRepository.FindTimelineById("projectid", resultProject.Id.Hex())
 
 		if err2 != nil || err3 != nil || err4 != nil || err5 != nil || err6 != nil || err7 != nil {
 			return nftProject, err.Error()
@@ -138,7 +143,7 @@ func UpdateProject(w http.ResponseWriter, updateProject requestDtos.UpdateProjec
 	rst, err := nftProjectRepository.UpdateProject(updateProject)
 	if err != nil {
 		errors.BadRequest(w, err.Error())
-	} else if rst.ProjectId == "" {
+	} else if rst.Id.Hex() == "" {
 		commonResponse.NoContent(w, "Invalid Product Id")
 	} else {
 		commonResponse.SuccessStatus(w, rst)

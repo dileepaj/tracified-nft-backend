@@ -9,6 +9,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -177,9 +178,9 @@ func (r *NFTComposerProjectRepository) FindNFTProjectById(idName string, id stri
 	return projects, nil
 }
 
-func (r *NFTComposerProjectRepository) FindNFTProjectOneById(idName string, id string) (models.NFTComposerProject, error) {
+func (r *NFTComposerProjectRepository) FindNFTProjectOneById(idName string, id primitive.ObjectID) (models.NFTComposerProject, error) {
 	var project models.NFTComposerProject
-	rst := repository.FindOne(idName, id, NFTComposerProject)
+	rst := repository.FindOneByObjetId(idName, id, NFTComposerProject)
 	if rst != nil {
 		err := rst.Decode(&project)
 		if err != nil {
@@ -209,7 +210,12 @@ func (r *NFTComposerProjectRepository) UpdateProject(update requestDtos.UpdatePr
 	if err != nil {
 		return project, err
 	}
-	rst := session.Client().Database(connections.DbName).Collection(NFTComposerProject).FindOneAndUpdate(context.TODO(), bson.M{"projectid": update.ProjectId}, bson.D{{Key: "$set", Value: updateNew}})
+	objID, err := primitive.ObjectIDFromHex(update.ProjectId)
+	if err != nil {
+		return project, err
+	}
+
+	rst := session.Client().Database(connections.DbName).Collection(NFTComposerProject).FindOneAndUpdate(context.TODO(), bson.M{"_id": objID}, bson.D{{Key: "$set", Value: updateNew}})
 	if rst != nil {
 		err := rst.Decode(&project)
 		if err != nil {

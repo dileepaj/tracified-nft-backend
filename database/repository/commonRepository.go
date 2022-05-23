@@ -80,6 +80,19 @@ func FindOne[T models.FindOneType](idName string, id T, collection string) *mong
 	return rst
 }
 
+func FindOneByObjetId[T models.FindOneType](idName string, id T, collection string) *mongo.SingleResult {
+	session, err := connections.GetMongoSession()
+	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session " + err.Error())
+	}
+	defer session.EndSession(context.TODO())
+
+	findOptions := options.FindOne()
+	findOptions.SetProjection(bson.M{"otp": 0})
+	rst := session.Client().Database(connections.DbName).Collection(collection).FindOne(context.TODO(), bson.D{{"_id", id}}, findOptions)
+	return rst
+}
+
 func FindById1AndId2(idName1 string, id1 string, idName2 string, id2 string, collection string) (*mongo.Cursor, error) {
 	session, err := connections.GetMongoSession()
 	if err != nil {

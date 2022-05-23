@@ -124,7 +124,6 @@ type HtmlGenerator struct {
 }
 type NFTComposerProject struct {
 	Id               primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
-	ProjectId        string             `json:"ProjectId" bson:"projectid" validate:"required"`
 	ProjectName      string             `json:"ProjectName" bson:"projectname" validate:"required"`
 	NFTName          string             `json:"NFTName" bson:"nftname" validate:"required"`
 	UserId           string             `json:"UserId" bson:"userid" validate:"required"`
