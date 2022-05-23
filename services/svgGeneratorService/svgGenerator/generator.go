@@ -175,7 +175,8 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 								}
 								for _,image:=range data.Images{
 									htmlTimelineBody += `
-									<img src="`+ image +`" width="300" height="250" alt="" style="margin-bottom:5px;"/>
+									<div class="img-timeline-image" style="background-image: url(`+ image +`);">
+								 	</div>
 									`
 								}
 								htmlTimelineBody += `</div>`

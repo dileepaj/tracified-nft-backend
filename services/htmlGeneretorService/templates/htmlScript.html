@@ -66,7 +66,6 @@
     function displayImages(data) {
         let cardId = "tracified" + data.WidgetId
         createCard(cardId, "Image")
-        createCard(cardId, "Image")
         let a=document.createElement("a")
         a.href=data.Base64Image
         let image = document.createElement("div")
@@ -78,7 +77,7 @@
         let imageNode = document.getElementById(cardId);
         imageNode.appendChild(imgTitle)
         a.appendChild(image)
-        imageNode.append(a)
+        imageNode.append(image)
     }
 
     function createCard(cardId, name) {
@@ -309,9 +308,9 @@
                     })
                     if (tdata.Images.length > 0) {
                         tdata.Images.forEach(image => {
-                            let timelineImage = document.createElement('img')
-                            timelineImage.style = "margin-bottom:5px;"
-                            timelineImage.src = image
+                            let timelineImage = document.createElement('div')
+                            timelineImage.style = `background-image: url("`+ image +`");`
+                            timelineImage.className = "img-timeline-image"
                             point.appendChild(timelineImage)
                         })
                     }
