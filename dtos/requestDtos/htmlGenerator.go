@@ -11,7 +11,7 @@ type HtmlGeneratorRequest struct {
 }
 
 type UpdateProjectRequest struct {
-	ProjectId        string                    `json:"ProjectId" bson:"projectid" validate:"required"`
+	Id        string                   		   `json:"Id" bson:"id" validate:"required"`
 	ProjectName      string                    `json:"ProjectName" bson:"projectname" validate:"required"`
 	NFTName          string                    `json:"NFTName" bson:"nftname" validate:"required"`
 	TenentId         string                    `json:"TenentId" bson:"tenentid" validate:"required"`

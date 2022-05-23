@@ -52,11 +52,11 @@ func GetRecntProjectDetails(projectId string) (models.ProjectDetail, string) {
 	var piechart []models.ChartAndWidget
 	var bubblechart []models.ChartAndWidget
 	var tableWithWidget []models.TableWithWidget
-	objID, err := primitive.ObjectIDFromHex(projectId)
+	primitiveProjectId, err := primitive.ObjectIDFromHex(projectId)
 	if err !=nil{
 		return nftProject, "Invalid ProjectId"
 	}
-	resultProject, err := nftProjectRepository.FindNFTProjectOneById("_id", objID)
+	resultProject, err := nftProjectRepository.FindNFTProjectOneById("_id", primitiveProjectId)
 	if err != nil {
 		return nftProject, err.Error()
 	} else if resultProject.Id.Hex() == "" {

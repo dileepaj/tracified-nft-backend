@@ -210,12 +210,17 @@ func (r *NFTComposerProjectRepository) UpdateProject(update requestDtos.UpdatePr
 	if err != nil {
 		return project, err
 	}
-	objID, err := primitive.ObjectIDFromHex(update.ProjectId)
+	projectId, err := primitive.ObjectIDFromHex(update.Id)
 	if err != nil {
 		return project, err
 	}
-
-	rst := session.Client().Database(connections.DbName).Collection(NFTComposerProject).FindOneAndUpdate(context.TODO(), bson.M{"_id": objID}, bson.D{{Key: "$set", Value: updateNew}})
+	upsert := true
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+	rst := session.Client().Database(connections.DbName).Collection(NFTComposerProject).FindOneAndUpdate(context.TODO(), bson.M{"_id": projectId}, bson.D{{Key: "$set", Value: updateNew}},&opt)
 	if rst != nil {
 		err := rst.Decode(&project)
 		if err != nil {
