@@ -19,20 +19,17 @@ import (
 
 func CreateCollection(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	log.Println("-------------------------------------------testing 1 ------------------------------------")
 	var createCollectionObject models.NFTCollection
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&createCollectionObject)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 	}
-	log.Println("-------------------------------------------testing 2 ------------------------------------")
 	fmt.Println(createCollectionObject)
 	err = validations.ValidateInsertCollection(createCollectionObject)
 	if err != nil {
 		errors.BadRequest(w, err.Error())
 	} else {
-		log.Println("------------------------------------testing 6 ---------------------------------------------------")
 		_, err1 := marketplaceBusinessFacade.CreateCollection(createCollectionObject)
 		if err1 != nil {
 			ErrorMessage := err1.Error()
@@ -50,13 +47,43 @@ func CreateCollection(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
+func CreateSVG(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	var createSVGObject models.SVG
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&createSVGObject)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+	}
+	fmt.Println(createSVGObject)
+	err = validations.ValidateInsertSVG(createSVGObject)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		_, err1 := marketplaceBusinessFacade.CreateSVG(createSVGObject)
+		if err1 != nil {
+			ErrorMessage := err1.Error()
+			errors.BadRequest(w, ErrorMessage)
+			return
+		} else {
+
+			w.WriteHeader(http.StatusOK)
+			message := "New SVG Added"
+			err = json.NewEncoder(w).Encode(message)
+			if err != nil {
+				logs.ErrorLogger.Println(err)
+			}
+			return
+		}
+	}
+}
+
 func GetCollectionByUserPK(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
 	vars := mux.Vars(r)
-	log.Println("---------------------------------------test 1------------------------------")
 	fmt.Println(vars["userid"])
 	results, err1 := marketplaceBusinessFacade.GetCollectionByUserPK(vars["userid"])
-	fmt.Println("results-----------------------", results)
 	if err1 != nil {
 		ErrorMessage := err1.Error()
 		errors.BadRequest(w, ErrorMessage)
@@ -75,10 +102,8 @@ func GetCollectionByUserPK(w http.ResponseWriter, r *http.Request) {
 func GetCollectionById(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
 	vars := mux.Vars(r)
-	log.Println("---------------------------------------test 1------------------------------")
 	fmt.Println(vars["_id"])
 	results, err1 := marketplaceBusinessFacade.GetCollectionById(vars["_id"])
-	fmt.Println("results-----------------------", results)
 	if err1 != nil {
 		ErrorMessage := err1.Error()
 		errors.BadRequest(w, ErrorMessage)
@@ -104,7 +129,6 @@ func GetAllCollections(w http.ResponseWriter, r *http.Request) {
 		errors.BadRequest(w, ErrorMessage)
 		return
 	} else {
-		fmt.Println("results-----------------------", results)
 		w.WriteHeader(http.StatusOK)
 		err := json.NewEncoder(w).Encode(results)
 		if err != nil {
@@ -139,17 +163,12 @@ func UpdateCollection(w http.ResponseWriter, r *http.Request) {
 }
 func DeleteCollectionById(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	log.Println("-----------------------------------------test 1----------------------------------------")
 	var deleteCollectionObj requestDtos.DeleteCollectionById
 	decoder := json.NewDecoder(r.Body)
-	log.Println("-----------------------------------------test 2----------------------------------------", deleteCollectionObj)
 	err := decoder.Decode(&deleteCollectionObj)
-	log.Println("-----------------------------------------test 3----------------------------------------", err)
 	if err != nil {
-		log.Println("------------------------------------------------------------error")
 		logs.ErrorLogger.Println(err.Error())
 	} else {
-		log.Println("-----------------------------------------test 4----------------------------------------")
 		err1 := marketplaceBusinessFacade.DeleteCollectionById(deleteCollectionObj)
 		if err1 != nil {
 			ErrorMessage := err1.Error()
@@ -171,15 +190,11 @@ func DeleteCollectionById(w http.ResponseWriter, r *http.Request) {
 func DeleteCollectionByUserPK(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	var deleteCollectionObj requestDtos.DeleteCollectionByUserPK
-	log.Println("-----------------------------------------test 1----------------------------------------")
 	decoder := json.NewDecoder(r.Body)
-	log.Println("-----------------------------------------test 2----------------------------------------")
 	err := decoder.Decode(&deleteCollectionObj)
-	log.Println("-----------------------------------------test 2----------------------------------------", err)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 	} else {
-		log.Println("-----------------------------------------test 3----------------------------------------")
 		err1 := marketplaceBusinessFacade.DeleteCollectionByUserPK(deleteCollectionObj)
 		if err1 != nil {
 			ErrorMessage := err1.Error()

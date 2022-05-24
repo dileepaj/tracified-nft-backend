@@ -30,7 +30,6 @@ func (repository *CollectionRepository) FindCollectionbyUserPK(idName1 string, i
 	var collections []models.NFTCollection
 	if idName1 != "" {
 		findOptions := options.Find()
-		//findOptions.SetSort(bson.D{{"nftidentifier", -1}})
 		rst, err := connections.Connect().Collection("collections").Find(context.TODO(), bson.D{{idName1, id1}}, findOptions)
 		if err != nil {
 			logs.ErrorLogger.Println(err.Error())
@@ -52,7 +51,6 @@ func (repository *CollectionRepository) FindCollectionbyUserPK(idName1 string, i
 }
 
 func (repository *CollectionRepository) GetAllCollections() ([]models.NFTCollection, error) {
-	fmt.Println("executing repo get all collections")
 	var collections []models.NFTCollection
 	findOptions := options.Find()
 	findOptions.SetLimit(10)
@@ -61,7 +59,6 @@ func (repository *CollectionRepository) GetAllCollections() ([]models.NFTCollect
 		logs.ErrorLogger.Println(err.Error())
 		return collections, err
 	}
-	fmt.Println("outside loop")
 	for rst.Next(context.TODO()) {
 		var collection models.NFTCollection
 		err = rst.Decode((&collection))
@@ -69,7 +66,6 @@ func (repository *CollectionRepository) GetAllCollections() ([]models.NFTCollect
 			logs.ErrorLogger.Println(err.Error())
 			return collections, err
 		}
-		fmt.Println("inside loop : ", collection)
 		collections = append(collections, collection)
 	}
 	return collections, nil
@@ -132,7 +128,6 @@ func (repository *CollectionRepository) FindCollectionbyId(_id string) ([]models
 			logs.ErrorLogger.Println("Invalid id")
 			return collections, nil
 		}
-		//findOptions.SetSort(bson.D{{"nftidentifier", -1}})
 		rst, err := connections.Connect().Collection("collections").Find(context.TODO(), bson.D{{"_id", objectId}}, findOptions)
 		if err != nil {
 			logs.ErrorLogger.Println(err.Error())

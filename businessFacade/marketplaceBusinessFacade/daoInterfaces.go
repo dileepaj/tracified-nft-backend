@@ -14,4 +14,5 @@ var (
 	faqRepository        marketplaceRepository.FaqRepository
 	reviewRepository     marketplaceRepository.ReviewRepository
 	CollectionRepository marketplaceRepository.CollectionRepository
+	FavouriteRepository  marketplaceRepository.FavouriteRepository
 )
