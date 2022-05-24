@@ -13,8 +13,8 @@ func CreateFavourites(favs models.Favourite) (string, error) {
 	return FavouriteRepository.SaveFavourite(favs)
 }
 
-func GetFavouritesByUserPK(userid string) ([]models.Favourite, error) {
-	return FavouriteRepository.FindFavouritesbyUserPK("userid", userid)
+func GetFavouritesByUserPK(userid string) (models.Favourite, error) {
+	return FavouriteRepository.FindFavouritesbyUserPK(userid)
 
 }
 
