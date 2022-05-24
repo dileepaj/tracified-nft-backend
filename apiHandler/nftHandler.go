@@ -18,17 +18,19 @@ import (
 )
 
 func CreateNFT(w http.ResponseWriter, r *http.Request) {
-	defer context.Clear(r)
-	w.Header().Set("Content-Type", "application/json;")
-	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
-	if ps.Status {
-		var requestNFTObject requestDtos.CreateNFTRequest
-		decoder := json.NewDecoder(r.Body)
-		err := decoder.Decode(&requestNFTObject)
-		if err != nil {
-			logs.ErrorLogger.Println(err.Error())
-		}
-		err = validations.ValidateRequestNFTObject(requestNFTObject)
+	w.Header().Set("Content-Type", "application/json;charset=UTF-8")
+	var test models.NFT
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&test)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+	}
+
+	err = validations.ValidateRequestNFTObject(test)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		result, err := marketplaceBusinessFacade.StoreNFT(test)
 		if err != nil {
 			errors.BadRequest(w, err.Error())
 		} else {
@@ -40,22 +42,69 @@ func CreateNFT(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-	w.WriteHeader(http.StatusUnauthorized)
-	logs.ErrorLogger.Println("Status Unauthorized")
-	return
+}
+
+func SaveTXN(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;charset=UTF-8")
+	var txn models.TXN
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&txn)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+	}
+
+	err = validations.ValidateRequestTXNObject(txn)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		result, err := marketplaceBusinessFacade.StoreTXN(txn)
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[string](w, result)
+		}
+	}
+}
+
+func CreateOwner(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	var test2 models.Ownership
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&test2)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+	}
+	_, err1 := marketplaceBusinessFacade.StoreOwner(test2)
+	if err1 != nil {
+		ErrorMessage := err1.Error()
+		errors.BadRequest(w, ErrorMessage)
+		return
+	} else {
+
+		w.WriteHeader(http.StatusOK)
+		message := "New owner Added"
+		err = json.NewEncoder(w).Encode(message)
+		if err != nil {
+			logs.ErrorLogger.Println(err)
+		}
+		return
+	}
 }
 
 func MakeSale(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
-	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
-	if ps.Status {
-		var makeSaleRequestObject requestDtos.UpdateNFTSALERequest
-		decoder := json.NewDecoder(r.Body)
-		err := decoder.Decode(&makeSaleRequestObject)
-		if err != nil {
-			logs.ErrorLogger.Println(err.Error())
-		}
-		err = validations.ValidateMakeSale(makeSaleRequestObject)
+	var makeSaleRequestObject requestDtos.UpdateNFTSALERequest
+
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&makeSaleRequestObject)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+	}
+	err = validations.ValidateMakeSale(makeSaleRequestObject)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		result, err := marketplaceBusinessFacade.MakeSaleNFT(makeSaleRequestObject)
 		if err != nil {
 			errors.BadRequest(w, err.Error())
 		} else {
@@ -87,6 +136,23 @@ func GetAllONSaleNFT(w http.ResponseWriter, r *http.Request) {
 		} else {
 			errors.BadRequest(w, "")
 		}
+	} else {
+		errors.BadRequest(w, "")
+	}
+}
+
+func GetOneONSaleNFT(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	if vars["sellingstatus"] != "" || vars["nftidentifer"] != "" || vars["blockchain"] != "" {
+		results, err := marketplaceBusinessFacade.GetOneONSaleNFT(vars["sellingstatus"], vars["nftidentifier"], vars["blockchain"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[[]models.NFT](w, results)
+		}
+	} else {
+		errors.BadRequest(w, "")
 	}
 	w.WriteHeader(http.StatusUnauthorized)
 	logs.ErrorLogger.Println("Status Unauthorized")
@@ -135,6 +201,21 @@ func GetNFTbyTags(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+func GetNFTbyStatus(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	if vars["sellingstatus"] != "" {
+		results, err := marketplaceBusinessFacade.GetNFTBySellingStatus(vars["sellingstatus"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[[]models.NFT](w, results)
+		}
+	} else {
+		errors.BadRequest(w, "")
+	}
+}
+
 func GetWatchListNFT(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
@@ -171,6 +252,39 @@ func GetNFTByUserId(w http.ResponseWriter, r *http.Request) {
 		} else {
 			errors.BadRequest(w, "")
 		}
+	} else {
+		errors.BadRequest(w, "")
+	}
+}
+
+func GetSVGBySHA256(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	if len(vars["hash"]) != 0 {
+		log.Println("--------------hash", vars["hash"])
+		result, err := marketplaceBusinessFacade.GetSVGByHash(vars["hash"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[[]models.SVG](w, result)
+		}
+	} else {
+		errors.BadRequest(w, "")
+	}
+}
+
+func GetLastNFTByUserId(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	if len(vars["creatoruserid"]) != 0 {
+		result, err := marketplaceBusinessFacade.GetLastNFTbyUserId(vars["creatoruserid"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[[]models.NFT](w, result)
+		}
+	} else {
+		errors.BadRequest(w, "")
 	}
 	w.WriteHeader(http.StatusUnauthorized)
 	logs.ErrorLogger.Println("Status Unauthorized")
@@ -196,4 +310,19 @@ func GetNFTByTenentName(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusUnauthorized)
 	logs.ErrorLogger.Println("Status Unauthorized")
 	return
+}
+
+func GetNFTByBlockchainAndUserPK(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	if vars["creatoruserid"] != "" || vars["blockchain"] != "" {
+		results, err := marketplaceBusinessFacade.GetNFTByBlockchainAndUserPK(vars["creatoruserid"], vars["blockchain"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[[]models.NFT](w, results)
+		}
+	} else {
+		errors.BadRequest(w, "")
+	}
 }

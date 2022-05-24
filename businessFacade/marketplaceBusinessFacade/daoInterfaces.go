@@ -13,4 +13,6 @@ var (
 	newsletterRepository marketplaceRepository.NewsLetterRepository
 	faqRepository        marketplaceRepository.FaqRepository
 	reviewRepository     marketplaceRepository.ReviewRepository
+	CollectionRepository marketplaceRepository.CollectionRepository
+	FavouriteRepository  marketplaceRepository.FavouriteRepository
 )

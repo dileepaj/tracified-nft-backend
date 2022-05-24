@@ -8,6 +8,15 @@ func CreateWatchList(watchList models.WatchList) (string, error) {
 	return watchListRepository.SaveWatchList(watchList)
 }
 
-func FindNFTIdentifieryByUserId(userId string)([]string,error){
+func FindNFTIdentifieryByUserId(userId string) ([]string, error) {
 	return watchListRepository.FindNFTIdentifieryByUserId(userId)
+}
+
+func GetWatchListByUserPK(userid string) ([]models.WatchList, error) {
+	return watchListRepository.FindWatchListbyUserPK("userid", userid)
+
+}
+
+func GetAllWatchLists() ([]models.Favourite, error) {
+	return FavouriteRepository.GetAllFavourites()
 }
