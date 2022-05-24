@@ -2,8 +2,6 @@ package marketplaceRepository
 
 import (
 	"context"
-	"fmt"
-	"log"
 	"time"
 
 	"github.com/dileepaj/tracified-nft-backend/database/connections"
@@ -79,7 +77,24 @@ func (r *NFTRepository) FindNFTsById(idName string, id string) ([]models.NFT, er
 	return nfts, nil
 }
 
-//last nft by single id
+func (r *NFTRepository) GetSVGByHash(idName string, id string) ([]models.SVG, error) {
+	var svgs []models.SVG
+	rst, err := repository.FindById(idName, id, "svg")
+	if err != nil {
+		return svgs, err
+	}
+	for rst.Next(context.TODO()) {
+		var svg models.SVG
+		err = rst.Decode(&svg)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return svgs, err
+		}
+		svgs = append(svgs, svg)
+	}
+	return svgs, nil
+}
+
 func (r *NFTRepository) FindLastNFTById(idName string, id string) ([]models.NFT, error) {
 	var nfts []models.NFT
 	rst := repository.FindOne(idName, id, "nft")
@@ -132,7 +147,6 @@ func (r *NFTRepository) SaveTags(tags models.Tags) (string, error) {
 
 func (r *NFTRepository) UpdateNFTSALE(nft requestDtos.UpdateNFTSALERequest) (responseDtos.ResponseNFTMakeSale, error) {
 	var responseMakeSaleNFT responseDtos.ResponseNFTMakeSale
-	log.Println("-------------inside repo", responseMakeSaleNFT)
 	update := bson.M{
 		"$set": bson.M{"timestamp": nft.Timestamp, "sellingstatus": nft.SellingStatus, "sellingtype": nft.SellingType, "marketcontract": nft.MarketContract, "currentprice": nft.CurrentPrice, "currentownerpk": nft.CurrentOwnerPK},
 	}
@@ -151,7 +165,6 @@ func (r *NFTRepository) UpdateNFTSALE(nft requestDtos.UpdateNFTSALERequest) (res
 
 func (repository *NFTRepository) UpdateNFTMinter(nft requestDtos.UpdateMint) (responseDtos.ResponseNFTMinter, error) {
 	var responseNFT responseDtos.ResponseNFTMinter
-	fmt.Println("------------------------inside repo", nft)
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	update := bson.M{
@@ -167,13 +180,11 @@ func (repository *NFTRepository) UpdateNFTMinter(nft requestDtos.UpdateMint) (re
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 	}
-	fmt.Println("-------------------response", responseNFT)
 	return responseNFT, err
 }
 
 func (repository *NFTRepository) UpdateNFTTXN(nft requestDtos.UpdateMintTXN) (responseDtos.ResponseNFTMintTXN, error) {
 	var responseNFT responseDtos.ResponseNFTMintTXN
-	fmt.Println("------------------------inside repo", nft)
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	update := bson.M{
@@ -189,7 +200,6 @@ func (repository *NFTRepository) UpdateNFTTXN(nft requestDtos.UpdateMintTXN) (re
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 	}
-	fmt.Println("-------------------response", responseNFT)
 	return responseNFT, err
 }
 
@@ -218,7 +228,6 @@ func (repository *NFTRepository) FindTagsbyNFTIdentifier(idName1 string, id1 str
 }
 
 func (repository *NFTRepository) GetAllTags() ([]models.Tags, error) {
-	fmt.Println("executing repo get all Tags")
 	var tag []models.Tags
 	findOptions := options.Find()
 	findOptions.SetLimit(10)
@@ -227,7 +236,6 @@ func (repository *NFTRepository) GetAllTags() ([]models.Tags, error) {
 		logs.ErrorLogger.Println(err.Error())
 		return tag, err
 	}
-	fmt.Println("outside loop")
 	for rst.Next(context.TODO()) {
 		var tags models.Tags
 		err = rst.Decode((&tags))
@@ -235,68 +243,7 @@ func (repository *NFTRepository) GetAllTags() ([]models.Tags, error) {
 			logs.ErrorLogger.Println(err.Error())
 			return tag, err
 		}
-		fmt.Println("inside loop : ", tags)
 		tag = append(tag, tags)
 	}
 	return tag, nil
 }
-
-// func (repository *NFTRepository) GetLastNFTbyNFTUniqueKey(identifier string) (error,[]models.NFT){
-// 	result := []models.NFT{}
-// 	// p := promise.NewPromise()
-
-// 		// Do something asynchronously.
-// 		session := connections.Connect();
-
-// 		//defer session.EndSession(context.TODO())
-// 		c := session.Client().Database("nftBackendQa").Collection("nft")
-// 		cursor, err1 := c.Find(context.TODO(), bson.M{"identifier": identifier})
-
-// 		if err1 != nil {
-// 			fmt.Println(err1)
-// 		} else {
-// 			err2 := cursor.All(context.TODO(), &result)
-// 			if err2 != nil || len(result) == 0 {
-// 				fmt.Println(err2)
-// 			} else {
-// 				for cursor.Next(context.TODO()) {
-// 					var results models.NFT
-// 					err1 = cursor.Decode((&results))
-// 					if err1 != nil {
-// 						logs.ErrorLogger.Println(err1.Error())
-// 						return err1, result
-// 					}
-// 					fmt.Println(result[len(result)-1])
-// 				results =(result[len(result)-1])
-// 				}
-
-// 				return nil,result
-
-// 			}
-// 		}
-
-// }
-
-// func (repository *NFTRepository) test(idName1 string, id1 string) ([]models.NFT, error) {
-// 	var nfts []models.NFT
-// 	if idName1 != "" {
-// 		findOptions := options.Find()
-// 		rst, err := connections.Connect().Collection("nft").Find(context.TODO(), bson.D{{idName1, id1}}, findOptions)
-// 		if err != nil {
-// 			logs.ErrorLogger.Println(err.Error())
-// 			return nfts, err
-// 		}
-// 		for rst.Next(context.TODO()) {
-// 			var nft models.NFT
-// 			err = rst.Decode((&nft))
-// 			if err != nil {
-// 				logs.ErrorLogger.Println(err.Error())
-// 				return nfts, err
-// 			}
-// 			nfts =(nft[len(nfts)-1])
-// 		}
-// 		return nfts, nil
-// 	} else {
-// 		return nfts, nil
-// 	}
-// }

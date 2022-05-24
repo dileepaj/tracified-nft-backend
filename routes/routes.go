@@ -16,6 +16,7 @@ func init() {
 		marketPlace.WatchListRoutes,
 		nftComposer.ComposerRoutes,
 		marketPlace.CollectionRoutes,
+		marketPlace.FavouritesRoutes,
 	}
 
 	for _, r := range routes {

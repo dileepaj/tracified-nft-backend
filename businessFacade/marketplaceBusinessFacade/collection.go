@@ -1,8 +1,6 @@
 package marketplaceBusinessFacade
 
 import (
-	"fmt"
-
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
@@ -17,9 +15,9 @@ func CreateSVG(svg models.SVG) (string, error) {
 }
 
 func GetAllCollections() ([]models.NFTCollection, error) {
-	fmt.Println("Calling repo...")
 	return CollectionRepository.GetAllCollections()
 }
+
 func GetCollectionByUserPK(userid string) ([]models.NFTCollection, error) {
 	return CollectionRepository.FindCollectionbyUserPK("userid", userid)
 

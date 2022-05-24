@@ -11,4 +11,5 @@ var (
 	userRepository       marketplaceRepository.UserRepository
 	offerRepository      marketplaceRepository.OfferRepository
 	CollectionRepository marketplaceRepository.CollectionRepository
+	FavouriteRepository  marketplaceRepository.FavouriteRepository
 )
