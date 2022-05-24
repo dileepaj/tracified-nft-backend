@@ -26,6 +26,14 @@ func GetAllONSaleNFT(id string, userPK string) ([]models.NFT, error) {
 	return nftRepository.FindNFTById1AndNotId2("sellingstatus", id, "currentownerpk", userPK)
 }
 
+func GetOneONSaleNFT(id string, identifier string, blockchain string) ([]models.NFT, error) {
+	return nftRepository.FindNFTByIdId2Id3("sellingstatus", id, "nftidentifier", identifier, "blockchain", blockchain)
+}
+
+func GetNFTByBlockchainAndUserPK(id string, blockchain string) ([]models.NFT, error) {
+	return nftRepository.FindNFTById1AndNotId2("creatoruserid", id, "blockchain", blockchain)
+}
+
 func MakeSaleNFT(update requestDtos.UpdateNFTSALERequest) (responseDtos.ResponseNFTMakeSale, error) {
 	return nftRepository.UpdateNFTSALE(update)
 }
@@ -60,6 +68,21 @@ func GetNFTbyAccount(userId string) ([]models.NFT, error) {
 	} else {
 		return nftRepository.FindByFieldInMultipleValus("currentownerpk", results)
 	}
+}
+
+func GetLastNFTbyUserId(userId string) ([]models.NFT, error) {
+	return nftRepository.FindLastNFTById("creatoruserid", userId)
+
+}
+
+func GetNFTbyUserId(userId string) ([]models.NFT, error) {
+	return nftRepository.FindNFTsById("creatoruserid", userId)
+
+}
+
+func GetSVGByHash(hash string) ([]models.SVG, error) {
+	return nftRepository.GetSVGByHash("hash", hash)
+
 }
 
 func GetNFTbyTenentName(tenentName string) ([]models.NFT, error) {

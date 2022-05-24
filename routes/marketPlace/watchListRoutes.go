@@ -14,5 +14,22 @@ var WatchListRoutes = models.Routers{
 		Path:    "/api/watchList/save",
 		Handler: apiHandler.CreateWatchList,
 	},
-
+	models.Router{
+		Name:    "Get All Watchlists",
+		Method:  "GET",
+		Path:    "/api/watchList",
+		Handler: apiHandler.GetAllWatchLists,
+	},
+	models.Router{
+		Name:    "Get WatchList By UserPK",
+		Method:  "GET",
+		Path:    "/api/watchList/{userpk}",
+		Handler: apiHandler.GetWatchListByUserPK,
+	},
+	models.Router{
+		Name:    "Get WatchList By UserID",
+		Method:  "GET",
+		Path:    "/api/watchList/{userid}",
+		Handler: apiHandler.GetWatchListNFT,
+	},
 }
