@@ -10,6 +10,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -215,41 +216,60 @@ func (r *NFTRepository) UpdateNFTSALE(nft requestDtos.UpdateNFTSALERequest) (res
 	}
 }
 
-func (r *NFTRepository) UpdateMinter(minter requestDtos.UpdateMint) (responseDtos.ResponseNFTMinter, error) {
-	var responsemint responseDtos.ResponseNFTMinter
-	update := bson.M{
-		"$set": bson.M{"nftidentifier": minter.NFTIdentifier, "nftissuerpk": minter.NFTIssuerPK, "nfttxnhash": minter.NFTTxnHash},
+func (r *NFTRepository) UpdateMinter(findBy string, id string, update primitive.M) (models.NFT, error) {
+	var nftResponse models.NFT
+
+	session, err := connections.GetMongoSession()
+	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session " + err.Error())
 	}
-	projection := bson.M{}
-	rst := repository.FindOneAndUpdate("imagebase64", minter.Imagebase64, projection, update, NFT)
+
+	defer session.EndSession(context.TODO())
+	upsert := false
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+	rst := session.Client().Database(connections.DbName).Collection("nft").FindOneAndUpdate(context.TODO(), bson.M{"imagebase64": id}, update, &opt)
 	if rst != nil {
-		err := rst.Decode(&responsemint)
+		err := rst.Decode((&nftResponse))
 		if err != nil {
-			logs.ErrorLogger.Println(err.Error())
-			return responsemint, err
+			logs.ErrorLogger.Println("Error occured while retreving data from collection nft in UpdateMinter:nftRepository.go: ", err.Error())
+			return nftResponse, err
 		}
-		return responsemint, nil
+		return nftResponse, nil
 	} else {
-		return responsemint, nil
+		return nftResponse, nil
+
 	}
 }
 
-func (r *NFTRepository) UpdateNFTTxn(txn requestDtos.UpdateMintTXN) (responseDtos.ResponseNFTMintTXN, error) {
-	var responseminttxn responseDtos.ResponseNFTMintTXN
-	update := bson.M{
-		"$set": bson.M{"nfttxnhash": txn.NFTTxnHash},
+func (r *NFTRepository) UpdateNFTTXN(findBy string, id string, update primitive.M) (models.NFT, error) {
+	var txnResponse models.NFT
+	session, err := connections.GetMongoSession()
+	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session " + err.Error())
 	}
-	projection := bson.M{}
-	rst := repository.FindOneAndUpdate("imagebase64", txn.Imagebase64, projection, update, NFT)
+
+	defer session.EndSession(context.TODO())
+	upsert := false
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+	rst := session.Client().Database(connections.DbName).Collection("nft").FindOneAndUpdate(context.TODO(), bson.M{"imagebase64": id}, update, &opt)
 	if rst != nil {
-		err := rst.Decode(&responseminttxn)
+		err := rst.Decode((&txnResponse))
 		if err != nil {
-			logs.ErrorLogger.Println(err.Error())
-			return responseminttxn, err
+			logs.ErrorLogger.Println("Error occured while retreving data from nft nft in UpdateNFTTXN:nftRepository.go: ", err.Error())
+			return txnResponse, err
 		}
-		return responseminttxn, nil
+		return txnResponse, nil
 	} else {
-		return responseminttxn, nil
+		return txnResponse, nil
+
 	}
 }
 

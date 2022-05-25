@@ -6,6 +6,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 func StoreNFT(createNFTObject models.NFT) (string, error) {
@@ -118,10 +119,15 @@ func GetTagsByNFTIdentifier(nftid string) ([]models.Tags, error) {
 
 }
 
-func UpdateNFT(update requestDtos.UpdateMint) (responseDtos.ResponseNFTMinter, error) {
-	return nftRepository.UpdateMinter(update)
+func UpdateNFTTXN(txn requestDtos.UpdateMintTXN) (models.NFT, error) {
+	update := bson.M{
+		"$set": bson.M{"nfttxnhash": txn.NFTTxnHash},
+	}
+	return nftRepository.UpdateNFTTXN("imagebase64", txn.Imagebase64, update)
 }
-
-func UpdateNFTTXN(update requestDtos.UpdateMintTXN) (responseDtos.ResponseNFTMintTXN, error) {
-	return nftRepository.UpdateNFTTxn(update)
+func UpdateNFT(nft requestDtos.UpdateMint) (models.NFT, error) {
+	update := bson.M{
+		"$set": bson.M{"nftidentifier": nft.NFTIdentifier, "nftissuerpk": nft.NFTIssuerPK, "nfttxnhash": nft.NFTTxnHash},
+	}
+	return nftRepository.UpdateMinter("imagebase64", nft.Imagebase64, update)
 }
