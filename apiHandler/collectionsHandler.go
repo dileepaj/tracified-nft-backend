@@ -99,26 +99,6 @@ func GetCollectionByUserPK(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func GetCollectionById(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
-	vars := mux.Vars(r)
-	fmt.Println(vars["_id"])
-	results, err1 := marketplaceBusinessFacade.GetCollectionById(vars["_id"])
-	if err1 != nil {
-		ErrorMessage := err1.Error()
-		errors.BadRequest(w, ErrorMessage)
-		return
-	} else {
-		w.WriteHeader(http.StatusOK)
-		err := json.NewEncoder(w).Encode(results)
-		if err != nil {
-			logs.ErrorLogger.Println(err)
-		}
-		return
-	}
-
-}
-
 func GetAllCollections(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
 	log.Println("calling func Get All Collections....")
@@ -160,31 +140,6 @@ func UpdateCollection(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-}
-func DeleteCollectionById(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	var deleteCollectionObj requestDtos.DeleteCollectionById
-	decoder := json.NewDecoder(r.Body)
-	err := decoder.Decode(&deleteCollectionObj)
-	if err != nil {
-		logs.ErrorLogger.Println(err.Error())
-	} else {
-		err1 := marketplaceBusinessFacade.DeleteCollectionById(deleteCollectionObj)
-		if err1 != nil {
-			ErrorMessage := err1.Error()
-			errors.BadRequest(w, ErrorMessage)
-			return
-		} else {
-			w.WriteHeader(http.StatusOK)
-			message := "Collection has been deleted"
-			err = json.NewEncoder(w).Encode(message)
-			if err != nil {
-				logs.ErrorLogger.Println(err)
-			}
-			return
-		}
-	}
-
 }
 
 func DeleteCollectionByUserPK(w http.ResponseWriter, r *http.Request) {

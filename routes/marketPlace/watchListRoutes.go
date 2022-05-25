@@ -29,7 +29,7 @@ var WatchListRoutes = models.Routers{
 	models.Router{
 		Name:    "Get WatchList By UserID",
 		Method:  "GET",
-		Path:    "/api/watchList/{userid}",
+		Path:    "/api/watchList/{currentownerpk}",
 		Handler: apiHandler.GetWatchListNFT,
 	},
 }

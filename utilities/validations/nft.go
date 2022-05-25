@@ -52,3 +52,12 @@ func ValidateRequestNFTObject(e requestDtos.CreateNFTRequest) error {
 	}
 	return nil
 }
+
+func ValidateRequestTXNObject(e models.TXN) error {
+	validate = validator.New()
+	err := validate.Struct(e)
+	if err != nil {
+		return err
+	}
+	return nil
+}

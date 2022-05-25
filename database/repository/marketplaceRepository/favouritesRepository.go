@@ -2,7 +2,6 @@ package marketplaceRepository
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/dileepaj/tracified-nft-backend/database/connections"
 	"github.com/dileepaj/tracified-nft-backend/database/repository"
@@ -20,49 +19,50 @@ func (r *FavouriteRepository) SaveFavourite(favourite models.Favourite) (string,
 	return repository.Save[models.Favourite](favourite, Favourite)
 }
 
-func (repository *FavouriteRepository) FindFavouritesbyUserPK(idName1 string, id1 string) ([]models.Favourite, error) {
-	var favourites []models.Favourite
-	if idName1 != "" {
-		findOptions := options.Find()
-		rst, err := connections.Connect().Collection("favourites").Find(context.TODO(), bson.D{{idName1, id1}}, findOptions)
-		if err != nil {
-			logs.ErrorLogger.Println(err.Error())
-			return favourites, err
-		}
-		for rst.Next(context.TODO()) {
-			var favourite models.Favourite
-			err = rst.Decode((&favourite))
-			if err != nil {
-				logs.ErrorLogger.Println(err.Error())
-				return favourites, err
-			}
-			favourites = append(favourites, favourite)
-		}
-		return favourites, nil
-	} else {
-		return favourites, nil
+func (r *FavouriteRepository) FindFavouritesbyUserPK(userpk string) (models.Favourite, error) {
+	var favourite models.Favourite
+
+	session, err := connections.GetMongoSession()
+	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session " + err.Error())
 	}
+	defer session.EndSession(context.TODO())
+	rst, err := session.Client().Database(connections.DbName).Collection("favourite").Find(context.TODO(), bson.M{"creatoruserid": userpk})
+	if err != nil {
+		return favourite, err
+	}
+	for rst.Next(context.TODO()) {
+		err = rst.Decode(&favourite)
+		if err != nil {
+			logs.ErrorLogger.Println("Error occured while retreving data from collection favourite in GetfavouriteByID:favouriteRepository.go: ", err.Error())
+			return favourite, err
+		}
+	}
+	return favourite, err
 }
-func (repository *FavouriteRepository) GetAllFavourites() ([]models.Favourite, error) {
-	fmt.Println("executing repo get all favourites")
-	var favourites []models.Favourite
+func (r *FavouriteRepository) GetAllFavourites() ([]models.Favourite, error) {
+	session, err := connections.GetMongoSession()
+	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session in getAllFavourite : FavouriteRepository.go : ", err.Error())
+	}
+	defer session.EndSession(context.TODO())
+
+	var favourite []models.Favourite
 	findOptions := options.Find()
 	findOptions.SetLimit(10)
-	rst, err := connections.Connect().Collection("favourite").Find(context.TODO(), bson.D{{}}, findOptions)
+	result, err := session.Client().Database(connections.DbName).Collection(Favourite).Find(context.TODO(), bson.D{{}}, findOptions)
 	if err != nil {
-		logs.ErrorLogger.Println(err.Error())
-		return favourites, err
+		logs.ErrorLogger.Println("Error occured when trying to connect to DB and excute Find query in GetAllFavourite:FavouriteRepository.go: ", err.Error())
+		return favourite, err
 	}
-	fmt.Println("outside loop")
-	for rst.Next(context.TODO()) {
-		var favourite models.Favourite
-		err = rst.Decode((&favourite))
+	for result.Next(context.TODO()) {
+		var favourites models.Favourite
+		err = result.Decode(&favourites)
 		if err != nil {
-			logs.ErrorLogger.Println(err.Error())
-			return favourites, err
+			logs.ErrorLogger.Println("Error occured while retreving data from collection favourites in GetAllFavourites:favouritesRepository.go: ", err.Error())
+			return favourite, err
 		}
-		fmt.Println("inside loop : ", favourite)
-		favourites = append(favourites, favourite)
+		favourite = append(favourite, favourites)
 	}
-	return favourites, nil
+	return favourite, nil
 }

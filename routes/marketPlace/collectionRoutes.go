@@ -13,12 +13,6 @@ var CollectionRoutes = models.Routers{
 		Handler: apiHandler.CreateCollection,
 	},
 	models.Router{
-		Name:    "GET Collection by ID",
-		Method:  "Get",
-		Path:    "/api/collection/id/{_id}",
-		Handler: apiHandler.GetCollectionById,
-	},
-	models.Router{
 		Name:    "GET Collection by UserPK",
 		Method:  "Get",
 		Path:    "/api/collection/userpk/{userid}",
@@ -35,12 +29,6 @@ var CollectionRoutes = models.Routers{
 		Method:  "PUT",
 		Path:    "/api/collection",
 		Handler: apiHandler.UpdateCollection,
-	},
-	models.Router{
-		Name:    "Delete Collection by Id",
-		Method:  "DELETE",
-		Path:    "/api/collection/id/{_id}",
-		Handler: apiHandler.DeleteCollectionById,
 	},
 	models.Router{
 		Name:    "Delete Collection by userPK",

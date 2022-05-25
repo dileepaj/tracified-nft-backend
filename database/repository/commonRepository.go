@@ -116,6 +116,24 @@ func FindById1AndNotId2(idName1 string, id1 string, idName2 string, id2 string, 
 	}
 }
 
+func FindById1Id2Id3(idName1 string, id1 string, idName2 string, id2 string, idName3 string, id3 string, collection string) (*mongo.Cursor, error) {
+	session, err := connections.GetMongoSession()
+	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session " + err.Error())
+	}
+	defer session.EndSession(context.TODO())
+
+	findOptions := options.Find()
+	findOptions.SetSort(bson.D{{"timestamp", -1}})
+	rst, err := session.Client().Database(connections.DbName).Collection(collection).Find(context.TODO(), bson.D{{idName1, id1}, {idName2, id2}, {idName3, id3}}, findOptions)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+		return rst, err
+	} else {
+		return rst, nil
+	}
+}
+
 func FindByFieldInMultipleValus(fields string, tags []string, collection string) (*mongo.Cursor, error) {
 	session, err := connections.GetMongoSession()
 	if err != nil {
