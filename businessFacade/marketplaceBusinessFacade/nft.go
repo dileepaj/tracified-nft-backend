@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
-	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -47,8 +46,11 @@ func GetNFTByBlockchainAndUserPK(id string, blockchain string) ([]models.NFT, er
 	return nftRepository.FindNFTById1AndNotId2("creatoruserid", id, "blockchain", blockchain)
 }
 
-func MakeSaleNFT(update requestDtos.UpdateNFTSALERequest) (responseDtos.ResponseNFTMakeSale, error) {
-	return nftRepository.UpdateNFTSALE(update)
+func MakeSaleNFT(nft requestDtos.UpdateNFTSALERequest) (models.NFT, error) {
+	update := bson.M{
+		"$set": bson.M{"timestamp": nft.Timestamp, "currentprice": nft.CurrentPrice, "sellingstatus": nft.SellingStatus, "sellingtype": nft.SellingType, "marketcontract": nft.MarketContract, "currentownerpk": nft.CurrentOwnerPK},
+	}
+	return nftRepository.UpdateNFTSALE("nftidentifier", nft.NFTIdentifier, update)
 }
 
 func GetBlockchainSpecificNFT(blockchain string) ([]models.NFT, error) {
@@ -93,8 +95,8 @@ func GetNFTbyUserId(userId string) ([]models.NFT, error) {
 
 }
 
-func GetSVGByHash(hash string) ([]models.SVG, error) {
-	return nftRepository.GetSVGByHash("hash", hash)
+func GetSVGByHash(hash string) (models.SVG, error) {
+	return nftRepository.GetSVGByHash(hash)
 
 }
 

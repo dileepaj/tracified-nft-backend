@@ -6,7 +6,6 @@ import (
 
 	"github.com/dileepaj/tracified-nft-backend/businessFacade/marketplaceBusinessFacade"
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
-	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/commonResponse"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
@@ -102,7 +101,7 @@ func MakeSale(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			errors.BadRequest(w, err.Error())
 		} else {
-			commonResponse.SuccessStatus[responseDtos.ResponseNFTMakeSale](w, result)
+			commonResponse.SuccessStatus[models.NFT](w, result)
 		}
 	}
 }
@@ -251,7 +250,7 @@ func GetSVGBySHA256(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			errors.BadRequest(w, err.Error())
 		} else {
-			commonResponse.SuccessStatus[[]models.SVG](w, result)
+			commonResponse.SuccessStatus[models.SVG](w, result)
 		}
 	} else {
 		errors.BadRequest(w, "")
