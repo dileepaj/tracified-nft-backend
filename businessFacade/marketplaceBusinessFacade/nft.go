@@ -8,18 +8,30 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/models"
 )
 
-func StoreNFT(createNFTObject requestDtos.CreateNFTRequest) (string, error) {
-	rst, err1 := nftRepository.SaveNFT(createNFTObject.NFT)
+func StoreNFT(createNFTObject models.NFT) (string, error) {
+	rst, err1 := nftRepository.SaveNFT(createNFTObject)
 	if err1 != nil {
 		return "NFT not saved", err1
-	} else {
-		_, err2 := SaveOwnership(createNFTObject.Ownership)
-		if err2 != nil {
-			return "Ownership not saved", err2
-		} else {
-			return rst, nil
-		}
 	}
+	return rst, nil
+
+}
+
+func StoreTXN(createTXNObject models.TXN) (string, error) {
+	rst, err1 := nftRepository.SaveTXN(createTXNObject)
+	if err1 != nil {
+		return "TXNs not saved", err1
+	}
+	return rst, nil
+
+}
+
+func StoreOwner(createOwner models.Ownership) (string, error) {
+	rst, err1 := nftRepository.SaveOwner(createOwner)
+	if err1 != nil {
+		return "Owner not saved", err1
+	}
+	return rst, nil
 }
 
 func GetAllONSaleNFT(id string, userPK string) ([]models.NFT, error) {
@@ -49,15 +61,15 @@ func GetNFTBySellingStatus(status string) ([]models.NFT, error) {
 func GetNFTbyTagsName(tags string) ([]models.NFT, error) {
 	var tagsArray []string
 	_ = json.Unmarshal([]byte(tags), &tagsArray)
-	return nftRepository.FindByFieldInMultipleValus("tags", tagsArray)
+	return nftRepository.FindByFieldInMultipleValusTags("tags", tagsArray)
 }
 
-func GetWatchListNFT(userId string) ([]models.NFT, error) {
+func GetWatchListNFT(userId string) ([]models.WatchList, error) {
 	results, err := FindNFTIdentifieryByUserId(userId)
 	if err != nil || len(results) == 0 {
-		return []models.NFT{}, err
+		return []models.WatchList{}, err
 	} else {
-		return nftRepository.FindByFieldInMultipleValus("nftidentifier", results)
+		return nftRepository.FindByFieldInMultipleValusWatchList("nftidentifier", results)
 	}
 }
 
@@ -66,7 +78,7 @@ func GetNFTbyAccount(userId string) ([]models.NFT, error) {
 	if err != nil || len(results) == 0 {
 		return []models.NFT{}, err
 	} else {
-		return nftRepository.FindByFieldInMultipleValus("currentownerpk", results)
+		return nftRepository.FindByFieldInMultipleValusAccount("currentownerpk", results)
 	}
 }
 
@@ -90,6 +102,26 @@ func GetNFTbyTenentName(tenentName string) ([]models.NFT, error) {
 	if err != nil || len(results) == 0 {
 		return []models.NFT{}, err
 	} else {
-		return nftRepository.FindByFieldInMultipleValus("currentownerpk", results)
+		return nftRepository.FindByFieldInMultipleValusTennant("currentownerpk", results)
 	}
+}
+
+func CreateTags(tags models.Tags) (string, error) {
+	return nftRepository.SaveTags(tags)
+}
+
+func GetAllTags() ([]models.Tags, error) {
+	return nftRepository.GetAllTags()
+}
+func GetTagsByNFTIdentifier(nftid string) ([]models.Tags, error) {
+	return nftRepository.FindTagsByNFTIdentifier("nftidentifier", nftid)
+
+}
+
+func UpdateNFT(update requestDtos.UpdateMint) (responseDtos.ResponseNFTMinter, error) {
+	return nftRepository.UpdateMinter(update)
+}
+
+func UpdateNFTTXN(update requestDtos.UpdateMintTXN) (responseDtos.ResponseNFTMintTXN, error) {
+	return nftRepository.UpdateNFTTxn(update)
 }
