@@ -43,11 +43,9 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 							htmlBody += `<div class="card text-center justify-content-center m-3" style="min-width: 500px; max-height: fit-content;">
 							<div class="card-header">Bar Chart</div>
 							<div class="text-center justify-content-center card-body">
-							  <img
-								style="max-width: 500px; max-height: 400px"
-								src="` + bar.ChartImage + `"
-								alt=""
-							  />
+								<div class="img-widget-image"
+									style="background-image: url(`+  bar.ChartImage +`);">
+								</div>
 							</div>
 						  </div>`
 						}
@@ -60,11 +58,9 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 							htmlBody += `<div class="card text-center justify-content-center m-3" style="min-width: 500px; max-height: fit-content;">
 								<div class="card-header">Pie Chart</div>
 								<div class="card-body">
-								  <img
-									style="max-width: 500px; max-height: 400px"
-									src="` + pie.ChartImage + `"
-									alt=""
-								  />
+									<div class="img-widget-image"
+										style="background-image: url(`+  pie.ChartImage +`);">
+									</div>
 								</div>
 							  </div>`
 						}
@@ -78,11 +74,9 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 								htmlBody += `<div class="card text-center justify-content-center m-3" style="min-width: 500px; max-height: fit-content;">
 								<div class="card-header">Bubble Chart</div>
 								<div class="card-body">
-								  <img
-									style="max-width: 500px; max-height: 400px"
-									src="` + bubble.ChartImage + `"
-									alt=""
-								  />
+									<div class="img-widget-image"
+										style="background-image: url(`+  bubble.ChartImage +`);">
+									</div>
 								</div>
 							  </div>`
 							}
@@ -96,7 +90,7 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 							htmlBody += `<div class="card text-center justify-content-center m-3" style="min-width: 500px; max-height: fit-content;">
 											<div class="card-header">Table</div>
 												<div class="card-body text-center justify-content-center"  style="min-width: 500px;" >
-												<p style="margin-bottom:10px; font-weight:bold;">`+ table.TableTitle +`</p>
+												<p class="common-widget-title">`+ table.TableTitle +`</p>
 												<table class="table table-bordered">` + table.TableContent + `</table>
 											</div>
 										</div>`
@@ -110,11 +104,12 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 							htmlBody += `<div class="card text-center justify-content-center m-3" style="min-width: 500px; max-height: fit-content;">
 							<div class="card-header">Image</div>
 							<div class="card-body">
-							  <img
-								style="max-width: 500px; max-height: 400px"
-								src="` + image.Base64Image + `"
-								alt=""
-							  />
+							<p class="common-widget-title">`+ image.Title +`</p>
+							<a href="`+ image.Base64Image +`">
+							  <div class="img-widget-image"
+								style="background-image: url(`+ image.Base64Image +`);">
+							  </div>
+							  </a>
 							</div>
 						  </div>`
 						}
@@ -129,7 +124,7 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 								htmlBotHeader := `<div class="card text-center justify-content-center m-3" style="min-width: 500px; max-height: fit-content;">
 														<div class="card-header">PrrofBot</div>
 														<div class="card-body text-center justify-content-center">
-														<p style="margin-bottom:10px; font-weight:bold;">`+ botData.Title +`</p>`
+														<p class="common-widget-title">`+ botData.Title +`</p>`
 								for _, data := range botData.Data {
 									htmlBotcard += `<div class="card botCard">
 															<p class="text-start">ProductName :` + botData.ProductName + `</p>
@@ -166,6 +161,7 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 							htmlTimelineHeader += `<div class="card text-center justify-content-center m-3" style="min-width: 500px; max-height: fit-content;">
 														<div class="card-header">Timeline</div>
 														<div class="card-body text-center justify-content-center">
+														<p class="common-widget-title">`+ timelineData.Title +`</p>
 															<div class="text-start row" style="width: 500px">
 																<ul class="timeline">`
 							for _, data := range timelineData.TimelineData {
@@ -179,7 +175,8 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 								}
 								for _,image:=range data.Images{
 									htmlTimelineBody += `
-									<img src="`+ image +`" width="300" height="250" alt=""/>
+									<div class="img-timeline-image" style="background-image: url(`+ image +`);">
+								 	</div>
 									`
 								}
 								htmlTimelineBody += `</div>`
