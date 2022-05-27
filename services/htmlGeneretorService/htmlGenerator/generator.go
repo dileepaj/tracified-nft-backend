@@ -14,7 +14,6 @@ var (
 	documentEnd   = `</html>`
 	headeEnd      = `</header>`
 	styleStart    = services.ReadFromFile("services/htmlGeneretorService/templates/htmlStyles.css")
-	body          = services.ReadFromFile("services/htmlGeneretorService/templates/htmlBody.html")
 	mainHandler   = services.ReadFromFile("services/htmlGeneretorService/templates/htmlScript.html")
 	stratScript   = `<script type="text/javascript">`
 	endScript     = `</script>`
@@ -37,7 +36,13 @@ func GenerateHTMLTemplate(htmlData models.HtmlGenerator) (string, error) {
 	var images []models.ImageData = htmlData.NftContent.Images
 	var Timelines []models.Timeline = htmlData.NftContent.TimeLine
 	var contentOrderData []models.ContentOrderData = htmlData.ContentOrderData
-
+	body := ` <body>
+				 <h1 class="text-center">Tracified NFT</h1>
+				 <p class="text-center fw-bold text-muted">`+ htmlData.NFTName +`<p>
+				</div>
+				 <div class="d-flex justify-content-center align-content-center flex-wrap" id="container">
+				</div>
+			  </body>`
 	// take json data convert it to string
 	dataString, err := json.Marshal(htmlData)
 	if err != nil {

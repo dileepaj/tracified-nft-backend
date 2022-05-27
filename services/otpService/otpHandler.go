@@ -13,45 +13,51 @@ import (
 
 var baseUrl = configs.GetBackeBaseUrl() + "/traceabilityProfiles/ecommerce/nft/"
 
-func GetOtpForBatchURL(productId string, batchId string, otpType string, token string) (string, error) {
+func GetOtpForBatchURL(productId string, batchId string, otpType string, token string) (string, int, error) {
 	if otpType == "Batch" && productId != "" && batchId != "" {
 		url := baseUrl + productId + "/" + batchId
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
-			return "", err
+			return "", req.Response.StatusCode, err
 		}
 		req.Header.Add("authorization", token)
 		req.Header.Add("cache-control", "no-cache")
 		res, err := http.DefaultClient.Do(req)
 		if err != nil {
-			return "", err
+			return "", res.StatusCode, err
 		}
 		defer res.Body.Close()
 		body, _ := ioutil.ReadAll(res.Body)
-		return string(body), nil
+		if res.StatusCode == 200 || res.StatusCode == 204 {
+			return string(body), res.StatusCode, nil
+		}
+		return "", res.StatusCode, errors.New("Backend server connection issue")
 	} else {
-		return "", errors.New("Invalied OTP Type or batch")
+		return "", 400, errors.New("Invalied OTP Type or batch")
 	}
 }
 
-func GetOtpForArtifactURL(artifactId string, otpType string, token string) (string, error) {
+func GetOtpForArtifactURL(artifactId string, otpType string, token string) (string, int, error) {
 	if otpType == "Artifact" && artifactId != "" {
 		url := baseUrl + "artifact/id/" + artifactId
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
-			return "", err
+			return "", req.Response.StatusCode, err
 		}
 		req.Header.Add("authorization", token)
 		req.Header.Add("cache-control", "no-cache")
 		res, err := http.DefaultClient.Do(req)
 		if err != nil {
-			return "", err
+			return "", res.StatusCode, err
 		}
 		defer res.Body.Close()
 		body, _ := ioutil.ReadAll(res.Body)
-		return string(body), nil
+		if res.StatusCode == 200 || res.StatusCode == 204 {
+			return string(body), res.StatusCode, nil
+		}
+		return "", res.StatusCode, errors.New("Backend server connection issue")
 	} else {
-		return "", errors.New("Invalied OTP Type or artifact")
+		return "", 400, errors.New("Invalied OTP Type or artifact")
 	}
 }
 
