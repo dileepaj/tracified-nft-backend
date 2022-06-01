@@ -12,7 +12,7 @@ type NFT struct {
 	NFTName           string             `json:"nftname" bson:"nftname" validate:"required"`
 	NftContentURL     string             `json:"nftcontenturl" bson:"nftcontenturl" validate:"required"`
 	Description       string             `json:"description" bson:"description"`
-	Timestamp         primitive.DateTime `json:"timestamp" bson:"timestamp"`
+	Timestamp         string             `json:"timestamp" bson:"timestamp"`
 	Collection        string             `json:"collection" bson:"collection" validate:"required"`
 	Category          string             `json:"categories" bson:"categories" validate:"required"`
 	Tags              []string           `json:"tags" bson:"tags"`

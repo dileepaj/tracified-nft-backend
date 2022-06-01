@@ -39,7 +39,9 @@ func (r *NFTRepository) FindNFTById1AndNotId2(idName1 string, id1 string, idName
 
 func (r *NFTRepository) FindNFTByIdId2Id3(idName1 string, id1 string, idName2 string, id2 string, idName3 string, id3 string) ([]models.NFT, error) {
 	var nfts []models.NFT
+	logs.InfoLogger.Println("ID1: " + id1 + " ID2:" + id2 + " ID3:" + id3)
 	rst, err := repository.FindById1Id2Id3(idName1, id1, idName2, id2, idName3, id3, NFT)
+	logs.InfoLogger.Println("Data retreived from DB : ", rst)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 		return nfts, err
@@ -51,8 +53,10 @@ func (r *NFTRepository) FindNFTByIdId2Id3(idName1 string, id1 string, idName2 st
 			logs.ErrorLogger.Println(err.Error())
 			return nfts, err
 		}
+		logs.InfoLogger.Println("item info : ", nft)
 		nfts = append(nfts, nft)
 	}
+	logs.InfoLogger.Println("Data retreived from DB : ", nfts)
 	return nfts, nil
 }
 
@@ -76,7 +80,7 @@ func (r *NFTRepository) FindNFTsById(idName string, id string) ([]models.NFT, er
 
 func (r *NFTRepository) GetSVGByHash(hash string) (models.SVG, error) {
 	var svg models.SVG
-
+	logs.InfoLogger.Println("hash recived : ", hash)
 	session, err := connections.GetMongoSession()
 	if err != nil {
 		logs.ErrorLogger.Println("Error while getting session " + err.Error())
@@ -213,9 +217,11 @@ func (r *NFTRepository) UpdateNFTSALE(findBy string, id string, update primitive
 		ReturnDocument: &after,
 		Upsert:         &upsert,
 	}
+	logs.InfoLogger.Println("nft Identifier: ", id)
 	rst := session.Client().Database(connections.DbName).Collection("nft").FindOneAndUpdate(context.TODO(), bson.M{"nftidentifier": id}, update, &opt)
 	if rst != nil {
 		err := rst.Decode((&nftResponse))
+		logs.InfoLogger.Println("data retreived from DB: ", rst)
 		if err != nil {
 			logs.ErrorLogger.Println("Error occured while retreving data from nft nft in UpdateNFTSALE:nftRepository.go: ", err.Error())
 			return nftResponse, err
