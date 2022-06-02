@@ -22,26 +22,22 @@ func (r *CollectionRepository) SaveCollection(collection models.NFTCollection) (
 	return repository.Save[models.NFTCollection](collection, Collection)
 }
 
-func (r *CollectionRepository) FindCollectionbyUserPK(userpk string) (models.NFTCollection, error) {
-	var collection models.NFTCollection
-
-	session, err := connections.GetMongoSession()
+func (r *CollectionRepository) FindCollectionbyUserPK(idName string, id string) ([]models.NFTCollection, error) {
+	var collections []models.NFTCollection
+	rst, err := repository.FindById(idName, id, Collection)
 	if err != nil {
-		logs.ErrorLogger.Println("Error while getting session " + err.Error())
-	}
-	defer session.EndSession(context.TODO())
-	rst, err := session.Client().Database(connections.DbName).Collection("collection").Find(context.TODO(), bson.M{"creatoruserid": userpk})
-	if err != nil {
-		return collection, err
+		return collections, err
 	}
 	for rst.Next(context.TODO()) {
+		var collection models.NFTCollection
 		err = rst.Decode(&collection)
 		if err != nil {
-			logs.ErrorLogger.Println("Error occured while retreving data from collection collection in GetCollectionByID:collectionRepository.go: ", err.Error())
-			return collection, err
+			logs.ErrorLogger.Println(err.Error())
+			return collections, err
 		}
+		collections = append(collections, collection)
 	}
-	return collection, err
+	return collections, nil
 }
 
 func (r *CollectionRepository) GetAllCollections() ([]models.NFTCollection, error) {

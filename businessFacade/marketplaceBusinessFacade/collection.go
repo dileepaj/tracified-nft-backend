@@ -12,8 +12,8 @@ func GetAllCollections() ([]models.NFTCollection, error) {
 	return CollectionRepository.GetAllCollections()
 }
 
-func GetCollectionByUserPK(userid string) (models.NFTCollection, error) {
-	return CollectionRepository.FindCollectionbyUserPK(userid)
+func GetCollectionByUserPK(userid string) ([]models.NFTCollection, error) {
+	return CollectionRepository.FindCollectionbyUserPK("userid", userid)
 }
 
 func UpdateCollection(update requestDtos.UpdateCollection) (models.NFTCollection, error) {

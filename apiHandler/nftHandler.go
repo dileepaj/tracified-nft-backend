@@ -6,7 +6,6 @@ import (
 
 	"github.com/dileepaj/tracified-nft-backend/businessFacade/marketplaceBusinessFacade"
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
-	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/commonResponse"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
@@ -91,6 +90,7 @@ func MakeSale(w http.ResponseWriter, r *http.Request) {
 
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&makeSaleRequestObject)
+	logs.InfoLogger.Println("data retreived for sale : ", makeSaleRequestObject)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 	}
@@ -102,7 +102,7 @@ func MakeSale(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			errors.BadRequest(w, err.Error())
 		} else {
-			commonResponse.SuccessStatus[responseDtos.ResponseNFTMakeSale](w, result)
+			commonResponse.SuccessStatus[models.NFT](w, result)
 		}
 	}
 }
@@ -130,12 +130,15 @@ func GetAllONSaleNFT(w http.ResponseWriter, r *http.Request) {
 func GetOneONSaleNFT(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
 	vars := mux.Vars(r)
+	logs.InfoLogger.Println("Inside GetOneONSaleNFT")
 	if vars["sellingstatus"] != "" || vars["nftidentifer"] != "" || vars["blockchain"] != "" {
 		results, err := marketplaceBusinessFacade.GetOneONSaleNFT(vars["sellingstatus"], vars["nftidentifier"], vars["blockchain"])
 		if err != nil {
 			errors.BadRequest(w, err.Error())
 		} else {
+			logs.InfoLogger.Println("Data to be sent back : ", results)
 			commonResponse.SuccessStatus[[]models.NFT](w, results)
+			return
 		}
 	} else {
 		errors.BadRequest(w, "")
@@ -248,10 +251,11 @@ func GetSVGBySHA256(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	if len(vars["hash"]) != 0 {
 		result, err := marketplaceBusinessFacade.GetSVGByHash(vars["hash"])
+		logs.InfoLogger.Println("data sent back : ", result)
 		if err != nil {
 			errors.BadRequest(w, err.Error())
 		} else {
-			commonResponse.SuccessStatus[[]models.SVG](w, result)
+			commonResponse.SuccessStatus[models.SVG](w, result)
 		}
 	} else {
 		errors.BadRequest(w, "")
