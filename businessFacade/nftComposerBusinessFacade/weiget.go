@@ -25,91 +25,92 @@ func SaveWidgetList(widgets []models.Widget) (string, error) {
 *? 2.For Other widget type does not have the OTP
 *
 **/
-func SaveWidget(widget models.Widget,token string) (responseDtos.WidgetIdResponse, error) {
+func SaveWidget(widget models.Widget,token string) (responseDtos.WidgetIdResponse,int, error) {
 	var response responseDtos.WidgetIdResponse
 	var otpString string = ""
+	var codeStatus int
 	var err error
 	if widget.WidgetType == "BarChart" || widget.WidgetType == "PieChart" || widget.WidgetType == "BubbleChart" || widget.WidgetType == "Table"{
 		if widget.OTPType == "Batch" {
-			otpString, err = otpService.GetOtpForBatchURL(widget.ProductId, widget.BatchId, widget.OTPType,token)
+			otpString,codeStatus, err = otpService.GetOtpForBatchURL(widget.ProductId, widget.BatchId, widget.OTPType,token)
 		} else if widget.OTPType == "Artifact" {
-			otpString, err = otpService.GetOtpForArtifactURL(widget.ArtifactId, widget.OTPType,token)
+			otpString,codeStatus, err = otpService.GetOtpForArtifactURL(widget.ArtifactId, widget.OTPType,token)
 		} else {
 			otpString = ""
 			err = errors.New("Invalied OTP Type")
 		}
 
 		if err != nil {
-			return response, err
+			return response,codeStatus, err
 		} else if strings.HasPrefix(otpString, `{"err"`) {
-			return response, errors.New(otpString)
+			return response,500, errors.New(otpString)
 		} else {
 			widget.OTP = otpString
 			rst2, err := widgetRepository.SaveWidget(widget)
 			if rst2 == "" {
-				return response, errors.New("The file can not insert into DB please check the network")
+				return response,500, errors.New("The file can not insert into DB please check the network")
 			}
 			if err != nil {
-				return response, err
+				return response,500, err
 			}
 			response.WidgetId = rst2
-			return response, nil
+			return response,200, nil
 		}
 	} else {
-		return response, errors.New("Invalid Widget Type")
+		return response,400, errors.New("Invalid Widget Type")
 	}
 }
 
-func ChangeWidget(widget requestDtos.UpdateWidgetRequest,token string) (models.Widget, error) {
+func ChangeWidget(widget requestDtos.UpdateWidgetRequest,token string) (models.Widget,int, error) {
 	var response models.Widget
 	updateWidget := bson.M{}
 	var otpString string
 	var err error
-
+	var codeStatus int
 	rst, err := FindWidgetByWidgetId(widget.WidgetId)
 	if err != nil {
-		return response, err
+		return response,500, err
 	}
 	if rst.WidgetType == "BarChart" || rst.WidgetType == "PieChart" || rst.WidgetType == "BubbleChart" || rst.WidgetType == "Table"{
 		if widget.OTPType == "Batch" {
-			otpString, err = otpService.GetOtpForBatchURL(widget.ProductId, widget.BatchId, widget.OTPType,token)
+			otpString,codeStatus, err = otpService.GetOtpForBatchURL(widget.ProductId, widget.BatchId, widget.OTPType,token)
 			if err != nil {
-				return response, err
+				return response,codeStatus, err
 			} else if strings.HasPrefix(otpString, `{"err"`) {
-				return response, errors.New(otpString)
+				return response,500, errors.New(otpString)
 			} else {
 				updateWidget = bson.M{
 					"$set": bson.M{"timestamp": widget.Timestamp, "batchid": widget.BatchId, "productid": widget.ProductId, "productname": widget.ProductName, "otp": otpString},
 				}
 				rst2, err := widgetRepository.FindWidgetAndUpdate("widgetid", widget.WidgetId, updateWidget)
 				if err != nil {
-					return response, err
+					return response,400, err
 				}
 				response = rst2
-				return response, nil
+				return response,200, nil
 			}
 		} else if widget.OTPType == "Artifact" {
-			otpString, err = otpService.GetOtpForArtifactURL(widget.ArtifactId, widget.OTPType,token)
+			otpString,codeStatus, err = otpService.GetOtpForArtifactURL(widget.ArtifactId, widget.OTPType,token)
 			if err != nil {
-				return response, err
+				return response,codeStatus, err
 			} else if strings.HasPrefix(otpString, `{"err"`) {
-				return response, errors.New(otpString)
+				return response,500, errors.New(otpString)
 			} else {
 				updateWidget = bson.M{
 					"$set": bson.M{"timestamp": widget.Timestamp, "otptype": widget.OTPType, "artifactid": widget.ArtifactId, "otp": otpString},
 				}
 				rst2, err := widgetRepository.FindWidgetAndUpdate("widgetid", widget.WidgetId, updateWidget)
 				if err != nil {
-					return response, err
+					return response,400, err
 				}
 				response = rst2
-				return response, nil
+				return response,200, nil
 			}
 		} else {
-			return response, errors.New("Invalied OTP Type")
+			return response,400, errors.New("Invalied OTP Type")
 		}
 	} else {
-		return response, errors.New("Invalied Widget Type")
+		return response,400, errors.New("Invalied Widget Type")
 	}
 }
 

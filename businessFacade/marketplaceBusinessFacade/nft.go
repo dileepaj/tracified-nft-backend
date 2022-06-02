@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
-	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 func StoreNFT(createNFTObject models.NFT) (string, error) {
@@ -46,8 +46,11 @@ func GetNFTByBlockchainAndUserPK(id string, blockchain string) ([]models.NFT, er
 	return nftRepository.FindNFTById1AndNotId2("creatoruserid", id, "blockchain", blockchain)
 }
 
-func MakeSaleNFT(update requestDtos.UpdateNFTSALERequest) (responseDtos.ResponseNFTMakeSale, error) {
-	return nftRepository.UpdateNFTSALE(update)
+func MakeSaleNFT(nft requestDtos.UpdateNFTSALERequest) (models.NFT, error) {
+	update := bson.M{
+		"$set": bson.M{"timestamp": nft.Timestamp, "currentprice": nft.CurrentPrice, "sellingstatus": nft.SellingStatus, "sellingtype": nft.SellingType, "marketcontract": nft.MarketContract, "currentownerpk": nft.CurrentOwnerPK},
+	}
+	return nftRepository.UpdateNFTSALE("nftidentifier", nft.NFTIdentifier, update)
 }
 
 func GetBlockchainSpecificNFT(blockchain string) ([]models.NFT, error) {
@@ -92,8 +95,8 @@ func GetNFTbyUserId(userId string) ([]models.NFT, error) {
 
 }
 
-func GetSVGByHash(hash string) ([]models.SVG, error) {
-	return nftRepository.GetSVGByHash("hash", hash)
+func GetSVGByHash(hash string) (models.SVG, error) {
+	return nftRepository.GetSVGByHash(hash)
 
 }
 
@@ -118,10 +121,15 @@ func GetTagsByNFTIdentifier(nftid string) ([]models.Tags, error) {
 
 }
 
-func UpdateNFT(update requestDtos.UpdateMint) (responseDtos.ResponseNFTMinter, error) {
-	return nftRepository.UpdateMinter(update)
+func UpdateNFTTXN(txn requestDtos.UpdateMintTXN) (models.NFT, error) {
+	update := bson.M{
+		"$set": bson.M{"nfttxnhash": txn.NFTTxnHash},
+	}
+	return nftRepository.UpdateNFTTXN("imagebase64", txn.Imagebase64, update)
 }
-
-func UpdateNFTTXN(update requestDtos.UpdateMintTXN) (responseDtos.ResponseNFTMintTXN, error) {
-	return nftRepository.UpdateNFTTxn(update)
+func UpdateNFT(nft requestDtos.UpdateMint) (models.NFT, error) {
+	update := bson.M{
+		"$set": bson.M{"nftidentifier": nft.NFTIdentifier, "nftissuerpk": nft.NFTIssuerPK, "nfttxnhash": nft.NFTTxnHash},
+	}
+	return nftRepository.UpdateMinter("imagebase64", nft.Imagebase64, update)
 }

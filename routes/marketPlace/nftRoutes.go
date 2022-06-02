@@ -11,7 +11,7 @@ var NftRoutes = models.Routers{
 	models.Router{
 		Name:    "Save NFT",
 		Method:  "POST",
-		Path:    "/api/nft",
+		Path:    "/api/marketplace/save",
 		Handler: apiHandler.CreateNFT,
 	},
 	models.Router{

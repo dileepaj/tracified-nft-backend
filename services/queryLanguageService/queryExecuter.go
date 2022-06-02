@@ -1,7 +1,7 @@
 package queryLanguageService
 
 import (
-	fcl "github.com/TharinduBalasooriya/fcl-go-lib"
+	fcl "github.com/ErandikaRoshani/fcl-go-lib"
 	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 )

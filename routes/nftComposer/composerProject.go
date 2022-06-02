@@ -46,6 +46,12 @@ var ComposerRoutes = models.Routers{
 	models.Router{
 		Name:    "Get All Project base on user",
 		Method:  "GET",
+		Path:    "/widget/{widgetId}",
+		Handler: apiHandler.GetWidgetDetails,
+	},
+	models.Router{
+		Name:    "Get All Project base on user",
+		Method:  "GET",
 		Path:    "/projects/{userId}",
 		Handler: apiHandler.GetRecentProjects,
 	},
