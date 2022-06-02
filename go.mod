@@ -11,7 +11,7 @@ require (
 )
 
 require (
-	github.com/TharinduBalasooriya/fcl-go-lib v0.2.4 // indirect
+	github.com/ErandikaRoshani/fcl-go-lib v0.1.0 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.0-20210816181553-5444fa50b93d // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/goccy/go-json v0.9.4 // indirect

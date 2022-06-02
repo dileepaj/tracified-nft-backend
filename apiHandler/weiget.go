@@ -13,6 +13,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/utilities/middleware"
 	"github.com/dileepaj/tracified-nft-backend/utilities/validations"
 	"github.com/gorilla/context"
+	"github.com/gorilla/mux"
 )
 
 // Save the widget data in a DB
@@ -32,9 +33,9 @@ func SaveWidget(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			errors.BadRequest(w, err.Error())
 		} else {
-			result, err := nftComposerBusinessFacade.SaveWidget(createWidgetResponse,r.Header.Get("Authorization"))
+			result,statsCode, err := nftComposerBusinessFacade.SaveWidget(createWidgetResponse,r.Header.Get("Authorization"))
 			if err != nil {
-				errors.BadRequest(w, err.Error())
+				commonResponse.RespondWithJSON(w,statsCode,err.Error())
 			} else {
 				commonResponse.RespondWithJSON(w, http.StatusOK, result)
 			}
@@ -59,12 +60,35 @@ func UpdateWidget(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			errors.BadRequest(w, err.Error())
 		} else {
-			result, err := nftComposerBusinessFacade.ChangeWidget(updateWidgetResponse,r.Header.Get("Authorization"))
+			result,codeStatus, err := nftComposerBusinessFacade.ChangeWidget(updateWidgetResponse,r.Header.Get("Authorization"))
 			if err != nil {
-				errors.BadRequest(w, err.Error())
+				commonResponse.RespondWithJSON(w,codeStatus, err.Error())
 			} else {
 				commonResponse.SuccessStatus(w, result)
 			}
+		}
+	}
+	w.WriteHeader(http.StatusUnauthorized)
+	logs.ErrorLogger.Println("Status Unauthorized")
+	return
+}
+
+// Find project by user ID
+func GetWidgetDetails(w http.ResponseWriter, r *http.Request) {
+	defer context.Clear(r)
+	w.Header().Set("Content-Type", "application/json;")
+	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
+	if ps.Status {
+		vars := mux.Vars(r)
+		if vars["widgetId"] != "" {
+			results, err1 := nftComposerBusinessFacade.FindWidgetByWidgetId(vars["widgetId"])
+			if err1 != nil {
+				errors.BadRequest(w, err1.Error())
+			} else {
+				commonResponse.RespondWithJSON(w ,200, results);
+			}
+		} else {
+			errors.BadRequest(w, "")
 		}
 	}
 	w.WriteHeader(http.StatusUnauthorized)

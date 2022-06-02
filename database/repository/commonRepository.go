@@ -74,9 +74,7 @@ func FindOne[T models.FindOneType](idName string, id T, collection string) *mong
 	}
 	defer session.EndSession(context.TODO())
 
-	findOptions := options.FindOne()
-	findOptions.SetProjection(bson.M{"otp": 0})
-	rst := session.Client().Database(connections.DbName).Collection(collection).FindOne(context.TODO(), bson.D{{idName, id}}, findOptions)
+	rst := session.Client().Database(connections.DbName).Collection(collection).FindOne(context.TODO(), bson.D{{idName, id}})
 	return rst
 }
 
