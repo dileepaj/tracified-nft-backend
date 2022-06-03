@@ -1,0 +1,27 @@
+package marketplaceBusinessFacade
+
+import (
+	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
+	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
+	"github.com/dileepaj/tracified-nft-backend/models"
+)
+
+func StoreEndorse(createEndorseObject models.Endorse) (string, error) {
+	rst, err1 := EndorsementRepository.SaveEndorsement(createEndorseObject)
+	if err1 != nil {
+		return "Endorsement not saved", err1
+	}
+	return rst, nil
+}
+
+func GetEndorsementByStatus(status string) ([]models.Endorse, error) {
+	return EndorsementRepository.GetEndorsementByStatus("status", status)
+}
+
+func GetEndorsedStatus(publickey string) (models.Endorse, error) {
+	return EndorsementRepository.FindEndorsermentbyPK(publickey)
+}
+
+func UpdateEndorsement(update requestDtos.UpdateEndorsementByPublicKey) (responseDtos.ResponseEndorsementUpdate, error) {
+	return EndorsementRepository.UpdateEndorsement(update)
+}
