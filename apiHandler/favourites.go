@@ -11,8 +11,10 @@ import (
 	"github.com/gorilla/mux"
 
 	//	"github.com/dileepaj/tracified-nft-backend/utilities/commonResponse"
+	"github.com/dileepaj/tracified-nft-backend/utilities/commonResponse"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
+	"github.com/dileepaj/tracified-nft-backend/utilities/middleware"
 	"github.com/dileepaj/tracified-nft-backend/utilities/validations"
 )
 
@@ -84,4 +86,25 @@ func GetAllFavourites(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
+}
+
+func GetFavouritesByBlockchain(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
+	if ps.Status {
+		vars := mux.Vars(r)
+		if len(vars["blockchain"]) != 0 {
+			result, err := marketplaceBusinessFacade.GetFavouritesbyBlockchain((vars["blockchain"]))
+			if err != nil {
+				errors.BadRequest(w, err.Error())
+			} else {
+				commonResponse.SuccessStatus[[]models.Favourite](w, result)
+			}
+		} else {
+			errors.BadRequest(w, "")
+		}
+	}
+	w.WriteHeader(http.StatusUnauthorized)
+	logs.ErrorLogger.Println("Status Unauthorized")
+	return
 }

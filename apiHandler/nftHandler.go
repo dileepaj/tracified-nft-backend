@@ -301,6 +301,27 @@ func GetNFTByTenentName(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+func GetNFTByBlockchain(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
+	if ps.Status {
+		vars := mux.Vars(r)
+		if len(vars["blockchain"]) != 0 {
+			result, err := marketplaceBusinessFacade.GetNFTbyBlockchain((vars["blockchain"]))
+			if err != nil {
+				errors.BadRequest(w, err.Error())
+			} else {
+				commonResponse.SuccessStatus[[]models.NFT](w, result)
+			}
+		} else {
+			errors.BadRequest(w, "")
+		}
+	}
+	w.WriteHeader(http.StatusUnauthorized)
+	logs.ErrorLogger.Println("Status Unauthorized")
+	return
+}
+
 func GetNFTByBlockchainAndUserPK(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
 	vars := mux.Vars(r)
