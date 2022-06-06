@@ -86,3 +86,21 @@ func (r *WatchListRepository) GetAllWatchLists() ([]models.WatchList, error) {
 	}
 	return watchlist, nil
 }
+
+func (r *WatchListRepository) FindWatchListsByBlockchain(idName string, id string) ([]models.WatchList, error) {
+	var watchlists []models.WatchList
+	rst, err := repository.FindById(idName, id, WatchList)
+	if err != nil {
+		return watchlists, err
+	}
+	for rst.Next(context.TODO()) {
+		var watchlist models.WatchList
+		err = rst.Decode(&watchlist)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return watchlists, err
+		}
+		watchlists = append(watchlists, watchlist)
+	}
+	return watchlists, nil
+}
