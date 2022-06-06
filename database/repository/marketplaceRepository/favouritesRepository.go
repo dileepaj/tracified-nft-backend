@@ -19,6 +19,24 @@ func (r *FavouriteRepository) SaveFavourite(favourite models.Favourite) (string,
 	return repository.Save[models.Favourite](favourite, Favourite)
 }
 
+func (r *FavouriteRepository) FindFavouritesByBlockchain(idName string, id string) ([]models.Favourite, error) {
+	var favs []models.Favourite
+	rst, err := repository.FindById(idName, id, Favourite)
+	if err != nil {
+		return favs, err
+	}
+	for rst.Next(context.TODO()) {
+		var fav models.Favourite
+		err = rst.Decode(&fav)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return favs, err
+		}
+		favs = append(favs, fav)
+	}
+	return favs, nil
+}
+
 func (r *FavouriteRepository) FindFavouritesbyUserPK(userpk string) (models.Favourite, error) {
 	var favourite models.Favourite
 

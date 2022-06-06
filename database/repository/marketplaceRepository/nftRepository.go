@@ -308,6 +308,24 @@ func (r *NFTRepository) FindTagsByNFTIdentifier(idName string, id string) ([]mod
 	return tags, nil
 }
 
+func (r *NFTRepository) FindNFTByBlockchain(idName string, id string) ([]models.NFT, error) {
+	var nfts []models.NFT
+	rst, err := repository.FindById(idName, id, NFT)
+	if err != nil {
+		return nfts, err
+	}
+	for rst.Next(context.TODO()) {
+		var nft models.NFT
+		err = rst.Decode(&nft)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return nfts, err
+		}
+		nfts = append(nfts, nft)
+	}
+	return nfts, nil
+}
+
 func (r *NFTRepository) GetAllTags() ([]models.Tags, error) {
 	session, err := connections.GetMongoSession()
 	if err != nil {

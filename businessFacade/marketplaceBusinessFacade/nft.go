@@ -109,6 +109,10 @@ func GetNFTbyTenentName(tenentName string) ([]models.NFT, error) {
 	}
 }
 
+func GetNFTbyBlockchain(blockchain string) ([]models.NFT, error) {
+	return nftRepository.FindNFTByBlockchain("blockchain", blockchain)
+}
+
 func CreateTags(tags models.Tags) (string, error) {
 	return nftRepository.SaveTags(tags)
 }
