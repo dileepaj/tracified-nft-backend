@@ -13,6 +13,10 @@ func CreateFavourites(favs models.Favourite) (string, error) {
 	return FavouriteRepository.SaveFavourite(favs)
 }
 
+func GetFavouritesbyBlockchain(blockchain string) ([]models.Favourite, error) {
+	return FavouriteRepository.FindFavouritesByBlockchain("blockchain", blockchain)
+}
+
 func GetFavouritesByUserPK(userid string) (models.Favourite, error) {
 	return FavouriteRepository.FindFavouritesbyUserPK(userid)
 

@@ -14,7 +14,10 @@ func FindNFTIdentifieryByUserId(userId string) ([]string, error) {
 
 func GetWatchListByUserPK(userId string) (models.WatchList, error) {
 	return watchListRepository.FindWatchListbyUserPK(userId)
+}
 
+func GetWatchListsbyBlockchain(blockchain string) ([]models.WatchList, error) {
+	return watchListRepository.FindWatchListsByBlockchain("blockchain", blockchain)
 }
 
 func GetAllWatchLists() ([]models.Favourite, error) {
