@@ -9,7 +9,7 @@
             tableDiv.style = "width:500px; heigth:fit-content;"
             let h5 = document.createElement('p')
             h5.append(document.createTextNode(data.TableTitle))
-            h5.style = "common-widget-title"
+            h5.className = "common-widget-title"
             tableDiv.appendChild(h5)
             let tableNode = document.createElement("table");
             tableNode.className = `table table-bordered`;
@@ -139,6 +139,17 @@
             type: 'bar', data: barChartStruct
             ,
             options: {
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                    title: {
+                        display: true,
+                        text: data.ChartTitle,
+                        color: data.FontColor,
+                        font: { size: data.FontSize},
+                            },
+                        },
                 scales: {
                     x: {
                         display: true,
@@ -200,6 +211,10 @@
                     title: {
                         display: true,
                         text: data.ChartTitle,
+                        font: {
+                                size: data.FontSize,
+                            },
+                            color: data.FontColor
                     }
                 }
             }
@@ -259,6 +274,17 @@
             type: 'bubble', data: bubbleChartStruct
             ,
             options: {
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                    title: {
+                        display: true,
+                        text: data.ChartTitle,
+                        color: data.FontColor,
+                        font: { size: data.FontSize},
+                            },
+                        },
                 scales: {
                     y: {
                         beginAtZero: true
@@ -323,7 +349,7 @@
         }
         let timelineTitle = document.createElement('p')
         timelineTitle.append(document.createTextNode(data.Title))
-        timelineTitle.style = "common-widget-title"
+        timelineTitle.className = "common-widget-title"
         centerCard.appendChild(timeline)
         timelineNode.appendChild(timelineTitle)
         timelineNode.appendChild(centerCard)
