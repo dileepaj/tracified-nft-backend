@@ -17,6 +17,10 @@ func StoreNFT(createNFTObject models.NFT) (string, error) {
 
 }
 
+func GetAllNFTs() ([]models.NFT, error) {
+	return nftRepository.GetAllNFTs()
+}
+
 func StoreTXN(createTXNObject models.TXN) (string, error) {
 	rst, err1 := nftRepository.SaveTXN(createTXNObject)
 	if err1 != nil {

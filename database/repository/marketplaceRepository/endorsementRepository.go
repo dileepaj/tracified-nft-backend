@@ -10,6 +10,8 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type EndorsementRepository struct{}
@@ -77,4 +79,33 @@ func (r *EndorsementRepository) GetEndorsementByStatus(idName string, id string)
 		endorses = append(endorses, endorse)
 	}
 	return endorses, nil
+}
+
+func (r *EndorsementRepository) UpdateSetEndorsement(findBy string, id string, update primitive.M) (models.Endorse, error) {
+	var endorseResponse models.Endorse
+
+	session, err := connections.GetMongoSession()
+	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session " + err.Error())
+	}
+
+	defer session.EndSession(context.TODO())
+	upsert := false
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+	rst := session.Client().Database(connections.DbName).Collection("endorsements").FindOneAndUpdate(context.TODO(), bson.M{"publickey": id}, update, &opt)
+	if rst != nil {
+		err := rst.Decode((&endorseResponse))
+		if err != nil {
+			logs.ErrorLogger.Println("Error occured while retreving data from collection endorsement in UpdateEndorsement:EndorsementRepository.go: ", err.Error())
+			return endorseResponse, err
+		}
+		return endorseResponse, nil
+	} else {
+		return endorseResponse, nil
+
+	}
 }

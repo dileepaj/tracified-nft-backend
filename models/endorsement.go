@@ -6,4 +6,6 @@ type Endorse struct {
 	Email       string `json:"email" bson:"email"`
 	Contact     string `json:"contact" bson:"contact"`
 	Description string `json:"desc" bson:"desc"`
+	Blockchain  string `json:"blockchain" bson:"blockchain"`
+	Status      string `json:"status" bson:"status"`
 }
