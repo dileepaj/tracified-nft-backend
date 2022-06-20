@@ -24,9 +24,11 @@ type UpdateMint struct {
 	NFTIssuerPK   string `json:"nftissuerpk" bson:"nftissuerpk" `
 	NFTIdentifier string `json:"nftidentifier" bson:"nftidentifier" `
 	NFTTxnHash    string `json:"nfttxnhash" bson:"nfttxnhash" `
+	Blockchain    string `json:"blockchain" bson:"blockchain" `
 }
 
 type UpdateMintTXN struct {
 	Imagebase64 string `json:"imagebase64" bson:"imagebase64" `
 	NFTTxnHash  string `json:"nfttxnhash" bson:"nfttxnhash" `
+	Blockchian  string `json:"blockchain" bson:"blockchain" `
 }

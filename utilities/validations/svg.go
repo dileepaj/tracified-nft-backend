@@ -13,3 +13,11 @@ func ValidateInsertSVG(e models.SVG) error {
 	}
 	return nil
 }
+func ValidateUpdateSvg(e models.SVG) error {
+	validate = validator.New()
+	err := validate.Struct(e)
+	if err != nil {
+		return err
+	}
+	return nil
+}

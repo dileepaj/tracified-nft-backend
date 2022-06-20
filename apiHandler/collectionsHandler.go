@@ -56,12 +56,11 @@ func CreateSVG(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 	}
-	fmt.Println(createSVGObject)
 	err = validations.ValidateInsertSVG(createSVGObject)
 	if err != nil {
 		errors.BadRequest(w, err.Error())
 	} else {
-		_, err1 := marketplaceBusinessFacade.CreateSVG(createSVGObject)
+		rst, err1 := marketplaceBusinessFacade.CreateSVG(createSVGObject)
 		if err1 != nil {
 			ErrorMessage := err1.Error()
 			errors.BadRequest(w, ErrorMessage)
@@ -69,10 +68,40 @@ func CreateSVG(w http.ResponseWriter, r *http.Request) {
 		} else {
 
 			w.WriteHeader(http.StatusOK)
-			message := "New SVG Added"
-			err = json.NewEncoder(w).Encode(message)
+			//message := "New SVG Added"
+			err = json.NewEncoder(w).Encode(rst)
 			if err != nil {
 				logs.ErrorLogger.Println(err)
+			}
+			return
+		}
+	}
+}
+
+func UpdateSvgBlockChain(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	var updateSVGObject models.SVG
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&updateSVGObject)
+	logs.InfoLogger.Println("Starting svg BC Update: ", updateSVGObject)
+	if err != nil {
+		logs.ErrorLogger.Println("Error while decoding into json in UpdateSvg:collectionHandler: " + err.Error())
+	}
+	err = validations.ValidateInsertSVG(updateSVGObject)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		_, err = marketplaceBusinessFacade.UpdateSVGBlockchain(updateSVGObject)
+		if err != nil {
+			Errormsg := err.Error()
+			errors.BadRequest(w, Errormsg)
+			return
+		} else {
+			w.WriteHeader(http.StatusOK)
+			message := "SVG Block chain has been Updated"
+			err := json.NewEncoder(w).Encode(message)
+			if err != nil {
+				logs.ErrorLogger.Println("Error occured while encoding JSON in UpdateSvgBlockChain(collectionHandlers):", err.Error())
 			}
 			return
 		}
@@ -82,7 +111,6 @@ func CreateSVG(w http.ResponseWriter, r *http.Request) {
 func GetCollectionByUserPK(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
 	vars := mux.Vars(r)
-	fmt.Println(vars["userid"])
 	results, err1 := marketplaceBusinessFacade.GetCollectionByUserPK(vars["userid"])
 	if err1 != nil {
 		ErrorMessage := err1.Error()
