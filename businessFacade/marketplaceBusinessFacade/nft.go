@@ -125,11 +125,11 @@ func UpdateNFTTXN(txn requestDtos.UpdateMintTXN) (models.NFT, error) {
 	update := bson.M{
 		"$set": bson.M{"nfttxnhash": txn.NFTTxnHash},
 	}
-	return nftRepository.UpdateNFTTXN("imagebase64", txn.Imagebase64, update)
+	return nftRepository.UpdateNFTTXN("imagebase64", txn.Imagebase64, "blockchain", txn.Blockchian, update)
 }
 func UpdateNFT(nft requestDtos.UpdateMint) (models.NFT, error) {
 	update := bson.M{
 		"$set": bson.M{"nftidentifier": nft.NFTIdentifier, "nftissuerpk": nft.NFTIssuerPK, "nfttxnhash": nft.NFTTxnHash},
 	}
-	return nftRepository.UpdateMinter("imagebase64", nft.Imagebase64, update)
+	return nftRepository.UpdateMinter("imagebase64", nft.Imagebase64, "blockchain", nft.Blockchain, update)
 }

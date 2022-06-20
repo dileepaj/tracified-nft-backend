@@ -233,7 +233,7 @@ func (r *NFTRepository) UpdateNFTSALE(findBy string, id string, update primitive
 	}
 }
 
-func (r *NFTRepository) UpdateMinter(findBy string, id string, update primitive.M) (models.NFT, error) {
+func (r *NFTRepository) UpdateMinter(findBy1 string, id1 string, findby2 string, id2 string, update primitive.M) (models.NFT, error) {
 	var nftResponse models.NFT
 
 	session, err := connections.GetMongoSession()
@@ -248,9 +248,10 @@ func (r *NFTRepository) UpdateMinter(findBy string, id string, update primitive.
 		ReturnDocument: &after,
 		Upsert:         &upsert,
 	}
-	rst := session.Client().Database(connections.DbName).Collection("nft").FindOneAndUpdate(context.TODO(), bson.M{"imagebase64": id}, update, &opt)
+	rst := session.Client().Database(connections.DbName).Collection("nft").FindOneAndUpdate(context.TODO(), bson.D{{"imagebase64", id1}, {findby2, id2}}, update, &opt)
 	if rst != nil {
 		err := rst.Decode((&nftResponse))
+		logs.InfoLogger.Println("Minter update result: ", nftResponse)
 		if err != nil {
 			logs.ErrorLogger.Println("Error occured while retreving data from collection nft in UpdateMinter:nftRepository.go: ", err.Error())
 			return nftResponse, err
@@ -262,7 +263,7 @@ func (r *NFTRepository) UpdateMinter(findBy string, id string, update primitive.
 	}
 }
 
-func (r *NFTRepository) UpdateNFTTXN(findBy string, id string, update primitive.M) (models.NFT, error) {
+func (r *NFTRepository) UpdateNFTTXN(findBy string, id string, findbyid2 string, id2 string, update primitive.M) (models.NFT, error) {
 	var txnResponse models.NFT
 	session, err := connections.GetMongoSession()
 	if err != nil {
@@ -276,9 +277,10 @@ func (r *NFTRepository) UpdateNFTTXN(findBy string, id string, update primitive.
 		ReturnDocument: &after,
 		Upsert:         &upsert,
 	}
-	rst := session.Client().Database(connections.DbName).Collection("nft").FindOneAndUpdate(context.TODO(), bson.M{"imagebase64": id}, update, &opt)
+	rst := session.Client().Database(connections.DbName).Collection("nft").FindOneAndUpdate(context.TODO(), bson.D{{"imagebase64", id}, {findbyid2, id2}}, update, &opt)
 	if rst != nil {
 		err := rst.Decode((&txnResponse))
+		logs.InfoLogger.Println("DB Response for update Stellar: ", txnResponse)
 		if err != nil {
 			logs.ErrorLogger.Println("Error occured while retreving data from nft nft in UpdateNFTTXN:nftRepository.go: ", err.Error())
 			return txnResponse, err

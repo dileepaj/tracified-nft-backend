@@ -9,6 +9,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -114,4 +115,36 @@ func (r *CollectionRepository) DeleteCollection(collection requestDtos.DeleteCol
 
 func (r *CollectionRepository) SaveSVG(svg models.SVG) (string, error) {
 	return repository.Save[models.SVG](svg, Svg)
+}
+
+func (r *CollectionRepository) UpdateSVGBlockchain(id string, update primitive.M) (models.SVG, error) {
+	var svgUpdateResponse models.SVG
+	session, err := connections.GetMongoSession()
+	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session " + err.Error())
+	}
+	defer session.EndSession(context.TODO())
+	upsert := false
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		logs.WarningLogger.Println("Error Occured when trying to convert hex string in to Object(ID) in UpdateSVGBlockchain : collectionRepo: ", err.Error())
+	}
+	logs.InfoLogger.Println("Searching by ID: ", id)
+	rst := session.Client().Database(connections.DbName).Collection("svg").FindOneAndUpdate(context.TODO(), bson.M{"_id": objectID}, update, &opt)
+	if rst != nil {
+		err := rst.Decode((&svgUpdateResponse))
+		if err != nil {
+			logs.ErrorLogger.Println("Error occured while retreving data from collection faq in UpdateSVGBlockchain:collectionRepo.go: ", err.Error())
+			return svgUpdateResponse, err
+		}
+		return svgUpdateResponse, err
+	} else {
+		return svgUpdateResponse, err
+	}
+
 }
