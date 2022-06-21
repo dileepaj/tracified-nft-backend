@@ -15,6 +15,12 @@ var NftRoutes = models.Routers{
 		Handler: apiHandler.CreateNFT,
 	},
 	models.Router{
+		Name:    "GET NFT",
+		Method:  "GET",
+		Path:    "/api/marketplace",
+		Handler: apiHandler.GetAllNFTs,
+	},
+	models.Router{
 		Name:    "GET NFTS By Selling status and filter by UserPK",
 		Method:  "Get",
 		Path:    "/api/selling/{sellingstatus}/{currentownerpk}",

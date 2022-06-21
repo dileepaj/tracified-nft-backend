@@ -37,6 +37,33 @@ func (r *NFTRepository) FindNFTById1AndNotId2(idName1 string, id1 string, idName
 	return nfts, nil
 }
 
+func (r *NFTRepository) GetAllNFTs() ([]models.NFT, error) {
+	session, err := connections.GetMongoSession()
+	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session in getAllNFT : NFTRepository.go : ", err.Error())
+	}
+	defer session.EndSession(context.TODO())
+
+	var nft []models.NFT
+	findOptions := options.Find()
+	findOptions.SetLimit(10)
+	result, err := session.Client().Database(connections.DbName).Collection(NFT).Find(context.TODO(), bson.D{{}}, findOptions)
+	if err != nil {
+		logs.ErrorLogger.Println("Error occured when trying to connect to DB and excute Find query in GetAllNFT:NFTRepository.go: ", err.Error())
+		return nft, err
+	}
+	for result.Next(context.TODO()) {
+		var nfts models.NFT
+		err = result.Decode(&nfts)
+		if err != nil {
+			logs.ErrorLogger.Println("Error occured while retreving data from collection nfts in GetAllNFTs:nftsRepository.go: ", err.Error())
+			return nft, err
+		}
+		nft = append(nft, nfts)
+	}
+	return nft, nil
+}
+
 func (r *NFTRepository) FindNFTByIdId2Id3(idName1 string, id1 string, idName2 string, id2 string, idName3 string, id3 string) ([]models.NFT, error) {
 	var nfts []models.NFT
 	logs.InfoLogger.Println("ID1: " + id1 + " ID2:" + id2 + " ID3:" + id3)
