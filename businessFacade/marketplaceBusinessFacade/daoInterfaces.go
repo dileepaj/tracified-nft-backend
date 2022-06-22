@@ -16,4 +16,6 @@ var (
 	CollectionRepository  marketplaceRepository.CollectionRepository
 	FavouriteRepository   marketplaceRepository.FavouriteRepository
 	EndorsementRepository marketplaceRepository.EndorsementRepository
+	partnerRepository     marketplaceRepository.PartnerRepository
+	documentRepository    marketplaceRepository.DocumentRepository
 )
