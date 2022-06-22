@@ -21,6 +21,8 @@ func init() {
 		marketPlace.CollectionRoutes,
 		marketPlace.FavouritesRoutes,
 		marketPlace.EndorsementRoutes,
+		marketPlace.DocsRoutes,
+		marketPlace.PartnerRoutes,
 	}
 
 	for _, r := range routes {
