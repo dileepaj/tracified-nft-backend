@@ -2,7 +2,6 @@ package apiHandler
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -25,7 +24,6 @@ func CreateCollection(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 	}
-	fmt.Println(createCollectionObject)
 	err = validations.ValidateInsertCollection(createCollectionObject)
 	if err != nil {
 		errors.BadRequest(w, err.Error())
