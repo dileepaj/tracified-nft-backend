@@ -99,6 +99,12 @@ var NftRoutes = models.Routers{
 		Handler: apiHandler.MakeSale,
 	},
 	models.Router{
+		Name:    "Update SVG",
+		Method:  "PUT",
+		Path:    "/api/svg",
+		Handler: apiHandler.UpdateSvgBlockChain,
+	},
+	models.Router{
 		Name:    "Create SVG",
 		Method:  "POST",
 		Path:    "/api/svg/save",
