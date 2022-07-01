@@ -37,6 +37,25 @@ func (r *NFTRepository) FindNFTById1AndNotId2(idName1 string, id1 string, idName
 	return nfts, nil
 }
 
+func (r *NFTRepository) GetTXNByBlockchainAndIdentifier(idName1 string, id1 string, idName2 string, id2 string) ([]models.TXN, error) {
+	var txns []models.TXN
+	rst, err := repository.FindById1AndNotId2(idName1, id1, idName2, id2, Txn)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+		return txns, err
+	}
+	for rst.Next(context.TODO()) {
+		var txn models.TXN
+		err = rst.Decode(&txn)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return txns, err
+		}
+		txns = append(txns, txn)
+	}
+	return txns, nil
+}
+
 func (r *NFTRepository) GetAllNFTs() ([]models.NFT, error) {
 	session, err := connections.GetMongoSession()
 	if err != nil {
@@ -64,7 +83,7 @@ func (r *NFTRepository) GetAllNFTs() ([]models.NFT, error) {
 	return nft, nil
 }
 
-func (r *NFTRepository) FindNFTByIdId2Id3(idName1 string, id1 string, idName2 string, id2 string, idName3 string, id3 string) ([]models.NFT, error) {
+func (r *NFTRepository) FindNFTByID1ID2ID3(idName1 string, id1 string, idName2 string, id2 string, idName3 string, id3 string) ([]models.NFT, error) {
 	var nfts []models.NFT
 	logs.InfoLogger.Println("ID1: " + id1 + " ID2:" + id2 + " ID3:" + id3)
 	rst, err := repository.FindById1Id2Id3(idName1, id1, idName2, id2, idName3, id3, NFT)
@@ -382,4 +401,22 @@ func (r *NFTRepository) GetAllTags() ([]models.Tags, error) {
 
 func (r *NFTRepository) SaveTags(tags models.Tags) (string, error) {
 	return repository.Save[models.Tags](tags, Tags)
+}
+
+func (r *NFTRepository) GetRURISVGByBatchID(idName string, id string) ([]models.NFT, error) {
+	var nfts []models.NFT
+	rst, err := repository.FindById(idName, id, NFT)
+	if err != nil {
+		return nfts, err
+	}
+	for rst.Next(context.TODO()) {
+		var nft models.NFT
+		err = rst.Decode(&nft)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return nfts, err
+		}
+		nfts = append(nfts, nft)
+	}
+	return nfts, nil
 }

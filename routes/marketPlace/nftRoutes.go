@@ -27,6 +27,12 @@ var NftRoutes = models.Routers{
 		Handler: apiHandler.GetAllONSaleNFT,
 	},
 	models.Router{
+		Name:    "GET TXN By Blockchain and NFTIdentifier",
+		Method:  "Get",
+		Path:    "/api/txn/{blockchain}/{nftidentifier}",
+		Handler: apiHandler.GetTXNByBlockchainAndIdentifier,
+	},
+	models.Router{
 		Name:    "GET NFTS By Tag names",
 		Method:  "Get",
 		Path:    "/api/tags/{tags}",

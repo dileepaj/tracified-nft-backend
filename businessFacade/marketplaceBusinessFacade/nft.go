@@ -42,8 +42,12 @@ func GetAllONSaleNFT(id string, userPK string) ([]models.NFT, error) {
 	return nftRepository.FindNFTById1AndNotId2("sellingstatus", id, "currentownerpk", userPK)
 }
 
+func GetTXNByBlockchainAndIdentifier(blockchain string, id string) ([]models.TXN, error) {
+	return nftRepository.GetTXNByBlockchainAndIdentifier("blockchain", blockchain, "nftidentifier", id)
+}
+
 func GetOneONSaleNFT(id string, identifier string, blockchain string) ([]models.NFT, error) {
-	return nftRepository.FindNFTByIdId2Id3("sellingstatus", id, "nftidentifier", identifier, "blockchain", blockchain)
+	return nftRepository.FindNFTByID1ID2ID3("sellingstatus", id, "nftidentifier", identifier, "blockchain", blockchain)
 }
 
 func GetNFTByBlockchainAndUserPK(id string, blockchain string) ([]models.NFT, error) {

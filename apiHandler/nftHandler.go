@@ -145,6 +145,26 @@ func GetAllONSaleNFT(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func GetTXNByBlockchainAndIdentifier(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
+	if ps.Status {
+		vars := mux.Vars(r)
+		if vars["blockchain"] != "" || vars["nftidentifier"] != "" {
+			results, err := marketplaceBusinessFacade.GetTXNByBlockchainAndIdentifier(vars["blockchain"], vars["nftidentifier"])
+			if err != nil {
+				errors.BadRequest(w, err.Error())
+			} else {
+				commonResponse.SuccessStatus[[]models.TXN](w, results)
+			}
+		} else {
+			errors.BadRequest(w, "")
+		}
+	} else {
+		errors.BadRequest(w, "")
+	}
+}
+
 func GetOneONSaleNFT(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
 	vars := mux.Vars(r)
