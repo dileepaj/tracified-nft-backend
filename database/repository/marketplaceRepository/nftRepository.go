@@ -383,3 +383,22 @@ func (r *NFTRepository) GetAllTags() ([]models.Tags, error) {
 func (r *NFTRepository) SaveTags(tags models.Tags) (string, error) {
 	return repository.Save[models.Tags](tags, Tags)
 }
+
+func (r *NFTRepository) GetTXNByBlockchainAndIdentifier(idName1 string, id1 string, idName2 string, id2 string) ([]models.TXN, error) {
+	var txns []models.TXN
+	rst, err := repository.FindById1AndNotId2(idName1, id1, idName2, id2, Txn)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+		return txns, err
+	}
+	for rst.Next(context.TODO()) {
+		var txn models.TXN
+		err = rst.Decode(&txn)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return txns, err
+		}
+		txns = append(txns, txn)
+	}
+	return txns, nil
+}

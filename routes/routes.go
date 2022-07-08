@@ -4,6 +4,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/routes/marketPlace"
 	"github.com/dileepaj/tracified-nft-backend/routes/nftComposer"
+	ruri "github.com/dileepaj/tracified-nft-backend/routes/ruri"
 )
 
 var ApplicationRoutes models.Routers
@@ -23,6 +24,7 @@ func init() {
 		marketPlace.EndorsementRoutes,
 		marketPlace.DocsRoutes,
 		marketPlace.PartnerRoutes,
+		ruri.RuriNFtRoutes,
 	}
 
 	for _, r := range routes {

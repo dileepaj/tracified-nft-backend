@@ -146,5 +146,11 @@ var NftRoutes = models.Routers{
 		Path:    "/api/buying/{sellingstatus}/{nftidentifier}/{blockchain}",
 		Handler: apiHandler.GetOneONSaleNFT,
 	},
+	models.Router{
+		Name:    "GET TXN By Blockchain and NFTIdentifier",
+		Method:  "Get",
+		Path:    "/api/txn/{blockchain}/{nftidentifier}",
+		Handler: apiHandler.GetTXNByBlockchainAndIdentifier,
+	},
 	//another route for getting nfts should be here but there are two functions for it already
 }

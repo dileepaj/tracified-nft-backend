@@ -141,3 +141,6 @@ func UpdateNFT(nft requestDtos.UpdateMint) (models.NFT, error) {
 	}
 	return nftRepository.UpdateMinter("imagebase64", nft.Imagebase64, "blockchain", nft.Blockchain, update)
 }
+func GetTXNByBlockchainAndIdentifier(blockchain string, id string) ([]models.TXN, error) {
+	return nftRepository.GetTXNByBlockchainAndIdentifier("blockchain", blockchain, "nftidentifier", id)
+}
