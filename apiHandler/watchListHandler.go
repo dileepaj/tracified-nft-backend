@@ -2,8 +2,6 @@ package apiHandler
 
 import (
 	"encoding/json"
-	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/dileepaj/tracified-nft-backend/businessFacade/marketplaceBusinessFacade"
@@ -41,7 +39,6 @@ func CreateWatchList(w http.ResponseWriter, r *http.Request) {
 func GetWatchListByUserPK(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
 	vars := mux.Vars(r)
-	fmt.Println(vars["userid"])
 	results, err1 := marketplaceBusinessFacade.GetWatchListByUserPK(vars["userid"])
 	if err1 != nil {
 		ErrorMessage := err1.Error()
@@ -60,7 +57,6 @@ func GetWatchListByUserPK(w http.ResponseWriter, r *http.Request) {
 
 func GetAllWatchLists(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
-	log.Println("calling func Get All Favourites....")
 	results, err1 := marketplaceBusinessFacade.GetAllWatchLists()
 
 	if err1 != nil {
@@ -85,8 +81,6 @@ func FindWatchListsByBlockchainAndIdentifier(w http.ResponseWriter, r *http.Requ
 		if err != nil {
 			errors.BadRequest(w, err.Error())
 		} else {
-			log.Println("length of result", len(result))
-			log.Println("id", id)
 			if len(result) > 5 {
 				var trend models.Trending
 				trend = models.Trending{

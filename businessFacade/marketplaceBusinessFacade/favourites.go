@@ -1,14 +1,6 @@
 package marketplaceBusinessFacade
 
 import (
-	// "fmt"
-
-	// "github.com/dileepaj/tracified-nft-backend/database/repository/marketplaceRepository"
-	// "github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
-	// "github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
-
-	"log"
-
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -18,7 +10,6 @@ func CreateFavourites(favs models.Favourite) (string, error) {
 }
 
 func GetFavouritesByBlockchainAndIdentifier(blockchain string, id string) ([]models.Favourite, string, error) {
-	log.Println("params :", blockchain, id)
 	return FavouriteRepository.GetFavouritesByBlockchainAndIdentifier("blockchain", blockchain, "nftidentifier", id)
 }
 
