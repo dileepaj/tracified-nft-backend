@@ -2,6 +2,7 @@ package marketplaceRepository
 
 import (
 	"context"
+	"log"
 
 	"github.com/dileepaj/tracified-nft-backend/database/connections"
 	"github.com/dileepaj/tracified-nft-backend/database/repository"
@@ -87,6 +88,7 @@ func (r *NFTRepository) FindNFTByIdId2Id3(idName1 string, id1 string, idName2 st
 }
 
 func (r *NFTRepository) FindNFTsById(idName string, id string) ([]models.NFT, error) {
+	log.Println("inside repo ", idName)
 	var nfts []models.NFT
 	rst, err := repository.FindById(idName, id, NFT)
 	if err != nil {
@@ -100,6 +102,7 @@ func (r *NFTRepository) FindNFTsById(idName string, id string) ([]models.NFT, er
 			return nfts, err
 		}
 		nfts = append(nfts, nft)
+		log.Println("nfts ", nfts)
 	}
 	return nfts, nil
 }
@@ -382,4 +385,60 @@ func (r *NFTRepository) GetAllTags() ([]models.Tags, error) {
 
 func (r *NFTRepository) SaveTags(tags models.Tags) (string, error) {
 	return repository.Save[models.Tags](tags, Tags)
+}
+
+func (r *NFTRepository) UpdateTrending(findBy string, id string, update primitive.M) (models.NFT, error) {
+	var nftResponse models.NFT
+	session, err := connections.GetMongoSession()
+	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session " + err.Error())
+	}
+	defer session.EndSession(context.TODO())
+	upsert := false
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+	rst := session.Client().Database(connections.DbName).Collection("nft").FindOneAndUpdate(context.TODO(), bson.M{"nftidentifier": id}, update, &opt)
+	if rst != nil {
+		err := rst.Decode((&nftResponse))
+		logs.InfoLogger.Println("data retreived from DB: ", rst)
+		if err != nil {
+			logs.ErrorLogger.Println("Error occured while retreving data from nft nft in UpdateNFTSALE:nftRepository.go: ", err.Error())
+			return nftResponse, err
+		}
+		return nftResponse, nil
+	} else {
+		return nftResponse, nil
+
+	}
+}
+
+func (r *NFTRepository) UpdateHotPicks(findBy string, id string, update primitive.M) (models.NFT, error) {
+	var nftResponse models.NFT
+	session, err := connections.GetMongoSession()
+	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session " + err.Error())
+	}
+	defer session.EndSession(context.TODO())
+	upsert := false
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+	rst := session.Client().Database(connections.DbName).Collection("nft").FindOneAndUpdate(context.TODO(), bson.M{"nftidentifier": id}, update, &opt)
+	if rst != nil {
+		err := rst.Decode((&nftResponse))
+		logs.InfoLogger.Println("data retreived from DB: ", rst)
+		if err != nil {
+			logs.ErrorLogger.Println("Error occured while retreving data from nft nft in UpdateNFTSALE:nftRepository.go: ", err.Error())
+			return nftResponse, err
+		}
+		return nftResponse, nil
+	} else {
+		return nftResponse, nil
+
+	}
 }

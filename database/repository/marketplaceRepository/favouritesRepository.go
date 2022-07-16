@@ -2,6 +2,7 @@ package marketplaceRepository
 
 import (
 	"context"
+	"log"
 
 	"github.com/dileepaj/tracified-nft-backend/database/connections"
 	"github.com/dileepaj/tracified-nft-backend/database/repository"
@@ -19,22 +20,26 @@ func (r *FavouriteRepository) SaveFavourite(favourite models.Favourite) (string,
 	return repository.Save[models.Favourite](favourite, Favourite)
 }
 
-func (r *FavouriteRepository) FindFavouritesByBlockchain(idName string, id string) ([]models.Favourite, error) {
+func (r *FavouriteRepository) GetFavouritesByBlockchainAndIdentifier(idName string, id string, idName2 string, id2 string) ([]models.Favourite, string, error) {
+	log.Println("params: ", idName, id, idName, id2)
 	var favs []models.Favourite
-	rst, err := repository.FindById(idName, id, Favourite)
+	rst, err := repository.FindById1AndNotId2(idName, id, idName2, id2, Favourite)
 	if err != nil {
-		return favs, err
+		return favs, id2, err
 	}
 	for rst.Next(context.TODO()) {
 		var fav models.Favourite
 		err = rst.Decode(&fav)
 		if err != nil {
 			logs.ErrorLogger.Println(err.Error())
-			return favs, err
+			return favs, id2, err
 		}
 		favs = append(favs, fav)
+
 	}
-	return favs, nil
+	log.Println("favs: ", favs)
+	log.Println("size: ", len(favs))
+	return favs, id2, nil
 }
 
 func (r *FavouriteRepository) FindFavouritesbyUserPK(userpk string) (models.Favourite, error) {

@@ -14,7 +14,6 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/utilities/commonResponse"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
-	"github.com/dileepaj/tracified-nft-backend/utilities/middleware"
 	"github.com/dileepaj/tracified-nft-backend/utilities/validations"
 )
 
@@ -88,23 +87,40 @@ func GetAllFavourites(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func GetFavouritesByBlockchain(w http.ResponseWriter, r *http.Request) {
+func GetFavouritesByBlockchainAndIdentifier(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
-	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
-	if ps.Status {
-		vars := mux.Vars(r)
-		if len(vars["blockchain"]) != 0 {
-			result, err := marketplaceBusinessFacade.GetFavouritesbyBlockchain((vars["blockchain"]))
-			if err != nil {
-				errors.BadRequest(w, err.Error())
-			} else {
-				commonResponse.SuccessStatus[[]models.Favourite](w, result)
-			}
+	log.Println("Inside handler--------------------")
+
+	vars := mux.Vars(r)
+	log.Println("params: ", vars["blockchain"], vars["nftidentifier"])
+	if vars["blockchain"] != "" && vars["nftidentifier"] != "" {
+
+		result, id, err := marketplaceBusinessFacade.GetFavouritesByBlockchainAndIdentifier(vars["blockchain"], vars["nftidentifier"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
 		} else {
-			errors.BadRequest(w, "")
+			log.Println(" result", result)
+			log.Println("length of result", len(result))
+			log.Println("id", id)
+			if len(result) > 5 {
+				log.Printf("Inside update after hitting 5")
+				var hotpicks models.Hotpicks
+				hotpicks = models.Hotpicks{
+					NFTIdentifier: id,
+					HotPicks:      true,
+				}
+				log.Println("model: ", hotpicks)
+				result, err := marketplaceBusinessFacade.UpdateHotPicks(hotpicks)
+				if err != nil {
+					errors.BadRequest(w, err.Error())
+				} else {
+					commonResponse.SuccessStatus[models.NFT](w, result)
+				}
+			}
+			commonResponse.SuccessStatus[[]models.Favourite](w, result)
 		}
+	} else {
+		errors.BadRequest(w, "")
 	}
-	w.WriteHeader(http.StatusUnauthorized)
-	logs.ErrorLogger.Println("Status Unauthorized")
-	return
+
 }

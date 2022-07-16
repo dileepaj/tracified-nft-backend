@@ -11,7 +11,6 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/utilities/commonResponse"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
-	"github.com/dileepaj/tracified-nft-backend/utilities/middleware"
 	"github.com/dileepaj/tracified-nft-backend/utilities/validations"
 	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
@@ -78,23 +77,33 @@ func GetAllWatchLists(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func GetWatchListsByBlockchain(w http.ResponseWriter, r *http.Request) {
+func FindWatchListsByBlockchainAndIdentifier(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
-	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
-	if ps.Status {
-		vars := mux.Vars(r)
-		if len(vars["blockchain"]) != 0 {
-			result, err := marketplaceBusinessFacade.GetWatchListsbyBlockchain((vars["blockchain"]))
-			if err != nil {
-				errors.BadRequest(w, err.Error())
-			} else {
-				commonResponse.SuccessStatus[[]models.WatchList](w, result)
-			}
+	vars := mux.Vars(r)
+	if vars["blockchain"] != "" || vars["nftidentifier"] != "" {
+		result, id, err := marketplaceBusinessFacade.FindWatchListsByBlockchainAndIdentifier(vars["blockchain"], vars["nftidentifier"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
 		} else {
-			errors.BadRequest(w, "")
+			log.Println("length of result", len(result))
+			log.Println("id", id)
+			if len(result) > 5 {
+				var trend models.Trending
+				trend = models.Trending{
+					NFTIdentifier: id,
+					Trending:      true,
+				}
+				result, err := marketplaceBusinessFacade.UpdateTrending(trend)
+				if err != nil {
+					errors.BadRequest(w, err.Error())
+				} else {
+					commonResponse.SuccessStatus[models.NFT](w, result)
+				}
+			}
+			commonResponse.SuccessStatus[[]models.WatchList](w, result)
+
 		}
+	} else {
+		errors.BadRequest(w, "")
 	}
-	w.WriteHeader(http.StatusUnauthorized)
-	logs.ErrorLogger.Println("Status Unauthorized")
-	return
 }

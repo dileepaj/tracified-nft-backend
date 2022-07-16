@@ -2,6 +2,7 @@ package marketplaceRepository
 
 import (
 	"context"
+	"log"
 
 	"github.com/dileepaj/tracified-nft-backend/database/connections"
 	"github.com/dileepaj/tracified-nft-backend/database/repository"
@@ -87,20 +88,21 @@ func (r *WatchListRepository) GetAllWatchLists() ([]models.WatchList, error) {
 	return watchlist, nil
 }
 
-func (r *WatchListRepository) FindWatchListsByBlockchain(idName string, id string) ([]models.WatchList, error) {
+func (r *WatchListRepository) FindWatchListsByBlockchainAndIdentifier(idName string, id string, idName2 string, id2 string) ([]models.WatchList, string, error) {
 	var watchlists []models.WatchList
-	rst, err := repository.FindById(idName, id, WatchList)
+	rst, err := repository.FindById1AndNotId2(idName, id, idName2, id2, WatchList)
 	if err != nil {
-		return watchlists, err
+		return watchlists, id2, err
 	}
 	for rst.Next(context.TODO()) {
 		var watchlist models.WatchList
 		err = rst.Decode(&watchlist)
 		if err != nil {
 			logs.ErrorLogger.Println(err.Error())
-			return watchlists, err
+			return watchlists, id2, err
 		}
 		watchlists = append(watchlists, watchlist)
+		log.Println("size: ", len(watchlists))
 	}
-	return watchlists, nil
+	return watchlists, id2, nil
 }
