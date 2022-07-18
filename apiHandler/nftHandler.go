@@ -2,6 +2,7 @@ package apiHandler
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/dileepaj/tracified-nft-backend/businessFacade/marketplaceBusinessFacade"
@@ -168,23 +169,27 @@ func GetOneONSaleNFT(w http.ResponseWriter, r *http.Request) {
 
 func GetBlockchainSpecificNFT(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
-	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
-	if ps.Status {
-		vars := mux.Vars(r)
-		if vars["blockchain"] != "" {
-			results, err := marketplaceBusinessFacade.GetBlockchainSpecificNFT(vars["blockchain"])
-			if err != nil {
-				errors.BadRequest(w, err.Error())
-			} else {
-				commonResponse.SuccessStatus[[]models.NFT](w, results)
-			}
+	log.Println("Inside handler..................")
+	// ps := middleware.HasPermissions(r.Header.Get("Authorization"))
+	// if ps.Status {
+	log.Println("-----------------------clear 1---------")
+	vars := mux.Vars(r)
+	if vars["blockchain"] != "" {
+		log.Println("-----------------------clear 2---------")
+		results, err := marketplaceBusinessFacade.GetBlockchainSpecificNFT(vars["blockchain"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
 		} else {
-			errors.BadRequest(w, "")
+			log.Println("results: ", results)
+			commonResponse.SuccessStatus[[]models.NFT](w, results)
 		}
+	} else {
+		errors.BadRequest(w, "")
 	}
-	w.WriteHeader(http.StatusUnauthorized)
-	logs.ErrorLogger.Println("Status Unauthorized")
-	return
+	// }
+	// w.WriteHeader(http.StatusUnauthorized)
+	// logs.ErrorLogger.Println("Status Unauthorized")
+	// return
 }
 
 func GetNFTbyTags(w http.ResponseWriter, r *http.Request) {

@@ -2,6 +2,7 @@ package marketplaceBusinessFacade
 
 import (
 	"encoding/json"
+	"log"
 
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
@@ -58,6 +59,7 @@ func MakeSaleNFT(nft requestDtos.UpdateNFTSALERequest) (models.NFT, error) {
 }
 
 func GetBlockchainSpecificNFT(blockchain string) ([]models.NFT, error) {
+	log.Println("inside facade.............", blockchain)
 	return nftRepository.FindNFTsById("blockchain", blockchain)
 }
 
