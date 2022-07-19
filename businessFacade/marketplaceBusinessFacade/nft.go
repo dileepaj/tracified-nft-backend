@@ -2,6 +2,7 @@ package marketplaceBusinessFacade
 
 import (
 	"encoding/json"
+	"log"
 
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
@@ -15,6 +16,10 @@ func StoreNFT(createNFTObject models.NFT) (string, error) {
 	}
 	return rst, nil
 
+}
+
+func GetAllNFTs() ([]models.NFT, error) {
+	return nftRepository.GetAllNFTs()
 }
 
 func StoreTXN(createTXNObject models.TXN) (string, error) {
@@ -54,6 +59,7 @@ func MakeSaleNFT(nft requestDtos.UpdateNFTSALERequest) (models.NFT, error) {
 }
 
 func GetBlockchainSpecificNFT(blockchain string) ([]models.NFT, error) {
+	log.Println("inside facade.............", blockchain)
 	return nftRepository.FindNFTsById("blockchain", blockchain)
 }
 
@@ -129,11 +135,11 @@ func UpdateNFTTXN(txn requestDtos.UpdateMintTXN) (models.NFT, error) {
 	update := bson.M{
 		"$set": bson.M{"nfttxnhash": txn.NFTTxnHash},
 	}
-	return nftRepository.UpdateNFTTXN("imagebase64", txn.Imagebase64, update)
+	return nftRepository.UpdateNFTTXN("imagebase64", txn.Imagebase64, "blockchain", txn.Blockchian, update)
 }
 func UpdateNFT(nft requestDtos.UpdateMint) (models.NFT, error) {
 	update := bson.M{
 		"$set": bson.M{"nftidentifier": nft.NFTIdentifier, "nftissuerpk": nft.NFTIssuerPK, "nfttxnhash": nft.NFTTxnHash},
 	}
-	return nftRepository.UpdateMinter("imagebase64", nft.Imagebase64, update)
+	return nftRepository.UpdateMinter("imagebase64", nft.Imagebase64, "blockchain", nft.Blockchain, update)
 }

@@ -5,15 +5,7 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-func ValidateInsertSVG(e models.SVG) error {
-	validate = validator.New()
-	err := validate.Struct(e)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-func ValidateUpdateSvg(e models.SVG) error {
+func ValidateDocs(e models.Document) error {
 	validate = validator.New()
 	err := validate.Struct(e)
 	if err != nil {

@@ -30,4 +30,10 @@ var EndorsementRoutes = models.Routers{
 		Path:    "/api/endorsement/{publickey}",
 		Handler: apiHandler.UpdateEndorsedStatus,
 	},
+	models.Router{
+		Name:    "Update Endorsement",
+		Method:  "PUT",
+		Path:    "/api/endorsement",
+		Handler: apiHandler.UpdateEndorsement,
+	},
 }
