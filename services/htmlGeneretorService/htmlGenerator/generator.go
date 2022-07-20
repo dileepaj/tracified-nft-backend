@@ -2,7 +2,6 @@ package htmlGenerator
 
 import (
 	"encoding/json"
-	"fmt"
 	"strconv"
 
 	"github.com/dileepaj/tracified-nft-backend/models"
@@ -26,9 +25,6 @@ var (
 *
 **/
 func GenerateHTMLTemplate(htmlData models.HtmlGenerator) (string, error) {
-
-    fmt.Println("sss ss s              ",htmlData)
-
 	// Parse the Data
 	var jsScripts string
 	var barcharts []models.Chart = htmlData.NftContent.BarCharts
@@ -42,7 +38,7 @@ func GenerateHTMLTemplate(htmlData models.HtmlGenerator) (string, error) {
 	var contentOrderData []models.ContentOrderData = htmlData.ContentOrderData
 	body := ` <body>
 				 <h1 class="text-center">Tracified NFT</h1>
-				 <p class="text-center fw-bold text-muted">`+ htmlData.NFTName +`<p>
+				 <p class="text-center fw-bold text-muted">` + htmlData.NFTName + `<p>
 				</div>
 				 <div class="d-flex justify-content-center align-content-center flex-wrap" id="container">
 				</div>
@@ -57,7 +53,7 @@ func GenerateHTMLTemplate(htmlData models.HtmlGenerator) (string, error) {
 			if element.Type == "BarChart" {
 				if len(barcharts) != 0 {
 					for i, bar := range barcharts {
-						if element.WidgetId == bar.WidgetId {
+						if len(bar.ChartData) != 0 && element.WidgetId == bar.WidgetId {
 							jsScripts += `
 		displayBarchart(data.NftContent.BarCharts[
 		` + strconv.Itoa(i) + `])`
@@ -67,7 +63,7 @@ func GenerateHTMLTemplate(htmlData models.HtmlGenerator) (string, error) {
 			} else if element.Type == "PieChart" {
 				if len(piecharts) != 0 {
 					for i, pie := range piecharts {
-						if element.WidgetId == pie.WidgetId {
+						if len(pie.ChartData) != 0 && element.WidgetId == pie.WidgetId {
 							jsScripts += `
 		displayPiechart(data.NftContent.PieCharts[
 		` + strconv.Itoa(i) + `])`
@@ -77,7 +73,7 @@ func GenerateHTMLTemplate(htmlData models.HtmlGenerator) (string, error) {
 			} else if element.Type == "BubbleChart" {
 				if len(bubbleCharts) != 0 {
 					for i, bubble := range bubbleCharts {
-						if element.WidgetId == bubble.WidgetId {
+						if len(bubble.ChartData) != 0 && element.WidgetId == bubble.WidgetId {
 							jsScripts += `
 		displayBubblechart(data.NftContent.BubbleCharts[
 		` + strconv.Itoa(i) + `])`
@@ -87,7 +83,7 @@ func GenerateHTMLTemplate(htmlData models.HtmlGenerator) (string, error) {
 			} else if element.Type == "Table" {
 				if len(tables) != 0 {
 					for i, table := range tables {
-						if element.WidgetId == table.WidgetId {
+						if table.TableContent != "" && element.WidgetId == table.WidgetId {
 							jsScripts += `
 		displayTable(data.NftContent.Tables[
 		` + strconv.Itoa(i) + `])`
@@ -97,7 +93,7 @@ func GenerateHTMLTemplate(htmlData models.HtmlGenerator) (string, error) {
 			} else if element.Type == "Image" {
 				if len(images) != 0 {
 					for i, image := range images {
-						if element.WidgetId == image.WidgetId {
+						if image.Base64Image != "" && element.WidgetId == image.WidgetId {
 							jsScripts += `
 		displayImages(data.NftContent.Images[
 		` + strconv.Itoa(i) + `])`
@@ -117,7 +113,7 @@ func GenerateHTMLTemplate(htmlData models.HtmlGenerator) (string, error) {
 			} else if element.Type == "ProofBot" {
 				if len(proofbot) != 0 {
 					for i, botData := range proofbot {
-						if element.WidgetId == botData.WidgetId {
+						if len(botData.Data) != 0 && element.WidgetId == botData.WidgetId {
 							jsScripts += `
 			displayProofBot(data.NftContent.ProofBot[
 		` + strconv.Itoa(i) + `])`
@@ -127,13 +123,11 @@ func GenerateHTMLTemplate(htmlData models.HtmlGenerator) (string, error) {
 			} else if element.Type == "Timeline" {
 				if len(Timelines) != 0 {
 					for i, timelineData := range Timelines {
-						if len(timelineData.TimelineData)!=0 {
-						if element.WidgetId == timelineData.WidgetId {
+						if len(timelineData.TimelineData) != 0 && element.WidgetId == timelineData.WidgetId {
 							jsScripts += `
 			displayTimeline(data.NftContent.Timeline[
 		` + strconv.Itoa(i) + `])`
 						}
-					}
 					}
 				}
 			} else {
