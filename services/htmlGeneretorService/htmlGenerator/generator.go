@@ -2,6 +2,7 @@ package htmlGenerator
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 
 	"github.com/dileepaj/tracified-nft-backend/models"
@@ -25,6 +26,9 @@ var (
 *
 **/
 func GenerateHTMLTemplate(htmlData models.HtmlGenerator) (string, error) {
+
+    fmt.Println("sss ss s              ",htmlData)
+
 	// Parse the Data
 	var jsScripts string
 	var barcharts []models.Chart = htmlData.NftContent.BarCharts
@@ -123,11 +127,13 @@ func GenerateHTMLTemplate(htmlData models.HtmlGenerator) (string, error) {
 			} else if element.Type == "Timeline" {
 				if len(Timelines) != 0 {
 					for i, timelineData := range Timelines {
+						if len(timelineData.TimelineData)!=0 {
 						if element.WidgetId == timelineData.WidgetId {
 							jsScripts += `
 			displayTimeline(data.NftContent.Timeline[
 		` + strconv.Itoa(i) + `])`
 						}
+					}
 					}
 				}
 			} else {
