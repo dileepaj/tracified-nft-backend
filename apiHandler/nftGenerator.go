@@ -30,6 +30,7 @@ func HTMLFileGenerator(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			errors.BadRequest(w, err.Error())
 		} else {
+			// fmt.Println("generateHTMLRequest",generateHTMLRequest)
 			result, err := nftComposerBusinessFacade.GenerateHTMLFile(generateHTMLRequest)
 			if err != nil {
 				errors.BadRequest(w, err.Error())
