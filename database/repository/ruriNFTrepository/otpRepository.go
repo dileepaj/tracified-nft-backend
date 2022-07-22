@@ -12,7 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var RurriOTP = "ruriOtp"
+var UserAuth = "userAuth"
 
 type OtpRepository struct{}
 
@@ -21,8 +21,8 @@ type OtpRepository struct{}
  **Params : otpDataSet, OTPData struct containting data to be stored.
  **reutrns : objectID if dat gets stored or an error if it dosnt
  */
-func (r *Rurirepository) SaveOTP(otpDataSet models.OTPData) (string, error) {
-	return repository.Save(otpDataSet, RurriOTP)
+func (r *Rurirepository) SaveOTP(otpDataSet models.UserAuth) (string, error) {
+	return repository.Save(otpDataSet, UserAuth)
 }
 
 /**
@@ -32,42 +32,42 @@ func (r *Rurirepository) SaveOTP(otpDataSet models.OTPData) (string, error) {
  * *reutrns : respective batchID if the otp is valid
  */
 func (r *Rurirepository) ValidateOTP(email string, otp string) (string, error) {
-	var otprst models.OTPData
-	rst, err := repository.FindById1AndId2("email", email, "otp", otp, RurriOTP)
+	var authrst models.UserAuth
+	rst, err := repository.FindById1AndId2("email", email, "otp", otp, UserAuth)
 	if err != nil {
 		logs.ErrorLogger.Println("failed to return data from DB: ", err.Error())
 	}
 	for rst.Next(context.TODO()) {
-		err = rst.Decode(&otprst)
+		err = rst.Decode(&authrst)
 		if err != nil {
 			logs.ErrorLogger.Println("Error occured while retreving data from collection ruriotp in ValidateOTP:OtpRepository.go: ", err.Error())
 			return "", err
 		}
 	}
-	logs.InfoLogger.Println("data retrived from DB :", otprst)
-	if otprst.BatchID == "" {
+	logs.InfoLogger.Println("data retrived from DB :", authrst)
+	if authrst.BatchID == "" {
 		return "Invalid OTP", err
 	} else {
-		return otprst.BatchID, err
+		return authrst.BatchID, err
 	}
 
 }
-func (r *Rurirepository) ResendOTP(otpDataSet models.OTPData) (string, error) {
-	var otprst models.OTPData
-	rst, err := repository.FindById1AndId2("email", otpDataSet.Email, "batchid", otpDataSet.BatchID, RurriOTP)
+func (r *Rurirepository) ResendOTP(otpDataSet models.UserAuth) (string, error) {
+	var authrst models.UserAuth
+	rst, err := repository.FindById1AndId2("email", otpDataSet.Email, "batchid", otpDataSet.BatchID, UserAuth)
 	if err != nil {
 		logs.ErrorLogger.Println("failed to return data from DB: ", err.Error())
 	}
 	for rst.Next(context.TODO()) {
-		err = rst.Decode(&otprst)
+		err = rst.Decode(&authrst)
 		if err != nil {
 			logs.ErrorLogger.Println("Error occured while retreving data from collection ruriotp in ValidateOTP:OtpRepository.go: ", err.Error())
 			return "", err
 		}
 	}
-	if otprst.BatchID == "" { //*IF OTP was not stored in DB new entry will be made
+	if authrst.BatchID == "" { //*IF OTP was not stored in DB new entry will be made
 		fmt.Println("data not recorded in DB")
-		return repository.Save(otpDataSet, RurriOTP)
+		return repository.Save(otpDataSet, UserAuth)
 	} else { //* IF OTP data already exisit it will get updated
 		fmt.Println("data was recorded in DB Updating")
 		update := bson.M{
@@ -86,7 +86,7 @@ func (r *Rurirepository) ResendOTP(otpDataSet models.OTPData) (string, error) {
 			Upsert:         &upsert,
 		}
 		rst := session.Client().Database(connections.DbName).Collection("ruriOtp").FindOneAndUpdate(context.TODO(), bson.M{"email": otpDataSet.Email}, update, &opt)
-		var responseOtp models.OTPData
+		var responseOtp models.UserAuth
 		if rst != nil {
 			err := rst.Decode(&responseOtp)
 			if err != nil {

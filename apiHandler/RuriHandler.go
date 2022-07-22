@@ -31,11 +31,11 @@ func RuriNewOTP(W http.ResponseWriter, r *http.Request) {
 				errors.BadRequest(W, "Failed to retrive BatchID data")
 				return
 			} //If batch ID is retreived user email,otp and batch ID will be sent to be saved in the ruriOtp DB
-			var otpData models.OTPData
-			otpData.Email = vars["email"]
-			otpData.Otp = otp
-			otpData.BatchID = batchData.BatchID
-			result, error := ruriBusinessFacade.SaveOTP(otpData)
+			var userAuth models.UserAuth
+			userAuth.Email = vars["email"]
+			userAuth.Otp = otp
+			userAuth.BatchID = batchData.BatchID
+			result, error := ruriBusinessFacade.SaveOTP(userAuth)
 			if error != nil {
 				errors.BadRequest(W, "")
 			} else {
@@ -50,7 +50,7 @@ func RuriNewOTP(W http.ResponseWriter, r *http.Request) {
 /**
  * *Description:This function is used to validate a OTP provided by the user. The email and the otp will be sent where the api.Checks if the otp and the email recived
  *				*have a matching record in the DB
- *  Returns:If There is a matching email and a OTP in the DB the relvent batch ID will be reutrned as a response. If not error msg is sent as response
+ *  *Returns:If There is a matching email and a OTP in the DB the generated SVG will be reutrned as a response. If not error msg is sent as response
  */
 func ValidateOTP(W http.ResponseWriter, r *http.Request) {
 	W.Header().Set("Content-Type", "application/json; charset-UTF-8")
@@ -66,7 +66,13 @@ func ValidateOTP(W http.ResponseWriter, r *http.Request) {
 			errors.BadRequest(W, rst)
 			return
 		}
-		commonResponse.SuccessStatus[string](W, rst) //if the OTP is valid batch ID is sent back as a response
+		var tempBatchID = "HanaMatNsp01" //? Templary harcoded
+		rst1, err1 := ruriBusinessFacade.GenerateandSaveSVG(tempBatchID, vars["email"])
+		if err != nil {
+			errors.BadRequest(W, err1.Error())
+			return
+		}
+		commonResponse.SuccessStatus[string](W, rst1.SVG)
 	} else {
 		errors.BadRequest(W, "email or OTP missing")
 		return
@@ -74,7 +80,7 @@ func ValidateOTP(W http.ResponseWriter, r *http.Request) {
 }
 
 func ResentOTP(W http.ResponseWriter, r *http.Request) {
-	var otpData models.OTPData
+	var userAuth models.UserAuth
 	W.Header().Set("Content-Type", "application/json; charset-UTF-8")
 	vars := mux.Vars(r)
 	if vars["productID"] != "" || vars["email"] != "" {
@@ -88,10 +94,10 @@ func ResentOTP(W http.ResponseWriter, r *http.Request) {
 				errors.BadRequest(W, "Failed to retrive BatchID data")
 				return
 			}
-			otpData.Email = vars["email"]
-			otpData.BatchID = batchData.BatchID
-			otpData.Otp = otp
-			rst, err := ruriBusinessFacade.ResendOTP(otpData)
+			userAuth.Email = vars["email"]
+			userAuth.BatchID = batchData.BatchID
+			userAuth.Otp = otp
+			rst, err := ruriBusinessFacade.ResendOTP(userAuth)
 			if err != nil {
 				errors.BadRequest(W, "Failed to retrive BatchID data")
 				return
@@ -100,4 +106,21 @@ func ResentOTP(W http.ResponseWriter, r *http.Request) {
 		}
 
 	}
+}
+
+//! TEsting methods remove after full impl
+func SaveTDPDataByBatchID(W http.ResponseWriter, r *http.Request) {
+	W.Header().Set("Content-Type", "application/json; charset-UTF-8")
+	vars := mux.Vars(r)
+	logs.InfoLogger.Println("URL Param:", vars["batchID"])
+	ruriBusinessFacade.GetTDPDataByBatchID(vars["batchID"])
+}
+
+//! TEsting methods remove after full impl
+func GenerateSVG(W http.ResponseWriter, r *http.Request) {
+	W.Header().Set("Content-Type", "application/json; charset-UTF-8")
+	vars := mux.Vars(r)
+	logs.InfoLogger.Println("URL Param:", vars["batchID"])
+	rst, _ := ruriBusinessFacade.GenerateandSaveSVG(vars["batchID"], vars["email"])
+	commonResponse.SuccessStatus[string](W, rst.SVG)
 }
