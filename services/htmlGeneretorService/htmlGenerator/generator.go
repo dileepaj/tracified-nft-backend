@@ -83,7 +83,7 @@ func GenerateHTMLTemplate(htmlData models.HtmlGenerator) (string, error) {
 			} else if element.Type == "Table" {
 				if len(tables) != 0 {
 					for i, table := range tables {
-						if table.TableContent != "" && element.WidgetId == table.WidgetId {
+						if table.TableContent != "" && table.TableContent != "EMPTY" && element.WidgetId == table.WidgetId {
 							jsScripts += `
 		displayTable(data.NftContent.Tables[
 		` + strconv.Itoa(i) + `])`
