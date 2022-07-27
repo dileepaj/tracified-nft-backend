@@ -36,13 +36,13 @@ ul.point>li {
 }
 
 .timeline-key {
-  font-size: 20px;
+  font-size: 14px;
   color: #a6a7a6;
   font-weight: 500;
 }
 
 .timeline-value {
-  font-size: 20px;
+  font-size: 14px;
   color: #242424;
   font-style: italic;
 }
@@ -71,11 +71,13 @@ ul.point>li {
 
 .timeline-stage {
   margin-left: 10px;
+  font-size: 16px;
 }
 
 .timeline-icon {
   position: absolute;
   z-index: 4000;
+  transform: scale(0.8);
 }
 
 .botCard {
