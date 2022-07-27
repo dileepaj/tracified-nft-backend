@@ -21,7 +21,7 @@ type OtpRepository struct{}
  **Params : otpDataSet, OTPData struct containting data to be stored.
  **reutrns : objectID if dat gets stored or an error if it dosnt
  */
-func (r *Rurirepository) SaveOTP(otpDataSet models.UserAuth) (string, error) {
+func (r *OtpRepository) SaveOTP(otpDataSet models.UserAuth) (string, error) {
 	return repository.Save(otpDataSet, UserAuth)
 }
 
@@ -31,7 +31,7 @@ func (r *Rurirepository) SaveOTP(otpDataSet models.UserAuth) (string, error) {
  * *param : otp, otp entered by user
  * *reutrns : respective batchID if the otp is valid
  */
-func (r *Rurirepository) ValidateOTP(email string, otp string) (string, error) {
+func (r *OtpRepository) ValidateOTP(email string, otp string) (string, error) {
 	var authrst models.UserAuth
 	rst, err := repository.FindById1AndId2("email", email, "otp", otp, UserAuth)
 	if err != nil {
@@ -52,7 +52,7 @@ func (r *Rurirepository) ValidateOTP(email string, otp string) (string, error) {
 	}
 
 }
-func (r *Rurirepository) ResendOTP(otpDataSet models.UserAuth) (string, error) {
+func (r *OtpRepository) ResendOTP(otpDataSet models.UserAuth) (string, error) {
 	var authrst models.UserAuth
 	rst, err := repository.FindById1AndId2("email", otpDataSet.Email, "batchid", otpDataSet.BatchID, UserAuth)
 	if err != nil {
@@ -85,12 +85,12 @@ func (r *Rurirepository) ResendOTP(otpDataSet models.UserAuth) (string, error) {
 			ReturnDocument: &after,
 			Upsert:         &upsert,
 		}
-		rst := session.Client().Database(connections.DbName).Collection("ruriOtp").FindOneAndUpdate(context.TODO(), bson.M{"email": otpDataSet.Email}, update, &opt)
+		rst := session.Client().Database(connections.DbName).Collection(UserAuth).FindOneAndUpdate(context.TODO(), bson.M{"email": otpDataSet.Email}, update, &opt)
 		var responseOtp models.UserAuth
 		if rst != nil {
 			err := rst.Decode(&responseOtp)
 			if err != nil {
-				logs.InfoLogger.Println("Failed toupdate DB")
+				logs.InfoLogger.Println("Failed to update DB: ", err.Error())
 				return responseOtp.BatchID, err
 			} else {
 				return responseOtp.BatchID, err

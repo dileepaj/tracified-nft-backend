@@ -5,5 +5,6 @@ import (
 )
 
 var (
-	ruriRepository ruriNFTrepository.Rurirepository
+	svgRepository ruriNFTrepository.SvgRepository
+	otpRepository ruriNFTrepository.OtpRepository
 )

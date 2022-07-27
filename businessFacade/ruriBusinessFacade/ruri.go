@@ -8,10 +8,12 @@ import (
 	"strings"
 
 	"github.com/dileepaj/tracified-nft-backend/configs"
+	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/services/svgGeneratorforNFT/svgNFTGenerator"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"github.com/xlzd/gotp"
+	"go.mongodb.org/mongo-driver/bson"
 	"gopkg.in/gomail.v2"
 )
 
@@ -56,7 +58,7 @@ func GetTDPDatabyBatchID(batchID string) error { //? not called
  * *returns : object ID of new DB enetry or error message if saving fails
  */
 func SaveOTP(otpDataSet models.UserAuth) (string, error) {
-	return ruriRepository.SaveOTP(otpDataSet)
+	return otpRepository.SaveOTP(otpDataSet)
 }
 
 /**
@@ -66,11 +68,11 @@ func SaveOTP(otpDataSet models.UserAuth) (string, error) {
  * *reutrns : respective batchID if the otp is valid
  */
 func ValidateOTP(email string, otp string) (string, error) {
-	return ruriRepository.ValidateOTP(email, otp)
+	return otpRepository.ValidateOTP(email, otp)
 }
 
 func ResendOTP(otpData models.UserAuth) (string, error) {
-	return ruriRepository.ResendOTP(otpData)
+	return otpRepository.ResendOTP(otpData)
 }
 
 /**
@@ -114,6 +116,7 @@ func GetBatchIDDatabyItemID(productID string) (models.ItemData, error) {
 	logs.InfoLogger.Println("API call url: ", url)
 	rst, err := http.Get(url)
 	if err != nil {
+		logs.ErrorLogger.Println("APi call err : ", err.Error())
 		return itemdata, err
 	}
 	body, err := ioutil.ReadAll(rst.Body)
@@ -151,15 +154,21 @@ func FormatBatchIDString(text string) models.ItemData {
  **Param : email : email address of user
  **reutrns : models.UserNFTMapping : Contains the generated SVG
  */
-func GenerateandSaveSVG(batchID string, email string) (models.UserNFTMapping, error) {
+func GenerateandSaveSVG(batchID string, email string) (responseDtos.SVGforNFTResponse, error) {
+	var userSVGMapRst responseDtos.SVGforNFTResponse
 	tdpData, _ := GetTDPDataByBatchID(batchID)
+	logs.InfoLogger.Println("tdp data from api call : ", tdpData)
 	var userNftMapping models.UserNFTMapping
 	svgrst, _ := GenerateSVG(tdpData, batchID)
 	userNftMapping.BatchID = batchID
 	userNftMapping.SVG = svgrst
 	userNftMapping.Email = email
-	ruriRepository.SaveUserMapping(userNftMapping)
-	return userNftMapping, nil
+	rst, err := svgRepository.SaveUserMapping(userNftMapping)
+	if err != nil {
+		return userSVGMapRst, err
+	}
+	userSVGMapRst = rst
+	return userSVGMapRst, nil
 }
 
 /**
@@ -169,8 +178,7 @@ func GenerateandSaveSVG(batchID string, email string) (models.UserNFTMapping, er
  */
 func GetTDPDataByBatchID(batchID string) ([]models.TDP, error) {
 	var tdpData []models.TDP
-	// var userNftMapping models.UserNFTMapping
-	url := "https://qa.api.tracified.com/api/v2/traceabilityProfiles/tdparr/" + batchID
+	url := "https://api.tracified.com/api/v2/traceabilityProfiles/tdparr/" + batchID
 	var bearer = configs.GetBearerToken()
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -181,31 +189,39 @@ func GetTDPDataByBatchID(batchID string) ([]models.TDP, error) {
 	resp, err := client.Do(req)
 	body, err := ioutil.ReadAll(resp.Body)
 	json.Unmarshal([]byte(string(body)), &tdpData)
-	logs.InfoLogger.Println("decoded data : ", tdpData)
-	// for _, val := range tdpData {
-	// 	val.Identifier = batchID
-	// 	rst, err := ruriRepository.SaveTDPbyBatchID(val)
-	// 	if err != nil {
-	// 		logs.ErrorLogger.Println("Failed to save data")
-	// 	}
-	// 	logs.InfoLogger.Println("data saved :", rst)
-	// }
-	// svgrst, _ := GenerateSVG(tdpData, batchID)
-	// userNftMapping.BatchID = batchID
-	// userNftMapping.SVG = svgrst
-	// userNftMapping.Email = email
-	// logs.InfoLogger.Println("\n", svgrst)
-	// ruriRepository.SaveUserMapping(userNftMapping)
 	return tdpData, nil
 }
 
 /**
  * Descrition : Generates and returns the SVG
  **Param : []models.TDP : Contains a list of the TDP data for the provided batchID
+ **Param : batchID string : batchID
  **reutrns : reutrns the generated SVG as a string
  */
 func GenerateSVG(tdpData []models.TDP, batchID string) (string, error) {
 	return svgNFTGenerator.GenerateSVGTemplateforNFT(tdpData, batchID)
+}
+
+/**
+ * Descrition : Update the SVGUserMapping colletion with SVG hash
+ **Param :  models.UserNFTMapping : Contains object ID and svg hash
+ **reutrns : reutrns SVG as a string
+ */
+func UpdateUserMappingbySha256(request models.UserNFTMapping) (responseDtos.SVGforNFTResponse, error) {
+	update := bson.M{
+		"$set": bson.M{"hash": request.Hash},
+	}
+	return svgRepository.UpdateUserMappingbySha256("_id", request.SvgID, update)
+
+}
+
+/**
+ * Descrition : Retruns the SVG based on the hash provided
+ **Param : hash string : batchID of gem
+ **reutrns : reutrns SVG as a string
+ */
+func GetSVGbySha256(hash string) (string, error) {
+	return svgRepository.GetSVGbySha256(hash)
 }
 
 //! NEED FIXING

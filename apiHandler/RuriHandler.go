@@ -1,9 +1,11 @@
 package apiHandler
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/dileepaj/tracified-nft-backend/businessFacade/ruriBusinessFacade"
+	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/commonResponse"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
@@ -12,9 +14,9 @@ import (
 )
 
 /**
- * *Description:function is used to generate and savee a new OTP and send a email to the customer with the otp. The function will also retreive item data such
- * 			   *as itemID,batchID etc by using the provided productID parameter
- *  Returns:Object ID of the new OTP created
+ **Description:function is used to generate and savee a new OTP and send a email to the customer with the otp. The function will also retreive item data such
+ **as itemID,batchID etc by using the provided productID parameter
+ **Returns:Object ID of the new OTP created
  */
 func RuriNewOTP(W http.ResponseWriter, r *http.Request) {
 	W.Header().Set("Content-Type", "application/json; charset-UTF-8")
@@ -48,9 +50,9 @@ func RuriNewOTP(W http.ResponseWriter, r *http.Request) {
 }
 
 /**
- * *Description:This function is used to validate a OTP provided by the user. The email and the otp will be sent where the api.Checks if the otp and the email recived
+ **Description:This function is used to validate a OTP provided by the user. The email and the otp will be sent where the api.Checks if the otp and the email recived
  *				*have a matching record in the DB
- *  *Returns:If There is a matching email and a OTP in the DB the generated SVG will be reutrned as a response. If not error msg is sent as response
+ **Returns:If There is a matching email and a OTP in the DB the generated SVG will be reutrned as a response. If not error msg is sent as response
  */
 func ValidateOTP(W http.ResponseWriter, r *http.Request) {
 	W.Header().Set("Content-Type", "application/json; charset-UTF-8")
@@ -66,19 +68,23 @@ func ValidateOTP(W http.ResponseWriter, r *http.Request) {
 			errors.BadRequest(W, rst)
 			return
 		}
-		var tempBatchID = "HanaMatNsp01" //? Templary harcoded
+		var tempBatchID = "RURI_VSAPPH_013" //? Templary hardcoded
 		rst1, err1 := ruriBusinessFacade.GenerateandSaveSVG(tempBatchID, vars["email"])
 		if err != nil {
 			errors.BadRequest(W, err1.Error())
 			return
 		}
-		commonResponse.SuccessStatus[string](W, rst1.SVG)
+		commonResponse.SuccessStatus[responseDtos.SVGforNFTResponse](W, rst1)
 	} else {
 		errors.BadRequest(W, "email or OTP missing")
 		return
 	}
 }
 
+/**
+ **Description : Is used to generate a new OTP code and send to the provided email address
+ **Returns : If the OTP is succesfully generated the batch ID is returned.
+ */
 func ResentOTP(W http.ResponseWriter, r *http.Request) {
 	var userAuth models.UserAuth
 	W.Header().Set("Content-Type", "application/json; charset-UTF-8")
@@ -105,6 +111,47 @@ func ResentOTP(W http.ResponseWriter, r *http.Request) {
 			commonResponse.SuccessStatus[string](W, rst)
 		}
 
+	}
+}
+
+/**
+ ** Description : Updaes the DB with the image hash provided. Seareches by mongo DB object ID
+ ** Returns : returns the svg if successfully updated.
+ */
+func UpdateSVGUserMappingbySha256(W http.ResponseWriter, r *http.Request) {
+	var UpdateSVG models.UserNFTMapping
+	decorder := json.NewDecoder(r.Body)
+	err := decorder.Decode((&UpdateSVG))
+	if err != nil {
+		logs.ErrorLogger.Println("Error Decoding request body data : ", err.Error())
+		errors.BadRequest(W, err.Error())
+		return
+	} else {
+		rst, err := ruriBusinessFacade.UpdateUserMappingbySha256(UpdateSVG)
+		if err != nil {
+			logs.ErrorLogger.Println("Error While updating hash : ", err.Error())
+			errors.BadRequest(W, err.Error())
+			return
+		}
+		commonResponse.SuccessStatus[responseDtos.SVGforNFTResponse](W, rst)
+
+	}
+}
+
+/**
+ ** Description : Will be used to get the the svg by the hash
+ ** Reutrns : will reutrn the  SVG is a valide hash is provided
+ */
+func GetSVGbySha256(W http.ResponseWriter, r *http.Request) {
+	W.Header().Set("Content-Type", "application/json; charset-UTF-8")
+	vars := mux.Vars(r)
+	if vars["hash"] != "" {
+		rst, err := ruriBusinessFacade.GetSVGbySha256(vars["hash"])
+		if err != nil {
+			errors.BadRequest(W, err.Error())
+		} else {
+			commonResponse.SuccessStatus[string](W, rst)
+		}
 	}
 }
 

@@ -43,6 +43,31 @@ var RuriNFtRoutes = models.Routers{
 		Path:    "/ruri/{productID}/{email}/",
 		Handler: apiHandler.ResentOTP,
 	},
+
+	/**
+	 *?Description : Updates the userSvgMapping collection by adding a SVG hash
+	 **@params : passed in request body(object ID and hash -> string)
+	 **reutrns : returns SVG
+	 */
+	models.Router{
+		Name:    "Update SVG Hash",
+		Method:  "PUT",
+		Path:    "/ruri/",
+		Handler: apiHandler.UpdateSVGUserMappingbySha256,
+	},
+
+	/**
+	 *?Description : when called reutrns the SVG based on the hash providied
+	 **@params : {hash} : SVG hash
+	 **reutrns : returns SVG
+	 */
+	models.Router{
+		Name:    "Get SVG by Hash",
+		Method:  "GET",
+		Path:    "/ruri/{hash}",
+		Handler: apiHandler.GetSVGbySha256,
+	},
+
 	//! TEsting methods remove after full impl
 	models.Router{
 		Name:    "GET TDP Data",

@@ -43,7 +43,6 @@ func GetEmailPort() int {
 func GetBearerToken() string {
 	LoadEnv()
 	bearerToken = os.Getenv("BEARER_TOKEN")
-	logs.InfoLogger.Println("token:", bearerToken)
 	return bearerToken
 }
 
