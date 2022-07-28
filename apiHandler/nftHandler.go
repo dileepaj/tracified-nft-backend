@@ -128,18 +128,13 @@ func MakeSale(w http.ResponseWriter, r *http.Request) {
 
 func GetAllONSaleNFT(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
-	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
-	if ps.Status {
-		vars := mux.Vars(r)
-		if vars["sellingstatus"] != "" || vars["currentownerpk"] != "" {
-			results, err := marketplaceBusinessFacade.GetAllONSaleNFT(vars["sellingstatus"], vars["currentownerpk"])
-			if err != nil {
-				errors.BadRequest(w, err.Error())
-			} else {
-				commonResponse.SuccessStatus[[]models.NFT](w, results)
-			}
+	vars := mux.Vars(r)
+	if vars["sellingstatus"] != "" || vars["currentownerpk"] != "" {
+		results, err := marketplaceBusinessFacade.GetAllONSaleNFT(vars["sellingstatus"], vars["currentownerpk"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
 		} else {
-			errors.BadRequest(w, "")
+			commonResponse.SuccessStatus[[]models.NFT](w, results)
 		}
 	} else {
 		errors.BadRequest(w, "")
