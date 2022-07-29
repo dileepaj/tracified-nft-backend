@@ -38,6 +38,9 @@
             p1.className = "text-start"
             p1.append(document.createTextNode(`ProductName :${dataArray.ProductName}`))
             botNode.appendChild(p)
+            let pBatchID = document.createElement('p')
+            pBatchID.className = "text-start"
+            pBatchID.append(document.createTextNode(`Batch ID :${proofBotUrlbatchSpecific.BatchId}`))
             let p2 = document.createElement('p')
             p2.className = "text-start"
             p2.append(document.createTextNode(`Timestamp :${dataArray.Timestamp}`))
@@ -46,6 +49,7 @@
             p3.append(document.createTextNode(`Availble Proofs :`))
             botSubcard.appendChild(p)
             botSubcard.appendChild(p1)
+            botSubcard.appendChild(pBatchID)
             botSubcard.appendChild(p2)
             botSubcard.appendChild(p3)
             if (!!proofBotUrlbatchSpecific.Urls) {

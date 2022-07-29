@@ -117,6 +117,7 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 							for _, data := range botData.Data {
 								htmlBotcard += `<div class="card botCard">
 														<p class="text-start">ProductName :` + botData.ProductName + `</p>
+														<p class="text-start">Batch ID  :` + data.BatchId + `</p>
 														<p class="text-start">Timestamp :` + botData.Timestamp.Time().String() + `</p>
 														<p class="text-start"> TxnHash :` + data.TxnHash + `</p>
 														<p class="text-start">Availble Proofs :</p>`
