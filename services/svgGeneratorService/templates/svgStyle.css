@@ -119,3 +119,21 @@ ul.point>li {
   height: 200px;
   margin-bottom: 5px;
 }
+
+.timeline-heading{
+	display: flex;
+	flex-direction: column;
+	margin-left: 12%;
+	margin-bottom: 25px;
+}
+
+.timeline-product {
+  font-size: 16px;
+  font-style: italic;
+}
+
+.timeline-batch {
+  font-size: 14px;
+  color: #b1b1b1;
+  font-style: italic;
+}	

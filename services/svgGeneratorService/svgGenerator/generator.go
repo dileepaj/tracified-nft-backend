@@ -150,7 +150,10 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 														<div class="card-body text-center justify-content-center">
 														<p class="common-widget-title">` + timelineData.Title + `</p>
 														<div class="text-start row" style="width: 500px">
-														<ul class="timeline">`
+														<ul class="timeline"><div class="timeline-heading">
+														<label class="timeline-product">` + timelineData.ProductName + `</label>
+														<label class="timeline-batch">` + timelineData.BatchId + `</label>
+													  </div>`
 							for _, data := range timelineData.TimelineData {
 								htmlTimelineBody += ` <li class="timeline-header">
                                 						<img class="timeline-icon" src="` + data.Icon + `" /><span class="timeline-stage">` + data.Title + `</span>
