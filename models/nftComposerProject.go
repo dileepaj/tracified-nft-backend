@@ -168,6 +168,7 @@ type ProjectDetail struct {
 type Timeline struct {
 	Id           primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
 	ProjectId    string             `json:"ProjectId" bson:"projectid" validate:"required"`
+	BatchId      string             `json:"BatchId" bson:"batchid"`
 	WidgetId     string             `json:"WidgetId" bson:"widgetid" validate:"required"`
 	ArtifactId   string             `json:"ArtifactId" bson:"artifactid"`
 	Timestamp    primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`

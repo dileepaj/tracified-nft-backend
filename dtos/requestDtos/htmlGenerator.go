@@ -65,6 +65,7 @@ type UpdateProofBotRequest struct {
 type UpdateTimelineRequest struct {
 	WidgetId     string             `json:"WidgetId" bson:"widgetid" validate:"required"`
 	ArtifactId   string             `json:"ArtifactId" bson:"artifactid"`
+	BatchId      string             `json:"BatchId" bson:"batchid"`
 	Timestamp    primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
 	ProductId    string             `json:"productId" bson:"productid"` // item id
 	ProductName  string             `json:"productName" bson:"productname"`
