@@ -111,7 +111,7 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 						if len(botData.Data) > 0 && element.WidgetId == botData.WidgetId {
 							var htmlBotcard string
 							htmlBotHeader := `<div class="card text-center justify-content-center m-3" style="min-width: 500px; max-height: fit-content;">
-													<div class="card-header">Proof Bot</div>
+													<div class="card-header">PrrofBot</div>
 													<div class="card-body text-center justify-content-center">
 													<p class="common-widget-title">` + botData.Title + `</p>`
 							for _, data := range botData.Data {
