@@ -21,7 +21,7 @@
 
     function displayProofBot(dataArray) {
         let cardId = "tracified" + dataArray.WidgetId
-        createCard(cardId, "ProofBot")
+        createCard(cardId, "Proof Bot")
         let botNode = document.getElementById(cardId)
         let botMainTitle = document.createElement('p')
         botMainTitle.append(document.createTextNode(dataArray.Title))
@@ -121,7 +121,7 @@
 
     function displayBarchart(data) {
         let cardId = "tracified" + data.WidgetId
-        createDomCardForCanvas(cardId, "BarChart")
+        createDomCardForCanvas(cardId, "Bar Chart")
         lables = []
         dataValue = []
         data.ChartData.forEach(element => {
@@ -184,7 +184,7 @@
 
     function displayPiechart(data) {
         let cardId = "tracified" + data.WidgetId
-        createDomCardForCanvas(cardId, "PieChart")
+        createDomCardForCanvas(cardId, "Pie Chart")
         lables = []
         dataValue = []
         data.ChartData.forEach(element => {
@@ -227,7 +227,7 @@
 
     function displayBubblechart(data) {
         let cardId = "tracified" + data.WidgetId
-        createDomCardForCanvas(cardId, "bubbleChart")
+        createDomCardForCanvas(cardId, "Bubble Chart")
         lables = []
         dataValue = []
         data.ChartData.forEach(element => {
