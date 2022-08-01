@@ -307,6 +307,22 @@
         centerCard.style = "width: 500px;"
         let timeline = document.createElement('ul')
         timeline.className = "timeline"
+		
+		let heading = document.createElement('div')
+		heading.className = 'timeline-heading'
+		
+		let productName = document.createElement('label')
+		productName.className = 'timeline-product'
+		productName.appendChild(document.createTextNode(data.ProductName))
+		
+		let batchId = document.createElement('label')
+		batchId.className = 'timeline-batch'
+		batchId.appendChild(document.createTextNode(data.BatchId))
+		
+		heading.appendChild(productName)
+		heading.appendChild(batchId)
+		timeline.appendChild(heading)
+		
         centerCard.appendChild(timeline)
         if (data.TimelineData.length > 0) {
             data.TimelineData.forEach(tdata => {
