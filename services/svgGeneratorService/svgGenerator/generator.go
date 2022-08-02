@@ -111,27 +111,26 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 						if len(botData.Data) > 0 && element.WidgetId == botData.WidgetId {
 							var htmlBotcard string
 							htmlBotHeader := `<div class="card text-center justify-content-center m-3" style="min-width: 500px; max-height: fit-content;">
-													<div class="card-header">PrrofBot</div>
+													<div class="card-header">Proof Bot</div>
 													<div class="card-body text-center justify-content-center">
 													<p class="common-widget-title">` + botData.Title + `</p>`
 							for _, data := range botData.Data {
-								htmlBotcard += `<div class="card botCard">
-														<p class="text-start">ProductName :` + botData.ProductName + `</p>
-														<p class="text-start">Batch ID  :` + data.BatchId + `</p>
-														<p class="text-start">Timestamp :` + botData.Timestamp.Time().String() + `</p>
-														<p class="text-start"> TxnHash :` + data.TxnHash + `</p>
-														<p class="text-start">Availble Proofs :</p>`
+								htmlBotcard += `<div class="botCard">
+														<div class="proof-section"><label class="proofbot-data-field">Product Name : </label><label class="proofbot-value-field">` + botData.ProductName + `</label></div>
+														<div class="proof-section"><label class="proofbot-data-field">Batch ID : </label><label class="proofbot-value-field">` + data.BatchId + `</label></div>
+														<div class="proof-section"><label class="proofbot-data-field">Timestamp : </label><label class="proofbot-value-field">` + botData.Timestamp.Time().String() + `</label></div>
+														<div class="proof-section"><label class="proofbot-data-field">Transaction ID : </label><label class="proofbot-value-field">` + data.TxnHash + `</label></div>
+														<div class="proof-section"><label class="proofbot-data-field">Available Proofs : </label>
+														<div class="proof-url">`
 								for _, proofUrl := range data.Urls {
 									if proofUrl.Urls != "" {
 										var removeAndsymble string = strings.Replace(proofUrl.Urls, "&", "&amp;", -1)
 
-										htmlBotcard += `<p class="text-start">
-														<a href="` + removeAndsymble + `">
-														` + proofUrl.Type + `</a>
-														</p>`
+										htmlBotcard += `<a class="proof-anchor" href="` + removeAndsymble + `">
+														` + GetProofName(proofUrl.Type) + `</a><span class="material-symbols-outlined open-icon">open_in_new</span>`
 									}
 								}
-								htmlBotcard += `</div>`
+								htmlBotcard += `</div></div></div>`
 							}
 							htmlBotFooter := `</div></div>`
 							htmlBody += htmlBotHeader + htmlBotcard + htmlBotFooter
@@ -182,4 +181,18 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 	}
 	template := documentStart + styleStart + style + styleEnd + htmlStart + htmlBody + documentEnd
 	return template, nil
+}
+
+func GetProofName(proofType string) string {
+	if proofType == "poe" {
+		return "Proof of Existence"
+	} else if proofType == "poc" {
+		return "Proof of Continuity"
+	} else if proofType == "pog" {
+		return "Proof of Genesis"
+	} else if proofType == "pococ" {
+		return "Proof of Change of Custody"
+	} else {
+		return proofType;
+	}
 }
