@@ -373,12 +373,20 @@
 		heading.className = 'timeline-heading'
 		
 		let productName = document.createElement('label')
+		let productNameTitle = document.createElement('span')
+		productNameTitle.style = 'font-weight: 500'
+		productNameTitle.appendChild(document.createTextNode('Product Name : '))
 		productName.className = 'timeline-product'
-		productName.appendChild(document.createTextNode(data.ProductName))
+		productName.appendChild(productNameTitle)
+		productName.appendChild(document.createTextNode(`${data.ProductName}`))
 		
 		let batchId = document.createElement('label')
+		let batchIdTitle = document.createElement('span')
+		batchIdTitle.style = 'font-weight: 500'
+		batchIdTitle.appendChild(document.createTextNode('Batch ID : '))
 		batchId.className = 'timeline-batch'
-		batchId.appendChild(document.createTextNode(data.BatchId))
+		batchId.appendChild(batchIdTitle)
+		batchId.appendChild(document.createTextNode(`${data.BatchId}`))
 		
 		heading.appendChild(productName)
 		heading.appendChild(batchId)

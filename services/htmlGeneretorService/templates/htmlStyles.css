@@ -136,13 +136,10 @@ ul.point>li {
 
 .timeline-product {
   font-size: 16px;
-  font-style: italic;
 }
 
 .timeline-batch {
-  font-size: 14px;
-  color: #b1b1b1;
-  font-style: italic;
+  font-size: 16px;
 }	
 
 .proofbot-data-field {
@@ -196,3 +193,4 @@ ul.point>li {
 .open-icon {
 	transform : scale(0.55);
 }
+
