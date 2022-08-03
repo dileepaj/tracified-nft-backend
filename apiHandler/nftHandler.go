@@ -2,7 +2,6 @@ package apiHandler
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/dileepaj/tracified-nft-backend/businessFacade/marketplaceBusinessFacade"
@@ -144,7 +143,6 @@ func GetAllONSaleNFT(w http.ResponseWriter, r *http.Request) {
 func GetOneONSaleNFT(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
 	vars := mux.Vars(r)
-	logs.InfoLogger.Println("Inside GetOneONSaleNFT")
 	if vars["sellingstatus"] != "" || vars["nftidentifer"] != "" || vars["blockchain"] != "" {
 		results, err := marketplaceBusinessFacade.GetOneONSaleNFT(vars["sellingstatus"], vars["nftidentifier"], vars["blockchain"])
 		if err != nil {
@@ -164,27 +162,17 @@ func GetOneONSaleNFT(w http.ResponseWriter, r *http.Request) {
 
 func GetBlockchainSpecificNFT(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
-	log.Println("Inside handler..................")
-	// ps := middleware.HasPermissions(r.Header.Get("Authorization"))
-	// if ps.Status {
-	log.Println("-----------------------clear 1---------")
 	vars := mux.Vars(r)
 	if vars["blockchain"] != "" {
-		log.Println("-----------------------clear 2---------")
 		results, err := marketplaceBusinessFacade.GetBlockchainSpecificNFT(vars["blockchain"])
 		if err != nil {
 			errors.BadRequest(w, err.Error())
 		} else {
-			log.Println("results: ", results)
 			commonResponse.SuccessStatus[[]models.NFT](w, results)
 		}
 	} else {
 		errors.BadRequest(w, "")
 	}
-	// }
-	// w.WriteHeader(http.StatusUnauthorized)
-	// logs.ErrorLogger.Println("Status Unauthorized")
-	// return
 }
 
 func GetNFTbyTags(w http.ResponseWriter, r *http.Request) {
@@ -343,12 +331,27 @@ func GetNFTByBlockchain(w http.ResponseWriter, r *http.Request) {
 func GetNFTByBlockchainAndUserPK(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
 	vars := mux.Vars(r)
-	if vars["creatoruserid"] != "" || vars["blockchain"] != "" {
-		results, err := marketplaceBusinessFacade.GetNFTByBlockchainAndUserPK(vars["creatoruserid"], vars["blockchain"])
+	if vars["currentownerpk"] != "" || vars["blockchain"] != "" {
+		results, err := marketplaceBusinessFacade.GetNFTByBlockchainAndUserPK(vars["currentownerpk"], vars["blockchain"])
 		if err != nil {
 			errors.BadRequest(w, err.Error())
 		} else {
 			commonResponse.SuccessStatus[[]models.NFT](w, results)
+		}
+	} else {
+		errors.BadRequest(w, "")
+	}
+}
+
+func GetTXNByBlockchainAndIdentifier(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	if vars["nftidentifier"] != "" || vars["blockchain"] != "" {
+		results, err := marketplaceBusinessFacade.GetTXNByBlockchainAndIdentifier(vars["nftidentifier"], vars["blockchain"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[[]models.TXN](w, results)
 		}
 	} else {
 		errors.BadRequest(w, "")

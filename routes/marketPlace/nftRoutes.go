@@ -113,8 +113,14 @@ var NftRoutes = models.Routers{
 	models.Router{
 		Name:    "Get NFT By Blockchain And UserPK",
 		Method:  "Get",
-		Path:    "/api/nft/{userpk}/{blockchain}",
+		Path:    "/api/nft/{currentownerpk}/{blockchain}",
 		Handler: apiHandler.GetNFTByBlockchainAndUserPK,
+	},
+	models.Router{
+		Name:    "Get TXN By Blockchain And NftIdentifier",
+		Method:  "Get",
+		Path:    "/api/txn/{nftidentifier}/{blockchain}",
+		Handler: apiHandler.GetTXNByBlockchainAndIdentifier,
 	},
 	models.Router{
 		Name:    "Save Tags",

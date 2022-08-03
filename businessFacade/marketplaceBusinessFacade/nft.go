@@ -2,7 +2,6 @@ package marketplaceBusinessFacade
 
 import (
 	"encoding/json"
-	"log"
 
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
@@ -48,7 +47,11 @@ func GetOneONSaleNFT(id string, identifier string, blockchain string) ([]models.
 }
 
 func GetNFTByBlockchainAndUserPK(id string, blockchain string) ([]models.NFT, error) {
-	return nftRepository.FindNFTById1AndNotId2("creatoruserid", id, "blockchain", blockchain)
+	return nftRepository.FindNFTById1AndNotId2("currentownerpk", id, "blockchain", blockchain)
+}
+
+func GetTXNByBlockchainAndIdentifier(id string, blockchain string) ([]models.TXN, error) {
+	return nftRepository.FindTXNById1AndNotId2("nftidentifier", id, "blockchain", blockchain)
 }
 
 func MakeSaleNFT(nft requestDtos.UpdateNFTSALERequest) (models.NFT, error) {
@@ -59,7 +62,6 @@ func MakeSaleNFT(nft requestDtos.UpdateNFTSALERequest) (models.NFT, error) {
 }
 
 func GetBlockchainSpecificNFT(blockchain string) ([]models.NFT, error) {
-	log.Println("inside facade.............", blockchain)
 	return nftRepository.FindNFTsById("blockchain", blockchain)
 }
 

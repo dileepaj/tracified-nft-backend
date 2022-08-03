@@ -43,13 +43,12 @@ func (r *EndorsementRepository) SaveEndorsement(endorse models.Endorse) (string,
 
 func (r *EndorsementRepository) FindEndorsermentbyPK(publickey string) (models.Endorse, error) {
 	var endorse models.Endorse
-
 	session, err := connections.GetMongoSession()
 	if err != nil {
 		logs.ErrorLogger.Println("Error while getting session " + err.Error())
 	}
 	defer session.EndSession(context.TODO())
-	rst, err := session.Client().Database(connections.DbName).Collection("endorsements").Find(context.TODO(), bson.M{"publickey": publickey})
+	rst, err := session.Client().Database(connections.DbName).Collection("endorsement").Find(context.TODO(), bson.M{"publickey": publickey})
 	if err != nil {
 		return endorse, err
 	}
@@ -96,7 +95,7 @@ func (r *EndorsementRepository) UpdateSetEndorsement(findBy string, id string, u
 		ReturnDocument: &after,
 		Upsert:         &upsert,
 	}
-	rst := session.Client().Database(connections.DbName).Collection("endorsements").FindOneAndUpdate(context.TODO(), bson.M{"publickey": id}, update, &opt)
+	rst := session.Client().Database(connections.DbName).Collection("endorsement").FindOneAndUpdate(context.TODO(), bson.M{"publickey": id}, update, &opt)
 	if rst != nil {
 		err := rst.Decode((&endorseResponse))
 		if err != nil {
