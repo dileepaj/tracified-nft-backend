@@ -13,8 +13,8 @@ func GetFavouritesByBlockchainAndIdentifier(blockchain string, id string) ([]mod
 	return FavouriteRepository.GetFavouritesByBlockchainAndIdentifier("blockchain", blockchain, "nftidentifier", id)
 }
 
-func GetFavouritesByUserPK(userid string) (models.Favourite, error) {
-	return FavouriteRepository.FindFavouritesbyUserPK(userid)
+func GetFavouritesByUserPK(userid string) ([]models.Favourite, error) {
+	return FavouriteRepository.FindFavouritesbyUserPK("user", userid)
 
 }
 
