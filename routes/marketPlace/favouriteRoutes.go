@@ -21,7 +21,7 @@ var FavouritesRoutes = models.Routers{
 	models.Router{
 		Name:    "Get Favourites By UserPK",
 		Method:  "GET",
-		Path:    "/api/favourites/{userpk}",
+		Path:    "/api/favourites/{user}",
 		Handler: apiHandler.GetFavouritesByUserPK,
 	},
 	models.Router{

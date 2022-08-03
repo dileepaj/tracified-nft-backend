@@ -38,26 +38,22 @@ func (r *WatchListRepository) SaveWatchList(watchList models.WatchList) (string,
 	return repository.Save[models.WatchList](watchList, WatchList)
 }
 
-func (r *WatchListRepository) FindWatchListbyUserPK(userpk string) (models.WatchList, error) {
-	var watchList models.WatchList
-
-	session, err := connections.GetMongoSession()
+func (r *WatchListRepository) FindWatchListbyUserPK(idName string, id string) ([]models.WatchList, error) {
+	var watchlists []models.WatchList
+	rst, err := repository.FindById(idName, id, WatchList)
 	if err != nil {
-		logs.ErrorLogger.Println("Error while getting session " + err.Error())
-	}
-	defer session.EndSession(context.TODO())
-	rst, err := session.Client().Database(connections.DbName).Collection("watchlist").Find(context.TODO(), bson.M{"creatoruserid": userpk})
-	if err != nil {
-		return watchList, err
+		return watchlists, err
 	}
 	for rst.Next(context.TODO()) {
-		err = rst.Decode(&watchList)
+		var watchlist models.WatchList
+		err = rst.Decode(&watchlist)
 		if err != nil {
-			logs.ErrorLogger.Println("Error occured while retreving data from collection watchlist in GetWatchlistByID:watchlistRepository.go: ", err.Error())
-			return watchList, err
+			logs.ErrorLogger.Println(err.Error())
+			return watchlists, err
 		}
+		watchlists = append(watchlists, watchlist)
 	}
-	return watchList, err
+	return watchlists, nil
 }
 
 func (r *WatchListRepository) GetAllWatchLists() ([]models.WatchList, error) {

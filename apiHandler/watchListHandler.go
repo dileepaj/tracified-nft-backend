@@ -39,7 +39,7 @@ func CreateWatchList(w http.ResponseWriter, r *http.Request) {
 func GetWatchListByUserPK(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
 	vars := mux.Vars(r)
-	results, err1 := marketplaceBusinessFacade.GetWatchListByUserPK(vars["userid"])
+	results, err1 := marketplaceBusinessFacade.GetWatchListByUserPK(vars["user"])
 	if err1 != nil {
 		ErrorMessage := err1.Error()
 		errors.BadRequest(w, ErrorMessage)

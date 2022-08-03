@@ -2,7 +2,6 @@ package apiHandler
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/dileepaj/tracified-nft-backend/businessFacade/marketplaceBusinessFacade"
@@ -16,7 +15,7 @@ import (
 )
 
 func CreateEndorsement(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json;charset=UTF-8")
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	var endorse models.Endorse
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&endorse)
@@ -55,7 +54,6 @@ func GetEndorsementbyStatus(w http.ResponseWriter, r *http.Request) {
 func GetEndorsedStatus(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
 	vars := mux.Vars(r)
-	fmt.Println(vars["publickey"])
 	results, err1 := marketplaceBusinessFacade.GetEndorsedStatus(vars["publickey"])
 	if err1 != nil {
 		ErrorMessage := err1.Error()

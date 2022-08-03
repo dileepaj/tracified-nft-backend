@@ -38,27 +38,24 @@ func (r *FavouriteRepository) GetFavouritesByBlockchainAndIdentifier(idName stri
 	return favs, id2, nil
 }
 
-func (r *FavouriteRepository) FindFavouritesbyUserPK(userpk string) (models.Favourite, error) {
-	var favourite models.Favourite
-
-	session, err := connections.GetMongoSession()
+func (r *FavouriteRepository) FindFavouritesbyUserPK(idName string, id string) ([]models.Favourite, error) {
+	var favourites []models.Favourite
+	rst, err := repository.FindById(idName, id, Favourite)
 	if err != nil {
-		logs.ErrorLogger.Println("Error while getting session " + err.Error())
-	}
-	defer session.EndSession(context.TODO())
-	rst, err := session.Client().Database(connections.DbName).Collection("favourite").Find(context.TODO(), bson.M{"creatoruserid": userpk})
-	if err != nil {
-		return favourite, err
+		return favourites, err
 	}
 	for rst.Next(context.TODO()) {
+		var favourite models.Favourite
 		err = rst.Decode(&favourite)
 		if err != nil {
-			logs.ErrorLogger.Println("Error occured while retreving data from collection favourite in GetfavouriteByID:favouriteRepository.go: ", err.Error())
-			return favourite, err
+			logs.ErrorLogger.Println(err.Error())
+			return favourites, err
 		}
+		favourites = append(favourites, favourite)
 	}
-	return favourite, err
+	return favourites, nil
 }
+
 func (r *FavouriteRepository) GetAllFavourites() ([]models.Favourite, error) {
 	session, err := connections.GetMongoSession()
 	if err != nil {
