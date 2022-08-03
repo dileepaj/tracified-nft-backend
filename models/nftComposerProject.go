@@ -127,6 +127,7 @@ type NFTComposerProject struct {
 	ProjectId        string             `json:"ProjectId" bson:"projectid" validate:"required"`
 	ProjectName      string             `json:"ProjectName" bson:"projectname" validate:"required"`
 	NFTName          string             `json:"NFTName" bson:"nftname" validate:"required"`
+	Description      string             `json:"Description" bson:"description" validate:"required"`
 	UserId           string             `json:"UserId" bson:"userid" validate:"required"`
 	TenentId         string             `json:"TenentId" bson:"tenentid" validate:"required"`
 	TenentName       string             `json:"TenentName" bson:"tenentname"`
