@@ -121,16 +121,16 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 														<div class="proof-section"><label class="proofbot-data-field">Timestamp : </label><label class="proofbot-value-field">` + botData.Timestamp.Time().String() + `</label></div>
 														<div class="proof-section"><label class="proofbot-data-field">Transaction ID : </label><label class="proofbot-value-field">` + data.TxnHash + `</label></div>
 														<div class="proof-section"><label class="proofbot-data-field">Available Proofs : </label>
-														<div class="proof-url">`
+														`
 								for _, proofUrl := range data.Urls {
 									if proofUrl.Urls != "" {
 										var removeAndsymble string = strings.Replace(proofUrl.Urls, "&", "&amp;", -1)
 
-										htmlBotcard += `<a class="proof-anchor" href="` + removeAndsymble + `">
-														` + GetProofName(proofUrl.Type) + `</a><span class="material-symbols-outlined open-icon">open_in_new</span>`
+										htmlBotcard += `<div class="proof-url"><a class="proof-anchor" href="` + removeAndsymble + `">
+														` + GetProofName(proofUrl.Type) + `</a><span class="material-symbols-outlined open-icon">open_in_new</span></div>`
 									}
 								}
-								htmlBotcard += `</div></div></div>`
+								htmlBotcard += `</div></div>`
 							}
 							htmlBotFooter := `</div></div>`
 							htmlBody += htmlBotHeader + htmlBotcard + htmlBotFooter
