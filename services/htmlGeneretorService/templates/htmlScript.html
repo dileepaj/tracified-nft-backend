@@ -21,7 +21,7 @@
 
     function displayProofBot(dataArray) {
         let cardId = "tracified" + dataArray.WidgetId
-        createCard(cardId, "ProofBot")
+        createCard(cardId, "Proof Bot")
         let botNode = document.getElementById(cardId)
         let botMainTitle = document.createElement('p')
         botMainTitle.append(document.createTextNode(dataArray.Title))
@@ -29,37 +29,102 @@
         botNode.appendChild(botMainTitle)
         dataArray.Data.map((proofBotUrlbatchSpecific, i) => {
             let botSubcard = document.createElement('div')
-            botSubcard.className = "card botCard"
+            botSubcard.className = "botCard"
             botNode.append(botSubcard)
-            let p = document.createElement('p')
-            p.className = "text-start"
-            p.append(document.createTextNode(`TxnHash :${proofBotUrlbatchSpecific.TxnHash}`))
-            let p1 = document.createElement('p')
-            p1.className = "text-start"
-            p1.append(document.createTextNode(`ProductName :${dataArray.ProductName}`))
-            botNode.appendChild(p)
-            let p2 = document.createElement('p')
-            p2.className = "text-start"
-            p2.append(document.createTextNode(`Timestamp :${dataArray.Timestamp}`))
-            let p3 = document.createElement('p')
-            p3.className = "text-start"
-            p3.append(document.createTextNode(`Availble Proofs :`))
-            botSubcard.appendChild(p)
-            botSubcard.appendChild(p1)
-            botSubcard.appendChild(p2)
-            botSubcard.appendChild(p3)
-            if (!!proofBotUrlbatchSpecific.Urls) {
+            
+            let d1 = document.createElement('div')
+			d1.className = 'proof-section'
+			let productName = document.createElement('label')
+			productName.className = "proofbot-data-field"
+			productName.append(document.createTextNode(`Product Name : `))
+			let productVal = document.createElement('label')
+			productVal.className = "proofbot-value-field"
+			productVal.append(document.createTextNode(`${dataArray.ProductName}`))
+            d1.appendChild(productName)
+			d1.appendChild(productVal)
+			
+			let d2 = document.createElement('div')
+			d2.className = 'proof-section'
+			let batchId = document.createElement('label')
+			batchId.className = "proofbot-data-field"
+			batchId.append(document.createTextNode(`Batch ID : `))
+			let batchVal = document.createElement('label')
+			batchVal.className = "proofbot-value-field"
+			batchVal.append(document.createTextNode(`${proofBotUrlbatchSpecific.BatchId}`))
+            d2.appendChild(batchId)
+			d2.appendChild(batchVal)
+			
+			let d3 = document.createElement('div')
+			d3.className = 'proof-section'
+			let timestamp = document.createElement('label')
+			timestamp.className = "proofbot-data-field"
+			timestamp.append(document.createTextNode(`Timestamp : `))
+			let timestampVal = document.createElement('label')
+			timestampVal.className = "proofbot-value-field"
+			timestampVal.append(document.createTextNode(`${dataArray.Timestamp}`))
+            d3.appendChild(timestamp)
+			d3.appendChild(timestampVal)
+			
+			let d4 = document.createElement('div')
+			d4.className = 'proof-section'
+			let txnHash = document.createElement('label')
+			txnHash.className = "proofbot-data-field"
+			txnHash.append(document.createTextNode(`Transaction ID : `))
+			let txnVal = document.createElement('label')
+			txnVal.className = "proofbot-value-field"
+			txnVal.append(document.createTextNode(`${proofBotUrlbatchSpecific.TxnHash}`))
+            d4.appendChild(txnHash)
+			d4.appendChild(txnVal)
+			
+			let d5 = document.createElement('div')
+			d5.className = 'proof-section'
+			let availableProofs = document.createElement('label')
+			availableProofs.className = "proofbot-data-field"
+			availableProofs.append(document.createTextNode(`Available Proofs : `))
+            d5.appendChild(availableProofs)
+			
+			if (!!proofBotUrlbatchSpecific.Urls) {
                 proofBotUrlbatchSpecific.Urls.map((data) => {
-                    let p = document.createElement("p");
-                    p.className = "text-start"
+                    let proofUrl = document.createElement("div");
+                    proofUrl.className = "proof-url"
                     let anchor = document.createElement('a');
+					anchor.className = 'proof-anchor'
                     anchor.href = data.Url;
-                    anchor.innerText = data.Type;
-                    p.appendChild(anchor);
-                    botSubcard.append(p);
+					
+					let type = '';
+					
+					if (data.Type.toLowerCase() === 'poe') {
+					  type = 'Proof of Existence';
+					} else if (data.Type.toLowerCase() === 'poc') {
+					  type = 'Proof of Continuity';
+					} else if (data.Type.toLowerCase() === 'pog') {
+					  type = 'Proof of Genesis';
+					} else if (data.Type.toLowerCase() === 'pococ') {
+					  type = 'Proof of Change of Custody';
+					} else {
+					  type = data.Type;
+					}
+					
+                    anchor.innerText = type;
+					
+					let icon = document.createElement('span')
+					icon.className = "material-symbols-outlined open-icon" 
+					icon.innerText = "open_in_new"
+					
+                    proofUrl.appendChild(anchor);
+					proofUrl.appendChild(icon)
+                    d5.appendChild(proofUrl);
 
                 })
             }
+			
+            botSubcard.appendChild(d1)
+            botSubcard.appendChild(d2)
+            botSubcard.appendChild(d3)
+			botSubcard.appendChild(d4)
+            botSubcard.appendChild(d5)
+			
+            
         })
     }
 
@@ -117,7 +182,7 @@
 
     function displayBarchart(data) {
         let cardId = "tracified" + data.WidgetId
-        createDomCardForCanvas(cardId, "BarChart")
+        createDomCardForCanvas(cardId, "Bar Chart")
         lables = []
         dataValue = []
         data.ChartData.forEach(element => {
@@ -180,7 +245,7 @@
 
     function displayPiechart(data) {
         let cardId = "tracified" + data.WidgetId
-        createDomCardForCanvas(cardId, "PieChart")
+        createDomCardForCanvas(cardId, "Pie Chart")
         lables = []
         dataValue = []
         data.ChartData.forEach(element => {
@@ -223,7 +288,7 @@
 
     function displayBubblechart(data) {
         let cardId = "tracified" + data.WidgetId
-        createDomCardForCanvas(cardId, "bubbleChart")
+        createDomCardForCanvas(cardId, "Bubble Chart")
         lables = []
         dataValue = []
         data.ChartData.forEach(element => {
