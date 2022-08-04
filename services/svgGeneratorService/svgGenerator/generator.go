@@ -32,8 +32,7 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 	var images []models.ImageData = svgData.NftContent.Images
 	var Timelines []models.Timeline = svgData.NftContent.TimeLine
 	var contentOrderData []models.ContentOrderData = svgData.ContentOrderData
-	htmlStart := `<h1 class="text-center">Tracified NFT</h1>
-							 <p class="text-center fw-bold text-muted">` + svgData.NFTName + `</p>
+	htmlStart := `<div class="text-center nft-header default-font">` + svgData.NFTName + `</div>
 							 <div class="d-flex justify-content-center align-content-center flex-wrap" id="container">`
 
 	if len(contentOrderData) > 0 {
@@ -42,8 +41,8 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 				if len(barcharts) > 0 {
 					for _, bar := range barcharts {
 						if len(bar.ChartData) != 0 && element.WidgetId == bar.WidgetId {
-							htmlBody += `<div class="card text-center justify-content-center m-3" style="min-width: 500px; max-height: fit-content;">
-											<div class="card-header">` + bar.ChartTitle + `</div>
+							htmlBody += `<div class="card text-center justify-content-center m-3  default-font round-card" style="min-width: 500px; max-height: fit-content;">
+											<div class="card-header round-card-header">` + bar.ChartTitle + `</div>
 											<div class="text-center justify-content-center card-body">
 											<div class="img-widget-image" style="background-image: url(` + bar.ChartImage + `);"></div>
 											</div>
@@ -55,8 +54,8 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 				if len(piecharts) > 0 {
 					for _, pie := range piecharts {
 						if len(pie.ChartData) != 0 && element.WidgetId == pie.WidgetId {
-							htmlBody += `<div class="card text-center justify-content-center m-3" style="min-width: 500px; max-height: fit-content;">
-											<div class="card-header">` + pie.ChartTitle + `</div>
+							htmlBody += `<div class="card text-center justify-content-center m-3 default-font round-card" style="min-width: 500px; max-height: fit-content;">
+											<div class="card-header round-card-header">` + pie.ChartTitle + `</div>
 											<div class="card-body">
 											<div class="img-widget-image" style="background-image: url(` + pie.ChartImage + `);"></div>
 											</div>
@@ -68,8 +67,8 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 				if len(bubbleCharts) > 0 {
 					for _, bubble := range bubbleCharts {
 						if len(bubble.ChartData) != 0 && element.WidgetId == bubble.WidgetId {
-							htmlBody += `<div class="card text-center justify-content-center m-3" style="min-width: 500px; max-height: fit-content;">
-												<div class="card-header">` + bubble.ChartTitle + `</div>
+							htmlBody += `<div class="card text-center justify-content-center m-3 default-font round-card" style="min-width: 500px; max-height: fit-content;">
+												<div class="card-header round-card-header">` + bubble.ChartTitle + `</div>
 												<div class="card-body">
 												<div class="img-widget-image" style="background-image: url(` + bubble.ChartImage + `);"></div>
 												</div>
@@ -81,8 +80,8 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 				if len(tables) > 0 {
 					for _, table := range tables {
 						if table.TableContent != "" && table.TableContent!="EMPTY" && element.WidgetId == table.WidgetId {
-							htmlBody += `<div class="card text-center justify-content-center m-3" style="min-width: 500px; max-height: fit-content;">
-											<div class="card-header">` + table.TableTitle + `</div>
+							htmlBody += `<div class="card text-center justify-content-center m-3 default-font round-card" style="min-width: 500px; max-height: fit-content;">
+											<div class="card-header round-card-header">` + table.TableTitle + `</div>
 											<div class="card-body text-center justify-content-center"  style="min-width: 500px;" >
 											<table class="table table-bordered">` + table.TableContent + `</table>
 											</div>
@@ -94,8 +93,8 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 				if len(images) > 0 {
 					for _, image := range images {
 						if image.Base64Image != "" && element.WidgetId == image.WidgetId {
-							htmlBody += `<div class="card text-center justify-content-center m-3" style="min-width: 500px; max-height: fit-content;">
-											<div class="card-header">` + image.Title + `</div>
+							htmlBody += `<div class="card text-center justify-content-center m-3 default-font round-card" style="min-width: 500px; max-height: fit-content;">
+											<div class="card-header round-card-header">` + image.Title + `</div>
 											<div class="card-body">
 											<a href="` + image.Base64Image + `"><div class="img-widget-image" style="background-image: url(` + image.Base64Image + `);"></div>
 											</a></div>
@@ -108,8 +107,8 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 					for _, botData := range proofbot {
 						if len(botData.Data) > 0 && element.WidgetId == botData.WidgetId {
 							var htmlBotcard string
-							htmlBotHeader := `<div class="card text-center justify-content-center m-3" style="min-width: 500px; max-height: fit-content;">
-													<div class="card-header">` + botData.Title + `</div>
+							htmlBotHeader := `<div class="card text-center justify-content-center m-3 default-font round-card" style="min-width: 500px; max-height: fit-content;">
+													<div class="card-header round-card-header">` + botData.Title + `</div>
 													<div class="card-body text-center justify-content-center">`
 							for _, data := range botData.Data {
 								htmlBotcard += `<div class="botCard">
@@ -142,8 +141,8 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 							var htmlTimelineBody string
 							var htmlTimelineFooter string
 							// var htmlTimelineImage string
-							htmlTimelineHeader += `<div class="card text-center justify-content-center m-3" style="min-width: 500px; max-height: fit-content;">
-														<div class="card-header">` + timelineData.Title + `</div>
+							htmlTimelineHeader += `<div class="card text-center justify-content-center m-3 default-font round-card" style="min-width: 500px; max-height: fit-content;">
+														<div class="card-header round-card-header">` + timelineData.Title + `</div>
 														<div class="card-body text-center justify-content-center">
 														<div class="text-start row" style="width: 500px">
 														<ul class="timeline"><div class="timeline-heading">

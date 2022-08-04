@@ -135,10 +135,10 @@
 
     function createCard(cardId, name) {
         let card = document.createElement("div")
-        card.className = `card text-center justify-content-center m-3`;
+        card.className = `card text-center justify-content-center m-3 round-card`;
         card.style = "min-width: 20rem; max-height: fit-content; "
         let cardTitle = document.createElement("h5")
-        cardTitle.className = "card-header"
+        cardTitle.className = "card-header round-card-header"
         cardTitle.appendChild(document.createTextNode(name));
         card.appendChild(cardTitle);
         let cardBody = document.createElement("div");
@@ -150,10 +150,10 @@
 
     function createDomCardForCanvas(cardId, name) {
         let card = document.createElement("div")
-        card.className = `card text-center justify-content-center m-3`;
+        card.className = `card text-center justify-content-center m-3 round-card`;
         card.style = "min-width: 20rem; max-height: fit-content; "
         let cardTitle = document.createElement("h5")
-        cardTitle.className = "card-header"
+        cardTitle.className = "card-header round-card-header"
         cardTitle.appendChild(document.createTextNode(name));
         card.appendChild(cardTitle);
         let cardBody = document.createElement("div");
