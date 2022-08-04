@@ -43,7 +43,7 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 					for _, bar := range barcharts {
 						if len(bar.ChartData) != 0 && element.WidgetId == bar.WidgetId {
 							htmlBody += `<div class="card text-center justify-content-center m-3" style="min-width: 500px; max-height: fit-content;">
-											<div class="card-header">Bar Chart</div>
+											<div class="card-header">` + bar.ChartTitle + `</div>
 											<div class="text-center justify-content-center card-body">
 											<div class="img-widget-image" style="background-image: url(` + bar.ChartImage + `);"></div>
 											</div>
@@ -56,7 +56,7 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 					for _, pie := range piecharts {
 						if len(pie.ChartData) != 0 && element.WidgetId == pie.WidgetId {
 							htmlBody += `<div class="card text-center justify-content-center m-3" style="min-width: 500px; max-height: fit-content;">
-											<div class="card-header">Pie Chart</div>
+											<div class="card-header">` + pie.ChartTitle + `</div>
 											<div class="card-body">
 											<div class="img-widget-image" style="background-image: url(` + pie.ChartImage + `);"></div>
 											</div>
@@ -69,7 +69,7 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 					for _, bubble := range bubbleCharts {
 						if len(bubble.ChartData) != 0 && element.WidgetId == bubble.WidgetId {
 							htmlBody += `<div class="card text-center justify-content-center m-3" style="min-width: 500px; max-height: fit-content;">
-												<div class="card-header">Bubble Chart</div>
+												<div class="card-header">` + bubble.ChartTitle + `</div>
 												<div class="card-body">
 												<div class="img-widget-image" style="background-image: url(` + bubble.ChartImage + `);"></div>
 												</div>
@@ -82,9 +82,8 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 					for _, table := range tables {
 						if table.TableContent != "" && table.TableContent!="EMPTY" && element.WidgetId == table.WidgetId {
 							htmlBody += `<div class="card text-center justify-content-center m-3" style="min-width: 500px; max-height: fit-content;">
-											<div class="card-header">Table</div>
+											<div class="card-header">` + table.TableTitle + `</div>
 											<div class="card-body text-center justify-content-center"  style="min-width: 500px;" >
-											<p class="common-widget-title">` + table.TableTitle + `</p>
 											<table class="table table-bordered">` + table.TableContent + `</table>
 											</div>
 										</div>`
@@ -96,9 +95,8 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 					for _, image := range images {
 						if image.Base64Image != "" && element.WidgetId == image.WidgetId {
 							htmlBody += `<div class="card text-center justify-content-center m-3" style="min-width: 500px; max-height: fit-content;">
-											<div class="card-header">Image</div>
+											<div class="card-header">` + image.Title + `</div>
 											<div class="card-body">
-											<p class="common-widget-title">` + image.Title + `</p>
 											<a href="` + image.Base64Image + `"><div class="img-widget-image" style="background-image: url(` + image.Base64Image + `);"></div>
 											</a></div>
 										</div>`
@@ -111,9 +109,8 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 						if len(botData.Data) > 0 && element.WidgetId == botData.WidgetId {
 							var htmlBotcard string
 							htmlBotHeader := `<div class="card text-center justify-content-center m-3" style="min-width: 500px; max-height: fit-content;">
-													<div class="card-header">Proof Bot</div>
-													<div class="card-body text-center justify-content-center">
-													<p class="common-widget-title">` + botData.Title + `</p>`
+													<div class="card-header">` + botData.Title + `</div>
+													<div class="card-body text-center justify-content-center">`
 							for _, data := range botData.Data {
 								htmlBotcard += `<div class="botCard">
 														<div class="proof-section"><label class="proofbot-data-field">Product Name : </label><label class="proofbot-value-field">` + botData.ProductName + `</label></div>
@@ -146,9 +143,8 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 							var htmlTimelineFooter string
 							// var htmlTimelineImage string
 							htmlTimelineHeader += `<div class="card text-center justify-content-center m-3" style="min-width: 500px; max-height: fit-content;">
-														<div class="card-header">Timeline</div>
+														<div class="card-header">` + timelineData.Title + `</div>
 														<div class="card-body text-center justify-content-center">
-														<p class="common-widget-title">` + timelineData.Title + `</p>
 														<div class="text-start row" style="width: 500px">
 														<ul class="timeline"><div class="timeline-heading">
 														<label class="timeline-product"><span class="bold-text">Product Name : </span>` + timelineData.ProductName + `</label>
