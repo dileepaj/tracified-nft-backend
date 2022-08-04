@@ -17,6 +17,15 @@ func StoreNFT(createNFTObject models.NFT) (string, error) {
 
 }
 
+func StoreNFTStory(createNFTObject models.NFTStory) (string, error) {
+	rst, err1 := nftRepository.SaveNFTStory(createNFTObject)
+	if err1 != nil {
+		return "NFT not saved", err1
+	}
+	return rst, nil
+
+}
+
 func GetAllNFTs() ([]models.NFT, error) {
 	return nftRepository.GetAllNFTs()
 }
@@ -40,6 +49,10 @@ func StoreOwner(createOwner models.Ownership) (string, error) {
 
 func GetAllONSaleNFT(id string, userPK string) ([]models.NFT, error) {
 	return nftRepository.FindNFTById1AndNotId2("sellingstatus", id, "currentownerpk", userPK)
+}
+
+func GetNFTStory(id string, blockchain string) ([]models.NFTStory, error) {
+	return nftRepository.FindNFTStory("nftidentifier", id, "blockchain", blockchain)
 }
 
 func GetOneONSaleNFT(id string, identifier string, blockchain string) ([]models.NFT, error) {

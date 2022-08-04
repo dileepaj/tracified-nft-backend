@@ -17,6 +17,7 @@ type NFTRepository struct{}
 var NFT = "nft"
 var Tags = "tags"
 var Owner = "owner"
+var Story = "nftstory"
 
 func (r *NFTRepository) FindNFTById1AndNotId2(idName1 string, id1 string, idName2 string, id2 string) ([]models.NFT, error) {
 	var nfts []models.NFT
@@ -27,6 +28,25 @@ func (r *NFTRepository) FindNFTById1AndNotId2(idName1 string, id1 string, idName
 	}
 	for rst.Next(context.TODO()) {
 		var nft models.NFT
+		err = rst.Decode(&nft)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return nfts, err
+		}
+		nfts = append(nfts, nft)
+	}
+	return nfts, nil
+}
+
+func (r *NFTRepository) FindNFTStory(idName1 string, id1 string, idName2 string, id2 string) ([]models.NFTStory, error) {
+	var nfts []models.NFTStory
+	rst, err := repository.FindById1AndNotId2(idName1, id1, idName2, id2, Story)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+		return nfts, err
+	}
+	for rst.Next(context.TODO()) {
+		var nft models.NFTStory
 		err = rst.Decode(&nft)
 		if err != nil {
 			logs.ErrorLogger.Println(err.Error())
@@ -237,6 +257,10 @@ func (r *NFTRepository) FindByFieldInMultipleValusTennant(fields string, owner [
 
 func (r *NFTRepository) SaveNFT(nft models.NFT) (string, error) {
 	return repository.Save[models.NFT](nft, NFT)
+}
+
+func (r *NFTRepository) SaveNFTStory(nft models.NFTStory) (string, error) {
+	return repository.Save[models.NFTStory](nft, Story)
 }
 
 func (r *NFTRepository) SaveTXN(txn models.TXN) (string, error) {
