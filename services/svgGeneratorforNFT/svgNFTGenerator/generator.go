@@ -26,7 +26,7 @@ func GenerateSVGTemplateforNFT(tdpData []models.TDP, batchID string) (string, er
 							 <div class="d-flex justify-content-center align-content-center flex-wrap" id="container">
 						`
 
-	var iframeImg = `<iframe  src="https://tracified.sirv.com/Spins/RURI%20Gems%20Compressed/120614/120614.spin" style="position: absolute; top: 0; left: 0; width: 100%; height: "300px" frameborder="0" allowfullscreen="true"></iframe>`
+	var iframeImg = `<iframe  src="https://tracified.sirv.com/Spins/RURI%20Gems%20Compressed/120614/120614.spin" style="top: 0; left: 0; width: 100%; height: 300px" frameborder="0" allowfullscreen="true"></iframe>`
 	for _, maindata := range tdpData {
 		numbersArr := make(map[string]string)
 		textArr := make(map[string]string)
