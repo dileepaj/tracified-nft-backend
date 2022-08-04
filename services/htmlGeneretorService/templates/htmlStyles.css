@@ -4,14 +4,14 @@ ul.timeline {
 }
 
 ul.timeline:before {
-    content: ' ';
+    content: " ";
     background: #47da34;
     display: inline-block;
     position: absolute;
-    left: 29px;
-    width: 2px;
+    left: 27px;
+    width: 4px;
     height: 100%;
-    z-index: 400;
+    z-index: 1;
 }
 
 ul.timeline>li {
@@ -25,40 +25,172 @@ ul.point>li {
     padding-left: 5px;
 }
 
-ul.timeline>li:before {
-    content: ' ';
-    background: white;
-    display: inline-block;
-    position: absolute;
-    border-radius: 50%;
-    border: 4px solid #2adb1a;
-    left: 20px;
-    width: 20px;
-    height: 20px;
-    z-index: 400;
-}
-
 .timeline-date {
     color: rgb(56, 56, 56);
 }
 
 .timeline-header {
     color: #000000;
-    font-size: 19px;
-    font-weight: bold;
-}
-
-.point {
-    list-style-type: circle;
+    font-size: 28px;
+    font-weight: 500;
 }
 
 .timeline-key {
-    font-size: 20px;
+    font-size: 14px;
+    color: #a6a7a6;
+    font-weight: 500;
 }
 
 .timeline-value {
-    font-size: 16px;
-    color: #636463;
-    margin-left: 15px;
+    font-size: 14px;
+    color: #242424;
     font-style: italic;
 }
+
+.timeline-value p {
+    margin: 0;
+    padding: 0;
+}
+
+.timeline-key p {
+    margin: 0;
+    padding: 0;
+}
+
+.timeline-header img {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    margin-left: -53px;
+    z-index: 500;
+}
+
+.point {
+    margin-left: 60px;
+}
+
+.timeline-stage {
+    margin-left: 10px;
+	font-size: 16px;
+}
+
+.timeline-icon {
+    position: absolute;
+    z-index: 4000;
+	transform: scale(0.8);
+}
+
+.botCard {
+	display: flex;
+	flex-direction : column;
+    width: 650PX;
+	background: #F5F5F5;
+	margin-bottom: 10px;
+	padding: 10px;
+	row-gap: 10px;
+}
+
+.botCard p {
+    font-weight: 500;
+    font-size: 12px;
+    margin-top: 1px;
+    margin-bottom: 1px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.common-widget-title{
+    font-size:12px; 
+    margin-bottom:5px; 
+    font-weight:700;
+    color: #7c7c7c;
+  }
+
+.img-widget-image {
+    background-origin: content-box;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    min-width: 150px;
+    min-height: 150px;
+    width: 500px;
+    height: 400px;
+}
+
+.img-timeline-image {
+    background-origin: content-box;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    width: 300px;
+    height: 200px;
+    margin-bottom: 5px;
+}
+
+.timeline-heading{
+	display: flex;
+	flex-direction: column;
+	margin-left: 12%;
+	margin-bottom: 25px;
+}
+
+.timeline-product {
+  font-size: 16px;
+}
+
+.timeline-batch {
+  font-size: 16px;
+}	
+
+.proofbot-data-field {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  color: #021D27;
+}
+
+.proofbot-value-field {
+  font-style: normal;
+  font-weight: bold;
+  font-size: 12px;
+  color: #021D27;
+}
+
+.proof-section {
+	display : flex;
+	flex-direction : row;
+	justify-content : flex-start;
+	column-gap: 5px;
+}
+
+.proof-url {
+  background: #02aa46;
+  border-radius: 7.17703px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 12px;
+  color: #ffffff;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  height: 21.1px;
+  padding: 2px 10px 2px 10px;
+}
+
+.proof-anchor{
+	text-decoration: none;
+	color : #fff;
+}
+
+.proof-anchor:hover{
+	text-decoration: none;
+	color : #fff;
+}
+
+.open-icon {
+	transform : scale(0.55);
+}
+

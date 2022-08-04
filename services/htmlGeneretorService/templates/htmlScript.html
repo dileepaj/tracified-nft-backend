@@ -1,82 +1,148 @@
 <script type="text/javascript">
 
     function displayTable(data) {
-
         if (!!data.TableContent) {
             let cardId = "tracified" + data.WidgetId
             createCard(cardId, "Table")
             //craete boostarp cards Node and it to barchart 
             let tableDiv = document.createElement("div")
             tableDiv.style = "width:500px; heigth:fit-content;"
+            let h5 = document.createElement('p')
+            h5.append(document.createTextNode(data.TableTitle))
+            h5.className = "common-widget-title"
+            tableDiv.appendChild(h5)
             let tableNode = document.createElement("table");
             tableNode.className = `table table-bordered`;
             tableNode.innerHTML = data.TableContent
             tableDiv.append(tableNode)
             document.getElementById(cardId).appendChild(tableDiv);
         }
-
     }
 
     function displayProofBot(dataArray) {
         let cardId = "tracified" + dataArray.WidgetId
-        createCard(cardId, "Table")
+        createCard(cardId, "Proof Bot")
         let botNode = document.getElementById(cardId)
-        dataArray.Batch.map((proofBotUrlbatchSpecific, i) => {
-            let batchTitle = document.createElement("h5");
-            batchTitle.className = "text-start"
-            batchTitle.append(document.createTextNode(proofBotUrlbatchSpecific.BatchTitle))
-            botNode.append(batchTitle)
-            proofBotUrlbatchSpecific.BotUrls.map((data) => {
-                const ul = document.createElement("ul");
-                ul.id = `list-group`;
-                ul.className = `list-group mb-4 text-start`;
-                let textNode = document.createTextNode(data.Type)
-                ul.append()
-                data.Urls.map((proof) => {
-                    const li = document.createElement("li");
-                    li.className = `list-group-item`
-                    const textnode = document.createTextNode(proof);
-                    li.appendChild(textnode);
-                    ul.append(li);
+        let botMainTitle = document.createElement('p')
+        botMainTitle.append(document.createTextNode(dataArray.Title))
+        botMainTitle.className = "common-widget-title"
+        botNode.appendChild(botMainTitle)
+        dataArray.Data.map((proofBotUrlbatchSpecific, i) => {
+            let botSubcard = document.createElement('div')
+            botSubcard.className = "botCard"
+            botNode.append(botSubcard)
+            
+            let d1 = document.createElement('div')
+			d1.className = 'proof-section'
+			let productName = document.createElement('label')
+			productName.className = "proofbot-data-field"
+			productName.append(document.createTextNode(`Product Name : `))
+			let productVal = document.createElement('label')
+			productVal.className = "proofbot-value-field"
+			productVal.append(document.createTextNode(`${dataArray.ProductName}`))
+            d1.appendChild(productName)
+			d1.appendChild(productVal)
+			
+			let d2 = document.createElement('div')
+			d2.className = 'proof-section'
+			let batchId = document.createElement('label')
+			batchId.className = "proofbot-data-field"
+			batchId.append(document.createTextNode(`Batch ID : `))
+			let batchVal = document.createElement('label')
+			batchVal.className = "proofbot-value-field"
+			batchVal.append(document.createTextNode(`${proofBotUrlbatchSpecific.BatchId}`))
+            d2.appendChild(batchId)
+			d2.appendChild(batchVal)
+			
+			let d3 = document.createElement('div')
+			d3.className = 'proof-section'
+			let timestamp = document.createElement('label')
+			timestamp.className = "proofbot-data-field"
+			timestamp.append(document.createTextNode(`Timestamp : `))
+			let timestampVal = document.createElement('label')
+			timestampVal.className = "proofbot-value-field"
+			timestampVal.append(document.createTextNode(`${dataArray.Timestamp}`))
+            d3.appendChild(timestamp)
+			d3.appendChild(timestampVal)
+			
+			let d4 = document.createElement('div')
+			d4.className = 'proof-section'
+			let txnHash = document.createElement('label')
+			txnHash.className = "proofbot-data-field"
+			txnHash.append(document.createTextNode(`Transaction ID : `))
+			let txnVal = document.createElement('label')
+			txnVal.className = "proofbot-value-field"
+			txnVal.append(document.createTextNode(`${proofBotUrlbatchSpecific.TxnHash}`))
+            d4.appendChild(txnHash)
+			d4.appendChild(txnVal)
+			
+			let d5 = document.createElement('div')
+			d5.className = 'proof-section'
+			let availableProofs = document.createElement('label')
+			availableProofs.className = "proofbot-data-field"
+			availableProofs.append(document.createTextNode(`Available Proofs : `))
+            d5.appendChild(availableProofs)
+			
+			if (!!proofBotUrlbatchSpecific.Urls) {
+                proofBotUrlbatchSpecific.Urls.map((data) => {
+                    let proofUrl = document.createElement("div");
+                    proofUrl.className = "proof-url"
+                    let anchor = document.createElement('a');
+					anchor.className = 'proof-anchor'
+                    anchor.href = data.Url;
+					
+					let type = '';
+					
+					if (data.Type.toLowerCase() === 'poe') {
+					  type = 'Proof of Existence';
+					} else if (data.Type.toLowerCase() === 'poc') {
+					  type = 'Proof of Continuity';
+					} else if (data.Type.toLowerCase() === 'pog') {
+					  type = 'Proof of Genesis';
+					} else if (data.Type.toLowerCase() === 'pococ') {
+					  type = 'Proof of Change of Custody';
+					} else {
+					  type = data.Type;
+					}
+					
+                    anchor.innerText = type;
+					
+					let icon = document.createElement('span')
+					icon.className = "material-symbols-outlined open-icon" 
+					icon.innerText = "open_in_new"
+					
+                    proofUrl.appendChild(anchor);
+					proofUrl.appendChild(icon)
+                    d5.appendChild(proofUrl);
+
                 })
-                let prooftype = document.createElement("div")
-                prooftype.className = `card-title  text-start`;
-                prooftype.append(textNode)
-                botNode.append(prooftype)
-                botNode.append(ul)
-            })
-
+            }
+			
+            botSubcard.appendChild(d1)
+            botSubcard.appendChild(d2)
+            botSubcard.appendChild(d3)
+			botSubcard.appendChild(d4)
+            botSubcard.appendChild(d5)
+			
+            
         })
-    }
-
-    function displayStat(data) {
-        let cardId = "tracified" + data.WidgetId
-        createCard(cardId, "Stat")
-        let statNode = document.getElementById(cardId);
-
-        data.StatData.map((detail, i) => {
-            const newDiv = document.createElement("div");
-            newDiv.id = `stat`;
-            newDiv.className = `mb-2`;
-            newDiv.style = `height:70px; width:500px`
-            newDiv.innerHTML = `<h5 style="background-color:${detail.Color}">${detail.Key}</h5>
-                        <h6 >${detail.Value}</h6> `
-            statNode.append(newDiv)
-        })
-
     }
 
     function displayImages(data) {
         let cardId = "tracified" + data.WidgetId
-
         createCard(cardId, "Image")
-        let image = document.createElement("img")
-        image.alt = ""
-        image.src = data.Base64Image
-        image.width = '500'
-        image.height = '400'
+        let a=document.createElement("a")
+        a.href=data.Base64Image
+        let image = document.createElement("div")
+        image.className = "img-widget-image"
+        image.style = `background-image: url("`+ data.Base64Image +`");`
+        let imgTitle = document.createElement('p')
+        imgTitle.append(document.createTextNode(data.Title))
+        imgTitle.className = "common-widget-title"
         let imageNode = document.getElementById(cardId);
-        imageNode.append(image)
+        imageNode.appendChild(imgTitle)
+        a.appendChild(image)
+        imageNode.append(a)
     }
 
     function createCard(cardId, name) {
@@ -116,7 +182,7 @@
 
     function displayBarchart(data) {
         let cardId = "tracified" + data.WidgetId
-        createDomCardForCanvas(cardId, "BarChart")
+        createDomCardForCanvas(cardId, "Bar Chart")
         lables = []
         dataValue = []
         data.ChartData.forEach(element => {
@@ -138,10 +204,40 @@
             type: 'bar', data: barChartStruct
             ,
             options: {
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                    title: {
+                        display: true,
+                        text: data.ChartTitle,
+                        color: data.FontColor,
+                        font: { size: data.FontSize},
+                            },
+                        },
                 scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: data.XAxis,
+                            font: {
+                                size: data.FontSize,
+                            },
+                            color: data.FontColor
+                        },
+                    },
                     y: {
-                        beginAtZero: true
-                    }
+                        display: true,
+                        title: {
+                            display: true,
+                            text: data.YAxis,
+                            font: {
+                                size: data.FontSize,
+                            },
+                            color: data.FontColor,
+                        },
+                    },
                 }
             }
         });
@@ -149,7 +245,7 @@
 
     function displayPiechart(data) {
         let cardId = "tracified" + data.WidgetId
-        createDomCardForCanvas(cardId, "PieChart")
+        createDomCardForCanvas(cardId, "Pie Chart")
         lables = []
         dataValue = []
         data.ChartData.forEach(element => {
@@ -175,6 +271,16 @@
                     y: {
                         beginAtZero: true
                     }
+                }, 
+                plugins: {
+                    title: {
+                        display: true,
+                        text: data.ChartTitle,
+                        font: {
+                                size: data.FontSize,
+                            },
+                            color: data.FontColor
+                    }
                 }
             }
         });
@@ -182,10 +288,9 @@
 
     function displayBubblechart(data) {
         let cardId = "tracified" + data.WidgetId
-        createDomCardForCanvas(cardId, "bubbleChart")
+        createDomCardForCanvas(cardId, "Bubble Chart")
         lables = []
         dataValue = []
-        console.log('dataValue', dataValue)
         data.ChartData.forEach(element => {
 
             if (element.Value < 50) {
@@ -234,6 +339,17 @@
             type: 'bubble', data: bubbleChartStruct
             ,
             options: {
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                    title: {
+                        display: true,
+                        text: data.ChartTitle,
+                        color: data.FontColor,
+                        font: { size: data.FontSize},
+                            },
+                        },
                 scales: {
                     y: {
                         beginAtZero: true
@@ -247,41 +363,85 @@
         let cardId = "tracified" + data.WidgetId
         createCard(cardId, "Timeline")
         let timelineNode = document.getElementById(cardId);
+        let centerCard = document.createElement('div')
+        centerCard.className = "text-start row"
+        centerCard.style = "width: 500px;"
+        let timeline = document.createElement('ul')
+        timeline.className = "timeline"
+		
+		let heading = document.createElement('div')
+		heading.className = 'timeline-heading'
+		
+		let productName = document.createElement('label')
+		let productNameTitle = document.createElement('span')
+		productNameTitle.style = 'font-weight: 500'
+		productNameTitle.appendChild(document.createTextNode('Product Name : '))
+		productName.className = 'timeline-product'
+		productName.appendChild(productNameTitle)
+		productName.appendChild(document.createTextNode(`${data.ProductName}`))
+		
+		let batchId = document.createElement('label')
+		let batchIdTitle = document.createElement('span')
+		batchIdTitle.style = 'font-weight: 500'
+		batchIdTitle.appendChild(document.createTextNode('Batch ID : '))
+		batchId.className = 'timeline-batch'
+		batchId.appendChild(batchIdTitle)
+		batchId.appendChild(document.createTextNode(`${data.BatchId}`))
+		
+		heading.appendChild(productName)
+		heading.appendChild(batchId)
+		timeline.appendChild(heading)
+		
+        centerCard.appendChild(timeline)
+        if (data.TimelineData.length > 0) {
+            data.TimelineData.forEach(tdata => {
+                let liHeader = document.createElement('li')
+                liHeader.className = "timeline-header"
+                let headerIcon = document.createElement('img')
+                headerIcon.className = "timeline-icon"
+                headerIcon.src = tdata.Icon
+                headerSpan = document.createElement('span')
+                headerSpan.className = "timeline-stage"
+                headerSpan.appendChild(document.createTextNode(tdata.Title))
+                liHeader.appendChild(headerIcon)
+                liHeader.appendChild(headerSpan)
+                point = document.createElement('div')
+                point.className = "card p-3 point"
+                if (tdata.Children.length > 0) {
+                    tdata.Children.forEach(data => {
+                        let keyTimeline = document.createElement('span')
+                        keyTimeline.className = "timeline-key"
+                        keyTimeline.appendChild(document.createTextNode(data.Key))
+                        point.appendChild(keyTimeline)
 
-        let timeline = document.createElement('div')
-        timeline.className = "text-start row"
-        timeline.style = "width: 500px;"
-        let timelineHeader = document.createElement('h3')
-        timelineHeader.appendChild(document.createTextNode("Compnay"));
-        let ulHeader = document.createElement('ul')
-        timeline.append(timelineHeader)
-        data.TimelineData.forEach(tdata => {
-            ulHeader.className = "timeline"
-            let liHeader = document.createElement('li')
-            let llHeader = document.createElement('p')
-            liHeader.className = "timeline-header"
-            liHeader.appendChild(document.createTextNode(tdata.Title))
-            let ul = document.createElement('ul')
-            ul.className = "point"
-            tdata.Children.forEach(data => {
-                let li = document.createElement('li')
-                let p = document.createElement('p')
-                let spanKey = document.createElement('span')
-                spanKey.className = "timeline-key"
-                spanKey.appendChild(document.createTextNode(data.Key))
-                p.appendChild(spanKey)
-                let spanValue = document.createElement('span')
-                spanValue.className = "timeline-value"
-                spanValue.appendChild(document.createTextNode(data.Value))
-                p.appendChild(spanValue)
-                li.appendChild(p)
-                ul.appendChild(li)
+                        let p = document.createElement('p')
+                        let ValueTimeline = document.createElement('span')
+                        ValueTimeline.className = "timeline-value"
+                        ValueTimeline.appendChild(document.createTextNode(data.Key))
+                        p.appendChild(ValueTimeline)
+                        point.appendChild(p)
+                    })
+                    if (tdata.Images.length > 0) {
+                        tdata.Images.forEach(image => {
+                            let timelineImage = document.createElement('div')
+                            timelineImage.style = `background-image: url("`+ image +`");`
+                            timelineImage.className = "img-timeline-image"
+                            point.appendChild(timelineImage)
+                        })
+                    }
+                    timeline.append(liHeader)
+                    timeline.appendChild(point)
+                }
+                // timeline.append(liHeader)
+
             })
-            ulHeader.append(liHeader)
-            ulHeader.append(ul)
-            timeline.append(ulHeader)
-        })
-        timelineNode.append(timeline)
+        }
+        let timelineTitle = document.createElement('p')
+        timelineTitle.append(document.createTextNode(data.Title))
+        timelineTitle.className = "common-widget-title"
+        centerCard.appendChild(timeline)
+        timelineNode.appendChild(timelineTitle)
+        timelineNode.appendChild(centerCard)
+        timelineNode.append(centerCard)
     }
-
 </script>

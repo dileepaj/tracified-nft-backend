@@ -10,9 +10,11 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"github.com/dileepaj/tracified-nft-backend/utilities/middleware"
 	"github.com/dileepaj/tracified-nft-backend/utilities/validations"
+	"github.com/gorilla/context"
 )
 
 func QueryExecuter(w http.ResponseWriter, r *http.Request) {
+	defer context.Clear(r)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if ps.Status {
@@ -27,7 +29,7 @@ func QueryExecuter(w http.ResponseWriter, r *http.Request) {
 			errors.BadRequest(w, err.Error())
 			return
 		} else {
-			nftComposerBusinessFacade.QueryExecuter(w, requestWidget)
+			nftComposerBusinessFacade.QueryExecuter(w, requestWidget,r.Header.Get("Authorization"))
 			return
 		}
 	}

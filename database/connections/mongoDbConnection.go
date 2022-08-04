@@ -4,22 +4,28 @@ import (
 	"context"
 	"log"
 	"os"
-	"time"
+
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-/**
-build the Database connection with mongodb
-**/
-func Connect() *mongo.Database {
+var mgoSession mongo.Session
+var DbName="nftBackendQa"
+
+func GetMongoSession() (mongo.Session, error) {
+
 	connectionString := os.Getenv("BE_MONGOLAB_URI")
-	clientOptions := options.Client().ApplyURI(connectionString)
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-	client, err := mongo.Connect(ctx, clientOptions)
-	if err != nil {
-		log.Fatal("Error while connecting to the DB : " + err.Error())
+	if mgoSession == nil {
+		var err error
+		mongoClient, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(connectionString))
+		if err != nil {
+			return nil, err
+		}
+		mgoSession, err = mongoClient.StartSession()
+		if err != nil {
+			log.Println("Error while connecting to the DB : " + err.Error())
+			return nil, err
+		}
 	}
-	return client.Database("nftBackendQa")
+	return mgoSession, nil
 }

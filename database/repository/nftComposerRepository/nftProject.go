@@ -193,6 +193,12 @@ func (r *NFTComposerProjectRepository) FindNFTProjectOneById(idName string, id s
 }
 
 func (r *NFTComposerProjectRepository) UpdateProject(update requestDtos.UpdateProjectRequest) (models.NFTComposerProject, error) {
+	session, err := connections.GetMongoSession()
+	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session " + err.Error())
+	}
+	defer session.EndSession(context.TODO())
+
 	var project models.NFTComposerProject
 	pByte, err := bson.Marshal(update)
 	if err != nil {
@@ -203,7 +209,7 @@ func (r *NFTComposerProjectRepository) UpdateProject(update requestDtos.UpdatePr
 	if err != nil {
 		return project, err
 	}
-	rst := connections.Connect().Collection(NFTComposerProject).FindOneAndUpdate(context.TODO(), bson.M{"projectid": update.ProjectId}, bson.D{{Key: "$set", Value: updateNew}})
+	rst := session.Client().Database(connections.DbName).Collection(NFTComposerProject).FindOneAndUpdate(context.TODO(), bson.M{"projectid": update.ProjectId}, bson.D{{Key: "$set", Value: updateNew}})
 	if rst != nil {
 		err := rst.Decode(&project)
 		if err != nil {
@@ -217,6 +223,12 @@ func (r *NFTComposerProjectRepository) UpdateProject(update requestDtos.UpdatePr
 }
 
 func (r *NFTComposerProjectRepository) UpdateChart(chart requestDtos.UpdateChartRequest) (models.Chart, error) {
+	session, err := connections.GetMongoSession()
+	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session " + err.Error())
+	}
+	defer session.EndSession(context.TODO())
+
 	var chartdata models.Chart
 	pByte, err := bson.Marshal(chart)
 	if err != nil {
@@ -227,13 +239,13 @@ func (r *NFTComposerProjectRepository) UpdateChart(chart requestDtos.UpdateChart
 	if err != nil {
 		return chartdata, err
 	}
-		upsert := true
+	upsert := false
 	after := options.After
 	opt := options.FindOneAndUpdateOptions{
 		ReturnDocument: &after,
 		Upsert:         &upsert,
 	}
-	rst := connections.Connect().Collection("charts").FindOneAndUpdate(context.TODO(), bson.M{"widgetid": chart.WidgetId}, bson.D{{Key: "$set", Value: updateNew}},&opt)
+	rst := session.Client().Database(connections.DbName).Collection("charts").FindOneAndUpdate(context.TODO(), bson.M{"widgetid": chart.WidgetId}, bson.D{{Key: "$set", Value: updateNew}}, &opt)
 	if rst != nil {
 		err := rst.Decode(&chartdata)
 		if err != nil {
@@ -247,6 +259,12 @@ func (r *NFTComposerProjectRepository) UpdateChart(chart requestDtos.UpdateChart
 }
 
 func (r *NFTComposerProjectRepository) UpdateTable(table requestDtos.UpdateTableRequest) (models.Table, error) {
+	session, err := connections.GetMongoSession()
+	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session " + err.Error())
+	}
+	defer session.EndSession(context.TODO())
+
 	var tabledata models.Table
 	pByte, err := bson.Marshal(table)
 	if err != nil {
@@ -257,13 +275,13 @@ func (r *NFTComposerProjectRepository) UpdateTable(table requestDtos.UpdateTable
 	if err != nil {
 		return tabledata, err
 	}
-	upsert := true
+	upsert := false
 	after := options.After
 	opt := options.FindOneAndUpdateOptions{
 		ReturnDocument: &after,
 		Upsert:         &upsert,
 	}
-	rst := connections.Connect().Collection("tables").FindOneAndUpdate(context.TODO(), bson.M{"widgetid": table.WidgetId}, bson.D{{Key: "$set", Value: updateNew}},&opt)
+	rst := session.Client().Database(connections.DbName).Collection("tables").FindOneAndUpdate(context.TODO(), bson.M{"widgetid": table.WidgetId}, bson.D{{Key: "$set", Value: updateNew}}, &opt)
 	if rst != nil {
 		err := rst.Decode(&tabledata)
 		if err != nil {
@@ -277,6 +295,12 @@ func (r *NFTComposerProjectRepository) UpdateTable(table requestDtos.UpdateTable
 }
 
 func (r *NFTComposerProjectRepository) UpdateImage(image requestDtos.UpdateImageRequest) (models.ImageData, error) {
+	session, err := connections.GetMongoSession()
+	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session " + err.Error())
+	}
+	defer session.EndSession(context.TODO())
+
 	var imageData models.ImageData
 	pByte, err := bson.Marshal(image)
 	if err != nil {
@@ -287,13 +311,13 @@ func (r *NFTComposerProjectRepository) UpdateImage(image requestDtos.UpdateImage
 	if err != nil {
 		return imageData, err
 	}
-		upsert := true
+	upsert := false
 	after := options.After
 	opt := options.FindOneAndUpdateOptions{
 		ReturnDocument: &after,
 		Upsert:         &upsert,
 	}
-	rst := connections.Connect().Collection("tables").FindOneAndUpdate(context.TODO(), bson.M{"widgetid": image.WidgetId}, bson.D{{Key: "$set", Value: updateNew}},&opt)
+	rst := session.Client().Database(connections.DbName).Collection("images").FindOneAndUpdate(context.TODO(), bson.M{"widgetid": image.WidgetId}, bson.D{{Key: "$set", Value: updateNew}}, &opt)
 	if rst != nil {
 		err := rst.Decode(&imageData)
 		if err != nil {
@@ -307,6 +331,12 @@ func (r *NFTComposerProjectRepository) UpdateImage(image requestDtos.UpdateImage
 }
 
 func (r *NFTComposerProjectRepository) UpdateTimeline(timeline requestDtos.UpdateTimelineRequest) (models.Timeline, error) {
+	session, err := connections.GetMongoSession()
+	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session " + err.Error())
+	}
+	defer session.EndSession(context.TODO())
+
 	var timelineData models.Timeline
 	pByte, err := bson.Marshal(timeline)
 	if err != nil {
@@ -317,13 +347,13 @@ func (r *NFTComposerProjectRepository) UpdateTimeline(timeline requestDtos.Updat
 	if err != nil {
 		return timelineData, err
 	}
-		upsert := true
+	upsert := false
 	after := options.After
 	opt := options.FindOneAndUpdateOptions{
 		ReturnDocument: &after,
 		Upsert:         &upsert,
 	}
-	rst := connections.Connect().Collection("timeline").FindOneAndUpdate(context.TODO(), bson.M{"widgetid": timeline.WidgetId}, bson.D{{Key: "$set", Value: updateNew}},&opt)
+	rst := session.Client().Database(connections.DbName).Collection("timeline").FindOneAndUpdate(context.TODO(), bson.M{"widgetid": timeline.WidgetId}, bson.D{{Key: "$set", Value: updateNew}}, &opt)
 	if rst != nil {
 		err := rst.Decode(&timelineData)
 		if err != nil {
@@ -337,6 +367,12 @@ func (r *NFTComposerProjectRepository) UpdateTimeline(timeline requestDtos.Updat
 }
 
 func (r *NFTComposerProjectRepository) UpdateProofBot(proofbot requestDtos.UpdateProofBotRequest) (models.ProofBotData, error) {
+	session, err := connections.GetMongoSession()
+	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session " + err.Error())
+	}
+	defer session.EndSession(context.TODO())
+
 	var bot models.ProofBotData
 	pByte, err := bson.Marshal(proofbot)
 	if err != nil {
@@ -347,13 +383,13 @@ func (r *NFTComposerProjectRepository) UpdateProofBot(proofbot requestDtos.Updat
 	if err != nil {
 		return bot, err
 	}
-		upsert := true
+	upsert := false
 	after := options.After
 	opt := options.FindOneAndUpdateOptions{
 		ReturnDocument: &after,
 		Upsert:         &upsert,
 	}
-	rst := connections.Connect().Collection("proofbot").FindOneAndUpdate(context.TODO(), bson.M{"widgetid": proofbot.WidgetId}, bson.D{{Key: "$set", Value: updateNew}},&opt)
+	rst := session.Client().Database(connections.DbName).Collection("proofbot").FindOneAndUpdate(context.TODO(), bson.M{"widgetid": proofbot.WidgetId}, bson.D{{Key: "$set", Value: updateNew}}, &opt)
 	if rst != nil {
 		err := rst.Decode(&bot)
 		if err != nil {
@@ -367,6 +403,12 @@ func (r *NFTComposerProjectRepository) UpdateProofBot(proofbot requestDtos.Updat
 }
 
 func (r *NFTComposerProjectRepository) UpdateStats(stat requestDtos.UpdateStatsRequest) (models.StataArray, error) {
+	session, err := connections.GetMongoSession()
+	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session " + err.Error())
+	}
+	defer session.EndSession(context.TODO())
+
 	var stastData models.StataArray
 	pByte, err := bson.Marshal(stat)
 	if err != nil {
@@ -377,13 +419,13 @@ func (r *NFTComposerProjectRepository) UpdateStats(stat requestDtos.UpdateStatsR
 	if err != nil {
 		return stastData, err
 	}
-		upsert := true
+	upsert := false
 	after := options.After
 	opt := options.FindOneAndUpdateOptions{
 		ReturnDocument: &after,
 		Upsert:         &upsert,
 	}
-	rst := connections.Connect().Collection("stats").FindOneAndUpdate(context.TODO(), bson.M{"widgetid": stat.WidgetId}, bson.D{{Key: "$set", Value: updateNew}},&opt)
+	rst := session.Client().Database(connections.DbName).Collection("stats").FindOneAndUpdate(context.TODO(), bson.M{"widgetid": stat.WidgetId}, bson.D{{Key: "$set", Value: updateNew}}, &opt)
 	if rst != nil {
 		err := rst.Decode(&stastData)
 		if err != nil {

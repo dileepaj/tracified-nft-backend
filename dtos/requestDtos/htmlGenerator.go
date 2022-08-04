@@ -14,6 +14,7 @@ type UpdateProjectRequest struct {
 	ProjectId        string                    `json:"ProjectId" bson:"projectid" validate:"required"`
 	ProjectName      string                    `json:"ProjectName" bson:"projectname" validate:"required"`
 	NFTName          string                    `json:"NFTName" bson:"nftname" validate:"required"`
+	Description      string                    `json:"Description" bson:"description" validate:"required"`
 	TenentId         string                    `json:"TenentId" bson:"tenentid" validate:"required"`
 	TenentName       string                    `json:"TenentName" bson:"tenentname"`
 	Timestamp        primitive.DateTime        `json:"Timestamp" bson:"timestamp" validate:"required"`
@@ -23,13 +24,15 @@ type UpdateProjectRequest struct {
 type UpdateChartRequest struct {
 	WidgetId   string             `json:"WidgetId" bson:"widgetid" validate:"required"`
 	ChartTitle string             `json:"charttitle" bson:"charttitle"`
-	ChartData  []models.ChartData `json:"ChartData" bson:"chartdata"`
+	Color      []string           `json:"Color" bson:"color"`
+	ChartData  []models.ChartData `json:"ChartData" bson:"chartdata" validate:"required"`
 	XAxis      string             `json:"Xaxis" bson:"xaxis"`
 	YAxis      string             `json:"Yaxis" bson:"yaxis"`
 	FontColor  string             `json:"Fontcolor" bson:"fontcolor"`
-	FontSize   float32             `json:"Fontsize" bson:"fontsize"`
-	Width      float32             `json:"Width" bson:"width"`
-	Height     float32             `json:"Height" bson:"height"`
+	FontSize   float32            `json:"Fontsize" bson:"fontsize"`
+	Width      float32            `json:"Width" bson:"width"`
+	Height     float32            `json:"Height" bson:"height"`
+	ChartImage	string	`json:"ChartImage" bson:"chartimage" validate:"required"`
 }
 type UpdateTableRequest struct {
 	WidgetId     string `json:"WidgetId" bson:"widgetid" validate:"required"`
@@ -48,18 +51,25 @@ type UpdateImageRequest struct {
 	Base64Image string `json:"Base64Image" bson:"base64image" validate:"required"`
 }
 type UpdateProofBotRequest struct {
-	WidgetId  string             `json:"WidgetId" bson:"widgetid" validate:"required"`
-	BotTitle  string             `json:"BotTitle" bson:"bottitle"`
-	Timestamp primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
-	NFTType   string             `json:"NFTType" bson:"nfttype" validate:"required"`
-	Batch     []models.BotBatch         `json:"Batch" bson:"batch"`
+	WidgetId    string             `json:"WidgetId" bson:"widgetid" validate:"required"`
+	Timestamp   primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
+	ArtifactId  string             `json:"ArtifactId" bson:"artifactid"`
+	ProductId   string             `json:"ProductId" bson:"productid"`
+	ProductName string             `json:"ProductName" bson:"productname"`
+	Title       string             `json:"Title" bson:"title"`
+	TenentId    string             `json:"TenentId" bson:"tenentid" validate:"required"`
+	OTPType     string             `json:"OTPType" bson:"otptype"`
+	WidgetType  string             `json:"WidgetType" bson:"widgettype"`
+	Data        []models.ProofData
 }
 
 type UpdateTimelineRequest struct {
 	WidgetId     string             `json:"WidgetId" bson:"widgetid" validate:"required"`
 	ArtifactId   string             `json:"ArtifactId" bson:"artifactid"`
+	BatchId      string             `json:"BatchId" bson:"batchid"`
 	Timestamp    primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
 	ProductId    string             `json:"productId" bson:"productid"` // item id
 	ProductName  string             `json:"productName" bson:"productname"`
+	Title       string             `json:"Title" bson:"title"`
 	TimelineData []models.TimelineData
 }

@@ -2,7 +2,6 @@ package nftComposerRepository
 
 import (
 	"context"
-	"time"
 
 	"github.com/dileepaj/tracified-nft-backend/database/connections"
 	"github.com/dileepaj/tracified-nft-backend/database/repository"
@@ -29,9 +28,14 @@ func (r *WidgetRepository) SaveWidgetList(widgetList []models.Widget) (string, e
 
 // Save the widgets return the object Id
 func (r *WidgetRepository) SaveWidget(widget models.Widget) (string, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-	_, err := connections.Connect().Collection(Widget).InsertOne(ctx, widget)
+	session, err := connections.GetMongoSession()
+	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session " + err.Error())
+	}
+	defer session.EndSession(context.TODO())
+
+	c := session.Client().Database(connections.DbName).Collection(Widget)
+	_, err = c.InsertOne(context.TODO(), widget)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 		return "", err
@@ -56,14 +60,18 @@ func (r *WidgetRepository) FindWidgetAndUpdate(findBy string, id string, update 
 }
 
 func (r *WidgetRepository) FindWidgetOneByIdWithOtp(idName string, id string) (models.Widget, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-	var widget models.Widget
-	rst := connections.Connect().Collection(Widget).FindOne(ctx, bson.D{{idName, id}})
-	err := rst.Decode(&widget)
+	session, err := connections.GetMongoSession()
 	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session " + err.Error())
+	}
+	defer session.EndSession(context.TODO())
+
+	var widget models.Widget
+	rst := session.Client().Database(connections.DbName).Collection(Widget).FindOne(context.TODO(), bson.D{{idName, id}})
+	err1 := rst.Decode(&widget)
+	if err1 != nil {
 		logs.ErrorLogger.Println(err.Error())
-		return models.Widget{}, err
+		return models.Widget{}, err1
 	} else {
 		return widget, nil
 	}
