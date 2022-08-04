@@ -1,11 +1,11 @@
-package ruri
+package marketPlace
 
 import (
 	"github.com/dileepaj/tracified-nft-backend/apiHandler"
 	"github.com/dileepaj/tracified-nft-backend/models"
 )
 
-var RuriNFtRoutes = models.Routers{
+var OneTimePassWordRoutes = models.Routers{
 	/**
 	 * ?Description : POST request, when RURI product ID and user email is providied OTP will be generated and sent as a email to customer
 	 * ?relevent batchID for the RURI product ID will be recived and stored in the DB along with email and otp
@@ -13,10 +13,10 @@ var RuriNFtRoutes = models.Routers{
 	 * *reutrns : Object code of new OTP that was saved in DB
 	 */
 	models.Router{
-		Name:    "Generate OTP",
+		Name:    "Initialize OTP", //! Initialise NFT
 		Method:  "POST",
-		Path:    "/ruri/{productID}/{email}",
-		Handler: apiHandler.RuriNewOTP,
+		Path:    "/otpgen",
+		Handler: apiHandler.InitNFT,
 	},
 	/**
 	 * ?Description : GET request, that will validate id the OTP is valid. Will check if the entered OTP and email exisit in the DB
@@ -26,8 +26,8 @@ var RuriNFtRoutes = models.Routers{
 	 */
 	models.Router{
 		Name:    "Validate OTP",
-		Method:  "GET",
-		Path:    "/ruri/{email}/{otp}/",
+		Method:  "POST",          //! COnvert to post method
+		Path:    "/otp/validate", //? /validateOTP/..
 		Handler: apiHandler.ValidateOTP,
 	},
 
@@ -40,46 +40,7 @@ var RuriNFtRoutes = models.Routers{
 	models.Router{
 		Name:    "Resend OTP",
 		Method:  "PUT",
-		Path:    "/ruri/{productID}/{email}/",
+		Path:    "/resendOTP",
 		Handler: apiHandler.ResentOTP,
-	},
-
-	/**
-	 *?Description : Updates the userSvgMapping collection by adding a SVG hash
-	 **@params : passed in request body(object ID and hash -> string)
-	 **reutrns : returns SVG
-	 */
-	models.Router{
-		Name:    "Update SVG Hash",
-		Method:  "PUT",
-		Path:    "/ruri/",
-		Handler: apiHandler.UpdateSVGUserMappingbySha256,
-	},
-
-	/**
-	 *?Description : when called reutrns the SVG based on the hash providied
-	 **@params : {hash} : SVG hash
-	 **reutrns : returns SVG
-	 */
-	models.Router{
-		Name:    "Get SVG by Hash",
-		Method:  "GET",
-		Path:    "/ruri/{hash}",
-		Handler: apiHandler.GetSVGbySha256,
-	},
-
-	//! TEsting methods remove after full impl
-	models.Router{
-		Name:    "GET TDP Data",
-		Method:  "GET",
-		Path:    "/ruri/{batchID}",
-		Handler: apiHandler.SaveTDPDataByBatchID,
-	},
-	//! TEsting methods remove after full impl
-	models.Router{
-		Name:    "Generate SVG",
-		Method:  "POST",
-		Path:    "/ruri/getsvg/{batchID}/{email}",
-		Handler: apiHandler.GenerateSVG,
 	},
 }

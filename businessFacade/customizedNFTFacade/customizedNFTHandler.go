@@ -1,4 +1,4 @@
-package ruriBusinessFacade
+package customizedNFTFacade
 
 import (
 	"encoding/json"
@@ -30,26 +30,9 @@ func GenerateOTP(email string) (string, error) {
 	otp := gotp.RandomSecret(secretLength)
 	if otp != "" {
 		fmt.Println("Current OTP is", otp)
-		err := SendEmail(otp, email)
-		if err != nil {
-			return otp, err
-		}
-		return otp, err
+		return otp, nil
 	}
 	return otp, nil
-}
-
-/**
-* 	TODO:implement function
- */
-func GetTDPDatabyBatchID(batchID string) error { //? not called
-	url := ""
-	rst, err := http.Get(url)
-	if err != nil {
-		return err
-	}
-	logs.InfoLogger.Println(rst)
-	return nil
 }
 
 /**
@@ -71,14 +54,14 @@ func ValidateOTP(email string, otp string) (string, error) {
 	return otpRepository.ValidateOTP(email, otp)
 }
 
+/**
+ * Descprition : Resends a new OTP and update DB
+ * *param : email, users email
+ * *param : otp, otp entered by user
+ * *reutrns : respective batchID if the otp is valid
+ */
 func ResendOTP(otpData models.UserAuth) (string, error) {
 	return otpRepository.ResendOTP(otpData)
-}
-
-/**
- *  TODO need to implement
- */
-func SaveTDP(tdp models.TDP) { //! Configure param data type properly
 }
 
 /**
@@ -157,7 +140,6 @@ func FormatBatchIDString(text string) models.ItemData {
 func GenerateandSaveSVG(batchID string, email string) (responseDtos.SVGforNFTResponse, error) {
 	var userSVGMapRst responseDtos.SVGforNFTResponse
 	tdpData, _ := GetTDPDataByBatchID(batchID)
-	logs.InfoLogger.Println("tdp data from api call : ", tdpData)
 	var userNftMapping models.UserNFTMapping
 	svgrst, _ := GenerateSVG(tdpData, batchID)
 	userNftMapping.BatchID = batchID
@@ -169,6 +151,9 @@ func GenerateandSaveSVG(batchID string, email string) (responseDtos.SVGforNFTRes
 	}
 	userSVGMapRst = rst
 	return userSVGMapRst, nil
+}
+func GetSVGbyEmailandBatchID(email string, batchID string) (responseDtos.SVGforNFTResponse, error) {
+	return svgRepository.GetSVGbyEmailandBatchID(email, batchID)
 }
 
 /**
@@ -223,22 +208,3 @@ func UpdateUserMappingbySha256(request models.UserNFTMapping) (responseDtos.SVGf
 func GetSVGbySha256(hash string) (string, error) {
 	return svgRepository.GetSVGbySha256(hash)
 }
-
-//! NEED FIXING
-/*
-func FormatBatchIDString(text string) (string, error) {
-	logs.ErrorLogger.Println("before convertion: ", text)
-	re, err := regexp.Compile(`[^\w]`)
-	if err != nil {
-		logs.ErrorLogger.Println(err)
-	}
-	formatedText := re.ReplaceAllString(text, ",")
-	logs.InfoLogger.Println("formated text: ", formatedText)
-	data := strings.Split(formatedText, " ")
-	for index, val := range data {
-		logs.InfoLogger.Println("index:", index)
-		logs.InfoLogger.Println("val: ", val)
-	}
-	return formatedText, err
-}
-*/

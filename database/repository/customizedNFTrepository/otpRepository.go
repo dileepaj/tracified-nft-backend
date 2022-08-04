@@ -1,5 +1,6 @@
-package ruriNFTrepository
+package customizedNFTrepository
 
+//*OTP -> One Time Password
 import (
 	"context"
 	"fmt"

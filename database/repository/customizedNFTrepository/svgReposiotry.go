@@ -1,4 +1,4 @@
-package ruriNFTrepository
+package customizedNFTrepository
 
 import (
 	"context"
@@ -76,57 +76,18 @@ func (r *SvgRepository) GetSVGbySha256(hash string) (string, error) {
 	return response.SVG, nil
 }
 
-//! REMOVE AFTER Final imply
-//var tdpData = "tdpData"
-// func (r *Rurirepository) SaveTDPbyBatchID(tdp models.TDP) (string, error) {
-// 	return repository.Save(tdp, tdpData)
-// }
-
-// func (r *Rurirepository) GetGeoImageTDPData(batchID string) ([]models.TDP, error) {
-// 	var dbResponse []models.TDP
-// 	findOptions := options.Find()
-// 	findOptions.SetLimit(10)
-// 	logs.InfoLogger.Println("id passed:", batchID)
-// 	result, err := repository.FindById("identifier", batchID, tdpData)
-// 	if err != nil {
-// 		logs.ErrorLogger.Println("Error retreiving TDP data :", err.Error())
-// 		return dbResponse, err
-// 	} else {
-// 		for result.Next(context.TODO()) {
-// 			var tracabilitydata models.TDP
-// 			//var geodata models.GeoImage
-// 			err = result.Decode(&tracabilitydata)
-// 			logs.InfoLogger.Println("TDP data from DB :", dbResponse)
-// 			if err != nil {
-// 				logs.ErrorLogger.Println("Error while getting TDP data:", err.Error())
-// 				return dbResponse, err
-// 			} else {
-// 				dbResponse = append(dbResponse, tracabilitydata)
-// 			}
-// 		}
-// 		return dbResponse, nil
-// 	}
-// }
-
-// //!NOT IN USE
-// func (r *Rurirepository) GetTDPDatabyBatchID(batchID string) ([]models.TDP, error) {
-// 	var tdpResponse []models.TDP
-// 	findOptions := options.Find()
-// 	findOptions.SetLimit(10)
-// 	result, err := repository.FindById("identifier", batchID, tdpData)
-// 	if err != nil {
-// 		logs.ErrorLogger.Println("Error retreiving TDP data :", err.Error())
-// 		return tdpResponse, err
-// 	} else {
-// 		for result.Next(context.TODO()) {
-// 			var tdp models.TDP
-// 			err = result.Decode(&tdp)
-// 			if err != nil {
-// 				logs.ErrorLogger.Println("Error while decoding data from DB: ", err.Error())
-// 				return tdpResponse, err
-// 			}
-// 			tdpResponse = append(tdpResponse, tdp)
-// 		}
-// 		return tdpResponse, nil
-// 	}
-// }
+func (r *SvgRepository) GetSVGbyEmailandBatchID(email string, batchID string) (responseDtos.SVGforNFTResponse, error) {
+	var response responseDtos.SVGforNFTResponse
+	rst, err := repository.FindById1AndId2("email", email, "batchid", batchID, usernftmap)
+	if err != nil {
+		logs.ErrorLogger.Println("error getting data from DB: ", err.Error())
+	}
+	for rst.Next(context.TODO()) {
+		err = rst.Decode(&response)
+		if err != nil {
+			return response, err
+		}
+		return response, nil
+	}
+	return response, nil
+}
