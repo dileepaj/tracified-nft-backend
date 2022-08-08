@@ -32,8 +32,11 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 	var images []models.ImageData = svgData.NftContent.Images
 	var Timelines []models.Timeline = svgData.NftContent.TimeLine
 	var contentOrderData []models.ContentOrderData = svgData.ContentOrderData
-	htmlStart := `<div class="text-center nft-header default-font">` + svgData.NFTName + `</div>
-							 <div class="d-flex justify-content-center align-content-center flex-wrap" id="container">`
+	htmlStart := `<div class="nft-header default-font">
+					<img src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/Tracified-NFT-v5.png" class="nft-logo"/>
+					<label>` + svgData.NFTName + `</label>
+					</div>
+				<div class="d-flex justify-content-center align-content-center flex-wrap" id="container">`
 
 	if len(contentOrderData) > 0 {
 		for _, element := range contentOrderData {
