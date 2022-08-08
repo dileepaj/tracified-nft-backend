@@ -23,8 +23,11 @@ func GetEndorsedStatus(publickey string) (models.Endorse, error) {
 	return EndorsementRepository.FindEndorsermentbyPK(publickey)
 }
 
-func UpdateEndorsement(update requestDtos.UpdateEndorsementByPublicKey) (responseDtos.ResponseEndorsementUpdate, error) {
-	return EndorsementRepository.UpdateEndorsement(update)
+func UpdateEndorsement(endorse requestDtos.UpdateEndorsementByPublicKey) (responseDtos.ResponseEndorsementUpdate, error) {
+	update := bson.M{
+		"$set": bson.M{"rating": endorse.Rating, "review": endorse.Review, "status": endorse.Status},
+	}
+	return EndorsementRepository.UpdateEndorsement("publickey", endorse.PublicKey, update)
 }
 
 func UpdateSetEndorsement(endorse requestDtos.UpdateEndorsement) (models.Endorse, error) {

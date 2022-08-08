@@ -17,6 +17,15 @@ func ValidateInsertNft(e models.NFT) error {
 	return nil
 }
 
+func ValidateInsertNftStory(e models.NFTStory) error {
+	validate = validator.New()
+	err := validate.Struct(e)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func ValidateInsertOffer(e models.Offer) error {
 	validate = validator.New()
 	err := validate.Struct(e)
