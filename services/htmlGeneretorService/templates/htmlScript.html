@@ -129,6 +129,7 @@
         image.className = "img-widget-image"
         image.style = `background-image: url("`+ data.Base64Image +`");`
         let imageNode = document.getElementById(cardId);
+		imageNode.style = 'justify-content: center'
         a.appendChild(image)
         imageNode.append(a)
     }
@@ -142,7 +143,7 @@
         cardTitle.appendChild(document.createTextNode(name));
         card.appendChild(cardTitle);
         let cardBody = document.createElement("div");
-        cardBody.className = "card-body text-center  justify-content-center"
+        cardBody.className = "card-body text-center scroll"
         cardBody.id = cardId
         card.append(cardBody)
         document.getElementById("container").appendChild(card);
@@ -157,13 +158,16 @@
         cardTitle.appendChild(document.createTextNode(name));
         card.appendChild(cardTitle);
         let cardBody = document.createElement("div");
-        cardBody.className = "card-body text-center  justify-content-center"
+        cardBody.className = "card-body text-center justify-content-center scroll"
         cardBody.id = cardId + `nft`
+		let chartContainer = document.createElement('div');
+		chartContainer.style = "width: 440px; height: 300px"
         let canv = document.createElement("canvas");
         canv.id = cardId
-        canv.width = "500"
-        canv.height = "400"
-        cardBody.append(canv)
+        canv.width = "440px"
+        canv.height = "300px"
+		chartContainer.append(canv)
+        cardBody.append(chartContainer)
         card.append(cardBody)
         document.getElementById("container").appendChild(card);
     }
@@ -192,6 +196,8 @@
             type: 'bar', data: barChartStruct
             ,
             options: {
+				responsive:true,
+				maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         display: false,
@@ -249,6 +255,8 @@
             type: 'pie', data: pieChartStruct
             ,
             options: {
+				responsive:true,
+				maintainAspectRatio: false,
                 scales: {
                     y: {
                         beginAtZero: true
@@ -312,6 +320,8 @@
             type: 'bubble', data: bubbleChartStruct
             ,
             options: {
+				responsive:true,
+				maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         display: false,
