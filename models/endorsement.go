@@ -1,11 +1,16 @@
 package models
 
+import "go.mongodb.org/mongo-driver/bson/primitive"
+
 type Endorse struct {
-	Name        string `json:"name" bson:"name"`
-	PublicKey   string `json:"publickey" bson:"publickey"`
-	Email       string `json:"email" bson:"email"`
-	Contact     string `json:"contact" bson:"contact"`
-	Description string `json:"desc" bson:"desc"`
-	Blockchain  string `json:"blockchain" bson:"blockchain"`
-	Status      string `json:"status" bson:"status"`
+	Id          primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
+	Name        string             `json:"Name" bson:"name"`
+	PublicKey   string             `json:"PublicKey" bson:"publickey"`
+	Email       string             `json:"Email" bson:"email"`
+	Contact     string             `json:"Contact" bson:"contact"`
+	Description string             `json:"Description" bson:"description"`
+	Blockchain  string             `json:"Blockchain" bson:"blockchain"`
+	Status      string             `json:"Status" bson:"status"`
+	Review      string             `json:"Review" bson:"review"`
+	Rating      string             `json:"Rating" bson:"rating"`
 }

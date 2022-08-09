@@ -3,7 +3,10 @@ module github.com/dileepaj/tracified-nft-backend
 go 1.18
 
 require (
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/dileepaj/FCL_Go v0.1.0
 	github.com/go-playground/validator/v10 v10.10.1
+	github.com/gorilla/context v1.1.1
 	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
 	github.com/joho/godotenv v1.4.0
@@ -11,7 +14,6 @@ require (
 )
 
 require (
-	github.com/ErandikaRoshani/fcl-go-lib v0.1.0 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.0-20210816181553-5444fa50b93d // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/goccy/go-json v0.9.4 // indirect
@@ -23,9 +25,6 @@ require (
 	github.com/lestrrat-go/option v1.0.0 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df // indirect
-)
-
-require (
 	github.com/felixge/httpsnoop v1.0.2 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect

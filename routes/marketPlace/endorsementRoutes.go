@@ -9,7 +9,7 @@ var EndorsementRoutes = models.Routers{
 	models.Router{
 		Name:    "Save Endorsement",
 		Method:  "POST",
-		Path:    "api/endorser/save",
+		Path:    "/api/endorser/save",
 		Handler: apiHandler.CreateEndorsement,
 	},
 	models.Router{

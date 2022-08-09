@@ -16,7 +16,7 @@ type Chart struct {
 	Height     float32     `json:"Height" bson:"height"`
 	Type       string      `json:"Type" bson:"type" validate:"required"`
 	Domain     []float32   `json:"Domain" bson:"domain"`
-	ChartImage	string	`json:"ChartImage" bson:"chartimage" validate:"required"`
+	ChartImage string      `json:"ChartImage" bson:"chartimage" validate:"required"`
 }
 type ChartAndWidget struct {
 	Chart  Chart  `json:"Chart" bson:"chart"`
@@ -127,6 +127,7 @@ type NFTComposerProject struct {
 	ProjectId        string             `json:"ProjectId" bson:"projectid" validate:"required"`
 	ProjectName      string             `json:"ProjectName" bson:"projectname" validate:"required"`
 	NFTName          string             `json:"NFTName" bson:"nftname" validate:"required"`
+	Description      string             `json:"Description" bson:"description" validate:"required"`
 	UserId           string             `json:"UserId" bson:"userid" validate:"required"`
 	TenentId         string             `json:"TenentId" bson:"tenentid" validate:"required"`
 	TenentName       string             `json:"TenentName" bson:"tenentname"`
@@ -168,6 +169,7 @@ type ProjectDetail struct {
 type Timeline struct {
 	Id           primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
 	ProjectId    string             `json:"ProjectId" bson:"projectid" validate:"required"`
+	BatchId      string             `json:"BatchId" bson:"batchid"`
 	WidgetId     string             `json:"WidgetId" bson:"widgetid" validate:"required"`
 	ArtifactId   string             `json:"ArtifactId" bson:"artifactid"`
 	Timestamp    primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
@@ -179,14 +181,16 @@ type Timeline struct {
 }
 
 type TimelineData struct {
-	Title    string `json:"Title" bson:"title"`
-	Icon     string `json:"Icon" bson:"icon" `
-	SubTitle    string `json:"SubTitle" bson:"subtitle" `	
-	Description  string `json:"Description" bson:"description"`
-	Images []string	`json:"Images" bson:"images"`
-	Children []Children
+	Title       string   `json:"Title" bson:"title"`
+	Icon        string   `json:"Icon" bson:"icon" `
+	SubTitle    string   `json:"SubTitle" bson:"subtitle" `
+	Description string   `json:"Description" bson:"description"`
+	Images      []string `json:"Images" bson:"images"`
+	Children    []Children
 }
 type Children struct {
-	Key   string `json:"Key" bson:"Key" `
-	Value string `json:"Value" bson:"value" `
+	NewTDP    bool `json:"NewTDP" bson:"newtdp"`
+	Timestamp string `json:"Timestamp" bson:"timestamp"`
+	Key       string `json:"Key" bson:"Key" `
+	Value     string `json:"Value" bson:"value" `
 }

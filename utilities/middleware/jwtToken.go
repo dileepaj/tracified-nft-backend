@@ -44,24 +44,24 @@ func HasPermissions(reqToken string) PermissionStatus {
 				if !ok {
 					logs.ErrorLogger.Println("Permissions not found")
 				}
-				if v != nil{
+				if v != nil {
 					switch reflect.TypeOf(v).Kind() {
 					case reflect.Slice:
 						s := reflect.ValueOf(v)
 						for i := 0; i < s.Len(); i++ {
-							if s.Index(i).Interface().(string) == "10"{
+							if s.Index(i).Interface().(string) == "97" {
 								ps.Status = true
 							}
 						}
 					}
-				}else {
+				} else {
 					logs.ErrorLogger.Println("Permissions not found")
 					ps.Status = false
 				}
 
 			}
 		}
-	}else{
+	} else {
 		logs.ErrorLogger.Println("Bearer token not found")
 		return ps
 	}

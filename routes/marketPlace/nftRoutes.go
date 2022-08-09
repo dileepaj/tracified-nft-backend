@@ -113,8 +113,14 @@ var NftRoutes = models.Routers{
 	models.Router{
 		Name:    "Get NFT By Blockchain And UserPK",
 		Method:  "Get",
-		Path:    "/api/nft/{userpk}/{blockchain}",
+		Path:    "/api/nft/{currentownerpk}/{blockchain}",
 		Handler: apiHandler.GetNFTByBlockchainAndUserPK,
+	},
+	models.Router{
+		Name:    "Get TXN By Blockchain And NftIdentifier",
+		Method:  "Get",
+		Path:    "/api/txn/{nftidentifier}/{blockchain}",
+		Handler: apiHandler.GetTXNByBlockchainAndIdentifier,
 	},
 	models.Router{
 		Name:    "Save Tags",
@@ -147,10 +153,16 @@ var NftRoutes = models.Routers{
 		Handler: apiHandler.GetOneONSaleNFT,
 	},
 	models.Router{
-		Name:    "GET TXN By Blockchain and NFTIdentifier",
+		Name:    "Save NFT Story",
+		Method:  "POST",
+		Path:    "/story/",
+		Handler: apiHandler.SaveNFTStory,
+	},
+	models.Router{
+		Name:    "Get NFT Story by NFTIdentifier and Blockchain",
 		Method:  "Get",
-		Path:    "/api/txn/{blockchain}/{nftidentifier}",
-		Handler: apiHandler.GetTXNByBlockchainAndIdentifier,
+		Path:    "/story/{nftidentifier}/{blockchain}",
+		Handler: apiHandler.GetNFTStory,
 	},
 	//another route for getting nfts should be here but there are two functions for it already
 }

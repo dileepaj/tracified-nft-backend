@@ -17,6 +17,16 @@ func StoreNFT(createNFTObject models.NFT) (string, error) {
 
 }
 
+
+func StoreNFTStory(createNFTObject models.NFTStory) (string, error) {
+	rst, err1 := nftRepository.SaveNFTStory(createNFTObject)
+	if err1 != nil {
+		return "NFT not saved", err1
+	}
+	return rst, nil
+
+}
+
 func GetAllNFTs() ([]models.NFT, error) {
 	return nftRepository.GetAllNFTs()
 }
@@ -42,12 +52,20 @@ func GetAllONSaleNFT(id string, userPK string) ([]models.NFT, error) {
 	return nftRepository.FindNFTById1AndNotId2("sellingstatus", id, "currentownerpk", userPK)
 }
 
+func GetNFTStory(id string, blockchain string) ([]models.NFTStory, error) {
+	return nftRepository.FindNFTStory("nftidentifier", id, "blockchain", blockchain)
+}
+
 func GetOneONSaleNFT(id string, identifier string, blockchain string) ([]models.NFT, error) {
 	return nftRepository.FindNFTByIdId2Id3("sellingstatus", id, "nftidentifier", identifier, "blockchain", blockchain)
 }
 
 func GetNFTByBlockchainAndUserPK(id string, blockchain string) ([]models.NFT, error) {
-	return nftRepository.FindNFTById1AndNotId2("creatoruserid", id, "blockchain", blockchain)
+	return nftRepository.FindNFTById1AndNotId2("currentownerpk", id, "blockchain", blockchain)
+}
+
+func GetTXNByBlockchainAndIdentifier(id string, blockchain string) ([]models.TXN, error) {
+	return nftRepository.FindTXNById1AndNotId2("nftidentifier", id, "blockchain", blockchain)
 }
 
 func MakeSaleNFT(nft requestDtos.UpdateNFTSALERequest) (models.NFT, error) {
@@ -140,7 +158,4 @@ func UpdateNFT(nft requestDtos.UpdateMint) (models.NFT, error) {
 		"$set": bson.M{"nftidentifier": nft.NFTIdentifier, "nftissuerpk": nft.NFTIssuerPK, "nfttxnhash": nft.NFTTxnHash},
 	}
 	return nftRepository.UpdateMinter("imagebase64", nft.Imagebase64, "blockchain", nft.Blockchain, update)
-}
-func GetTXNByBlockchainAndIdentifier(blockchain string, id string) ([]models.TXN, error) {
-	return nftRepository.GetTXNByBlockchainAndIdentifier("blockchain", blockchain, "nftidentifier", id)
 }

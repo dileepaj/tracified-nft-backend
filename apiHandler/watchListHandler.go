@@ -2,8 +2,6 @@ package apiHandler
 
 import (
 	"encoding/json"
-	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/dileepaj/tracified-nft-backend/businessFacade/marketplaceBusinessFacade"
@@ -42,8 +40,7 @@ func CreateWatchList(w http.ResponseWriter, r *http.Request) {
 func GetWatchListByUserPK(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
 	vars := mux.Vars(r)
-	fmt.Println(vars["userid"])
-	results, err1 := marketplaceBusinessFacade.GetWatchListByUserPK(vars["userid"])
+	results, err1 := marketplaceBusinessFacade.GetWatchListByUserPK(vars["user"])
 	if err1 != nil {
 		ErrorMessage := err1.Error()
 		errors.BadRequest(w, ErrorMessage)
@@ -61,7 +58,6 @@ func GetWatchListByUserPK(w http.ResponseWriter, r *http.Request) {
 
 func GetAllWatchLists(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
-	log.Println("calling func Get All Favourites....")
 	results, err1 := marketplaceBusinessFacade.GetAllWatchLists()
 
 	if err1 != nil {
@@ -78,23 +74,32 @@ func GetAllWatchLists(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func GetWatchListsByBlockchain(w http.ResponseWriter, r *http.Request) {
+
+func FindWatchListsByBlockchainAndIdentifier(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
-	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
-	if ps.Status {
-		vars := mux.Vars(r)
-		if len(vars["blockchain"]) != 0 {
-			result, err := marketplaceBusinessFacade.GetWatchListsbyBlockchain((vars["blockchain"]))
-			if err != nil {
-				errors.BadRequest(w, err.Error())
-			} else {
-				commonResponse.SuccessStatus[[]models.WatchList](w, result)
-			}
+	vars := mux.Vars(r)
+	if vars["blockchain"] != "" || vars["nftidentifier"] != "" {
+		result, id, err := marketplaceBusinessFacade.FindWatchListsByBlockchainAndIdentifier(vars["blockchain"], vars["nftidentifier"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
 		} else {
-			errors.BadRequest(w, "")
+			if len(result) > 5 {
+				var trend models.Trending
+				trend = models.Trending{
+					NFTIdentifier: id,
+					Trending:      true,
+				}
+				result, err := marketplaceBusinessFacade.UpdateTrending(trend)
+				if err != nil {
+					errors.BadRequest(w, err.Error())
+				} else {
+					commonResponse.SuccessStatus[models.NFT](w, result)
+				}
+			}
+			commonResponse.SuccessStatus[[]models.WatchList](w, result)
+
 		}
+	} else {
+		errors.BadRequest(w, "")
 	}
-	w.WriteHeader(http.StatusUnauthorized)
-	logs.ErrorLogger.Println("Status Unauthorized")
-	return
 }

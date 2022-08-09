@@ -38,26 +38,22 @@ func (r *WatchListRepository) SaveWatchList(watchList models.WatchList) (string,
 	return repository.Save[models.WatchList](watchList, WatchList)
 }
 
-func (r *WatchListRepository) FindWatchListbyUserPK(userpk string) (models.WatchList, error) {
-	var watchList models.WatchList
-
-	session, err := connections.GetMongoSession()
+func (r *WatchListRepository) FindWatchListbyUserPK(idName string, id string) ([]models.WatchList, error) {
+	var watchlists []models.WatchList
+	rst, err := repository.FindById(idName, id, WatchList)
 	if err != nil {
-		logs.ErrorLogger.Println("Error while getting session " + err.Error())
-	}
-	defer session.EndSession(context.TODO())
-	rst, err := session.Client().Database(connections.DbName).Collection("watchlist").Find(context.TODO(), bson.M{"creatoruserid": userpk})
-	if err != nil {
-		return watchList, err
+		return watchlists, err
 	}
 	for rst.Next(context.TODO()) {
-		err = rst.Decode(&watchList)
+		var watchlist models.WatchList
+		err = rst.Decode(&watchlist)
 		if err != nil {
-			logs.ErrorLogger.Println("Error occured while retreving data from collection watchlist in GetWatchlistByID:watchlistRepository.go: ", err.Error())
-			return watchList, err
+			logs.ErrorLogger.Println(err.Error())
+			return watchlists, err
 		}
+		watchlists = append(watchlists, watchlist)
 	}
-	return watchList, err
+	return watchlists, nil
 }
 
 func (r *WatchListRepository) GetAllWatchLists() ([]models.WatchList, error) {
@@ -87,20 +83,22 @@ func (r *WatchListRepository) GetAllWatchLists() ([]models.WatchList, error) {
 	return watchlist, nil
 }
 
-func (r *WatchListRepository) FindWatchListsByBlockchain(idName string, id string) ([]models.WatchList, error) {
+
+func (r *WatchListRepository) FindWatchListsByBlockchainAndIdentifier(idName string, id string, idName2 string, id2 string) ([]models.WatchList, string, error) {
 	var watchlists []models.WatchList
-	rst, err := repository.FindById(idName, id, WatchList)
+	rst, err := repository.FindById1AndNotId2(idName, id, idName2, id2, WatchList)
 	if err != nil {
-		return watchlists, err
+		return watchlists, id2, err
 	}
 	for rst.Next(context.TODO()) {
 		var watchlist models.WatchList
 		err = rst.Decode(&watchlist)
 		if err != nil {
 			logs.ErrorLogger.Println(err.Error())
-			return watchlists, err
+
+			return watchlists, id2, err
 		}
 		watchlists = append(watchlists, watchlist)
 	}
-	return watchlists, nil
+	return watchlists, id2, nil
 }

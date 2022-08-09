@@ -5,7 +5,6 @@ import (
 
 	"github.com/dileepaj/tracified-nft-backend/database/connections"
 	"github.com/dileepaj/tracified-nft-backend/database/repository"
-	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
@@ -18,22 +17,32 @@ type EndorsementRepository struct{}
 
 var Endorsement = "endorsement"
 
-func (r *EndorsementRepository) UpdateEndorsement(endorse requestDtos.UpdateEndorsementByPublicKey) (responseDtos.ResponseEndorsementUpdate, error) {
-	var responseendorse responseDtos.ResponseEndorsementUpdate
-	update := bson.M{
-		"$set": bson.M{"status": endorse.Status},
+func (r *EndorsementRepository) UpdateEndorsement(findBy string, id string, update primitive.M) (responseDtos.ResponseEndorsementUpdate, error) {
+	var endorseResponse responseDtos.ResponseEndorsementUpdate
+
+	session, err := connections.GetMongoSession()
+	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session " + err.Error())
 	}
-	projection := bson.M{}
-	rst := repository.FindOneAndUpdate("publickey", endorse.PublicKey, projection, update, Endorsement)
+
+	defer session.EndSession(context.TODO())
+	upsert := false
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+	rst := session.Client().Database(connections.DbName).Collection("endorsement").FindOneAndUpdate(context.TODO(), bson.M{"publickey": id}, update, &opt)
 	if rst != nil {
-		err := rst.Decode(&responseendorse)
+		err := rst.Decode((&endorseResponse))
 		if err != nil {
-			logs.ErrorLogger.Println(err.Error())
-			return responseendorse, err
+			logs.ErrorLogger.Println("Error occured while retreving data from collection endorsement in UpdateEndorsement:EndorsementRepository.go: ", err.Error())
+			return endorseResponse, err
 		}
-		return responseendorse, nil
+		return endorseResponse, nil
 	} else {
-		return responseendorse, nil
+		return endorseResponse, nil
+
 	}
 }
 
@@ -43,13 +52,12 @@ func (r *EndorsementRepository) SaveEndorsement(endorse models.Endorse) (string,
 
 func (r *EndorsementRepository) FindEndorsermentbyPK(publickey string) (models.Endorse, error) {
 	var endorse models.Endorse
-
 	session, err := connections.GetMongoSession()
 	if err != nil {
 		logs.ErrorLogger.Println("Error while getting session " + err.Error())
 	}
 	defer session.EndSession(context.TODO())
-	rst, err := session.Client().Database(connections.DbName).Collection("endorsements").Find(context.TODO(), bson.M{"publickey": publickey})
+	rst, err := session.Client().Database(connections.DbName).Collection("endorsement").Find(context.TODO(), bson.M{"publickey": publickey})
 	if err != nil {
 		return endorse, err
 	}
@@ -96,7 +104,7 @@ func (r *EndorsementRepository) UpdateSetEndorsement(findBy string, id string, u
 		ReturnDocument: &after,
 		Upsert:         &upsert,
 	}
-	rst := session.Client().Database(connections.DbName).Collection("endorsements").FindOneAndUpdate(context.TODO(), bson.M{"publickey": id}, update, &opt)
+	rst := session.Client().Database(connections.DbName).Collection("endorsement").FindOneAndUpdate(context.TODO(), bson.M{"publickey": id}, update, &opt)
 	if rst != nil {
 		err := rst.Decode((&endorseResponse))
 		if err != nil {

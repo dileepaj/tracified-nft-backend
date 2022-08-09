@@ -21,13 +21,13 @@ var FavouritesRoutes = models.Routers{
 	models.Router{
 		Name:    "Get Favourites By UserPK",
 		Method:  "GET",
-		Path:    "/api/favourites/{userpk}",
+		Path:    "/api/favourites/{user}",
 		Handler: apiHandler.GetFavouritesByUserPK,
 	},
 	models.Router{
 		Name:    "GET Favourites By Favourites",
 		Method:  "Get",
-		Path:    "/api/favourites/{blockchain}",
-		Handler: apiHandler.GetFavouritesByBlockchain,
+		Path:    "/api/favourites/{blockchain}/{nftidentifier}",
+		Handler: apiHandler.GetFavouritesByBlockchainAndIdentifier,
 	},
 }

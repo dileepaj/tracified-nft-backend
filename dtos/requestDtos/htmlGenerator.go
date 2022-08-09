@@ -14,6 +14,7 @@ type UpdateProjectRequest struct {
 	ProjectId        string                    `json:"ProjectId" bson:"projectid" validate:"required"`
 	ProjectName      string                    `json:"ProjectName" bson:"projectname" validate:"required"`
 	NFTName          string                    `json:"NFTName" bson:"nftname" validate:"required"`
+	Description      string                    `json:"Description" bson:"description" validate:"required"`
 	TenentId         string                    `json:"TenentId" bson:"tenentid" validate:"required"`
 	TenentName       string                    `json:"TenentName" bson:"tenentname"`
 	Timestamp        primitive.DateTime        `json:"Timestamp" bson:"timestamp" validate:"required"`
@@ -65,6 +66,7 @@ type UpdateProofBotRequest struct {
 type UpdateTimelineRequest struct {
 	WidgetId     string             `json:"WidgetId" bson:"widgetid" validate:"required"`
 	ArtifactId   string             `json:"ArtifactId" bson:"artifactid"`
+	BatchId      string             `json:"BatchId" bson:"batchid"`
 	Timestamp    primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
 	ProductId    string             `json:"productId" bson:"productid"` // item id
 	ProductName  string             `json:"productName" bson:"productname"`
