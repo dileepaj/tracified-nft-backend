@@ -1,3 +1,26 @@
+/* width */
+.scroll::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+/* Track */
+.scroll::-webkit-scrollbar-track {
+  background: #F5F5F5;
+  margin-bottom: 20px;
+}
+
+/* Handle */
+.scroll::-webkit-scrollbar-thumb {
+  background: #717171;
+}
+
+/* Handle on hover */
+.scroll::-webkit-scrollbar-thumb:hover {
+  background: #717171;;
+}
+
+
 .nft-header {
 	display: flex;
 	flex-direction: row;
@@ -52,6 +75,15 @@
 
 .round-card {
 	border-radius: 20px;
+	width: 640px;
+}
+
+.card-body{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	height: 370px;
+	overflow: auto;
 }
 
 .round-card-header {
@@ -61,6 +93,7 @@
 	font-size: 18px;
 	line-height: 22px;
 	text-align: center;
+	width: 100%;
 	color: #021D27;
 }
 
@@ -149,7 +182,7 @@ ul.point>li {
 .botCard {
 	display: flex;
 	flex-direction : column;
-    width: 650PX;
+    width: 100%;
 	background: #F5F5F5;
 	margin-bottom: 10px;
 	padding: 10px;
@@ -179,8 +212,8 @@ ul.point>li {
     background-position: center;
     min-width: 150px;
     min-height: 150px;
-    width: 500px;
-    height: 400px;
+    width: 440px;
+	height: 300px;
 }
 
 .img-timeline-image {
@@ -189,7 +222,7 @@ ul.point>li {
     background-size: contain;
     background-position: center;
     width: 300px;
-    height: 200px;
+	height: 200px;
     margin-bottom: 5px;
 }
 
