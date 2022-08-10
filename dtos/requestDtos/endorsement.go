@@ -1,10 +1,10 @@
 package requestDtos
 
 type UpdateEndorsementByPublicKey struct {
-	PublicKey string  `json:"publickey" bson:"publickey"`
-	Status    string  `json:"status" bson:"status" `
-	Review    string  `json:"Review" bson:"review"`
-	Rating    float32 `json:"Rating" bson:"rating"`
+	PublicKey string `json:"publickey" bson:"publickey"`
+	Status    string `json:"status" bson:"status" `
+	Review    string `json:"Review" bson:"review"`
+	Rating    string `json:"Rating" bson:"rating"`
 }
 
 type UpdateEndorsement struct {

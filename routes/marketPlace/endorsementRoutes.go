@@ -21,13 +21,13 @@ var EndorsementRoutes = models.Routers{
 	models.Router{
 		Name:    "GET Endorsement By Status",
 		Method:  "Get",
-		Path:    "/api/endorsement/{status}",
+		Path:    "/api/endorsement/status/{status}",
 		Handler: apiHandler.GetEndorsementbyStatus,
 	},
 	models.Router{
 		Name:    "Update Endorsement Status",
 		Method:  "PUT",
-		Path:    "/api/endorsement/{publickey}",
+		Path:    "/api/endorsement",
 		Handler: apiHandler.UpdateEndorsedStatus,
 	},
 	models.Router{
