@@ -3,14 +3,10 @@
     function displayTable(data) {
         if (!!data.TableContent) {
             let cardId = "tracified" + data.WidgetId
-            createCard(cardId, "Table")
+            createCard(cardId, data.TableTitle)
             //craete boostarp cards Node and it to barchart 
             let tableDiv = document.createElement("div")
             tableDiv.style = "width:500px; heigth:fit-content;"
-            let h5 = document.createElement('p')
-            h5.append(document.createTextNode(data.TableTitle))
-            h5.className = "common-widget-title"
-            tableDiv.appendChild(h5)
             let tableNode = document.createElement("table");
             tableNode.className = `table table-bordered`;
             tableNode.innerHTML = data.TableContent
@@ -21,12 +17,8 @@
 
     function displayProofBot(dataArray) {
         let cardId = "tracified" + dataArray.WidgetId
-        createCard(cardId, "Proof Bot")
+        createCard(cardId, dataArray.Title)
         let botNode = document.getElementById(cardId)
-        let botMainTitle = document.createElement('p')
-        botMainTitle.append(document.createTextNode(dataArray.Title))
-        botMainTitle.className = "common-widget-title"
-        botNode.appendChild(botMainTitle)
         dataArray.Data.map((proofBotUrlbatchSpecific, i) => {
             let botSubcard = document.createElement('div')
             botSubcard.className = "botCard"
@@ -130,31 +122,28 @@
 
     function displayImages(data) {
         let cardId = "tracified" + data.WidgetId
-        createCard(cardId, "Image")
+        createCard(cardId, data.Title)
         let a=document.createElement("a")
         a.href=data.Base64Image
         let image = document.createElement("div")
         image.className = "img-widget-image"
         image.style = `background-image: url("`+ data.Base64Image +`");`
-        let imgTitle = document.createElement('p')
-        imgTitle.append(document.createTextNode(data.Title))
-        imgTitle.className = "common-widget-title"
         let imageNode = document.getElementById(cardId);
-        imageNode.appendChild(imgTitle)
+		imageNode.style = 'justify-content: center'
         a.appendChild(image)
         imageNode.append(a)
     }
 
     function createCard(cardId, name) {
         let card = document.createElement("div")
-        card.className = `card text-center justify-content-center m-3`;
+        card.className = `card text-center justify-content-center m-3 round-card`;
         card.style = "min-width: 20rem; max-height: fit-content; "
         let cardTitle = document.createElement("h5")
-        cardTitle.className = "card-header"
+        cardTitle.className = "card-header round-card-header"
         cardTitle.appendChild(document.createTextNode(name));
         card.appendChild(cardTitle);
         let cardBody = document.createElement("div");
-        cardBody.className = "card-body text-center  justify-content-center"
+        cardBody.className = "card-body text-center scroll"
         cardBody.id = cardId
         card.append(cardBody)
         document.getElementById("container").appendChild(card);
@@ -162,27 +151,30 @@
 
     function createDomCardForCanvas(cardId, name) {
         let card = document.createElement("div")
-        card.className = `card text-center justify-content-center m-3`;
+        card.className = `card text-center justify-content-center m-3 round-card`;
         card.style = "min-width: 20rem; max-height: fit-content; "
         let cardTitle = document.createElement("h5")
-        cardTitle.className = "card-header"
+        cardTitle.className = "card-header round-card-header"
         cardTitle.appendChild(document.createTextNode(name));
         card.appendChild(cardTitle);
         let cardBody = document.createElement("div");
-        cardBody.className = "card-body text-center  justify-content-center"
+        cardBody.className = "card-body text-center justify-content-center scroll"
         cardBody.id = cardId + `nft`
+		let chartContainer = document.createElement('div');
+		chartContainer.style = "width: 440px; height: 300px"
         let canv = document.createElement("canvas");
         canv.id = cardId
-        canv.width = "500"
-        canv.height = "400"
-        cardBody.append(canv)
+        canv.width = "440px"
+        canv.height = "300px"
+		chartContainer.append(canv)
+        cardBody.append(chartContainer)
         card.append(cardBody)
         document.getElementById("container").appendChild(card);
     }
 
     function displayBarchart(data) {
         let cardId = "tracified" + data.WidgetId
-        createDomCardForCanvas(cardId, "Bar Chart")
+        createDomCardForCanvas(cardId, data.ChartTitle)
         lables = []
         dataValue = []
         data.ChartData.forEach(element => {
@@ -204,16 +196,12 @@
             type: 'bar', data: barChartStruct
             ,
             options: {
+				responsive:true,
+				maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         display: false,
                     },
-                    title: {
-                        display: true,
-                        text: data.ChartTitle,
-                        color: data.FontColor,
-                        font: { size: data.FontSize},
-                            },
                         },
                 scales: {
                     x: {
@@ -245,7 +233,7 @@
 
     function displayPiechart(data) {
         let cardId = "tracified" + data.WidgetId
-        createDomCardForCanvas(cardId, "Pie Chart")
+        createDomCardForCanvas(cardId, data.ChartTitle)
         lables = []
         dataValue = []
         data.ChartData.forEach(element => {
@@ -267,28 +255,21 @@
             type: 'pie', data: pieChartStruct
             ,
             options: {
+				responsive:true,
+				maintainAspectRatio: false,
                 scales: {
                     y: {
                         beginAtZero: true
                     }
                 }, 
-                plugins: {
-                    title: {
-                        display: true,
-                        text: data.ChartTitle,
-                        font: {
-                                size: data.FontSize,
-                            },
-                            color: data.FontColor
-                    }
-                }
+                
             }
         });
     }
 
     function displayBubblechart(data) {
         let cardId = "tracified" + data.WidgetId
-        createDomCardForCanvas(cardId, "Bubble Chart")
+        createDomCardForCanvas(cardId, data.ChartTitle)
         lables = []
         dataValue = []
         data.ChartData.forEach(element => {
@@ -339,16 +320,12 @@
             type: 'bubble', data: bubbleChartStruct
             ,
             options: {
+				responsive:true,
+				maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         display: false,
                     },
-                    title: {
-                        display: true,
-                        text: data.ChartTitle,
-                        color: data.FontColor,
-                        font: { size: data.FontSize},
-                            },
                         },
                 scales: {
                     y: {
@@ -361,7 +338,7 @@
 
     function displayTimeline(data) {
         let cardId = "tracified" + data.WidgetId
-        createCard(cardId, "Timeline")
+        createCard(cardId, data.Title)
         let timelineNode = document.getElementById(cardId);
         let centerCard = document.createElement('div')
         centerCard.className = "text-start row"
@@ -417,7 +394,7 @@
                         let p = document.createElement('p')
                         let ValueTimeline = document.createElement('span')
                         ValueTimeline.className = "timeline-value"
-                        ValueTimeline.appendChild(document.createTextNode(data.Key))
+                        ValueTimeline.appendChild(document.createTextNode(data.Value))
                         p.appendChild(ValueTimeline)
                         point.appendChild(p)
                     })
@@ -436,11 +413,7 @@
 
             })
         }
-        let timelineTitle = document.createElement('p')
-        timelineTitle.append(document.createTextNode(data.Title))
-        timelineTitle.className = "common-widget-title"
         centerCard.appendChild(timeline)
-        timelineNode.appendChild(timelineTitle)
         timelineNode.appendChild(centerCard)
         timelineNode.append(centerCard)
     }

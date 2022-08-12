@@ -1,3 +1,102 @@
+/* width */
+.scroll::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+/* Track */
+.scroll::-webkit-scrollbar-track {
+  background: #F5F5F5;
+  margin-bottom: 20px;
+}
+
+/* Handle */
+.scroll::-webkit-scrollbar-thumb {
+  background: #717171;
+}
+
+/* Handle on hover */
+.scroll::-webkit-scrollbar-thumb:hover {
+  background: #717171;;
+}
+
+
+.nft-header {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	height: 74px;
+	background: #021D27;
+	font-style: normal;
+	font-weight: 600;
+	font-size: 24px;
+	line-height: 29px;
+	text-align: center;
+	color: #FFFFFF;
+	margin-bottom: 30px;
+	padding-left: 70px;
+	padding-right: 70px;
+}
+
+.nft-logo {
+	width: 238px;
+	height: 51px;
+}
+
+.nft-footer {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 68px;
+	margin-top: 30px;
+	
+}	
+
+.nft-footer-content {
+	width: 100%;
+	margin: 0px 70px 0px 70px;
+	height: 68px;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	border-top: 0.5px solid #B5B5B5;
+	column-gap: 7px;
+	font-style: normal;
+	font-weight: 400;
+	font-size: 18px;
+	line-height: 22px;
+	color: #000000;
+}
+
+.round-card {
+	border-radius: 20px;
+	width: 640px;
+}
+
+.card-body{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	height: 370px;
+	overflow: auto;
+}
+
+.round-card-header {
+	border-radius: 20px 20px 0px 0px !important;
+	font-style: normal;
+	font-weight: 600;
+	font-size: 18px;
+	line-height: 22px;
+	text-align: center;
+	width: 100%;
+	color: #021D27;
+}
+
 ul.timeline {
     list-style-type: none;
     position: relative;
@@ -83,7 +182,7 @@ ul.point>li {
 .botCard {
 	display: flex;
 	flex-direction : column;
-    width: 650PX;
+    width: 100%;
 	background: #F5F5F5;
 	margin-bottom: 10px;
 	padding: 10px;
@@ -113,8 +212,8 @@ ul.point>li {
     background-position: center;
     min-width: 150px;
     min-height: 150px;
-    width: 500px;
-    height: 400px;
+    width: 440px;
+	height: 300px;
 }
 
 .img-timeline-image {
@@ -123,7 +222,7 @@ ul.point>li {
     background-size: contain;
     background-position: center;
     width: 300px;
-    height: 200px;
+	height: 200px;
     margin-bottom: 5px;
 }
 
@@ -164,7 +263,7 @@ ul.point>li {
 }
 
 .proof-url {
-  background: #02aa46;
+  background: #006D2D;
   border-radius: 7.17703px;
   font-style: normal;
   font-weight: 600;
@@ -192,5 +291,10 @@ ul.point>li {
 
 .open-icon {
 	transform : scale(0.55);
+}
+
+.logo{
+	width: 122.41px;
+	height: 25px;
 }
 

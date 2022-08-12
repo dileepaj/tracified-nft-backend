@@ -36,11 +36,17 @@ func GenerateHTMLTemplate(htmlData models.HtmlGenerator) (string, error) {
 	var images []models.ImageData = htmlData.NftContent.Images
 	var Timelines []models.Timeline = htmlData.NftContent.TimeLine
 	var contentOrderData []models.ContentOrderData = htmlData.ContentOrderData
-	body := ` <body>
-				 <h1 class="text-center">Tracified NFT</h1>
-				 <p class="text-center fw-bold text-muted">` + htmlData.NFTName + `<p>
-				</div>
+	body := ` <body style="font-family: 'Inter'; color: #021D27">
+				 <div class="nft-header">
+				 <img src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/Tracified-NFT-v5.png" class="nft-logo"/>
+				 <label>` + htmlData.NFTName + `</label>
+				 </div>
 				 <div class="d-flex justify-content-center align-content-center flex-wrap" id="container">
+				</div>
+				<div class="text-center nft-footer ">
+					<div class="nft-footer-content">
+						<label>Powered by </label> <img src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/tracified-logo+(1).png" class="logo"/>
+					</div>
 				</div>
 			  </body>`
 	// take json data convert it to string
