@@ -11,4 +11,6 @@ type Endorse struct {
 	Description string             `json:"Description" bson:"description"`
 	Blockchain  string             `json:"Blockchain" bson:"blockchain"`
 	Status      string             `json:"Status" bson:"status"`
+	Review      string             `json:"Review" bson:"review"`
+	Rating      float32            `json:"Rating" bson:"rating"`
 }

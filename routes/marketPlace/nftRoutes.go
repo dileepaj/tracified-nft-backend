@@ -152,5 +152,18 @@ var NftRoutes = models.Routers{
 		Path:    "/api/buying/{sellingstatus}/{nftidentifier}/{blockchain}",
 		Handler: apiHandler.GetOneONSaleNFT,
 	},
+	models.Router{
+		Name:    "Save NFT Story",
+		Method:  "POST",
+		Path:    "/story/",
+		Handler: apiHandler.SaveNFTStory,
+	},
+	models.Router{
+		Name:    "Get NFT Story by NFTIdentifier and Blockchain",
+		Method:  "Get",
+		Path:    "/story/{nftidentifier}/{blockchain}",
+		Handler: apiHandler.GetNFTStory,
+	},
+
 	//another route for getting nfts should be here but there are two functions for it already
 }
