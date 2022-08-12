@@ -17,18 +17,18 @@ import (
 
 func CreateNFT(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;charset=UTF-8")
-	var test models.NFT
+	var nft models.NFT
 	decoder := json.NewDecoder(r.Body)
-	err := decoder.Decode(&test)
+	err := decoder.Decode(&nft)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 	}
 
-	err = validations.ValidateInsertNft(test)
+	err = validations.ValidateInsertNft(nft)
 	if err != nil {
 		errors.BadRequest(w, err.Error())
 	} else {
-		result, err := marketplaceBusinessFacade.StoreNFT(test)
+		result, err := marketplaceBusinessFacade.StoreNFT(nft)
 		if err != nil {
 			errors.BadRequest(w, err.Error())
 		} else {
@@ -79,13 +79,13 @@ func SaveTXN(w http.ResponseWriter, r *http.Request) {
 
 func CreateOwner(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	var test2 models.Ownership
+	var owner models.Ownership
 	decoder := json.NewDecoder(r.Body)
-	err := decoder.Decode(&test2)
+	err := decoder.Decode(&owner)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 	}
-	_, err1 := marketplaceBusinessFacade.StoreOwner(test2)
+	_, err1 := marketplaceBusinessFacade.StoreOwner(owner)
 	if err1 != nil {
 		ErrorMessage := err1.Error()
 		errors.BadRequest(w, ErrorMessage)
@@ -466,5 +466,42 @@ func UpdateTXN(w http.ResponseWriter, r *http.Request) {
 			}
 			return
 		}
+	}
+}
+
+func SaveNFTStory(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;charset=UTF-8")
+	var story models.NFTStory
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&story)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+	}
+
+	err = validations.ValidateInsertNftStory(story)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		result, err := marketplaceBusinessFacade.StoreNFTStory(story)
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[string](w, result)
+		}
+	}
+}
+
+func GetNFTStory(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	if vars["nftidentifier"] != "" || vars["blockchain"] != "" {
+		results, err := marketplaceBusinessFacade.GetNFTStory(vars["nftidentifier"], vars["blockchain"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[[]models.NFTStory](w, results)
+		}
+	} else {
+		errors.BadRequest(w, "")
 	}
 }
