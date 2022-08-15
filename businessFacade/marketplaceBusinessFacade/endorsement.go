@@ -36,3 +36,10 @@ func UpdateSetEndorsement(endorse requestDtos.UpdateEndorsement) (models.Endorse
 	}
 	return EndorsementRepository.UpdateSetEndorsement("publickey", endorse.PublicKey, update)
 }
+
+func UpdateSetEndorsement(endorse requestDtos.UpdateEndorsement) (models.Endorse, error) {
+	update := bson.M{
+		"$set": bson.M{"name": endorse.Name, "email": endorse.Email, "contact": endorse.Contact, "desc": endorse.Description},
+	}
+	return EndorsementRepository.UpdateSetEndorsement("publickey", endorse.PublicKey, update)
+}

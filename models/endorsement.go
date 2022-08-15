@@ -12,5 +12,5 @@ type Endorse struct {
 	Blockchain  string             `json:"Blockchain" bson:"blockchain"`
 	Status      string             `json:"Status" bson:"status"`
 	Review      string             `json:"Review" bson:"review"`
-	Rating      float32            `json:"Rating" bson:"rating"`
+	Rating      string             `json:"Rating" bson:"rating"`
 }

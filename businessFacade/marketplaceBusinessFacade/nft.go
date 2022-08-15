@@ -17,6 +17,7 @@ func StoreNFT(createNFTObject models.NFT) (string, error) {
 
 }
 
+
 func StoreNFTStory(createNFTObject models.NFTStory) (string, error) {
 	rst, err1 := nftRepository.SaveNFTStory(createNFTObject)
 	if err1 != nil {
