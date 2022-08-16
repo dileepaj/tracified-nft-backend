@@ -9,7 +9,6 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/utilities/commonResponse"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
-	"github.com/dileepaj/tracified-nft-backend/utilities/middleware"
 	"github.com/dileepaj/tracified-nft-backend/utilities/validations"
 	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
@@ -73,7 +72,6 @@ func GetAllWatchLists(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
-
 
 func FindWatchListsByBlockchainAndIdentifier(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
