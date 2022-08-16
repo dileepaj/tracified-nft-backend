@@ -23,6 +23,8 @@ func init() {
 		marketPlace.EndorsementRoutes,
 		marketPlace.DocsRoutes,
 		marketPlace.PartnerRoutes,
+		marketPlace.OneTimePassWordRoutes,
+		marketPlace.SvgGenerator,
 	}
 
 	for _, r := range routes {

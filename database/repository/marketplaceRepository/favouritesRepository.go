@@ -19,6 +19,7 @@ func (r *FavouriteRepository) SaveFavourite(favourite models.Favourite) (string,
 	return repository.Save[models.Favourite](favourite, Favourite)
 }
 
+
 func (r *FavouriteRepository) GetFavouritesByBlockchainAndIdentifier(idName string, id string, idName2 string, id2 string) ([]models.Favourite, string, error) {
 	var favs []models.Favourite
 	rst, err := repository.FindById1AndNotId2(idName, id, idName2, id2, Favourite)

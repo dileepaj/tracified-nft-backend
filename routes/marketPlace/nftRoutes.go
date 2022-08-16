@@ -164,6 +164,5 @@ var NftRoutes = models.Routers{
 		Path:    "/story/{nftidentifier}/{blockchain}",
 		Handler: apiHandler.GetNFTStory,
 	},
-
 	//another route for getting nfts should be here but there are two functions for it already
 }

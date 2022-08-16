@@ -8,7 +8,6 @@ type Favourite struct {
 	Blockchain    string             `json:"blockchain" bson:"blockchain" `
 	User          string             `json:"user" bson:"user"`
 }
-
 type Hotpicks struct {
 	NFTIdentifier string `json:"nftidentifier" bson:"nftidentifier" `
 	HotPicks      bool   `json:"hotpicks" bson:"hotpicks" `

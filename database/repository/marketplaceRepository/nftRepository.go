@@ -38,6 +38,7 @@ func (r *NFTRepository) FindNFTById1AndNotId2(idName1 string, id1 string, idName
 	return nfts, nil
 }
 
+
 func (r *NFTRepository) FindNFTStory(idName1 string, id1 string, idName2 string, id2 string) ([]models.NFTStory, error) {
 	var nfts []models.NFTStory
 	rst, err := repository.FindById1AndNotId2(idName1, id1, idName2, id2, Story)
