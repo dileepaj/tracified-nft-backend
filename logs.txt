@@ -1,4 +1,0 @@
-ERROR: 2022/03/21 17:51:44 collectionsHandler.go:27: parsing time "\"\"" as "\"2006-01-02T15:04:05Z07:00\"": cannot parse "\"" as "2006"
-ERROR: 2022/03/21 17:56:13 collectionsHandler.go:27: parsing time "\"\"" as "\"2006-01-02T15:04:05Z07:00\"": cannot parse "\"" as "2006"
-ERROR: 2022/03/21 18:15:33 collectionsHandler.go:150: EOF
-ERROR: 2022/03/21 18:18:09 collectionsHandler.go:150: EOF

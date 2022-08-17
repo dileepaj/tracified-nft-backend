@@ -9,31 +9,31 @@ var EndorsementRoutes = models.Routers{
 	models.Router{
 		Name:    "Save Endorsement",
 		Method:  "POST",
-		Path:    "/api/endorser/save",
+		Path:    "/endorser/save",
 		Handler: apiHandler.CreateEndorsement,
 	},
 	models.Router{
 		Name:    "GET Endorsement Status By PublicKey",
 		Method:  "Get",
-		Path:    "/api/endorsement/{publickey}",
+		Path:    "/endorsement/{publickey}",
 		Handler: apiHandler.GetEndorsedStatus,
 	},
 	models.Router{
 		Name:    "GET Endorsement By Status",
 		Method:  "Get",
-		Path:    "/api/endorsement/{status}",
+		Path:    "/endorsement/status/{status}",
 		Handler: apiHandler.GetEndorsementbyStatus,
 	},
 	models.Router{
 		Name:    "Update Endorsement Status",
 		Method:  "PUT",
-		Path:    "/api/endorsement/{publickey}",
+		Path:    "/endorsement/status",
 		Handler: apiHandler.UpdateEndorsedStatus,
 	},
 	models.Router{
 		Name:    "Update Endorsement",
 		Method:  "PUT",
-		Path:    "/api/endorsement",
+		Path:    "/endorsement",
 		Handler: apiHandler.UpdateEndorsement,
 	},
 }
