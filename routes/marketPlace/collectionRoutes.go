@@ -9,31 +9,31 @@ var CollectionRoutes = models.Routers{
 	models.Router{
 		Name:    "Create Collection",
 		Method:  "POST",
-		Path:    "/api/collection/save",
+		Path:    "/collection/save",
 		Handler: apiHandler.CreateCollection,
 	},
 	models.Router{
-		Name:    "GET Collection by UserPK",
+		Name:    "GET Collection by UserID",
 		Method:  "Get",
-		Path:    "/api/collection/userpk/{userid}",
+		Path:    "/collection/userpk/{userid}",
 		Handler: apiHandler.GetCollectionByUserPK,
 	},
 	models.Router{
 		Name:    "GET All Collections",
 		Method:  "Get",
-		Path:    "/api/collection",
+		Path:    "/collection",
 		Handler: apiHandler.GetAllCollections,
 	},
 	models.Router{
-		Name:    "Update Review Status",
+		Name:    "Update Collections",
 		Method:  "PUT",
-		Path:    "/api/collection",
+		Path:    "/collections",
 		Handler: apiHandler.UpdateCollection,
 	},
 	models.Router{
 		Name:    "Delete Collection by userPK",
 		Method:  "DELETE",
-		Path:    "/api/collection/userpk/{userid}",
+		Path:    "/collection/userpk/{userid}",
 		Handler: apiHandler.DeleteCollectionByUserPK,
 	},
 }

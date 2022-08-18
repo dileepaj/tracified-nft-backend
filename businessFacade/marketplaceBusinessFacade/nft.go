@@ -1,8 +1,6 @@
 package marketplaceBusinessFacade
 
 import (
-	"encoding/json"
-
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"go.mongodb.org/mongo-driver/bson"
@@ -83,9 +81,7 @@ func GetNFTBySellingStatus(status string) ([]models.NFT, error) {
 }
 
 func GetNFTbyTagsName(tags string) ([]models.NFT, error) {
-	var tagsArray []string
-	_ = json.Unmarshal([]byte(tags), &tagsArray)
-	return nftRepository.FindByFieldInMultipleValusTags("tags", tagsArray)
+	return nftRepository.FindNFTsById("tags", tags)
 }
 
 func GetWatchListNFT(userId string) ([]models.WatchList, error) {
@@ -98,21 +94,11 @@ func GetWatchListNFT(userId string) ([]models.WatchList, error) {
 }
 
 func GetNFTbyAccount(userId string) ([]models.NFT, error) {
-	results, err := GetBCAccountPKByUserId(userId)
-	if err != nil || len(results) == 0 {
-		return []models.NFT{}, err
-	} else {
-		return nftRepository.FindByFieldInMultipleValusAccount("currentownerpk", results)
-	}
+	return nftRepository.FindNFTsById("currentownerpk", userId)
 }
 
 func GetLastNFTbyUserId(userId string) ([]models.NFT, error) {
 	return nftRepository.FindLastNFTById("creatoruserid", userId)
-
-}
-
-func GetNFTbyUserId(userId string) ([]models.NFT, error) {
-	return nftRepository.FindNFTsById("creatoruserid", userId)
 
 }
 
@@ -122,12 +108,7 @@ func GetSVGByHash(hash string) (models.SVG, error) {
 }
 
 func GetNFTbyTenentName(tenentName string) ([]models.NFT, error) {
-	results, err := GetBCAccountPKByTenetName(tenentName)
-	if err != nil || len(results) == 0 {
-		return []models.NFT{}, err
-	} else {
-		return nftRepository.FindByFieldInMultipleValusTennant("currentownerpk", results)
-	}
+	return nftRepository.FindNFTsById("creatoruserid", tenentName)
 }
 
 func GetNFTbyBlockchain(blockchain string) ([]models.NFT, error) {
@@ -142,7 +123,7 @@ func GetAllTags() ([]models.Tags, error) {
 	return nftRepository.GetAllTags()
 }
 func GetTagsByNFTIdentifier(nftid string) ([]models.Tags, error) {
-	return nftRepository.FindTagsByNFTIdentifier("nftidentifier", nftid)
+	return nftRepository.FindTagsByNFTIdentifier("nftName", nftid)
 
 }
 

@@ -177,23 +177,18 @@ func GetBlockchainSpecificNFT(w http.ResponseWriter, r *http.Request) {
 
 func GetNFTbyTags(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
-	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
-	if ps.Status {
-		vars := mux.Vars(r)
-		if vars["tags"] != "" {
-			results, err := marketplaceBusinessFacade.GetNFTbyTagsName(vars["tags"])
-			if err != nil {
-				errors.BadRequest(w, err.Error())
-			} else {
-				commonResponse.SuccessStatus[[]models.NFT](w, results)
-			}
+
+	vars := mux.Vars(r)
+	if vars["tags"] != "" {
+		results, err := marketplaceBusinessFacade.GetNFTbyTagsName(vars["tags"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
 		} else {
-			errors.BadRequest(w, "")
+			commonResponse.SuccessStatus[[]models.NFT](w, results)
 		}
+	} else {
+		errors.BadRequest(w, "")
 	}
-	w.WriteHeader(http.StatusUnauthorized)
-	logs.ErrorLogger.Println("Status Unauthorized")
-	return
 }
 
 func GetNFTbyStatus(w http.ResponseWriter, r *http.Request) {
@@ -213,39 +208,30 @@ func GetNFTbyStatus(w http.ResponseWriter, r *http.Request) {
 
 func GetWatchListNFT(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
-	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
-	if ps.Status {
-		vars := mux.Vars(r)
-		if vars["currentownerpk"] != "" {
-			results, err := marketplaceBusinessFacade.GetWatchListNFT(vars["currentownerpk"])
-			if err != nil {
-				errors.BadRequest(w, err.Error())
-			} else {
-				commonResponse.SuccessStatus[[]models.WatchList](w, results)
-			}
+
+	vars := mux.Vars(r)
+	if vars["currentownerpk"] != "" {
+		results, err := marketplaceBusinessFacade.GetWatchListNFT(vars["currentownerpk"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
 		} else {
-			errors.BadRequest(w, "")
+			commonResponse.SuccessStatus[[]models.WatchList](w, results)
 		}
+	} else {
+		errors.BadRequest(w, "")
 	}
-	w.WriteHeader(http.StatusUnauthorized)
-	logs.ErrorLogger.Println("Status Unauthorized")
-	return
 }
 
 func GetNFTByUserId(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
-	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
-	if ps.Status {
-		vars := mux.Vars(r)
-		if len(vars["userId"]) != 0 {
-			result, err := marketplaceBusinessFacade.GetNFTbyAccount(vars["userId"])
-			if err != nil {
-				errors.BadRequest(w, err.Error())
-			} else {
-				commonResponse.SuccessStatus[[]models.NFT](w, result)
-			}
+
+	vars := mux.Vars(r)
+	if len(vars["currentownerpk"]) != 0 {
+		result, err := marketplaceBusinessFacade.GetNFTbyAccount(vars["currentownerpk"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
 		} else {
-			errors.BadRequest(w, "")
+			commonResponse.SuccessStatus[[]models.NFT](w, result)
 		}
 	} else {
 		errors.BadRequest(w, "")
@@ -288,23 +274,17 @@ func GetLastNFTByUserId(w http.ResponseWriter, r *http.Request) {
 
 func GetNFTByTenentName(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
-	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
-	if ps.Status {
-		vars := mux.Vars(r)
-		if len(vars["tenentname"]) != 0 {
-			result, err := marketplaceBusinessFacade.GetNFTbyTenentName((vars["tenentname"]))
-			if err != nil {
-				errors.BadRequest(w, err.Error())
-			} else {
-				commonResponse.SuccessStatus[[]models.NFT](w, result)
-			}
+	vars := mux.Vars(r)
+	if len(vars["creatoruserid"]) != 0 {
+		result, err := marketplaceBusinessFacade.GetNFTbyTenentName((vars["creatoruserid"]))
+		if err != nil {
+			errors.BadRequest(w, err.Error())
 		} else {
-			errors.BadRequest(w, "")
+			commonResponse.SuccessStatus[[]models.NFT](w, result)
 		}
+	} else {
+		errors.BadRequest(w, "")
 	}
-	w.WriteHeader(http.StatusUnauthorized)
-	logs.ErrorLogger.Println("Status Unauthorized")
-	return
 }
 
 func GetNFTByBlockchain(w http.ResponseWriter, r *http.Request) {
@@ -401,10 +381,10 @@ func GetAllTags(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func GetTagsByNFTIdentifier(w http.ResponseWriter, r *http.Request) {
+func GetTagsByNFTName(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
 	vars := mux.Vars(r)
-	results, err1 := marketplaceBusinessFacade.GetTagsByNFTIdentifier(vars["nftidentifier"])
+	results, err1 := marketplaceBusinessFacade.GetTagsByNFTIdentifier(vars["nftName"])
 	if err1 != nil {
 		ErrorMessage := err1.Error()
 		errors.BadRequest(w, ErrorMessage)
