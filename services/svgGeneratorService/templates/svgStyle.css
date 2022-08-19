@@ -312,3 +312,10 @@ ul.point>li {
 	height: 25px;
 }
 
+.tdp-added-date {
+  margin-bottom: 5px;
+  color: #006d2d;
+    font-weight: 500;
+    font-family: "Inter" !important;
+  
+}

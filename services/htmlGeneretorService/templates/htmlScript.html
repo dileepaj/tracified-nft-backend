@@ -386,6 +386,13 @@
                 point.className = "card p-3 point"
                 if (tdata.Children.length > 0) {
                     tdata.Children.forEach(data => {
+						if(data.NewTDP) {
+                            let addedDate = document.createElement('span')
+                            addedDate.className = "tdp-added-date"
+                            addedDate.appendChild(document.createTextNode(`Added : ${data.Timestamp}`))
+                            point.appendChild(addedDate)
+                        }
+						
                         let keyTimeline = document.createElement('span')
                         keyTimeline.className = "timeline-key"
                         keyTimeline.appendChild(document.createTextNode(data.Key))

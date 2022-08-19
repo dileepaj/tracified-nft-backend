@@ -160,6 +160,9 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 													  <div class="card p-3 point">`
 								if(len(data.Children) > 0) {
 									for _, timelineChild := range data.Children {
+										if timelineChild.NewTDP == true {
+											htmlTimelineBody += `<span class="tdp-added-date">Added : ` + timelineChild.Timestamp + `</span>`
+										}
 										htmlTimelineBody += `<span class="timeline-key">` + replaceAndSymbol(timelineChild.Key) + `</span><p><span class="timeline-value">` + timelineChild.Value + `</span></p>`
 									}
 								} else {
