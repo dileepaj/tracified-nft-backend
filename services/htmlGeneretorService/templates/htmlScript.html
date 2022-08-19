@@ -398,7 +398,22 @@
                         p.appendChild(ValueTimeline)
                         point.appendChild(p)
                     })
-                    if (tdata.Images.length > 0) {
+                }
+				else {
+                    let keyTimeline = document.createElement('span')
+					keyTimeline.className = "timeline-key"
+					keyTimeline.appendChild(document.createTextNode('දිනය/தேதி'))
+					point.appendChild(keyTimeline)
+
+					let p = document.createElement('p')
+					let ValueTimeline = document.createElement('span')
+					ValueTimeline.className = "timeline-value"
+					ValueTimeline.appendChild(document.createTextNode('No date available'))
+					p.appendChild(ValueTimeline)
+					point.appendChild(p)
+                }
+
+                if (tdata.Images.length > 0) {
                         tdata.Images.forEach(image => {
                             let timelineImage = document.createElement('div')
                             timelineImage.style = `background-image: url("`+ image +`");`
@@ -408,7 +423,6 @@
                     }
                     timeline.append(liHeader)
                     timeline.appendChild(point)
-                }
                 // timeline.append(liHeader)
 
             })
