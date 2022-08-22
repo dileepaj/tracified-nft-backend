@@ -11,31 +11,25 @@ var WatchListRoutes = models.Routers{
 	models.Router{
 		Name:    "Create WatchList",
 		Method:  "POST",
-		Path:    "/api/watchlists/save",
+		Path:    "/watchlists/save",
 		Handler: apiHandler.CreateWatchList,
 	},
 	models.Router{
 		Name:    "Get All Watchlists",
 		Method:  "GET",
-		Path:    "/api/watchlists",
+		Path:    "/watchlists",
 		Handler: apiHandler.GetAllWatchLists,
 	},
 	models.Router{
 		Name:    "Get WatchList By UserPK",
 		Method:  "GET",
-		Path:    "/api/watchlists/{user}",
+		Path:    "/watchlists/{user}",
 		Handler: apiHandler.GetWatchListByUserPK,
-	},
-	models.Router{
-		Name:    "Get WatchList By UserID",
-		Method:  "GET",
-		Path:    "/api/watchList/{currentownerpk}",
-		Handler: apiHandler.GetWatchListNFT,
 	},
 	models.Router{
 		Name:    "GET WatchLists By Blockchain",
 		Method:  "Get",
-		Path:    "/api/watchlists/{blockchain}/{nftidentifier}",
+		Path:    "/watchlists/{blockchain}/{nftidentifier}",
 		Handler: apiHandler.FindWatchListsByBlockchainAndIdentifier,
 	},
 }

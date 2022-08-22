@@ -38,7 +38,6 @@ func (r *NFTRepository) FindNFTById1AndNotId2(idName1 string, id1 string, idName
 	return nfts, nil
 }
 
-
 func (r *NFTRepository) FindNFTStory(idName1 string, id1 string, idName2 string, id2 string) ([]models.NFTStory, error) {
 	var nfts []models.NFTStory
 	rst, err := repository.FindById1AndNotId2(idName1, id1, idName2, id2, Story)
@@ -178,25 +177,6 @@ func (r *NFTRepository) FindLastNFTById(idName string, id string) ([]models.NFT,
 	} else {
 		return nfts, nil
 	}
-}
-
-func (r *NFTRepository) FindByFieldInMultipleValusWatchList(fields string, watchList []string) ([]models.WatchList, error) {
-	var nfts []models.WatchList
-	rst, err := repository.FindByFieldInMultipleValus(fields, watchList, WatchList)
-	if err != nil {
-		logs.ErrorLogger.Println(err.Error())
-		return nfts, err
-	}
-	for rst.Next(context.TODO()) {
-		var nft models.WatchList
-		err = rst.Decode(&nft)
-		if err != nil {
-			logs.ErrorLogger.Println(err.Error())
-			return nfts, err
-		}
-		nfts = append(nfts, nft)
-	}
-	return nfts, nil
 }
 
 func (r *NFTRepository) FindByFieldInMultipleValusTags(fields string, tags []string) ([]models.NFT, error) {
@@ -359,7 +339,7 @@ func (r *NFTRepository) UpdateNFTTXN(findBy string, id string, findbyid2 string,
 	}
 }
 
-func (r *NFTRepository) FindTagsByNFTIdentifier(idName string, id string) ([]models.Tags, error) {
+func (r *NFTRepository) FindTagsByNFTName(idName string, id string) ([]models.Tags, error) {
 	var tags []models.Tags
 	rst, err := repository.FindById(idName, id, Tags)
 	if err != nil {

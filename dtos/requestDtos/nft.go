@@ -10,7 +10,7 @@ type CreateNFTRequest struct {
 }
 
 type UpdateNFTSALERequest struct {
-	NFTIdentifier  string `json:"nftidentifier" bson:"nftidentifier" validate:"required"`
+	NFTIdentifier  string `json:"nftidentifier" bson:"nftidentifier"`
 	Timestamp      string `json:"timestamp" bson:"timestamp"`
 	CurrentPrice   string `json:"currentprice" bson:"currentprice" `
 	SellingStatus  string `json:"sellingstatus" bson:"sellingstatus"` //ONSALE,NOTSALE,NOTLISTED
