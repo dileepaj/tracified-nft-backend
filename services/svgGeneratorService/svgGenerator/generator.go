@@ -158,9 +158,17 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
                                 						<img class="timeline-icon" src="` + data.Icon + `" /><span class="timeline-stage">` + replaceAndSymbol(data.Title) + `</span>
 													  </li>
 													  <div class="card p-3 point">`
-								for _, timelineChild := range data.Children {
-									htmlTimelineBody += `<span class="timeline-key">` + replaceAndSymbol(timelineChild.Key) + `</span><p><span class="timeline-value">` + timelineChild.Value + `</span></p>`
-								}
+								if(len(data.Children) > 0) {
+									for _, timelineChild := range data.Children {
+										if timelineChild.NewTDP == true {
+											htmlTimelineBody += `<span class="tdp-added-date">Added : ` + timelineChild.Timestamp + `</span>`
+										}
+										htmlTimelineBody += `<span class="timeline-key">` + replaceAndSymbol(timelineChild.Key) + `</span><p><span class="timeline-value">` + timelineChild.Value + `</span></p>`
+									}
+								} else {
+									htmlTimelineBody += `<span class="timeline-key">දිනය/தேதி</span><p><span class="timeline-value">No date available</span></p>`
+								}					  
+								
 								for _, image := range data.Images {
 									htmlTimelineBody += `
 														<div class="img-timeline-image" style="background-image: url(` + image + `);">
