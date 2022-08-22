@@ -84,7 +84,7 @@ func (r *CollectionRepository) UpdateCollection(collection requestDtos.UpdateCol
 		ReturnDocument: &after,
 		Upsert:         &upsert,
 	}
-	rst := session.Client().Database(connections.DbName).Collection("collection").FindOneAndUpdate(context.TODO(), bson.M{"_id": collection.Id}, update, &opt)
+	rst := session.Client().Database(connections.DbName).Collection("collections").FindOneAndUpdate(context.TODO(), bson.M{"_id": collection.Id}, update, &opt)
 	if rst != nil {
 		err := rst.Decode((&responseCollectionStatus))
 		if err != nil {
@@ -104,7 +104,7 @@ func (r *CollectionRepository) DeleteCollection(collection requestDtos.DeleteCol
 		logs.ErrorLogger.Println("Error while getting session " + err.Error())
 	}
 	defer session.EndSession(context.TODO())
-	result, err := session.Client().Database(connections.DbName).Collection("collection").DeleteOne(context.TODO(), bson.M{"_id": collection.UserId})
+	result, err := session.Client().Database(connections.DbName).Collection("collections").DeleteOne(context.TODO(), bson.M{"_id": collection.UserId})
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured when Connecting to DB and executing DeleteOne Query in DeleteCollection(CollectionRepository): ", err.Error())
 	}

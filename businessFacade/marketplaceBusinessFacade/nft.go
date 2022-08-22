@@ -1,8 +1,6 @@
 package marketplaceBusinessFacade
 
 import (
-	"encoding/json"
-
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"go.mongodb.org/mongo-driver/bson"
@@ -16,7 +14,6 @@ func StoreNFT(createNFTObject models.NFT) (string, error) {
 	return rst, nil
 
 }
-
 
 func StoreNFTStory(createNFTObject models.NFTStory) (string, error) {
 	rst, err1 := nftRepository.SaveNFTStory(createNFTObject)
@@ -84,51 +81,23 @@ func GetNFTBySellingStatus(status string) ([]models.NFT, error) {
 }
 
 func GetNFTbyTagsName(tags string) ([]models.NFT, error) {
-	var tagsArray []string
-	_ = json.Unmarshal([]byte(tags), &tagsArray)
-	return nftRepository.FindByFieldInMultipleValusTags("tags", tagsArray)
-}
-
-func GetWatchListNFT(userId string) ([]models.WatchList, error) {
-	results, err := FindNFTIdentifieryByUserId(userId)
-	if err != nil || len(results) == 0 {
-		return []models.WatchList{}, err
-	} else {
-		return nftRepository.FindByFieldInMultipleValusWatchList("nftidentifier", results)
-	}
+	return nftRepository.FindNFTsById("tags", tags)
 }
 
 func GetNFTbyAccount(userId string) ([]models.NFT, error) {
-	results, err := GetBCAccountPKByUserId(userId)
-	if err != nil || len(results) == 0 {
-		return []models.NFT{}, err
-	} else {
-		return nftRepository.FindByFieldInMultipleValusAccount("currentownerpk", results)
-	}
+	return nftRepository.FindNFTsById("currentownerpk", userId)
 }
 
 func GetLastNFTbyUserId(userId string) ([]models.NFT, error) {
 	return nftRepository.FindLastNFTById("creatoruserid", userId)
-
-}
-
-func GetNFTbyUserId(userId string) ([]models.NFT, error) {
-	return nftRepository.FindNFTsById("creatoruserid", userId)
-
 }
 
 func GetSVGByHash(hash string) (models.SVG, error) {
 	return nftRepository.GetSVGByHash(hash)
-
 }
 
 func GetNFTbyTenentName(tenentName string) ([]models.NFT, error) {
-	results, err := GetBCAccountPKByTenetName(tenentName)
-	if err != nil || len(results) == 0 {
-		return []models.NFT{}, err
-	} else {
-		return nftRepository.FindByFieldInMultipleValusTennant("currentownerpk", results)
-	}
+	return nftRepository.FindNFTsById("creatoruserid", tenentName)
 }
 
 func GetNFTbyBlockchain(blockchain string) ([]models.NFT, error) {
@@ -142,8 +111,8 @@ func CreateTags(tags models.Tags) (string, error) {
 func GetAllTags() ([]models.Tags, error) {
 	return nftRepository.GetAllTags()
 }
-func GetTagsByNFTIdentifier(nftid string) ([]models.Tags, error) {
-	return nftRepository.FindTagsByNFTIdentifier("nftidentifier", nftid)
+func GetTagsByNFTName(nftid string) ([]models.Tags, error) {
+	return nftRepository.FindTagsByNFTName("nftName", nftid)
 
 }
 

@@ -15,7 +15,7 @@ type NFT struct {
 	Timestamp         string             `json:"timestamp" bson:"timestamp"`
 	Collection        string             `json:"collection" bson:"collection" validate:"required"`
 	Category          string             `json:"categories" bson:"categories" validate:"required"`
-	Tags              []string           `json:"tags" bson:"tags"`
+	Tags              string             `json:"tags" bson:"tags"`
 	Imagebase64       string             `json:"imagebase64" bson:"imagebase64" validate:"required"`
 	CurrentPrice      string             `json:"currentprice" bson:"currentprice" `
 	CurrentOwnerPK    string             `json:"currentownerpk" bson:"currentownerpk" validate:"required"`
