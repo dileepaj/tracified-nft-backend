@@ -53,7 +53,9 @@
 			timestamp.append(document.createTextNode(`Timestamp : `))
 			let timestampVal = document.createElement('label')
 			timestampVal.className = "proofbot-value-field"
-			timestampVal.append(document.createTextNode(`${dataArray.Timestamp}`))
+            timestampVal.id="timestampb"
+            let dateTime = moment(proofBotUrlbatchSpecific.Timestamp);
+			timestampVal.append(document.createTextNode(dateTime))         
             d3.appendChild(timestamp)
 			d3.appendChild(timestampVal)
 			
