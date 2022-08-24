@@ -118,7 +118,7 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 								htmlBotcard += `<div class="botCard">
 														<div class="proof-section"><label class="proofbot-data-field">Product Name : </label><label class="proofbot-value-field">` + botData.ProductName + `</label></div>
 														<div class="proof-section"><label class="proofbot-data-field">Batch ID : </label><label class="proofbot-value-field">` + data.BatchId + `</label></div>
-														<div class="proof-section"><label class="proofbot-data-field">Timestamp : </label><label class="proofbot-value-field">` + botData.Timestamp.Time().String() + `</label></div>
+														<div class="proof-section"><label class="proofbot-data-field">Timestamp : </label><label class="proofbot-value-field">` + data.Timestamp + `</label></div>
 														<div class="proof-section"><label class="proofbot-data-field">Transaction ID : </label><label class="proofbot-value-field">` + data.TxnHash + `</label></div>
 														<div class="proof-section"><label class="proofbot-data-field">Available Proofs : </label>
 														`
