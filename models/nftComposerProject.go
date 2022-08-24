@@ -70,6 +70,7 @@ type ProofData struct {
 	TxnHash           string   `json:"TxnHash" bson:"txnhash"`
 	AvailableProofs   []string `json:"AvailableProofs" bson:"availableproofs"`
 	Urls              []ProofURL
+	Timestamp         string
 }
 type ProofBotData struct {
 	WidgetId    string             `json:"WidgetId" bson:"widgetid" validate:"required"`
@@ -189,7 +190,7 @@ type TimelineData struct {
 	Children    []Children
 }
 type Children struct {
-	NewTDP    bool `json:"NewTDP" bson:"newtdp"`
+	NewTDP    bool   `json:"NewTDP" bson:"newtdp"`
 	Timestamp string `json:"Timestamp" bson:"timestamp"`
 	Key       string `json:"Key" bson:"Key" `
 	Value     string `json:"Value" bson:"value" `
