@@ -6,7 +6,7 @@ import (
 
 type TDP struct {
 	TenantID         string             `json:"tenantID" bson:"tenantid,omitempty"`
-	StageID          int                `json:"stageID" bson:"stagetid,omitempty"`
+	StageID          string             `json:"stageID" bson:"stagetid,omitempty"`
 	UserID           string             `json:"userID" bson:"usertid,omitempty"`
 	TimeStamp        primitive.DateTime `json:"timestamp" bson:"timestamp,omitempty"`
 	TraceabilityData []TraceabilityData `json:"traceabilityData" bson:"tracabilityData,omitempty"`
@@ -76,4 +76,28 @@ type UserNFTMapping struct {
 	Email   string             `json:"email" bson:"email,omitempty"`
 	SVG     string             `json:"svg" bson:"svg,omitempty"`
 	Hash    string             `json:"hash" bson:"hash,omitempty"`
+}
+
+type CollectorInfo struct {
+	Photo             string             `json:"photo" bson:"photo,omitempty"`
+	Name              string             `json:"name" bson:"name,omitempty"`
+	Address           string             `json:"address" bson:"address,omitempty"`
+	ContactNumber     string             `json:"contactNumber" bson:"contactNumber,omitempty"`   
+}
+
+type CertificationAuthority struct {
+	Name              string             `json:"name" bson:"name,omitempty"`
+	Address           string             `json:"address" bson:"address,omitempty"`  
+}
+
+type ExporterInfo struct {
+	LicenseExpirationDate             string             `json:"licenseExpirationDate" bson:"licenseExpirationDate,omitempty"`
+	Name              				  string             `json:"name" bson:"name,omitempty"`
+	Address                           string             `json:"address" bson:"address,omitempty"`
+	LicenseNumber                     string             `json:"licenseNumber" bson:"licenseNumber,omitempty"`   
+}
+
+type Appraiser struct {
+	Name              string             `json:"name" bson:"name,omitempty"`
+	Qualification     string             `json:"qualification" bson:"qualification,omitempty"`  
 }
