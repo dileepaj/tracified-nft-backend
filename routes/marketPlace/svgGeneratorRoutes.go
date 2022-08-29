@@ -15,7 +15,7 @@ var SvgGenerator = models.Routers{
 	models.Router{
 		Name:    "Update SVG Hash",
 		Method:  "PUT",
-		Path:    "/svg/",
+		Path:    "/svgmap/",
 		Handler: apiHandler.UpdateSVGUserMappingbySha256,
 	},
 
@@ -27,7 +27,7 @@ var SvgGenerator = models.Routers{
 	models.Router{
 		Name:    "Get SVG by Hash",
 		Method:  "GET",
-		Path:    "/svg/{hash}",
+		Path:    "/svgmap/{hash}",
 		Handler: apiHandler.GetSVGbySha256,
 	},
 
@@ -42,7 +42,7 @@ var SvgGenerator = models.Routers{
 	models.Router{
 		Name:    "Generate SVG",
 		Method:  "POST",
-		Path:    "/svg/getsvg/{batchID}/{email}",
+		Path:    "/svgmap/",
 		Handler: apiHandler.GenerateSVG,
 	},
 }
