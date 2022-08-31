@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	customizedNFTFacade "github.com/dileepaj/tracified-nft-backend/businessFacade/customizedNFTFacade"
+	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/commonResponse"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
@@ -53,7 +54,7 @@ func GetSVGbySha256(W http.ResponseWriter, r *http.Request) {
 	}
 }
 
-//! Testing methods remove after full impl
+// ! Testing methods remove after full impl
 func SaveTDPDataByBatchID(W http.ResponseWriter, r *http.Request) {
 	W.Header().Set("Content-Type", "application/json; charset-UTF-8")
 	vars := mux.Vars(r)
@@ -61,11 +62,16 @@ func SaveTDPDataByBatchID(W http.ResponseWriter, r *http.Request) {
 	customizedNFTFacade.GetTDPDataByBatchID(vars["batchID"])
 }
 
-//! Testing methods remove after full impl
+// ! Testing methods remove after full impl
 func GenerateSVG(W http.ResponseWriter, r *http.Request) {
 	W.Header().Set("Content-Type", "application/json; charset-UTF-8")
-	vars := mux.Vars(r)
-	logs.InfoLogger.Println("URL Param:", vars["batchID"])
-	rst, _ := customizedNFTFacade.GenerateandSaveSVG(vars["batchID"], vars["email"])
+	var requestCreateSVG requestDtos.GenerateSVGReqeust
+	decorder := json.NewDecoder(r.Body)
+	err := decorder.Decode(&requestCreateSVG)
+	if err != nil {
+		errors.BadRequest(W, err.Error())
+		return
+	}
+	rst, _ := customizedNFTFacade.GenerateandSaveSVG(requestCreateSVG.BatchID, requestCreateSVG.Email)
 	commonResponse.SuccessStatus[string](W, rst.SVG)
 }
