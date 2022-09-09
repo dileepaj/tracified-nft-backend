@@ -3,14 +3,15 @@ package apiHandler
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	customizedNFTFacade "github.com/dileepaj/tracified-nft-backend/businessFacade/customizedNFTFacade"
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
-	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/commonResponse"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 /**
@@ -27,7 +28,6 @@ func InitNFT(W http.ResponseWriter, r *http.Request) {
 		errors.BadRequest(W, "Invalid data")
 		return
 	}
-
 	// Checks if the API has the ncessary params filled
 	if requestGenOTP.ProductID != "" || requestGenOTP.Email != "" {
 		logs.InfoLogger.Println(requestGenOTP.ProductID, requestGenOTP.Email)
@@ -45,22 +45,18 @@ func InitNFT(W http.ResponseWriter, r *http.Request) {
 				errors.BadRequest(W, "Failed to retrive BatchID data")
 				return
 			} //If batch ID is retreived user email,otp and batch ID will be sent to be saved in the ruriOtp DB
-			result, error := SaveUserOTPMapping(requestGenOTP.Email, otp, batchData.BatchID)
+			_, error := SaveUserOTPMapping(requestGenOTP.Email, otp, batchData.BatchID)
 			if error != nil {
 				errors.BadRequest(W, error.Error())
 				return
 			} else {
-				_, err := SVGGen(batchData.BatchID, requestGenOTP.Email)
-				if err != nil {
-					errors.BadRequest(W, error.Error())
-					return
-				}
-				err1 := customizedNFTFacade.SendEmail(otp, requestGenOTP.Email)
-				if err1 != nil {
-					errors.BadRequest(W, "Incorrect email address")
-				} else {
-					commonResponse.SuccessStatus[string](W, result)
-				}
+
+				// err1 := customizedNFTFacade.SendEmail(otp, requestGenOTP.Email)
+				// if err1 != nil {
+				// 	errors.BadRequest(W, "Incorrect email address")
+				// } else {
+				commonResponse.SuccessStatus[string](W, "Email Has been Sent to "+requestGenOTP.Email)
+				//}
 			}
 		}
 	} else { //* If necssary params are not there Error Message will be sent as a response
@@ -71,7 +67,10 @@ func SaveUserOTPMapping(email string, otp string, batchID string) (string, error
 	var userAuth models.UserAuth
 	userAuth.Email = email
 	userAuth.Otp = otp
-	userAuth.BatchID = batchID
+	userAuth.BatchID = batchID //Default number of attempts
+	userAuth.Validated = "False"
+	userAuth.ExpireDate = primitive.NewDateTimeFromTime(GenerateOTPExpireDate())
+	logs.InfoLogger.Println("NEW exp date created: ", userAuth.ExpireDate)
 	result, error := customizedNFTFacade.SaveOTP(userAuth)
 	if error != nil {
 		return result, error
@@ -79,18 +78,18 @@ func SaveUserOTPMapping(email string, otp string, batchID string) (string, error
 		return result, nil
 	}
 }
-func SVGGen(batchID string, email string) (responseDtos.SVGforNFTResponse, error) {
-	var tempBatchID = "RURI_VSAPPH_013" //? Templary hardcoded
-	svg, err := customizedNFTFacade.GenerateandSaveSVG(tempBatchID, email)
-	if err != nil {
-		return svg, err
-	}
-	return svg, nil
+func GenerateOTPExpireDate() time.Time {
+	currentDate := time.Now()
+	logs.InfoLogger.Println("OTP Generated on : ", currentDate)
+	duration := time.Hour * 24 * 30
+	expireDate := currentDate.Add(duration)
+	logs.InfoLogger.Println("Expiration Date : ", expireDate)
+	return expireDate
 }
 
 /**
  **Description:This function is used to validate a OTP provided by the user. The email and the otp will be sent where the api.Checks if the otp and the email recived
- *				*have a matching record in the DB
+ **have a matching record in the DB
  **Returns:If There is a matching email and a OTP in the DB the generated SVG will be reutrned as a response. If not error msg is sent as response
  */
 func ValidateOTP(W http.ResponseWriter, r *http.Request) {
@@ -111,16 +110,16 @@ func ValidateOTP(W http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if rst == "Invalid OTP" {
-			commonResponse.NoContent(W, rst)
+			commonResponse.SuccessStatus[string](W, rst)
 			return
 		}
-		var tempBatchID = "RURI_VSAPPH_013" //? Templary hardcoded
-		rst1, err1 := customizedNFTFacade.GetSVGbyEmailandBatchID(requestValidateOTP.Email, tempBatchID)
-		if err != nil {
-			errors.BadRequest(W, err1.Error())
-			return
-		}
-		commonResponse.SuccessStatus[responseDtos.SVGforNFTResponse](W, rst1)
+		// var tempBatchID = "RURI_VSAPPH_013" //? Templary hardcoded
+		// rst1, err1 := customizedNFTFacade.GetSVGbyEmailandBatchID(requestValidateOTP.Email, tempBatchID)
+		// if err != nil {
+		// 	errors.BadRequest(W, err1.Error())
+		// 	return
+		// }
+		commonResponse.SuccessStatus[string](W, rst)
 	} else {
 		errors.BadRequest(W, "Email or OTP missing")
 		return

@@ -4,12 +4,14 @@ package customizedNFTrepository
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/dileepaj/tracified-nft-backend/database/connections"
 	"github.com/dileepaj/tracified-nft-backend/database/repository"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -45,14 +47,57 @@ func (r *OtpRepository) ValidateOTP(email string, otp string) (string, error) {
 			return "", err
 		}
 	}
-	logs.InfoLogger.Println("data retrived from DB :", authrst)
+
 	if authrst.BatchID == "" {
 		return "Invalid OTP", err
-	} else {
-		return authrst.BatchID, err
-	}
 
+	} else {
+
+		logs.InfoLogger.Println("obj ID passed :", authrst.OtpID)
+		rest, err := UpdateOTPStatus(authrst.OtpID)
+		if !rest {
+			logs.ErrorLogger.Println("Failed to update DB: ", err.Error())
+			return "Update Failed", err
+		}
+	}
+	now := primitive.NewDateTimeFromTime(time.Now())
+	// Below commented out code can be used to verify the expiration date check
+	// duration := time.Hour * 24 * 60
+	// Dummydate := primitive.NewDateTimeFromTime(Dummydate.Add(duration))
+	// logs.InfoLogger.Println("data from DB:", authrst)
+	// logs.InfoLogger.Println("NOW: ", Dummydate)
+	// logs.InfoLogger.Println("EXP: ", authrst.ExpireDate)
+	if now > authrst.ExpireDate {
+		return "Expired OTP", nil
+	}
+	return "Valid OTP", nil
 }
+func UpdateOTPStatus(otpID primitive.ObjectID) (bool, error) {
+	update := bson.M{
+		"$set": bson.M{"validated": "True"},
+	}
+	session, err := connections.GetMongoSession()
+	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session " + err.Error())
+	}
+	defer session.EndSession(context.TODO())
+	upsert := false
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+	rst := session.Client().Database(connections.DbName).Collection(UserAuth).FindOneAndUpdate(context.TODO(), bson.M{"_id": otpID}, update, &opt)
+	if rst != nil {
+		err := rst.Decode(&rst)
+		if err != nil {
+			logs.ErrorLogger.Println("Error occured while retreiving data from DB : ", err.Error())
+			return false, err
+		}
+	}
+	return true, nil
+}
+
 func (r *OtpRepository) ResendOTP(otpDataSet models.UserAuth) (string, error) {
 	var authrst models.UserAuth
 	rst, err := repository.FindById1AndId2("email", otpDataSet.Email, "batchid", otpDataSet.BatchID, UserAuth)

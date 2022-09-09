@@ -36,11 +36,11 @@ type TraceabilityData struct {
 	Key  string `json:"key" bson:"key,omitempty"`
 }
 
-// type GeoImage struct {
-// 	Type int                    `json:"type" bson:"type,omitempty"`
-// 	Val  map[string]interface{} `json:"val" bson:"val,omitempty"`
-// 	Key  string                 `json:"key" bson:"key,omitempty"`
-// }
+//	type GeoImage struct {
+//		Type int                    `json:"type" bson:"type,omitempty"`
+//		Val  map[string]interface{} `json:"val" bson:"val,omitempty"`
+//		Key  string                 `json:"key" bson:"key,omitempty"`
+//	}
 type GeoImageData struct {
 	Description string             `json:"description" bson:"description,omitempty"`
 	GeoCode     GeoCode            `json:"geoCode" bson:"geoCode,omitempty"`
@@ -64,10 +64,12 @@ type ItemData struct {
 }
 
 type UserAuth struct {
-	OtpID   primitive.ObjectID `json:"otpid" bson:"_id,omitempty"`
-	Email   string             `json:"email" bson:"email,omitempty"`
-	Otp     string             `json:"otp" bson:"otp,omitempty"`
-	BatchID string             `json:"batchid" bson:"batchid,omitempty"`
+	OtpID      primitive.ObjectID `json:"otpid" bson:"_id,omitempty"`
+	Email      string             `json:"email" bson:"email,omitempty"`
+	Otp        string             `json:"otp" bson:"otp,omitempty"`
+	BatchID    string             `json:"batchid" bson:"batchid,omitempty"`
+	Validated  string             `json:"validated" bson:"validated,omitempty"`
+	ExpireDate primitive.DateTime `json:"expDate" bson:"expDate,omitempty"`
 }
 
 type UserNFTMapping struct {
@@ -79,25 +81,25 @@ type UserNFTMapping struct {
 }
 
 type CollectorInfo struct {
-	Photo             string             `json:"photo" bson:"photo,omitempty"`
-	Name              string             `json:"name" bson:"name,omitempty"`
-	Address           string             `json:"address" bson:"address,omitempty"`
-	ContactNumber     string             `json:"contactNumber" bson:"contactNumber,omitempty"`   
+	Photo         string `json:"photo" bson:"photo,omitempty"`
+	Name          string `json:"name" bson:"name,omitempty"`
+	Address       string `json:"address" bson:"address,omitempty"`
+	ContactNumber string `json:"contactNumber" bson:"contactNumber,omitempty"`
 }
 
 type CertificationAuthority struct {
-	Name              string             `json:"name" bson:"name,omitempty"`
-	Address           string             `json:"address" bson:"address,omitempty"`  
+	Name    string `json:"name" bson:"name,omitempty"`
+	Address string `json:"address" bson:"address,omitempty"`
 }
 
 type ExporterInfo struct {
-	LicenseExpirationDate             string             `json:"licenseExpirationDate" bson:"licenseExpirationDate,omitempty"`
-	Name              				  string             `json:"name" bson:"name,omitempty"`
-	Address                           string             `json:"address" bson:"address,omitempty"`
-	LicenseNumber                     string             `json:"licenseNumber" bson:"licenseNumber,omitempty"`   
+	LicenseExpirationDate string `json:"licenseExpirationDate" bson:"licenseExpirationDate,omitempty"`
+	Name                  string `json:"name" bson:"name,omitempty"`
+	Address               string `json:"address" bson:"address,omitempty"`
+	LicenseNumber         string `json:"licenseNumber" bson:"licenseNumber,omitempty"`
 }
 
 type Appraiser struct {
-	Name              string             `json:"name" bson:"name,omitempty"`
-	Qualification     string             `json:"qualification" bson:"qualification,omitempty"`  
+	Name          string `json:"name" bson:"name,omitempty"`
+	Qualification string `json:"qualification" bson:"qualification,omitempty"`
 }
