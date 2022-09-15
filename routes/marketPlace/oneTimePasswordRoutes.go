@@ -27,7 +27,7 @@ var OneTimePassWordRoutes = models.Routers{
 	models.Router{
 		Name:    "Validate OTP",
 		Method:  "POST",          //! COnvert to post method
-		Path:    "/otp/validate", //? /validateOTP/..
+		Path:    "/validateOTP/", //? /validateOTP/..
 		Handler: apiHandler.ValidateOTP,
 	},
 
