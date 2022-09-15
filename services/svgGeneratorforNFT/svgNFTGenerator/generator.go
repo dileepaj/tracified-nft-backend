@@ -16,12 +16,12 @@ var (
 	styling        = services.ReadFromFile("services/svgGeneratorforNFT/templates/svgNFTStyles.css") //!Need to implement
 	styleStart     = `<style>`
 	styleEnd       = `</style>`
-	htmlBody	   = ""
+	htmlBody       = ""
 	collectionName = ""
 	ruriRepository customizedNFTrepository.SvgRepository
 )
 
-func GenerateSVGTemplateforNFT(tdpData []models.TDP, batchID string) (string, error) {
+func GenerateSVGTemplateforNFT(tdpData []models.TDP, batchID string, productID string) (string, error) {
 	var htmlStart = `<div class="nft-header default-font">
 						<div class="nft-header-content">
 							<img src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/Tracified-NFT-v5.png" class="nft-logo"/>
@@ -32,7 +32,7 @@ func GenerateSVGTemplateforNFT(tdpData []models.TDP, batchID string) (string, er
 
 	var iframeImg = `<div class="iframe-wrapper"><iframe  src="https://tracified.sirv.com/Spins/RURI%20Gems%20Compressed/120614/120614.spin" class="iframe-img" frameborder="0" allowfullscreen="true"></iframe></div>`
 
-	var stageStatus map[string]bool = make( map[string]bool)
+	var stageStatus map[string]bool = make(map[string]bool)
 
 	for _, maindata := range tdpData {
 
@@ -64,23 +64,23 @@ func GenerateSVGTemplateforNFT(tdpData []models.TDP, batchID string) (string, er
 
 			stageStatus[maindata.StageID] = true
 		}
-		
-	}	
+
+	}
 	template := svgStart + styleStart + styling + styleEnd + htmlStart + iframeImg + htmlBody + svgEnd
 	return template, nil
 }
 
-//get gem images from stage 103
-func GetGemImages (tdpData []models.TDP) []interface{}{
+// get gem images from stage 103
+func GetGemImages(tdpData []models.TDP) []interface{} {
 	var imgArr []interface{}
 	for _, maindata := range tdpData {
 		if maindata.StageID == "103" {
 			for _, v := range maindata.TraceabilityData {
-				if v.Type == 4 && v.Key == "photoofGem"{
-					
+				if v.Type == 4 && v.Key == "photoofGem" {
+
 					imgArr = v.Val.([]interface{})
-					break;
-					
+					break
+
 				}
 			}
 		}
@@ -89,17 +89,17 @@ func GetGemImages (tdpData []models.TDP) []interface{}{
 	return imgArr
 }
 
-//get collection name from stage 103
-func GetCollectionName (tdpData []models.TDP) {
+// get collection name from stage 103
+func GetCollectionName(tdpData []models.TDP) {
 	for _, maindata := range tdpData {
 		if maindata.StageID == "103" {
 			for _, v := range maindata.TraceabilityData {
-				if v.Type == 6 && v.Key == "collectionname"{
+				if v.Type == 6 && v.Key == "collectionname" {
 					var artifactData map[string]interface{} = v.Val.(map[string]interface{})
 					for key, itmdata := range artifactData {
 						if key == "name" {
 							collectionName = itmdata.(string)
-							break;
+							break
 						}
 					}
 				}
@@ -108,7 +108,7 @@ func GetCollectionName (tdpData []models.TDP) {
 	}
 }
 
-//get and show gem details in nft
+// get and show gem details in nft
 func GetGemDetails(tdp []models.TraceabilityData, section string, imgArr []interface{}) {
 	heading := `<div class="widget-div"><div class="widget-title-div"><span class="gem-icon"></span><label>` + section + `</label></div></div>`
 	tableContent := `<div class="bdr"><table class="table table-bordered table-striped rounded-20 overflow-hidden">`
@@ -130,18 +130,18 @@ func GetGemDetails(tdp []models.TraceabilityData, section string, imgArr []inter
 
 		if i == 0 {
 			prev = len
-		} else if i == len -1 {
+		} else if i == len-1 {
 			next = 1
 		}
 
 		lat := fmt.Sprintf("%f", tempdata.GeoCode.Lat)
 		long := fmt.Sprintf("%f", tempdata.GeoCode.Long)
-		
-		tableContent += `<li id="carousel__slide` + strconv.Itoa(curSlide) +`" tabindex="0" class="carousel__slide"><div class="carousel__snapper">`
-		tableContent += `<img src="` + tempdata.Image + `" /><a href="#carousel__slide`+strconv.Itoa(prev)+`" class="carousel__prev">Go to previous slide</a>
-						<a href="#carousel__slide`+strconv.Itoa(next)+`" class="carousel__next">Go to next slide</a></div>`
+
+		tableContent += `<li id="carousel__slide` + strconv.Itoa(curSlide) + `" tabindex="0" class="carousel__slide"><div class="carousel__snapper">`
+		tableContent += `<img src="` + tempdata.Image + `" /><a href="#carousel__slide` + strconv.Itoa(prev) + `" class="carousel__prev">Go to previous slide</a>
+						<a href="#carousel__slide` + strconv.Itoa(next) + `" class="carousel__next">Go to next slide</a></div>`
 		tableContent += `<div class="map-link-div"><a href="https://maps.google.com/?q=` + lat + `,` + long + `" target="_blank" class="map-link-a">View on map</a><span class="material-symbols-outlined map-link-span">open_in_new</span></div>
-		<div class="timestamp-div"><label class="timestamp-label">Time Stamp : `+tempdata.TimeStamp.Time().String()+`</label></div></li>`
+		<div class="timestamp-div"><label class="timestamp-label">Time Stamp : ` + tempdata.TimeStamp.Time().String() + `</label></div></li>`
 		i++
 
 	}
@@ -155,9 +155,9 @@ func GetGemDetails(tdp []models.TraceabilityData, section string, imgArr []inter
 			for key, itmdata := range artifactData {
 				if key == "gemType" {
 					tableContent += `<tr><td>Gem Type</td><td class="value-label">` + itmdata.(string) + `</td></tr>`
-					break;
+					break
 				}
-			}	
+			}
 		} else if v.Type == 1 {
 			s := fmt.Sprintf("%f", v.Val)
 			tableContent += `<tr><td>Rough Stone Weight</td><td class="value-label">` + s + `</td></tr>`
@@ -168,18 +168,18 @@ func GetGemDetails(tdp []models.TraceabilityData, section string, imgArr []inter
 
 	tableContent += `</tbody></table></div>`
 	htmlBody += heading + tableContent
-	
+
 }
 
 func GenerateContent(stageID string, tdp []models.TraceabilityData, section string, icon string) {
 
-	heading := `<div class="widget-div"><div class="widget-title-div"><span class="`+icon+`-icon"></span><label>` + section + `</label></div></div>`
+	heading := `<div class="widget-div"><div class="widget-title-div"><span class="` + icon + `-icon"></span><label>` + section + `</label></div></div>`
 	tableContent := `<div class="bdr"><table class="table table-bordered table-striped rounded-20 overflow-hidden"><tbody>`
 
 	if stageID == "103" {
 		//displaying collector's/ dealer's information
 		for _, v := range tdp {
-			if  v.Type == 6 && v.Key == "collector/dealername"{
+			if v.Type == 6 && v.Key == "collector/dealername" {
 				var artifactData map[string]interface{} = v.Val.(map[string]interface{})
 				var tempdata models.CollectorInfo
 				mapstructure.Decode(artifactData, &tempdata)
@@ -193,7 +193,7 @@ func GenerateContent(stageID string, tdp []models.TraceabilityData, section stri
 	} else if stageID == "105" {
 		//displaying certification details
 		for _, v := range tdp {
-			if  v.Type == 6 && v.Key == "certificationauthorityname"{
+			if v.Type == 6 && v.Key == "certificationauthorityname" {
 				var artifactData map[string]interface{} = v.Val.(map[string]interface{})
 				var tempdata models.CertificationAuthority
 				mapstructure.Decode(artifactData, &tempdata)
@@ -203,7 +203,7 @@ func GenerateContent(stageID string, tdp []models.TraceabilityData, section stri
 
 				break
 			}
-			
+
 		}
 		for _, v := range tdp {
 			if v.Type == 3 {
@@ -221,7 +221,7 @@ func GenerateContent(stageID string, tdp []models.TraceabilityData, section stri
 		tableContent += `<tr><td>Images</td><td class="td-carousel"><div class="carousel-wrapper"><section class="carousel" aria-label="Gallery">
 						<ol class="carousel__viewport">`
 
-		//display certification images in a carousel				
+		//display certification images in a carousel
 		len := len(images)
 		i := 0
 		for _, value := range images {
@@ -231,28 +231,28 @@ func GenerateContent(stageID string, tdp []models.TraceabilityData, section stri
 
 			if i == 0 {
 				prev = len
-			} else if i == len -1 {
+			} else if i == len-1 {
 				next = 1
 			}
 
 			lat := fmt.Sprintf("%f", value.GeoCode.Lat)
 			long := fmt.Sprintf("%f", value.GeoCode.Long)
 
-			tableContent += `<li id="carousel__slide_cert` + strconv.Itoa(curSlide) +`" tabindex="0" class="carousel__slide"><div class="carousel__snapper">`
-			tableContent += `<img src="` + value.Image + `" /><a href="#carousel__slide_cert`+strconv.Itoa(prev)+`" class="carousel__prev">Go to previous slide</a>
-							<a href="#carousel__slide_cert`+strconv.Itoa(next)+`" class="carousel__next">Go to next slide</a></div>`
-							tableContent += `<div class="map-link-div"><a href="https://maps.google.com/?q=` + lat + `,` + long + `" target="_blank" class="map-link-a">View on map</a><span class="material-symbols-outlined map-link-span">open_in_new</span></div>
-							<div class="timestamp-div"><label class="timestamp-label">Time Stamp : `+value.TimeStamp.Time().String()+`</label></div></li>`
+			tableContent += `<li id="carousel__slide_cert` + strconv.Itoa(curSlide) + `" tabindex="0" class="carousel__slide"><div class="carousel__snapper">`
+			tableContent += `<img src="` + value.Image + `" /><a href="#carousel__slide_cert` + strconv.Itoa(prev) + `" class="carousel__prev">Go to previous slide</a>
+							<a href="#carousel__slide_cert` + strconv.Itoa(next) + `" class="carousel__next">Go to next slide</a></div>`
+			tableContent += `<div class="map-link-div"><a href="https://maps.google.com/?q=` + lat + `,` + long + `" target="_blank" class="map-link-a">View on map</a><span class="material-symbols-outlined map-link-span">open_in_new</span></div>
+							<div class="timestamp-div"><label class="timestamp-label">Time Stamp : ` + value.TimeStamp.Time().String() + `</label></div></li>`
 			i++
 
 		}
 
 		tableContent += `</ol></section></div></td></tr>`
 
-	} else if stageID == "106" { 
+	} else if stageID == "106" {
 		//display export details
 		for _, v := range tdp {
-			if  v.Type == 6 {
+			if v.Type == 6 {
 				var artifactData map[string]interface{} = v.Val.(map[string]interface{})
 				var tempdata models.ExporterInfo
 				mapstructure.Decode(artifactData, &tempdata)
@@ -265,20 +265,20 @@ func GenerateContent(stageID string, tdp []models.TraceabilityData, section stri
 				break
 			}
 		}
-	} else if stageID == "109" { 
+	} else if stageID == "109" {
 		//display appraisal details
 		for _, v := range tdp {
-			if  v.Type == 3 {
+			if v.Type == 3 {
 				tableContent += `<tr><td>Appraisal Date </td><td class="value-label">` + v.Val.(string) + `</td></tr>`
-			} else if  v.Type == 6 {
+			} else if v.Type == 6 {
 				var artifactData map[string]interface{} = v.Val.(map[string]interface{})
 				var tempdata models.Appraiser
 				mapstructure.Decode(artifactData, &tempdata)
 				tableContent += `<tr><td>Appraiser </td><td class="value-label">` + tempdata.Name + `</td></tr>`
 				tableContent += `<tr><td>Appraiser Qualification </td><td class="value-label">` + tempdata.Qualification + `</td></tr>`
-			} else if  v.Type == 4 {
+			} else if v.Type == 4 {
 				tableContent += `<tr><td>Appraisal Photos</td>`
-				dataArr := v.Val.([] interface{})
+				dataArr := v.Val.([]interface{})
 
 				//display appraisal images
 				for _, v := range dataArr {
@@ -289,10 +289,9 @@ func GenerateContent(stageID string, tdp []models.TraceabilityData, section stri
 					lat := fmt.Sprintf("%f", tempdata.GeoCode.Lat)
 					long := fmt.Sprintf("%f", tempdata.GeoCode.Long)
 
-
 					tableContent += `<td><img src="` + tempdata.Image + `" class="report-img" /><br/><br/>
 					<a href="https://maps.google.com/?q=` + lat + `,` + long + `" target="_blank" class="map-link-a">View on map</a><span class="material-symbols-outlined map-link-span">open_in_new</span><br/>
-					<label class="timestamp-label" style="margin-bottom: 30px">Time Stamp : `+tempdata.TimeStamp.Time().String()+`</label></td>`
+					<label class="timestamp-label" style="margin-bottom: 30px">Time Stamp : ` + tempdata.TimeStamp.Time().String() + `</label></td>`
 					break
 				}
 				tableContent += `</tr>`
@@ -302,17 +301,17 @@ func GenerateContent(stageID string, tdp []models.TraceabilityData, section stri
 
 	tableContent += `</tbody></table></div>`
 	htmlBody += heading + tableContent
-	
+
 }
 
-//get images in a tdp
-func GetImages (tdp []models.TraceabilityData) map[int]models.GeoImageData{
+// get images in a tdp
+func GetImages(tdp []models.TraceabilityData) map[int]models.GeoImageData {
 	images := make(map[int]models.GeoImageData)
 	var i int = 0
 	for _, v := range tdp {
-			
+
 		if v.Type == 4 {
-			dataArr := v.Val.([] interface{})
+			dataArr := v.Val.([]interface{})
 			for _, v := range dataArr {
 				mapdata := v.(map[string]interface{})
 				var tempdata models.GeoImageData
@@ -321,7 +320,7 @@ func GetImages (tdp []models.TraceabilityData) map[int]models.GeoImageData{
 				i++
 			}
 		}
-		
+
 	}
 
 	return images
