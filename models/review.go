@@ -9,4 +9,5 @@ type Review struct {
 	Status        string             `json:"status" bson:"status"`
 	Rating        float32            `json:"rating" bson:"rating"`
 	Description   string             `json:"description" bson:"description"`
+	Timestamp     string             `json:"timestamp" bson:"timestamp,omitempty"`
 }
