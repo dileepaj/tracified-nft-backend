@@ -96,3 +96,75 @@ func UpdateFaqbyID(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+func UpdateUserFAQStatus(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	var updateObj requestDtos.UpdateUserFAQ
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&updateObj)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+	} else {
+		_, err1 := marketplaceBusinessFacade.UpdateUserFAQ(updateObj)
+		if err1 != nil {
+			ErrorMessage := err1.Error()
+			errors.BadRequest(w, ErrorMessage)
+			return
+		} else {
+			//If userfaq status is updated successfully another DB call is made to retive all the faq detials by id
+			faqdata, err1 := marketplaceBusinessFacade.GetUserFAQByID(updateObj.UserQuestionID)
+			logs.InfoLogger.Println("UserFAQ data recived: ", faqdata)
+			if err1 != nil {
+				logs.ErrorLogger.Println("Failed to get endorsment data : ", err1.Error())
+			}
+			emailErr := marketplaceBusinessFacade.SendResponseToFAQ(faqdata)
+			if emailErr != nil {
+				errors.InternalError(w, emailErr.Error())
+				return
+			}
+			w.WriteHeader(http.StatusOK)
+			message := "UserFAQ updated successfully."
+			err = json.NewEncoder(w).Encode(message)
+			if err != nil {
+				logs.ErrorLogger.Println(err)
+			}
+			return
+		}
+	}
+}
+
+func StoreFAQ(W http.ResponseWriter, r *http.Request) {
+	W.Header().Set("Content-Type", "application/json; charset-UTF-8")
+	var requestStoreFaq models.UserQuestions
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&requestStoreFaq)
+	if err != nil {
+		logs.ErrorLogger.Println("Error occured while decoding JSON in CreateFaq:faqHandler: ", err.Error())
+	}
+	err = validations.ValidateUserFaq(requestStoreFaq)
+	if err != nil {
+		errors.BadRequest(W, err.Error())
+	} else {
+		result, err1 := marketplaceBusinessFacade.StoreUserFAQ(requestStoreFaq)
+		if err1 != nil {
+			errors.BadRequest(W, err.Error())
+		} else {
+			commonResponse.SuccessStatus[string](W, result)
+		}
+	}
+}
+
+func GetUserFAQbyStatus(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	if vars["status"] != "" {
+		results, err := marketplaceBusinessFacade.GetUserFAQByStatus(vars["status"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[[]models.UserQuestions](w, results)
+		}
+	} else {
+		errors.BadRequest(w, "")
+	}
+}

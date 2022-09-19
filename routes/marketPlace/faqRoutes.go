@@ -13,6 +13,13 @@ var FaqRoutes = models.Routers{
 		Path:    "/faq/",
 		Handler: apiHandler.CreateFaq,
 	},
+	//Route will be used to store user questions
+	models.Router{
+		Name:    "Store User FAQ",
+		Method:  "POST",
+		Path:    "/userfaq/",
+		Handler: apiHandler.StoreFAQ,
+	},
 	//Will return all the Faq in collection
 	models.Router{
 		Name:    "Get All FAQ",
@@ -33,5 +40,17 @@ var FaqRoutes = models.Routers{
 		Method:  "PUT",
 		Path:    "/faq/",
 		Handler: apiHandler.UpdateFaqbyID,
+	},
+	models.Router{
+		Name:    "GET User FAQ By Status",
+		Method:  "Get",
+		Path:    "/userfaq/status/{status}",
+		Handler: apiHandler.GetUserFAQbyStatus,
+	},
+	models.Router{
+		Name:    "Update UserFAQ Status",
+		Method:  "PUT",
+		Path:    "/userfaq/status",
+		Handler: apiHandler.UpdateUserFAQStatus,
 	},
 }

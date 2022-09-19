@@ -13,3 +13,12 @@ func ValidateFaq(e models.Faq) error {
 	}
 	return nil
 }
+
+func ValidateUserFaq(e models.UserQuestions) error {
+	validate = validator.New()
+	err := validate.Struct(e)
+	if err != nil {
+		return err
+	}
+	return nil
+}
