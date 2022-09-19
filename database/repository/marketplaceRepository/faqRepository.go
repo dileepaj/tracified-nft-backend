@@ -15,9 +15,32 @@ import (
 type FaqRepository struct{}
 
 var Faq = "faq"
+var userFaq = "userFAQ"
 
 func (r *FaqRepository) CreateFaq(faq models.Faq) (string, error) {
 	return repository.Save(faq, Faq)
+}
+
+func (r *FaqRepository) StoreUserFAQ(faq models.UserQuestions) (string, error) {
+	return repository.Save(faq, userFaq)
+}
+
+func (r *FaqRepository) GetUserFAQByStatus(idName string, id string) ([]models.UserQuestions, error) {
+	var faq []models.UserQuestions
+	rst, err := repository.FindById(idName, id, userFaq)
+	if err != nil {
+		return faq, err
+	}
+	for rst.Next(context.TODO()) {
+		var faqs models.UserQuestions
+		err = rst.Decode(&faqs)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return faq, err
+		}
+		faq = append(faq, faqs)
+	}
+	return faq, nil
 }
 
 func (r *FaqRepository) GetAllFaq() ([]models.Faq, error) {
@@ -100,4 +123,54 @@ func (r *FaqRepository) UpdateFaqbyID(findBy string, id primitive.ObjectID, upda
 		return faqResponse, nil
 
 	}
+}
+
+func (r *FaqRepository) UpdateUserFAQ(findBy string, id primitive.ObjectID, update primitive.M) (models.UserQuestions, error) {
+	var userfaqResponse models.UserQuestions
+
+	session, err := connections.GetMongoSession()
+	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session " + err.Error())
+	}
+
+	defer session.EndSession(context.TODO())
+	upsert := false
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+	rst := session.Client().Database(connections.DbName).Collection("userFAQ").FindOneAndUpdate(context.TODO(), bson.M{"userquestionID": id}, update, &opt)
+	if rst != nil {
+		err := rst.Decode((&userfaqResponse))
+		if err != nil {
+			logs.ErrorLogger.Println("Error occured while retreving data from collection userFAQ in UpdateUserFAQ:FAQRepository.go: ", err.Error())
+			return userfaqResponse, err
+		}
+		return userfaqResponse, nil
+	} else {
+		return userfaqResponse, nil
+
+	}
+}
+
+func (r *FaqRepository) FindUserFAQbyID(id primitive.ObjectID) (models.UserQuestions, error) {
+	var faq models.UserQuestions
+	session, err := connections.GetMongoSession()
+	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session " + err.Error())
+	}
+	defer session.EndSession(context.TODO())
+	rst, err := session.Client().Database(connections.DbName).Collection("userFAQ").Find(context.TODO(), bson.M{"userquestionID": id})
+	if err != nil {
+		return faq, err
+	}
+	for rst.Next(context.TODO()) {
+		err = rst.Decode(&faq)
+		if err != nil {
+			logs.ErrorLogger.Println("Error occured while retreving data from collection faq in GetUserFAQByID:FAQRepository.go: ", err.Error())
+			return faq, err
+		}
+	}
+	return faq, err
 }

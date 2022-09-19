@@ -15,10 +15,16 @@ import (
 type NewsLetterRepository struct{}
 
 var NewsLetter = "newsletter"
+var Subscription = "subscription"
 
 func (r *NewsLetterRepository) SaveNewsLetter(newsLetter models.NewsLetter) (string, error) {
 	//Calling the common repository save method and passing model class and collection name.
 	return repository.Save(newsLetter, NewsLetter)
+}
+
+func (r *NewsLetterRepository) AddSubscription(subscription models.Subscription) (string, error) {
+	//Calling the common repository save method and passing model class and collection name.
+	return repository.Save(subscription, Subscription)
 }
 
 //retreving all nesletters from DB
