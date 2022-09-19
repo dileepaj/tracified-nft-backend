@@ -84,3 +84,33 @@ func GetNewsletterByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func Subscribe(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	var updateObj models.Subscription
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&updateObj)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+	} else {
+		_, err1 := marketplaceBusinessFacade.AddSubscription(updateObj)
+		if err1 != nil {
+			ErrorMessage := err1.Error()
+			errors.BadRequest(w, ErrorMessage)
+			return
+		} else {
+			emailErr := marketplaceBusinessFacade.SubscribeToNewsLetter(updateObj.UserMail)
+			if emailErr != nil {
+				errors.InternalError(w, emailErr.Error())
+				return
+			}
+			w.WriteHeader(http.StatusOK)
+			message := "Subscription added successfully."
+			err = json.NewEncoder(w).Encode(message)
+			if err != nil {
+				logs.ErrorLogger.Println(err)
+			}
+			return
+		}
+	}
+}

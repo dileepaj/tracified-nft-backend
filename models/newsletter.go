@@ -13,3 +13,8 @@ type NewsLetter struct {
 	Description string             `json:"description" bson:"descriptipon"`
 	Image       string             `json:"image" bson:"iamge"`
 }
+
+type Subscription struct {
+	SubscriptionID primitive.ObjectID `json:"subscriptionID" bson:"_id,omitempty"`
+	UserMail       string             `json:"mail" bson:"mail"`
+}
