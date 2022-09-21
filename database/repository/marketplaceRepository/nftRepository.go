@@ -57,6 +57,25 @@ func (r *NFTRepository) FindNFTStory(idName1 string, id1 string, idName2 string,
 	return nfts, nil
 }
 
+func (r *NFTRepository) FindNFTByCollection(idName1 string, id1 string) ([]models.NFT, error) {
+	var nfts []models.NFT
+	rst, err := repository.FindById(idName1, id1, NFT)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+		return nfts, err
+	}
+	for rst.Next(context.TODO()) {
+		var nft models.NFT
+		err = rst.Decode(&nft)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return nfts, err
+		}
+		nfts = append(nfts, nft)
+	}
+	return nfts, nil
+}
+
 func (r *NFTRepository) FindTXNById1AndNotId2(idName1 string, id1 string, idName2 string, id2 string) ([]models.TXN, error) {
 	var nfts []models.TXN
 	rst, err := repository.FindById1AndNotId2(idName1, id1, idName2, id2, Txn)
