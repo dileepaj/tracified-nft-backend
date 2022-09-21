@@ -461,3 +461,18 @@ func GetNFTStory(w http.ResponseWriter, r *http.Request) {
 		errors.BadRequest(w, "")
 	}
 }
+
+func GetNFTByCollection(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	if vars["collection"] != "" {
+		results, err := marketplaceBusinessFacade.GetNFTByCollection(vars["collection"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[[]models.NFT](w, results)
+		}
+	} else {
+		errors.BadRequest(w, "")
+	}
+}
