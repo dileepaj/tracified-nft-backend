@@ -52,7 +52,6 @@ func (r *FaqRepository) GetAllFaq() ([]models.Faq, error) {
 
 	var allFaq []models.Faq
 	findOptions := options.Find()
-	findOptions.SetLimit(10)
 	result, err := session.Client().Database(connections.DbName).Collection(Faq).Find(context.TODO(), bson.D{{}}, findOptions)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured when trying to connect to DB and excute Find query in GetAllFaq:faqRepository.go: ", err.Error())

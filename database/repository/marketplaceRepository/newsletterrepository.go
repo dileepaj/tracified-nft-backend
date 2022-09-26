@@ -27,7 +27,7 @@ func (r *NewsLetterRepository) AddSubscription(subscription models.Subscription)
 	return repository.Save(subscription, Subscription)
 }
 
-//retreving all nesletters from DB
+// retreving all nesletters from DB
 func (r *NewsLetterRepository) GetAllNewsLetters() ([]models.NewsLetter, error) {
 	session, err := connections.GetMongoSession()
 	if err != nil {
@@ -37,7 +37,6 @@ func (r *NewsLetterRepository) GetAllNewsLetters() ([]models.NewsLetter, error) 
 
 	var allNewsLetters []models.NewsLetter
 	findOptions := options.Find()
-	findOptions.SetLimit(10)
 	result, err := session.Client().Database(connections.DbName).Collection(NewsLetter).Find(context.TODO(), bson.D{{}}, findOptions)
 	if err != nil {
 		logs.ErrorLogger.Println("Error while retreving data in GetAllNewsLetters : newsletterrepository: ", err.Error())
@@ -54,11 +53,9 @@ func (r *NewsLetterRepository) GetAllNewsLetters() ([]models.NewsLetter, error) 
 	return allNewsLetters, err
 }
 
-//Retreving news letters by author name
+// Retreving news letters by author name
 func (r *NewsLetterRepository) GetNewsLetterByAuthor(authorname string) ([]models.NewsLetter, error) {
 	var newsLetters []models.NewsLetter
-	findOptions := options.Find()
-	findOptions.SetLimit(10)
 	result, err := repository.FindById("author", authorname, NewsLetter)
 	if err != nil {
 		logs.ErrorLogger.Println("Error while getting data from DB in GetNewsLetterByAuthor:newsletterrepository: ", err.Error())

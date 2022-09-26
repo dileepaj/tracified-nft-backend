@@ -104,7 +104,7 @@ func (r *NFTRepository) GetAllNFTs() ([]models.NFT, error) {
 
 	var nft []models.NFT
 	findOptions := options.Find()
-	findOptions.SetLimit(10)
+
 	result, err := session.Client().Database(connections.DbName).Collection(NFT).Find(context.TODO(), bson.D{{}}, findOptions)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured when trying to connect to DB and excute Find query in GetAllNFT:NFTRepository.go: ", err.Error())
@@ -403,7 +403,6 @@ func (r *NFTRepository) GetAllTags() ([]models.Tags, error) {
 
 	var tag []models.Tags
 	findOptions := options.Find()
-	findOptions.SetLimit(10)
 	result, err := session.Client().Database(connections.DbName).Collection(Tags).Find(context.TODO(), bson.D{{}}, findOptions)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured when trying to connect to DB and excute Find query in GetAllNFT:NFTRepository.go: ", err.Error())

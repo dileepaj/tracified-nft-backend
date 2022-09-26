@@ -65,7 +65,6 @@ func (r *WatchListRepository) GetAllWatchLists() ([]models.WatchList, error) {
 
 	var watchlist []models.WatchList
 	findOptions := options.Find()
-	findOptions.SetLimit(10)
 	result, err := session.Client().Database(connections.DbName).Collection(WatchList).Find(context.TODO(), bson.D{{}}, findOptions)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured when trying to connect to DB and excute Find query in GetAllWatchList:watchlistRepository.go: ", err.Error())
@@ -82,7 +81,6 @@ func (r *WatchListRepository) GetAllWatchLists() ([]models.WatchList, error) {
 	}
 	return watchlist, nil
 }
-
 
 func (r *WatchListRepository) FindWatchListsByBlockchainAndIdentifier(idName string, id string, idName2 string, id2 string) ([]models.WatchList, string, error) {
 	var watchlists []models.WatchList

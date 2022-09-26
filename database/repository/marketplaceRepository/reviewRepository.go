@@ -47,7 +47,6 @@ func (r *ReviewRepository) GetAllReviews() ([]models.Review, error) {
 
 	var allReviews []models.Review
 	findOptions := options.Find()
-	findOptions.SetLimit(10)
 	result, err := session.Client().Database(connections.DbName).Collection(Review).Find(context.TODO(), bson.D{{}}, findOptions)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured when trying to connect to DB and excute Find Query in GetAllReviews(reviewRepository): ", err.Error())

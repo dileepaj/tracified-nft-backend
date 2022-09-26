@@ -29,7 +29,6 @@ func (r *DocumentRepository) GetAllDocs() ([]models.Document, error) {
 
 	var allDocs []models.Document
 	findOptions := options.Find()
-	findOptions.SetLimit(10)
 	result, err := session.Client().Database(connections.DbName).Collection(Document).Find(context.TODO(), bson.D{{}}, findOptions)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured when trying to connect to DB and excute Find query in GetAllDocs:documentRepository.go: ", err.Error())
