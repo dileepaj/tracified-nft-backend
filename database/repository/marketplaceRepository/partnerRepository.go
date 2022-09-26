@@ -29,7 +29,6 @@ func (r *PartnerRepository) GetAllPartner() ([]models.Partner, error) {
 
 	var allPartner []models.Partner
 	findOptions := options.Find()
-	findOptions.SetLimit(10)
 	result, err := session.Client().Database(connections.DbName).Collection(Partner).Find(context.TODO(), bson.D{{}}, findOptions)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured when trying to connect to DB and excute Find query in GetAllPartner:partnerRepository.go: ", err.Error())

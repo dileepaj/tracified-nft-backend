@@ -19,7 +19,6 @@ func (r *FavouriteRepository) SaveFavourite(favourite models.Favourite) (string,
 	return repository.Save[models.Favourite](favourite, Favourite)
 }
 
-
 func (r *FavouriteRepository) GetFavouritesByBlockchainAndIdentifier(idName string, id string, idName2 string, id2 string) ([]models.Favourite, string, error) {
 	var favs []models.Favourite
 	rst, err := repository.FindById1AndNotId2(idName, id, idName2, id2, Favourite)
@@ -66,7 +65,6 @@ func (r *FavouriteRepository) GetAllFavourites() ([]models.Favourite, error) {
 
 	var favourite []models.Favourite
 	findOptions := options.Find()
-	findOptions.SetLimit(10)
 	result, err := session.Client().Database(connections.DbName).Collection(Favourite).Find(context.TODO(), bson.D{{}}, findOptions)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured when trying to connect to DB and excute Find query in GetAllFavourite:FavouriteRepository.go: ", err.Error())

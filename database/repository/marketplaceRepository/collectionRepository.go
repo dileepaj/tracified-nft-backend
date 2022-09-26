@@ -50,7 +50,6 @@ func (r *CollectionRepository) GetAllCollections() ([]models.NFTCollection, erro
 
 	var collections []models.NFTCollection
 	findOptions := options.Find()
-	findOptions.SetLimit(10)
 	result, err := session.Client().Database(connections.DbName).Collection(Collection).Find(context.TODO(), bson.D{{}}, findOptions)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured when trying to connect to DB and excute Find query in GetAllCollection:CollectionRepository.go: ", err.Error())
