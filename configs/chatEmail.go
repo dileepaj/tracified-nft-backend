@@ -12,13 +12,13 @@ var (
 func GetChatSenderEmailAddres() string {
 	LoadEnv()
 	chatSenderEmailAddress = os.Getenv("MK_SENDER_EMAILADDRESS")
-	return endorsmentSenderEmailAddress
+	return chatSenderEmailAddress
 }
 
 func GetChatSenderEmailKey() string {
 	LoadEnv()
 	chatSenderEmailKey = os.Getenv("MK_SENDER_EMAIL_KEY")
-	return endorsmentSenderEmailKey
+	return chatSenderEmailKey
 }
 
 func GetAcceptedFAQEmail(category string, subject string, desc string, answer string) string {
