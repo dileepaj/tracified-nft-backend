@@ -12,13 +12,13 @@ var (
 func GetSubscribeSenderEmailAddres() string {
 	LoadEnv()
 	subscribeSenderEmailAddress = os.Getenv("MK_SENDER_EMAILADDRESS")
-	return endorsmentSenderEmailAddress
+	return subscribeSenderEmailAddress
 }
 
 func GetSubscribeSenderEmailKey() string {
 	LoadEnv()
 	subscribeSenderEmailKey = os.Getenv("MK_SENDER_EMAIL_KEY")
-	return endorsmentSenderEmailKey
+	return subscribeSenderEmailKey
 }
 
 func GetAcceptedSubscription() string {
