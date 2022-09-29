@@ -2,6 +2,7 @@ package apiHandler
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/dileepaj/tracified-nft-backend/businessFacade/marketplaceBusinessFacade"
@@ -103,6 +104,25 @@ func GetFavouritesByBlockchainAndIdentifier(w http.ResponseWriter, r *http.Reque
 					commonResponse.SuccessStatus[models.NFT](w, result)
 				}
 			}
+			commonResponse.SuccessStatus[[]models.Favourite](w, result)
+		}
+	} else {
+		errors.BadRequest(w, "")
+	}
+
+}
+
+func FavouritesByBlockchainAndIdentifier(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	log.Println("inside fav")
+	vars := mux.Vars(r)
+	if vars["blockchain"] != "" && vars["nftidentifier"] != "" {
+
+		result, id, err := marketplaceBusinessFacade.GetFavouritesByBlockchainAndIdentifier(vars["blockchain"], vars["nftidentifier"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			log.Println("Id is: ", id)
 			commonResponse.SuccessStatus[[]models.Favourite](w, result)
 		}
 	} else {

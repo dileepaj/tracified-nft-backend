@@ -27,9 +27,15 @@ var WatchListRoutes = models.Routers{
 		Handler: apiHandler.GetWatchListByUserPK,
 	},
 	models.Router{
-		Name:    "GET WatchLists By Blockchain",
+		Name:    "GET and PUT WatchLists By Blockchain and NFTIdentifier",
 		Method:  "Get",
 		Path:    "/watchlists/{blockchain}/{nftidentifier}",
 		Handler: apiHandler.FindWatchListsByBlockchainAndIdentifier,
+	},
+	models.Router{
+		Name:    "GET WatchLists By Blockchain and NFTIdentifier",
+		Method:  "Get",
+		Path:    "/watched/{blockchain}/{nftidentifier}",
+		Handler: apiHandler.GetWatchListsByBlockchainAndIdentifier,
 	},
 }
