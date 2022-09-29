@@ -139,7 +139,7 @@ func (r *FaqRepository) UpdateUserFAQ(findBy string, id primitive.ObjectID, upda
 		ReturnDocument: &after,
 		Upsert:         &upsert,
 	}
-	rst := session.Client().Database(connections.DbName).Collection("userFAQ").FindOneAndUpdate(context.TODO(), bson.M{"userquestionID": id}, update, &opt)
+	rst := session.Client().Database(connections.DbName).Collection("userFAQ").FindOneAndUpdate(context.TODO(), bson.M{"_id": id}, update, &opt)
 	if rst != nil {
 		err := rst.Decode((&userfaqResponse))
 		if err != nil {
@@ -160,7 +160,7 @@ func (r *FaqRepository) FindUserFAQbyID(id primitive.ObjectID) (models.UserQuest
 		logs.ErrorLogger.Println("Error while getting session " + err.Error())
 	}
 	defer session.EndSession(context.TODO())
-	rst, err := session.Client().Database(connections.DbName).Collection("userFAQ").Find(context.TODO(), bson.M{"userquestionID": id})
+	rst, err := session.Client().Database(connections.DbName).Collection("userFAQ").Find(context.TODO(), bson.M{"_id": id})
 	if err != nil {
 		return faq, err
 	}
