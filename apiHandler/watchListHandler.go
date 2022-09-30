@@ -2,6 +2,7 @@ package apiHandler
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/dileepaj/tracified-nft-backend/businessFacade/marketplaceBusinessFacade"
@@ -94,6 +95,23 @@ func FindWatchListsByBlockchainAndIdentifier(w http.ResponseWriter, r *http.Requ
 					commonResponse.SuccessStatus[models.NFT](w, result)
 				}
 			}
+			commonResponse.SuccessStatus[[]models.WatchList](w, result)
+
+		}
+	} else {
+		errors.BadRequest(w, "")
+	}
+}
+
+func GetWatchListsByBlockchainAndIdentifier(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	if vars["blockchain"] != "" || vars["nftidentifier"] != "" {
+		result, id, err := marketplaceBusinessFacade.FindWatchListsByBlockchainAndIdentifier(vars["blockchain"], vars["nftidentifier"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			log.Println("Id is: ", id)
 			commonResponse.SuccessStatus[[]models.WatchList](w, result)
 
 		}

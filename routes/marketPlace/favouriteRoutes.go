@@ -25,9 +25,15 @@ var FavouritesRoutes = models.Routers{
 		Handler: apiHandler.GetFavouritesByUserPK,
 	},
 	models.Router{
-		Name:    "GET Favourites By Favourites",
+		Name:    "GETand PUT Favourites By Favourites",
 		Method:  "GET",
 		Path:    "/favourites/{blockchain}/{nftidentifier}",
 		Handler: apiHandler.GetFavouritesByBlockchainAndIdentifier,
+	},
+	models.Router{
+		Name:    "GET Favourites By Favourites",
+		Method:  "GET",
+		Path:    "/favourite/{blockchain}/{nftidentifier}",
+		Handler: apiHandler.FavouritesByBlockchainAndIdentifier,
 	},
 }
