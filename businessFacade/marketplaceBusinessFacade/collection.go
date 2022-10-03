@@ -16,6 +16,10 @@ func GetCollectionByUserPK(userid string) ([]models.NFTCollection, error) {
 	return CollectionRepository.FindCollectionbyUserPK("userid", userid)
 }
 
+func GetCollectionByPublicKey(pk string) ([]models.NFTCollection, error) {
+	return CollectionRepository.FindCollectionbyPublickey("publickey", pk)
+}
+
 func UpdateCollection(update requestDtos.UpdateCollection) (models.NFTCollection, error) {
 	return CollectionRepository.UpdateCollection(update)
 }
