@@ -123,6 +123,25 @@ func GetCollectionByUserPK(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func GetCollectionByPublicKey(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
+	vars := mux.Vars(r)
+	results, err1 := marketplaceBusinessFacade.GetCollectionByPublicKey(vars["publickey"])
+	if err1 != nil {
+		ErrorMessage := err1.Error()
+		errors.BadRequest(w, ErrorMessage)
+		return
+	} else {
+		w.WriteHeader(http.StatusOK)
+		err := json.NewEncoder(w).Encode(results)
+		if err != nil {
+			logs.ErrorLogger.Println(err)
+		}
+		return
+	}
+
+}
+
 func GetAllCollections(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
 	log.Println("calling func Get All Collections....")

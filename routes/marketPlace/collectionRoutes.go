@@ -19,6 +19,12 @@ var CollectionRoutes = models.Routers{
 		Handler: apiHandler.GetCollectionByUserPK,
 	},
 	models.Router{
+		Name:    "GET Collection by Publickey",
+		Method:  "Get",
+		Path:    "/collection/{publickey}",
+		Handler: apiHandler.GetCollectionByPublicKey,
+	},
+	models.Router{
 		Name:    "GET All Collections",
 		Method:  "Get",
 		Path:    "/collection",
