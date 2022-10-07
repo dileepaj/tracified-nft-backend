@@ -224,7 +224,6 @@ func GetSVGBySHA256(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	if len(vars["hash"]) != 0 {
 		result, err := marketplaceBusinessFacade.GetSVGByHash(vars["hash"])
-		logs.InfoLogger.Println("data sent back : ", result)
 		if err != nil {
 			errors.BadRequest(w, err.Error())
 		} else {
