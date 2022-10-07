@@ -17,6 +17,7 @@ type UpdateNFTSALERequest struct {
 	SellingType    string `json:"sellingtype" bson:"sellingtype" `    //NOTLISTED
 	MarketContract string `json:"marketcontract" bson:"marketcontract"`
 	CurrentOwnerPK string `json:"currentownerpk" bson:"currentownerpk"`
+	Royalty        string `json:"royalty" bson:"royalty"`
 }
 
 type UpdateMint struct {

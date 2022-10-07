@@ -32,6 +32,7 @@ type NFT struct {
 	NFTTxnHash        string             `json:"nfttxnhash" bson:"nfttxnhash" `
 	Trending          bool               `json:"trending" bson:"trending" `
 	HotPicks          bool               `json:"hotpicks" bson:"hotpicks" `
+	Royalty           string             `json:"royalty" bson:"royalty"`
 }
 
 //TenentName  	  string			 `json:"tenentname" bson:"ntenentname" validate:"required"` //com[pany Name
