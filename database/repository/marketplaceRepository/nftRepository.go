@@ -271,7 +271,7 @@ func (r *NFTRepository) SaveOwner(owner models.Ownership) (string, error) {
 	return repository.Save[models.Ownership](owner, Owner)
 }
 
-func (r *NFTRepository) UpdateNFTSALE(findBy string, id string, update primitive.M) (models.NFT, error) {
+func (r *NFTRepository) UpdateNFTSALE(findBy string, id string, findby2 string, id2 string, update primitive.M) (models.NFT, error) {
 	var nftResponse models.NFT
 	session, err := connections.GetMongoSession()
 	if err != nil {
@@ -284,7 +284,7 @@ func (r *NFTRepository) UpdateNFTSALE(findBy string, id string, update primitive
 		ReturnDocument: &after,
 		Upsert:         &upsert,
 	}
-	rst := session.Client().Database(connections.DbName).Collection("nft").FindOneAndUpdate(context.TODO(), bson.M{"nftidentifier": id}, update, &opt)
+	rst := session.Client().Database(connections.DbName).Collection("nft").FindOneAndUpdate(context.TODO(), bson.D{{findBy, id}, {findby2, id2}}, update, &opt)
 	if rst != nil {
 		err := rst.Decode((&nftResponse))
 		logs.InfoLogger.Println("data retreived from DB: ", rst)
