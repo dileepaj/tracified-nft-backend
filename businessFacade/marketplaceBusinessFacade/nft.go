@@ -73,7 +73,7 @@ func MakeSaleNFT(nft requestDtos.UpdateNFTSALERequest) (models.NFT, error) {
 	update := bson.M{
 		"$set": bson.M{"timestamp": nft.Timestamp, "currentprice": nft.CurrentPrice, "sellingstatus": nft.SellingStatus, "sellingtype": nft.SellingType, "marketcontract": nft.MarketContract, "currentownerpk": nft.CurrentOwnerPK, "royalty": nft.Royalty},
 	}
-	return nftRepository.UpdateNFTSALE("nftidentifier", nft.NFTIdentifier, update)
+	return nftRepository.UpdateNFTSALE("nftidentifier", nft.NFTIdentifier, "blockchain", nft.Blockchain, update)
 }
 
 func GetBlockchainSpecificNFT(blockchain string) ([]models.NFT, error) {

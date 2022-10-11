@@ -34,7 +34,7 @@ func UpdateEndorsement(endorse requestDtos.UpdateEndorsementByPublicKey) (respon
 	update := bson.M{
 		"$set": bson.M{"rating": endorse.Rating, "review": endorse.Review, "status": endorse.Status},
 	}
-	return EndorsementRepository.UpdateEndorsement("publickey", endorse.PublicKey, update)
+	return EndorsementRepository.UpdateEndorsement("publickey", endorse.PublicKey, "email", endorse.Email, update)
 }
 
 func UpdateSetEndorsement(endorse requestDtos.UpdateEndorsement) (models.Endorse, error) {

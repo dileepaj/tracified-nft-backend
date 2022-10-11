@@ -17,7 +17,7 @@ type EndorsementRepository struct{}
 
 var Endorsement = "endorsement"
 
-func (r *EndorsementRepository) UpdateEndorsement(findBy string, id string, update primitive.M) (responseDtos.ResponseEndorsementUpdate, error) {
+func (r *EndorsementRepository) UpdateEndorsement(findBy string, id string, findBy2 string, id2 string, update primitive.M) (responseDtos.ResponseEndorsementUpdate, error) {
 	var endorseResponse responseDtos.ResponseEndorsementUpdate
 
 	session, err := connections.GetMongoSession()
@@ -32,7 +32,7 @@ func (r *EndorsementRepository) UpdateEndorsement(findBy string, id string, upda
 		ReturnDocument: &after,
 		Upsert:         &upsert,
 	}
-	rst := session.Client().Database(connections.DbName).Collection("endorsement").FindOneAndUpdate(context.TODO(), bson.M{"publickey": id}, update, &opt)
+	rst := session.Client().Database(connections.DbName).Collection("endorsement").FindOneAndUpdate(context.TODO(), bson.D{{findBy, id}, {findBy2, id2}}, update, &opt)
 	if rst != nil {
 		err := rst.Decode((&endorseResponse))
 		if err != nil {
