@@ -53,4 +53,10 @@ var FaqRoutes = models.Routers{
 		Path:    "/userfaq/status",
 		Handler: apiHandler.UpdateUserFAQStatus,
 	},
+	models.Router{
+		Name:    "GET FAQ attachment by QID",
+		Method:  "GET",
+		Path:    "/userfaq/attachment/{qid}",
+		Handler: apiHandler.GetUserFAQAttachmentbyID,
+	},
 }
