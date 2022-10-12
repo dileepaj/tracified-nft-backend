@@ -6,6 +6,7 @@ import (
 
 	"github.com/dileepaj/tracified-nft-backend/businessFacade/marketplaceBusinessFacade"
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
+	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/commonResponse"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
@@ -39,7 +40,7 @@ func CreateFaq(W http.ResponseWriter, r *http.Request) {
 	}
 }
 
-//Trigger the GetAllFaq() method that will return all the FAQs
+// Trigger the GetAllFaq() method that will return all the FAQs
 func GetAllFaq(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
 	results, err := marketplaceBusinessFacade.GetAllFaq()
@@ -57,7 +58,7 @@ func GetAllFaq(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-//Trigger the GetFaqByID() method that will return The specific FAQ with the ID passed via the API
+// Trigger the GetFaqByID() method that will return The specific FAQ with the ID passed via the API
 func GetFaqByID(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
 	vars := mux.Vars(r)
@@ -162,9 +163,28 @@ func GetUserFAQbyStatus(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			errors.BadRequest(w, err.Error())
 		} else {
-			commonResponse.SuccessStatus[[]models.UserQuestions](w, results)
+			commonResponse.SuccessStatus[[]responseDtos.GetPendingUserFAQ](w, results)
 		}
 	} else {
 		errors.BadRequest(w, "")
+	}
+}
+
+func GetUserFAQAttachmentbyID(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	if vars["qid"] != "" {
+		rst, err := marketplaceBusinessFacade.GetFAQAttachmentbyID(vars["qid"])
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			errors.BadRequest(w, "failed to get image")
+			return
+		}
+		if len(rst.Attachment) > 0 {
+			commonResponse.SuccessStatus[string](w, rst.Attachment)
+		} else {
+			commonResponse.SuccessStatus[string](w, "No Image")
+		}
+
 	}
 }
