@@ -2,6 +2,7 @@ package apiHandler
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/dileepaj/tracified-nft-backend/businessFacade/marketplaceBusinessFacade"
@@ -474,4 +475,18 @@ func GetNFTByCollection(w http.ResponseWriter, r *http.Request) {
 	} else {
 		errors.BadRequest(w, "")
 	}
+}
+
+
+func Test(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	results, err := marketplaceBusinessFacade.GetNFTPagination()
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		log.Println("------------the end after success")
+		commonResponse.SuccessStatus[[]models.NFT](w, results)
+		log.Println("iiiiiiiiiiiiiiiiiiii")
+	}
+
 }

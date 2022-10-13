@@ -57,6 +57,10 @@ func GetNFTByCollection(collection string) ([]models.NFT, error) {
 	return nftRepository.FindNFTByCollection("collection", collection)
 }
 
+func GetNFTPagination() ([]models.NFT, error) {
+	return nftRepository.Test()
+}
+
 func GetOneONSaleNFT(id string, identifier string, blockchain string) ([]models.NFT, error) {
 	return nftRepository.FindNFTByIdId2Id3("sellingstatus", id, "nftidentifier", identifier, "blockchain", blockchain)
 }
