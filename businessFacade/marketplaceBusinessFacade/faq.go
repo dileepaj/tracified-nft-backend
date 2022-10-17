@@ -3,6 +3,7 @@ package marketplaceBusinessFacade
 import (
 	"github.com/dileepaj/tracified-nft-backend/configs"
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
+	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"go.mongodb.org/mongo-driver/bson"
@@ -22,7 +23,7 @@ func GetAllFaq() ([]models.Faq, error) {
 	return faqRepository.GetAllFaq()
 }
 
-func GetUserFAQByStatus(status string) ([]models.UserQuestions, error) {
+func GetUserFAQByStatus(status string) ([]responseDtos.GetPendingUserFAQ, error) {
 	return faqRepository.GetUserFAQByStatus("status", status)
 }
 
@@ -65,4 +66,8 @@ func SendResponseToFAQ(faq models.UserQuestions) error {
 	}
 	logs.InfoLogger.Println("endorsment email sent to :", faq.UserMail)
 	return nil
+}
+
+func GetFAQAttachmentbyID(qid string) (responseDtos.GetAttachmentbyID, error) {
+	return faqRepository.GetFFAQAttachmentbyID(qid)
 }
