@@ -5,6 +5,7 @@ import (
 
 	"github.com/dileepaj/tracified-nft-backend/database/connections"
 	"github.com/dileepaj/tracified-nft-backend/database/repository"
+	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"go.mongodb.org/mongo-driver/bson"
@@ -25,14 +26,14 @@ func (r *FaqRepository) StoreUserFAQ(faq models.UserQuestions) (string, error) {
 	return repository.Save(faq, userFaq)
 }
 
-func (r *FaqRepository) GetUserFAQByStatus(idName string, id string) ([]models.UserQuestions, error) {
-	var faq []models.UserQuestions
+func (r *FaqRepository) GetUserFAQByStatus(idName string, id string) ([]responseDtos.GetPendingUserFAQ, error) {
+	var faq []responseDtos.GetPendingUserFAQ
 	rst, err := repository.FindById(idName, id, userFaq)
 	if err != nil {
 		return faq, err
 	}
 	for rst.Next(context.TODO()) {
-		var faqs models.UserQuestions
+		var faqs responseDtos.GetPendingUserFAQ
 		err = rst.Decode(&faqs)
 		if err != nil {
 			logs.ErrorLogger.Println(err.Error())
@@ -168,6 +169,32 @@ func (r *FaqRepository) FindUserFAQbyID(id primitive.ObjectID) (models.UserQuest
 		err = rst.Decode(&faq)
 		if err != nil {
 			logs.ErrorLogger.Println("Error occured while retreving data from collection faq in GetUserFAQByID:FAQRepository.go: ", err.Error())
+			return faq, err
+		}
+	}
+	return faq, err
+}
+
+func (r *FaqRepository) GetFFAQAttachmentbyID(questionID string) (responseDtos.GetAttachmentbyID, error) {
+	var faq responseDtos.GetAttachmentbyID
+
+	session, err := connections.GetMongoSession()
+	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session " + err.Error())
+	}
+	defer session.EndSession(context.TODO())
+	objectId, err := primitive.ObjectIDFromHex(questionID)
+	if err != nil {
+		logs.WarningLogger.Println("Error Occured when trying to convert hex string in to Object(ID) in GetFaqByID : faqRepository: ", err.Error())
+	}
+	rst, err := session.Client().Database(connections.DbName).Collection("userFAQ").Find(context.TODO(), bson.M{"_id": objectId})
+	if err != nil {
+		return faq, err
+	}
+	for rst.Next(context.TODO()) {
+		err = rst.Decode(&faq)
+		if err != nil {
+			logs.ErrorLogger.Println("Error occured while retreving data from collection faq in GetFaqByID:faqRepository.go: ", err.Error())
 			return faq, err
 		}
 	}
