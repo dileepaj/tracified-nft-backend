@@ -204,8 +204,6 @@ func PaginateResponse[PaginatedData paginateResponseType](filterConfig bson.M, p
 	projection := projectionData
 	//var nfts []models.PaginateResponseMatrix
 	paginatedData, err := paginate.New(collection).Context(ctx).Limit(limit).Page(page).Sort(sortingFeildName, -1).Select(projection).Filter(filter).Decode(&object).Find()
-	logs.InfoLogger.Println("DB response: ", paginatedData)
-	logs.InfoLogger.Println("DB Object: ", object)
 	paginationdata.TotalElements = int32(paginatedData.Pagination.Total)
 	paginationdata.TotalPages = int32(paginatedData.Pagination.TotalPage)
 	paginationdata.Currentpage = int32(paginatedData.Pagination.Page)
@@ -216,6 +214,5 @@ func PaginateResponse[PaginatedData paginateResponseType](filterConfig bson.M, p
 		logs.ErrorLogger.Println("Pagination failure :", err.Error())
 		return object, paginationdata, err
 	}
-	logs.InfoLogger.Printf("Normal find pagination info: %+v\n", paginatedData.Pagination)
 	return object, paginationdata, nil
 }

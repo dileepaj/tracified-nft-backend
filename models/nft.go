@@ -41,6 +41,8 @@ type NFTContentforMatrix struct {
 	NFTName       string `json:"nftname" bson:"nftname" validate:"required"`
 	Imagebase64   string `json:"imagebase64" bson:"imagebase64" validate:"required"`
 	SellingStatus string `json:"sellingstatus" bson:"sellingstatus" validate:"required"`
+	Trending      bool   `json:"trending" bson:"trending" `
+	HotPicks      bool   `json:"hotpicks" bson:"hotpicks" `
 }
 
 type Paginateresponse struct {

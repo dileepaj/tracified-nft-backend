@@ -69,6 +69,8 @@ func GetNFTPagination(paginationData requestDtos.NFTsForNatrixView) (models.Pagi
 		{Key: "nftname", Value: 1},
 		{Key: "imagebase64", Value: 1},
 		{Key: "sellingstatus", Value: 1},
+		{Key: "trending", Value: 1},
+		{Key: "hotpicks", Value: 1},
 	}
 	var nfts []models.NFTContentforMatrix
 	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", paginationData.SortbyFeild, nfts)

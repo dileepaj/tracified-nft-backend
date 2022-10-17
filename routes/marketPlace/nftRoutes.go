@@ -173,7 +173,7 @@ var NftRoutes = models.Routers{
 	models.Router{
 		Name:    "Get NFT pagination",
 		Method:  "Get",
-		Path:    "/nftspaginate/",
+		Path:    "/nftspaginate/{blockchain}/{pagesize}/{requestedPage}",
 		Handler: apiHandler.GetPaginatedNFTs,
 	},
 	//another route for getting nfts should be here but there are two functions for it already
