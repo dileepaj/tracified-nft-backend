@@ -2,10 +2,12 @@ package repository
 
 import (
 	"context"
+	"os"
 
 	"github.com/dileepaj/tracified-nft-backend/database/connections"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
+	paginate "github.com/gobeam/mongo-go-pagination"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -179,4 +181,38 @@ func Remove(idName string, id, collection string) (int64, error) {
 		return 0, err
 	}
 	return result.DeletedCount, nil
+}
+
+type paginateResponseType interface {
+	[]models.NFTContentforMatrix
+}
+
+func PaginateResponse[PaginatedData paginateResponseType](filterConfig bson.M, projectionData bson.D, pagesize int32, pageNo int32, collectionName string, sortingFeildName string, object PaginatedData) (PaginatedData, models.PaginationTemplate, error) {
+	var paginationdata models.PaginationTemplate
+	ctx := context.Background()
+	DbName := "nftBackendQa"
+	connectionString := os.Getenv("BE_MONGOLAB_URI")
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionString))
+	if err != nil {
+		logs.ErrorLogger.Println("failed to connect to DB: ", err.Error())
+	}
+	dbConnection := client.Database(DbName)
+	filter := filterConfig
+	limit := int64(pagesize)
+	page := int64(pageNo)
+	collection := dbConnection.Collection(collectionName)
+	projection := projectionData
+	//var nfts []models.PaginateResponseMatrix
+	paginatedData, err := paginate.New(collection).Context(ctx).Limit(limit).Page(page).Sort(sortingFeildName, -1).Select(projection).Filter(filter).Decode(&object).Find()
+	paginationdata.TotalElements = int32(paginatedData.Pagination.Total)
+	paginationdata.TotalPages = int32(paginatedData.Pagination.TotalPage)
+	paginationdata.Currentpage = int32(paginatedData.Pagination.Page)
+	paginationdata.PageSize = int32(paginatedData.Pagination.PerPage)
+	paginationdata.Previouspage = int32(paginatedData.Pagination.Prev)
+	paginationdata.NextPage = int32(paginatedData.Pagination.Next)
+	if err != nil {
+		logs.ErrorLogger.Println("Pagination failure :", err.Error())
+		return object, paginationdata, err
+	}
+	return object, paginationdata, nil
 }

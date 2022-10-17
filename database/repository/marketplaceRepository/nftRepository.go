@@ -479,3 +479,23 @@ func (r *NFTRepository) UpdateHotPicks(findBy string, id string, update primitiv
 
 	}
 }
+
+func (r *NFTRepository) GetNFTPaginatedResponse(filterConfig bson.M, projectionData bson.D, pagesize int32, pageNo int32, collectionName string, sortingFeildName string, nfts []models.NFTContentforMatrix) (models.Paginateresponse, error) {
+	contentResponse, paginationResponse, err := repository.PaginateResponse[[]models.NFTContentforMatrix](
+		filterConfig,
+		projectionData,
+		pagesize,
+		pageNo,
+		collectionName,
+		sortingFeildName,
+		nfts,
+	)
+	var response models.Paginateresponse
+	if err != nil {
+		logs.InfoLogger.Println("Pagination failure:", err.Error())
+		return response, err
+	}
+	response.Content = contentResponse
+	response.PaginationInfo = paginationResponse
+	return response, nil
+}

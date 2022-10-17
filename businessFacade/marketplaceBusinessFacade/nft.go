@@ -3,6 +3,7 @@ package marketplaceBusinessFacade
 import (
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
+	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -55,6 +56,29 @@ func GetNFTStory(id string, blockchain string) ([]models.NFTStory, error) {
 
 func GetNFTByCollection(collection string) ([]models.NFT, error) {
 	return nftRepository.FindNFTByCollection("collection", collection)
+}
+
+func GetNFTPagination(paginationData requestDtos.NFTsForNatrixView) (models.Paginateresponse, error) {
+	filter := bson.M{
+		"blockchain": paginationData.Blockchain,
+	}
+	projection := bson.D{
+		{Key: "nftidentifier", Value: 1},
+		{Key: "creatoruserid", Value: 1},
+		{Key: "blockchain", Value: 1},
+		{Key: "nftname", Value: 1},
+		{Key: "imagebase64", Value: 1},
+		{Key: "sellingstatus", Value: 1},
+		{Key: "trending", Value: 1},
+		{Key: "hotpicks", Value: 1},
+	}
+	var nfts []models.NFTContentforMatrix
+	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", paginationData.SortbyFeild, nfts)
+	if err != nil {
+		logs.ErrorLogger.Println("Error occured :", err.Error())
+		return models.Paginateresponse(response), err
+	}
+	return models.Paginateresponse(response), err
 }
 
 func GetOneONSaleNFT(id string, identifier string, blockchain string) ([]models.NFT, error) {

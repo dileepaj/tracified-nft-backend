@@ -34,8 +34,23 @@ type NFT struct {
 	HotPicks          bool               `json:"hotpicks" bson:"hotpicks" `
 	Royalty           string             `json:"royalty" bson:"royalty"`
 }
+type NFTContentforMatrix struct {
+	NFTIdentifier string `json:"nftidentifier" bson:"nftidentifier" validate:"required"`
+	CreatorUserId string `json:"creatoruserid" bson:"creatoruserid" validate:"required"`
+	Blockchain    string `json:"blockchain" bson:"blockchain" validate:"required"`
+	NFTName       string `json:"nftname" bson:"nftname" validate:"required"`
+	Imagebase64   string `json:"imagebase64" bson:"imagebase64" validate:"required"`
+	SellingStatus string `json:"sellingstatus" bson:"sellingstatus" validate:"required"`
+	Trending      bool   `json:"trending" bson:"trending" `
+	HotPicks      bool   `json:"hotpicks" bson:"hotpicks" `
+}
 
-//TenentName  	  string			 `json:"tenentname" bson:"ntenentname" validate:"required"` //com[pany Name
+type Paginateresponse struct {
+	Content        []NFTContentforMatrix `json:"content" bson:"content" validate:"required"`
+	PaginationInfo PaginationTemplate
+}
+
+// TenentName  	  string			 `json:"tenentname" bson:"ntenentname" validate:"required"` //com[pany Name
 type NFTStory struct {
 	Id            primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
 	NFTIdentifier string             `json:"NFTIdentifier" bson:"nftidentifier"`

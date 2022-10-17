@@ -5,7 +5,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/models"
 )
 
-//This routes manage the all NFT related rotes in the marketpalce
+// This routes manage the all NFT related rotes in the marketpalce
 var NftRoutes = models.Routers{
 
 	models.Router{
@@ -169,6 +169,12 @@ var NftRoutes = models.Routers{
 		Method:  "Get",
 		Path:    "/nftcollection/{collection}",
 		Handler: apiHandler.GetNFTByCollection,
+	},
+	models.Router{
+		Name:    "Get NFT pagination",
+		Method:  "Get",
+		Path:    "/nftspaginate/{blockchain}/{pagesize}/{requestedPage}",
+		Handler: apiHandler.GetPaginatedNFTs,
 	},
 	//another route for getting nfts should be here but there are two functions for it already
 }
