@@ -85,9 +85,29 @@
         proofBotUrlbatchSpecific.Urls.map((data) => {
           let proofUrl = document.createElement("div");
           proofUrl.className = "proof-url";
+          let anchor1 = document.createElement("a");
+          anchor1.className = "proof-anchor1";
+          anchor1.href = "#" + data.Url;
           let anchor = document.createElement("a");
+          let proofModal=document.createElement("div")
+          proofModal.className ="proof-modal"
           anchor.className = "proof-anchor";
-          anchor.href = data.Url;
+          anchor.href = "#" + data.Url;
+          let openModal = document.createElement("div");
+          openModal.className="modalDialog";
+          openModal.id = data.Url;
+          let proofModal2 = document.createElement("div")
+          proofModal2.className = "modal2";
+          let close = document.createElement("a");
+          close.className = "close";
+          close.title = "Close";
+          close.href = "#close";
+          close.innerText = "X";
+          let iframe = document.createElement("iframe");
+          iframe.className = "iframe-proofbot";
+          iframe.title = "Proofbot";
+          iframe.src = data.Url;
+
 
           let type = "";
 
@@ -111,7 +131,14 @@
 
           proofUrl.appendChild(anchor);
           proofUrl.appendChild(icon);
-          d5.appendChild(proofUrl);
+          anchor1.appendChild(proofUrl);
+          d5.appendChild(anchor1);
+          proofUrl.appendChild(proofModal);
+          proofUrl.appendChild(openModal);
+          openModal.appendChild(proofModal2);
+          proofModal2.appendChild(close);
+          proofModal2.appendChild(iframe);
+
         });
       }
 
