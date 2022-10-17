@@ -34,3 +34,10 @@ type UpdateMintTXN struct {
 	NFTTxnHash  string `json:"nfttxnhash" bson:"nfttxnhash" `
 	Blockchian  string `json:"blockchain" bson:"blockchain" `
 }
+
+type NFTsForNatrixView struct {
+	Blockchain    string `json:"blockchain" bson:"blockchain"`
+	PageSize      int32  `json:"pagesize" bson:"pagesize"`
+	RequestedPage int32  `json:"requestedPage" bson:"requestedPage" `
+	SortbyFeild   string `json:"sortbyfeild" bson:"sortbyfeild" `
+}

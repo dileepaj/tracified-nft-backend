@@ -2,7 +2,6 @@ package apiHandler
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/dileepaj/tracified-nft-backend/businessFacade/marketplaceBusinessFacade"
@@ -477,16 +476,20 @@ func GetNFTByCollection(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-
-func Test(w http.ResponseWriter, r *http.Request) {
+func GetPaginatedNFTs(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
-	results, err := marketplaceBusinessFacade.GetNFTPagination()
+	var pagination requestDtos.NFTsForNatrixView
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&pagination)
+	logs.InfoLogger.Println("Recived pagination rqueste: ", pagination)
 	if err != nil {
 		errors.BadRequest(w, err.Error())
+	}
+	results, err1 := marketplaceBusinessFacade.GetNFTPagination(pagination)
+	if err1 != nil {
+		errors.BadRequest(w, err.Error())
 	} else {
-		log.Println("------------the end after success")
-		commonResponse.SuccessStatus[[]models.NFT](w, results)
-		log.Println("iiiiiiiiiiiiiiiiiiii")
+		commonResponse.SuccessStatus[models.Paginateresponse](w, results)
 	}
 
 }

@@ -2,17 +2,13 @@ package marketplaceRepository
 
 import (
 	"context"
-	"log"
-	"os"
 
 	"github.com/dileepaj/tracified-nft-backend/database/connections"
 	"github.com/dileepaj/tracified-nft-backend/database/repository"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
-	paginate "github.com/gobeam/mongo-go-pagination"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -484,40 +480,22 @@ func (r *NFTRepository) UpdateHotPicks(findBy string, id string, update primitiv
 	}
 }
 
-func (r *NFTRepository) Test() ([]models.NFT, error) {
-	//convertedPageInt, convertedLimitInt := getPageAndLimit(r)
-	// Example for Normal Find query
-	log.Println("starting....................")
-	ctx := context.Background()
-	DbName := "nftBackendQa"
-	connectionString := os.Getenv("BE_MONGOLAB_URI")
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionString))
+func (r *NFTRepository) GetNFTPaginatedResponse(filterConfig bson.M, projectionData bson.D, pagesize int32, pageNo int32, collectionName string, sortingFeildName string, nfts []models.NFTContentforMatrix) (models.Paginateresponse, error) {
+	contentResponse, paginationResponse, err := repository.PaginateResponse[[]models.NFTContentforMatrix](
+		filterConfig,
+		projectionData,
+		pagesize,
+		pageNo,
+		collectionName,
+		sortingFeildName,
+		nfts,
+	)
+	var response models.Paginateresponse
 	if err != nil {
-		panic(err)
+		logs.InfoLogger.Println("Pagination failure:", err.Error())
+		return response, err
 	}
-	dbConnection := client.Database(DbName)
-	filter := bson.M{}
-	limit := int64(10)
-	page := int64(1)
-	collection := dbConnection.Collection("nft")
-	projection := bson.D{
-		{"blockchain", "ethereum"},
-	}
-	var nfts []models.NFT
-	paginatedData, err := paginate.New(collection).Context(ctx).Limit(limit).Page(page).Sort("blockchain", -1).Select(projection).Filter(filter).Decode(&nfts).Find()
-	if err != nil {
-		panic(err)
-	}
-
-	// log.Println("data: ", paginatedData, nfts)
-
-	payload := struct {
-		Data       []models.NFT            `json:"data"`
-		Pagination paginate.PaginationData `json:"pagination"`
-	}{
-		Pagination: paginatedData.Pagination,
-		Data:       nfts,
-	}
-	log.Println(payload)
-	return nfts, nil
+	response.Content = contentResponse
+	response.PaginationInfo = paginationResponse
+	return response, nil
 }
