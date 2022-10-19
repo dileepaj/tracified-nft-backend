@@ -102,7 +102,7 @@
           close.className = "close";
           close.title = "Close";
           close.href = "#close";
-          close.innerText = "X";
+        
           let iframe = document.createElement("iframe");
           iframe.className = "iframe-proofbot";
           iframe.title = "Proofbot";
@@ -128,6 +128,9 @@
           let icon = document.createElement("span");
           icon.className = "material-symbols-outlined open-icon";
           icon.innerText = "open_in_new";
+          let icon2 = document.createElement("span");
+          icon2.className = "material-symbols-outlined open-icon";
+          icon2.innerText = "close";
 
           proofUrl.appendChild(anchor);
           proofUrl.appendChild(icon);
@@ -137,6 +140,7 @@
           proofUrl.appendChild(openModal);
           openModal.appendChild(proofModal2);
           proofModal2.appendChild(close);
+          close.appendChild(icon2);
           proofModal2.appendChild(iframe);
 
         });
