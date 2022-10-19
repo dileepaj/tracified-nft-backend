@@ -3,6 +3,7 @@ package apiHandler
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/dileepaj/tracified-nft-backend/businessFacade/marketplaceBusinessFacade"
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
@@ -224,7 +225,6 @@ func GetSVGBySHA256(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	if len(vars["hash"]) != 0 {
 		result, err := marketplaceBusinessFacade.GetSVGByHash(vars["hash"])
-		logs.InfoLogger.Println("data sent back : ", result)
 		if err != nil {
 			errors.BadRequest(w, err.Error())
 		} else {
@@ -475,4 +475,31 @@ func GetNFTByCollection(w http.ResponseWriter, r *http.Request) {
 	} else {
 		errors.BadRequest(w, "")
 	}
+}
+
+func GetPaginatedNFTs(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	var pagination requestDtos.NFTsForNatrixView
+	pagination.Blockchain = vars["blockchain"]
+	pgsize, err1 := strconv.Atoi(vars["pagesize"])
+	if err1 != nil {
+		errors.BadRequest(w, "Requested invalid page size.")
+		return
+	}
+	pagination.PageSize = int32(pgsize)
+	requestedPage, err2 := strconv.Atoi(vars["requestedPage"])
+	if err2 != nil {
+		errors.BadRequest(w, "Requested page error")
+	}
+	pagination.RequestedPage = int32(requestedPage)
+	pagination.SortbyFeild = "blockchain"
+	logs.InfoLogger.Println("Recived pagination rqueste: ", pagination)
+	results, err := marketplaceBusinessFacade.GetNFTPagination(pagination)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		commonResponse.SuccessStatus[models.Paginateresponse](w, results)
+	}
+
 }

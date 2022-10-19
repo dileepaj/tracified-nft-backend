@@ -5,6 +5,7 @@ type UpdateEndorsementByPublicKey struct {
 	Status    string `json:"status" bson:"status" `
 	Review    string `json:"Review" bson:"review"`
 	Rating    string `json:"Rating" bson:"rating"`
+	Email     string `json:"email" bson:"email" `
 }
 
 type UpdateEndorsement struct {

@@ -126,8 +126,18 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 									if proofUrl.Urls != "" {
 										var removeAndsymble string = strings.Replace(proofUrl.Urls, "&", "&amp;", -1)
 
-										htmlBotcard += `<div class="proof-url"><a class="proof-anchor" href="` + removeAndsymble + `">
-														` + GetProofName(proofUrl.Type) + `</a><span class="material-symbols-outlined open-icon">open_in_new</span></div>`
+										htmlBotcard += `<a class="proof-anchor1" href="#`+ removeAndsymble + `">
+														<div class="proof-url"><a class="proof-anchor" href="#`+ removeAndsymble + `">
+														`+ GetProofName(proofUrl.Type) + `</a><span class="material-symbols-outlined open-icon">open_in_new</span>
+														
+														<div id="` + removeAndsymble + `" class="modalDialog"><div class="modal2">
+														<a href="#close" title="Close" class="close">
+														<span class="material-symbols-outlined open-icon ">close</span>
+														</a>
+														<iframe src="` + removeAndsymble + `" class="iframe-proofbot" title="Proofbot"></iframe>
+														</div></div>
+														</div></a>`
+														
 									}
 								}
 								htmlBotcard += `</div></div>`

@@ -271,7 +271,7 @@ func (r *NFTRepository) SaveOwner(owner models.Ownership) (string, error) {
 	return repository.Save[models.Ownership](owner, Owner)
 }
 
-func (r *NFTRepository) UpdateNFTSALE(findBy string, id string, update primitive.M) (models.NFT, error) {
+func (r *NFTRepository) UpdateNFTSALE(findBy string, id string, findby2 string, id2 string, update primitive.M) (models.NFT, error) {
 	var nftResponse models.NFT
 	session, err := connections.GetMongoSession()
 	if err != nil {
@@ -284,7 +284,7 @@ func (r *NFTRepository) UpdateNFTSALE(findBy string, id string, update primitive
 		ReturnDocument: &after,
 		Upsert:         &upsert,
 	}
-	rst := session.Client().Database(connections.DbName).Collection("nft").FindOneAndUpdate(context.TODO(), bson.M{"nftidentifier": id}, update, &opt)
+	rst := session.Client().Database(connections.DbName).Collection("nft").FindOneAndUpdate(context.TODO(), bson.D{{findBy, id}, {findby2, id2}}, update, &opt)
 	if rst != nil {
 		err := rst.Decode((&nftResponse))
 		logs.InfoLogger.Println("data retreived from DB: ", rst)
@@ -478,4 +478,24 @@ func (r *NFTRepository) UpdateHotPicks(findBy string, id string, update primitiv
 		return nftResponse, nil
 
 	}
+}
+
+func (r *NFTRepository) GetNFTPaginatedResponse(filterConfig bson.M, projectionData bson.D, pagesize int32, pageNo int32, collectionName string, sortingFeildName string, nfts []models.NFTContentforMatrix) (models.Paginateresponse, error) {
+	contentResponse, paginationResponse, err := repository.PaginateResponse[[]models.NFTContentforMatrix](
+		filterConfig,
+		projectionData,
+		pagesize,
+		pageNo,
+		collectionName,
+		sortingFeildName,
+		nfts,
+	)
+	var response models.Paginateresponse
+	if err != nil {
+		logs.InfoLogger.Println("Pagination failure:", err.Error())
+		return response, err
+	}
+	response.Content = contentResponse
+	response.PaginationInfo = paginationResponse
+	return response, nil
 }
