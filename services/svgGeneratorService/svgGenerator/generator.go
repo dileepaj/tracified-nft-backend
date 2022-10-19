@@ -131,7 +131,9 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 														`+ GetProofName(proofUrl.Type) + `</a><span class="material-symbols-outlined open-icon">open_in_new</span>
 														
 														<div id="` + removeAndsymble + `" class="modalDialog"><div class="modal2">
-														<a href="#close" title="Close" class="close">X</a>
+														<a href="#close" title="Close" class="close">
+														<span class="material-symbols-outlined open-icon ">close</span>
+														</a>
 														<iframe src="` + removeAndsymble + `" class="iframe-proofbot" title="Proofbot"></iframe>
 														</div></div>
 														</div></a>`
