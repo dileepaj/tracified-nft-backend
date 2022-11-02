@@ -58,10 +58,7 @@ func GetNFTByCollection(collection string) ([]models.NFT, error) {
 	return nftRepository.FindNFTByCollection("collection", collection)
 }
 
-func GetNFTPagination(paginationData requestDtos.NFTsForNatrixView) (models.Paginateresponse, error) {
-	filter := bson.M{
-		"blockchain": paginationData.Blockchain,
-	}
+func GetProjectionDataNFTMatrixView() bson.D {
 	projection := bson.D{
 		{Key: "nftidentifier", Value: 1},
 		{Key: "creatoruserid", Value: 1},
@@ -72,6 +69,53 @@ func GetNFTPagination(paginationData requestDtos.NFTsForNatrixView) (models.Pagi
 		{Key: "trending", Value: 1},
 		{Key: "hotpicks", Value: 1},
 	}
+	return projection
+}
+
+func GetNFTPagination(paginationData requestDtos.NFTsForNatrixView) (models.Paginateresponse, error) {
+	filter := bson.M{
+		"blockchain": paginationData.Blockchain,
+	}
+	projection := GetProjectionDataNFTMatrixView()
+	var nfts []models.NFTContentforMatrix
+	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", paginationData.SortbyFeild, nfts)
+	if err != nil {
+		logs.ErrorLogger.Println("Error occured :", err.Error())
+		return models.Paginateresponse(response), err
+	}
+	return models.Paginateresponse(response), err
+}
+
+func GetPaginatedNFTbySellingStatus(paginationData requestDtos.NFTsForNatrixView) (models.Paginateresponse, error) {
+	filter := bson.M{
+		"blockchain":    paginationData.Blockchain,
+		"sellingstatus": paginationData.SortbyFeild,
+	}
+	projection := GetProjectionDataNFTMatrixView()
+	var nfts []models.NFTContentforMatrix
+	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "sellingstatus", nfts)
+	if err != nil {
+		logs.ErrorLogger.Println("Error occured :", err.Error())
+		return models.Paginateresponse(response), err
+	}
+	return models.Paginateresponse(response), err
+}
+
+func GetPaginatedNFTbyStatusFilter(paginationData requestDtos.NFTsForNatrixView) (models.Paginateresponse, error) {
+	var filter = bson.M{}
+	if paginationData.SortbyFeild == "hotpicks" {
+		filter = bson.M{
+			"blockchain": paginationData.Blockchain,
+			"hotpicks":   true,
+		}
+	} else if paginationData.SortbyFeild == "trending" {
+		filter = bson.M{
+			"blockchain": paginationData.Blockchain,
+			"trending":   true,
+		}
+	}
+	projection := GetProjectionDataNFTMatrixView()
+
 	var nfts []models.NFTContentforMatrix
 	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", paginationData.SortbyFeild, nfts)
 	if err != nil {

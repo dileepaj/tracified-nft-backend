@@ -176,5 +176,17 @@ var NftRoutes = models.Routers{
 		Path:    "/nftspaginate/{blockchain}/{pagesize}/{requestedPage}",
 		Handler: apiHandler.GetPaginatedNFTs,
 	},
+	models.Router{
+		Name:    "Get NFT pagination by selling status",
+		Method:  "Get",
+		Path:    "/nftspaginate/{blockchain}/{sellingstatus}/{pagesize}/{requestedPage}",
+		Handler: apiHandler.GetPaginatedNFTbySellingStatus,
+	},
+	models.Router{
+		Name:    "Get NFT pagination by Hotpick status",
+		Method:  "Get",
+		Path:    "/nftspaginate/filterby/{type}/{blockchain}/{pagesize}/{requestedPage}",
+		Handler: apiHandler.GetPaginatedNFTforstatusFilters,
+	},
 	//another route for getting nfts should be here but there are two functions for it already
 }

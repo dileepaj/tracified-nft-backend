@@ -503,3 +503,61 @@ func GetPaginatedNFTs(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+func GetPaginatedNFTbySellingStatus(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	var pagination requestDtos.NFTsForNatrixView
+	if vars["sellingstatus"] == "ON SALE" {
+		pagination.Blockchain = vars["blockchain"]
+		pgsize, err1 := strconv.Atoi(vars["pagesize"])
+		if err1 != nil {
+			errors.BadRequest(w, "Requested invalid page size.")
+			return
+		}
+		pagination.PageSize = int32(pgsize)
+		requestedPage, err2 := strconv.Atoi(vars["requestedPage"])
+		if err2 != nil {
+			errors.BadRequest(w, "Requested page error")
+		}
+		pagination.RequestedPage = int32(requestedPage)
+		pagination.SortbyFeild = vars["sellingstatus"]
+		results, err := marketplaceBusinessFacade.GetPaginatedNFTbySellingStatus(pagination)
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[models.Paginateresponse](w, results)
+		}
+	} else {
+	}
+}
+
+func GetPaginatedNFTforstatusFilters(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	var pagination requestDtos.NFTsForNatrixView
+	pagination.Blockchain = vars["blockchain"]
+	pgsize, err1 := strconv.Atoi(vars["pagesize"])
+	if err1 != nil {
+		errors.BadRequest(w, "Requested invalid page size.")
+		return
+	}
+	pagination.PageSize = int32(pgsize)
+	requestedPage, err2 := strconv.Atoi(vars["requestedPage"])
+	if err2 != nil {
+		errors.BadRequest(w, "Requested page error")
+	}
+
+	pagination.RequestedPage = int32(requestedPage)
+	if vars["type"] == "hotpicks" {
+		pagination.SortbyFeild = "hotpicks"
+	} else if vars["type"] == "trending" {
+		pagination.SortbyFeild = "trending"
+	}
+	results, err := marketplaceBusinessFacade.GetPaginatedNFTbyStatusFilter(pagination)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		commonResponse.SuccessStatus[models.Paginateresponse](w, results)
+	}
+}
