@@ -598,6 +598,44 @@ func GetPaginatedNFTforstatusFilters(w http.ResponseWriter, r *http.Request) {
 }
 
 /**
+ **Description: Get nfts that are on trending and hotpicks
+ **Returns : Paginated nft data
+ */
+func GetBestCreations(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	var bestcreations requestDtos.NFTsForMatrixView
+	bestcreations.Blockchain = vars["blockchain"]
+	PageSize, pageSizeerr := strconv.Atoi(vars["pagesize"])
+	if pageSizeerr != nil {
+		errors.BadRequest(w, "Requested page error")
+		return
+	}
+	bestcreations.PageSize = int32(PageSize)
+	RequestedPage, pageReqeustederr := strconv.Atoi(vars["requestedPage"])
+	if pageReqeustederr != nil {
+		errors.BadRequest(w, "Requested page error")
+		return
+	}
+	bestcreations.RequestedPage = int32(RequestedPage)
+	results, err := marketplaceBusinessFacade.GetPaginatedResponseforBestCreations(bestcreations)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		if bestcreations.RequestedPage < 0 {
+			errors.NotFound(w, "Requested page size should be greater than zero")
+			return
+		}
+		if results.PaginationInfo.TotalPages < bestcreations.RequestedPage {
+			errors.NotFound(w, "requested page does not exist")
+			return
+		}
+		commonResponse.SuccessStatus[models.Paginateresponse](w, results)
+	}
+
+}
+
+/**
  **Description:Calcluate the avg rating for creators and return creators having a rating > 4
  **Returns : Paginated creator information(name,email,publickey and avg rating)
  */

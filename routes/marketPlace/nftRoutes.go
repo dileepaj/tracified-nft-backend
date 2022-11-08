@@ -195,4 +195,10 @@ var NftRoutes = models.Routers{
 		Handler: apiHandler.GetBestCreators,
 	},
 	//another route for getting nfts should be here but there are two functions for it already
+	models.Router{
+		Name:    "Get Blockchain specific best creations",
+		Method:  "GET",
+		Path:    "/explore/bestcreations/{blockchain}/{pagesize}/{requestedPage}",
+		Handler: apiHandler.GetBestCreations,
+	},
 }
