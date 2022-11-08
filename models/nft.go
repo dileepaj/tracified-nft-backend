@@ -50,10 +50,20 @@ type Paginateresponse struct {
 	PaginationInfo PaginationTemplate
 }
 
-// TenentName  	  string			 `json:"tenentname" bson:"ntenentname" validate:"required"` //com[pany Name
 type NFTStory struct {
 	Id            primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
 	NFTIdentifier string             `json:"NFTIdentifier" bson:"nftidentifier"`
 	Blockchain    string             `json:"Blockchain" bson:"blockchain"`
 	NFTStory      string             `json:"NFTStory" bson:"nftstory"`
+}
+
+type CreatorInfo struct {
+	ArtistName    string  `json:"name" bson:"name"`
+	Email         string  `json:"Email" bson:"email"`
+	PublicKey     string  `json:"PublicKey" bson:"publickey"`
+	Averagerating float32 `json:"avgrating" bson:"avgrating"`
+}
+type PaginatedCreatorInfo struct {
+	ArtistInfo     []CreatorInfo `json:"artistinfo" bson:"artistinfo" validate:"required"`
+	PaginationInfo PaginationTemplate
 }

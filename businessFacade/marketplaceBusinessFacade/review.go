@@ -3,6 +3,7 @@ package marketplaceBusinessFacade
 import (
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
+	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 )
 
 /*
@@ -22,4 +23,109 @@ func UpdateReviewStatus(review requestDtos.UpdateReviewStatus) (models.Review, e
 }
 func DeleteReview(review requestDtos.DeleteReview) error {
 	return reviewRepository.DeleteReview(review)
+}
+
+func calcRating(list models.CreatorsList, Rating float32) models.CreatorsList {
+	switch Rating {
+	case 1:
+		list.Star1Ratings += 1
+		list.TotalStars += 1
+	case 1.5:
+		list.Star_1_5_Ratings += 1
+		list.TotalStars += 1
+	case 2:
+		list.Star_2_Ratings += 1
+		list.TotalStars += 1
+	case 2.5:
+		list.Star_2_5Ratings += 1
+		list.TotalStars += 1
+	case 3:
+		list.Star_3_Ratings += 1
+		list.TotalStars += 1
+	case 3.5:
+		list.Star_3_5_Ratings += 1
+		list.TotalStars += 1
+	case 4:
+		list.Star_4_Ratings += 1
+		list.TotalStars += 1
+	case 4.5:
+		list.Star_4_5_Ratings += 1
+		list.TotalStars += 1
+	case 5:
+		list.Star_5_Ratings += 1
+		list.TotalStars += 1
+	}
+	return list
+}
+
+func CalcAvgStarRating(creatorlist models.CreatorsList) models.CreatorsList {
+	var onestar = float32(creatorlist.Star1Ratings) * 1
+	var oneHalfstar = float32(creatorlist.Star_1_5_Ratings) * 1.5
+	var twoStar = float32(creatorlist.Star_2_Ratings) * 2
+	var twoHalfStar = float32(creatorlist.Star_2_5Ratings) * 2.5
+	var threeStar = float32(creatorlist.Star_3_Ratings) * 3
+	var threeHalfStar = float32(creatorlist.Star_3_5_Ratings) * 3.5
+	var fourStar = float32(creatorlist.Star_4_Ratings) * 4
+	var fourHalfStar = float32(creatorlist.Star_4_5_Ratings) * 4.5
+	var fiveStar = float32(creatorlist.Star_5_Ratings) * 5
+	var ans = onestar + oneHalfstar + twoStar + twoHalfStar + threeStar + threeHalfStar + fourStar + fourHalfStar + fiveStar
+	creatorlist.AvgRating = ans / float32(creatorlist.TotalStars)
+	return creatorlist
+}
+
+func GetBestCreators() ([]models.CreatorsList, error) {
+	var bestCreators []models.CreatorsList
+	var allCreators []models.CreatorsList
+	result, err := GetAllReviews()
+	if err != nil {
+		return bestCreators, err
+	}
+	for i, element := range result {
+		if len(allCreators) == 0 {
+			var newCreator models.CreatorsList
+			newCreator.NftIdentifier = result[i].NFTIdentifier
+			newCreator.UserID = element.UserID
+			res := calcRating(newCreator, element.Rating)
+			allCreators = append(allCreators, res)
+			continue
+		}
+		foundflag := false
+		foundat := 0
+		_ = foundat
+		_ = foundflag
+		for index := range allCreators {
+			if element.NFTIdentifier == allCreators[index].NftIdentifier {
+				foundflag = true
+				foundat = index
+				continue
+			}
+
+		}
+		if foundflag {
+			res := calcRating(allCreators[foundat], element.Rating)
+			allCreators[foundat] = res
+		} else {
+			var newCreator models.CreatorsList
+			newCreator.NftIdentifier = element.NFTIdentifier
+			newCreator.UserID = element.UserID
+			res := calcRating(newCreator, element.Rating)
+			allCreators = append(allCreators, res)
+		}
+
+	}
+	for _, element := range allCreators {
+		res := CalcAvgStarRating(element)
+		if res.AvgRating >= 1 {
+			bestCreators = append(bestCreators, res)
+		}
+	}
+	logs.InfoLogger.Println("______________BEST CREATORS_______________")
+	for _, element := range bestCreators {
+		logs.InfoLogger.Println("NFT Identifer: ", element.NftIdentifier)
+		logs.InfoLogger.Println("User Identifer: ", element.UserID)
+		logs.InfoLogger.Println("Total Starts: ", element.TotalStars)
+		logs.InfoLogger.Println("avg: ", element.AvgRating)
+	}
+	logs.InfoLogger.Println("______________END OF EST CREATORS_______________")
+	return bestCreators, nil
 }

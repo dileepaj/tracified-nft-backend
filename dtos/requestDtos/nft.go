@@ -35,9 +35,15 @@ type UpdateMintTXN struct {
 	Blockchian  string `json:"blockchain" bson:"blockchain" `
 }
 
-type NFTsForNatrixView struct {
+type NFTsForMatrixView struct {
 	Blockchain    string `json:"blockchain" bson:"blockchain"`
 	PageSize      int32  `json:"pagesize" bson:"pagesize"`
 	RequestedPage int32  `json:"requestedPage" bson:"requestedPage" `
 	SortbyFeild   string `json:"sortbyfeild" bson:"sortbyfeild" `
+}
+
+type CreatorInfoforMatrixView struct {
+	//CreatorPK     string `json:"userpk" bson:"userpk"`
+	PageSize      int32 `json:"pagesize" bson:"pagesize"`
+	RequestedPage int32 `json:"requestedPage" bson:"requestedPage" `
 }

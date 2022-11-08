@@ -72,7 +72,7 @@ func GetProjectionDataNFTMatrixView() bson.D {
 	return projection
 }
 
-func GetNFTPagination(paginationData requestDtos.NFTsForNatrixView) (models.Paginateresponse, error) {
+func GetNFTPagination(paginationData requestDtos.NFTsForMatrixView) (models.Paginateresponse, error) {
 	filter := bson.M{
 		"blockchain": paginationData.Blockchain,
 	}
@@ -80,13 +80,13 @@ func GetNFTPagination(paginationData requestDtos.NFTsForNatrixView) (models.Pagi
 	var nfts []models.NFTContentforMatrix
 	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", paginationData.SortbyFeild, nfts)
 	if err != nil {
-		logs.ErrorLogger.Println("Error occured :", err.Error())
+		logs.ErrorLogger.Println("Error occurred :", err.Error())
 		return models.Paginateresponse(response), err
 	}
 	return models.Paginateresponse(response), err
 }
 
-func GetPaginatedNFTbySellingStatus(paginationData requestDtos.NFTsForNatrixView) (models.Paginateresponse, error) {
+func GetPaginatedNFTbySellingStatus(paginationData requestDtos.NFTsForMatrixView) (models.Paginateresponse, error) {
 	filter := bson.M{
 		"blockchain":    paginationData.Blockchain,
 		"sellingstatus": paginationData.SortbyFeild,
@@ -95,13 +95,13 @@ func GetPaginatedNFTbySellingStatus(paginationData requestDtos.NFTsForNatrixView
 	var nfts []models.NFTContentforMatrix
 	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "sellingstatus", nfts)
 	if err != nil {
-		logs.ErrorLogger.Println("Error occured :", err.Error())
+		logs.ErrorLogger.Println("Error occurred :", err.Error())
 		return models.Paginateresponse(response), err
 	}
 	return models.Paginateresponse(response), err
 }
 
-func GetPaginatedNFTbyStatusFilter(paginationData requestDtos.NFTsForNatrixView) (models.Paginateresponse, error) {
+func GetPaginatedNFTbyStatusFilter(paginationData requestDtos.NFTsForMatrixView) (models.Paginateresponse, error) {
 	var filter = bson.M{}
 	if paginationData.SortbyFeild == "hotpicks" {
 		filter = bson.M{
@@ -199,4 +199,8 @@ func UpdateNFT(nft requestDtos.UpdateMint) (models.NFT, error) {
 		"$set": bson.M{"nftidentifier": nft.NFTIdentifier, "nftissuerpk": nft.NFTIssuerPK, "nfttxnhash": nft.NFTTxnHash},
 	}
 	return nftRepository.UpdateMinter("imagebase64", nft.Imagebase64, "blockchain", nft.Blockchain, update)
+}
+
+func GetNFTByNFTIdentifier(id string) ([]models.NFT, error) {
+	return nftRepository.FindNFTsById("nftidentifier", id)
 }

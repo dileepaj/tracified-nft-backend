@@ -188,5 +188,11 @@ var NftRoutes = models.Routers{
 		Path:    "/nftspaginate/filterby/{type}/{blockchain}/{pagesize}/{requestedPage}",
 		Handler: apiHandler.GetPaginatedNFTforstatusFilters,
 	},
+	models.Router{
+		Name:    "Get BEST CREATORS",
+		Method:  "Get",
+		Path:    "/explore/bestcreators/{pagesize}/{requestedPage}",
+		Handler: apiHandler.GetBestCreators,
+	},
 	//another route for getting nfts should be here but there are two functions for it already
 }
