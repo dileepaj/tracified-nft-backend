@@ -80,3 +80,60 @@ func SendEndorsmentEmail(endorsment models.Endorse) error {
 	}
 	return nil
 }
+
+func UpdateBestCreators(creatorlist []models.CreatorsList) ([]models.Endorse, error) {
+	var creator []models.Endorse
+
+	for _, item := range creatorlist {
+		logs.InfoLogger.Println("searching for : ", item.NftIdentifier)
+		nft, err := nftRepository.FindNFTsById("nftidentifier", item.NftIdentifier)
+		if len(nft) != 0 {
+			logs.InfoLogger.Println("GOT : ", nft)
+			if err != nil {
+				return creator, err
+			}
+			update := bson.M{
+				"$set": bson.M{"isbestcreator": true, "avgrating": item.AvgRating},
+			}
+			res, err1 := EndorsementRepository.UpDateBestCreators(nft[0].CreatorUserId, update)
+			logs.InfoLogger.Println("DB update reponse: ", res)
+			if err1 != nil {
+				return creator, err
+			}
+			creator = append(creator, res)
+		}
+	}
+	logs.InfoLogger.Println("_________________________UPDATED CREATORS_________________________")
+	for _, element := range creator {
+		logs.InfoLogger.Println("data", element)
+
+	}
+	logs.InfoLogger.Println("__________________________________________________________________")
+	return creator, nil
+}
+
+func GetPaginatedBestCreators(paginationData requestDtos.CreatorInfoforMatrixView) (models.PaginatedCreatorInfo, error) {
+	projection := bson.D{
+		{Key: "name", Value: 1},
+		{Key: "publickey", Value: 1},
+		{Key: "email", Value: 1},
+		{Key: "avgrating", Value: 1},
+	}
+	filter := bson.M{
+		"isbestcreator": true,
+	}
+	var creatorinfo []models.CreatorInfo
+	response, err := EndorsementRepository.GetPaginatedBestCreators(
+		filter,
+		projection,
+		paginationData.PageSize,
+		paginationData.RequestedPage,
+		"endorsement",
+		"publickey",
+		creatorinfo)
+	if err != nil {
+		return response, err
+	}
+	logs.InfoLogger.Println("paginated response: ", response)
+	return models.PaginatedCreatorInfo(response), nil
+}
