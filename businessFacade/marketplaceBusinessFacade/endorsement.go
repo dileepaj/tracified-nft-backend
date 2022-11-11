@@ -85,7 +85,6 @@ func UpdateBestCreators(creatorlist []models.CreatorsList) ([]models.Endorse, er
 	var creator []models.Endorse
 
 	for _, item := range creatorlist {
-		logs.InfoLogger.Println("searching for : ", item.NftIdentifier)
 		nft, err := nftRepository.FindNFTsById("nftidentifier", item.NftIdentifier)
 		if len(nft) != 0 {
 			logs.InfoLogger.Println("GOT : ", nft)
@@ -103,12 +102,6 @@ func UpdateBestCreators(creatorlist []models.CreatorsList) ([]models.Endorse, er
 			creator = append(creator, res)
 		}
 	}
-	logs.InfoLogger.Println("_________________________UPDATED CREATORS_________________________")
-	for _, element := range creator {
-		logs.InfoLogger.Println("data", element)
-
-	}
-	logs.InfoLogger.Println("__________________________________________________________________")
 	return creator, nil
 }
 
