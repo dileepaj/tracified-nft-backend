@@ -487,7 +487,7 @@ func (r *NFTRepository) GetNFTPaginatedResponse(filterConfig bson.M, projectionD
 		pagesize,
 		pageNo,
 		collectionName,
-		"timestamp",
+		sortingFeildName,
 		nfts,
 	)
 	var response models.Paginateresponse

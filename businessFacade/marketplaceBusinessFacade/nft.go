@@ -79,7 +79,7 @@ func GetNFTPagination(paginationData requestDtos.NFTsForMatrixView) (models.Pagi
 	}
 	projection := GetProjectionDataNFTMatrixView()
 	var nfts []models.NFTContentforMatrix
-	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", paginationData.SortbyFeild, nfts)
+	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occurred :", err.Error())
 		return models.Paginateresponse(response), err
@@ -94,7 +94,7 @@ func GetPaginatedNFTbySellingStatus(paginationData requestDtos.NFTsForMatrixView
 	}
 	projection := GetProjectionDataNFTMatrixView()
 	var nfts []models.NFTContentforMatrix
-	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "sellingstatus", nfts)
+	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occurred :", err.Error())
 		return models.Paginateresponse(response), err
@@ -118,7 +118,7 @@ func GetPaginatedNFTbyStatusFilter(paginationData requestDtos.NFTsForMatrixView)
 	projection := GetProjectionDataNFTMatrixView()
 
 	var nfts []models.NFTContentforMatrix
-	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", paginationData.SortbyFeild, nfts)
+	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured :", err.Error())
 		return models.Paginateresponse(response), err
@@ -134,7 +134,7 @@ func GetPaginatedResponseforBestCreations(paginationData requestDtos.NFTsForMatr
 	}
 	var nfts []models.NFTContentforMatrix
 	projection := GetProjectionDataNFTMatrixView()
-	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "blockchain", nfts)
+	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured :", err.Error())
 		return models.Paginateresponse(response), err
