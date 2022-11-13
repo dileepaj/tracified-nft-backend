@@ -37,4 +37,10 @@ var ReviewRoutes = models.Routers{
 		Path:    "/review/",
 		Handler: apiHandler.DeleteReview,
 	},
+	models.Router{
+		Name:    "Rivews filter",
+		Method:  "GET",
+		Path:    "/review/filterby/{filtertype}/{id}/{pagesize}/{pageno}",
+		Handler: apiHandler.GetReviewbyFilter,
+	},
 }

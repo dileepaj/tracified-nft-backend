@@ -4,6 +4,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 /*
@@ -128,4 +129,42 @@ func GetBestCreators() ([]models.CreatorsList, error) {
 	}
 	logs.InfoLogger.Println("______________END OF EST CREATORS_______________")
 	return bestCreators, nil
+}
+
+func GetReviewsbyFilter(reviewData requestDtos.ReviewFiltering) (models.ReviewPaginatedResponse, error) {
+	projection := bson.D{
+		{Key: "_id", Value: 1},
+		{Key: "nftidentifier", Value: 1},
+		{Key: "userid", Value: 1},
+		{Key: "rating", Value: 1},
+		{Key: "description", Value: 1},
+	}
+	var reviewPaginate []models.ReviewsforPagination
+	var returnData models.ReviewPaginatedResponse
+	filter := bson.M{
+		"status":        "Pending",
+		"nftidentifier": reviewData.NFTIdentifier,
+	}
+	if reviewData.Filterby == "high" {
+		response, err := reviewRepository.GetReviewsbyFilter(filter, projection, reviewData.PageSize, reviewData.RequestedPage, "review", reviewData.Filterby, reviewData.FilterType, reviewPaginate)
+		if err != nil {
+			return returnData, err
+		}
+		returnData = response
+		return returnData, nil
+	} else if reviewData.Filterby == "low" {
+		response, err := reviewRepository.GetReviewsbyFilter(filter, projection, reviewData.PageSize, reviewData.RequestedPage, "review", reviewData.Filterby, reviewData.FilterType, reviewPaginate)
+		if err != nil {
+			return returnData, err
+		}
+		returnData = response
+		return returnData, nil
+	}
+	response, err := reviewRepository.GetReviewsbyFilter(filter, projection, reviewData.PageSize, reviewData.RequestedPage, "review", reviewData.Filterby, reviewData.FilterType, reviewPaginate)
+	if err != nil {
+		return returnData, err
+	}
+	returnData = response
+	return returnData, nil
+
 }
