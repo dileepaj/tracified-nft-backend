@@ -3,7 +3,7 @@ package marketplaceBusinessFacade
 import (
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
-	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 /*
@@ -119,13 +119,45 @@ func GetBestCreators() ([]models.CreatorsList, error) {
 			bestCreators = append(bestCreators, res)
 		}
 	}
-	logs.InfoLogger.Println("______________BEST CREATORS_______________")
-	for _, element := range bestCreators {
-		logs.InfoLogger.Println("NFT Identifer: ", element.NftIdentifier)
-		logs.InfoLogger.Println("User Identifer: ", element.UserID)
-		logs.InfoLogger.Println("Total Starts: ", element.TotalStars)
-		logs.InfoLogger.Println("avg: ", element.AvgRating)
-	}
-	logs.InfoLogger.Println("______________END OF EST CREATORS_______________")
+
 	return bestCreators, nil
+}
+
+func GetReviewsbyFilter(reviewData requestDtos.ReviewFiltering) (models.ReviewPaginatedResponse, error) {
+	projection := bson.D{
+		{Key: "_id", Value: 1},
+		{Key: "nftidentifier", Value: 1},
+		{Key: "userid", Value: 1},
+		{Key: "rating", Value: 1},
+		{Key: "description", Value: 1},
+		{Key: "timestamp", Value: 1},
+	}
+	var reviewPaginate []models.ReviewsforPagination
+	var returnData models.ReviewPaginatedResponse
+	filter := bson.M{
+		"status":        "Pending",
+		"nftidentifier": reviewData.NFTIdentifier,
+	}
+	if reviewData.Filterby == "high" {
+		response, err := reviewRepository.GetReviewsbyFilter(filter, projection, reviewData.PageSize, reviewData.RequestedPage, "review", reviewData.Filterby, reviewData.FilterType, reviewPaginate)
+		if err != nil {
+			return returnData, err
+		}
+		returnData = response
+		return returnData, nil
+	} else if reviewData.Filterby == "low" {
+		response, err := reviewRepository.GetReviewsbyFilter(filter, projection, reviewData.PageSize, reviewData.RequestedPage, "review", reviewData.Filterby, reviewData.FilterType, reviewPaginate)
+		if err != nil {
+			return returnData, err
+		}
+		returnData = response
+		return returnData, nil
+	}
+	response, err := reviewRepository.GetReviewsbyFilter(filter, projection, reviewData.PageSize, reviewData.RequestedPage, "review", reviewData.Filterby, reviewData.FilterType, reviewPaginate)
+	if err != nil {
+		return returnData, err
+	}
+	returnData = response
+	return returnData, nil
+
 }

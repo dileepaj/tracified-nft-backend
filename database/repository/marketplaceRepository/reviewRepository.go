@@ -108,3 +108,24 @@ func (r *ReviewRepository) DeleteReview(review requestDtos.DeleteReview) error {
 	return err
 
 }
+
+func (r *ReviewRepository) GetReviewsbyFilter(filterConfig bson.M, projectionData bson.D, pagesize int32, pageNo int32, collectionName string, sortingFeildName string, sortType int, reviews []models.ReviewsforPagination) (models.ReviewPaginatedResponse, error) {
+	contentResponse, paginationResponse, err := repository.PaginateWithCustomSort[[]models.ReviewsforPagination](
+		filterConfig,
+		projectionData,
+		pagesize,
+		pageNo,
+		collectionName,
+		sortingFeildName,
+		sortType,
+		reviews,
+	)
+	var response models.ReviewPaginatedResponse
+	if err != nil {
+		logs.InfoLogger.Println("Pagination failure:", err.Error())
+		return response, err
+	}
+	response.ReviewContent = contentResponse
+	response.PaginationInfo = paginationResponse
+	return response, nil
+}

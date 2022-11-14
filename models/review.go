@@ -27,3 +27,17 @@ type CreatorsList struct {
 	TotalStars       int
 	AvgRating        float32
 }
+
+type ReviewsforPagination struct {
+	Id            primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	NFTIdentifier string             `json:"nftidentifier" bson:"nftidentifier" validate:"required"`
+	UserID        string             `json:"userid" bson:"userid" validate:"required"`
+	Rating        float32            `json:"rating" bson:"rating"`
+	Description   string             `json:"description" bson:"description"`
+	Timestamp     string             `json:"timestamp" bson:"timestamp,omitempty"`
+}
+
+type ReviewPaginatedResponse struct {
+	ReviewContent  []ReviewsforPagination `json:"reviewcontent" bson:"reviewcontent"`
+	PaginationInfo PaginationTemplate
+}
