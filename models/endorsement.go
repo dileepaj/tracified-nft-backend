@@ -14,4 +14,5 @@ type Endorse struct {
 	Review        string             `json:"Review" bson:"review"`
 	Rating        string             `json:"Rating" bson:"rating"`
 	IsBestCreator bool               `json:"isbestcreator" bson:"isbestcreator"`
+	ProfilePic    string             `json:"profilepic" bson:"profilepic,omitempty"`
 }
