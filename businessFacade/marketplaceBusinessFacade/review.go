@@ -3,7 +3,6 @@ package marketplaceBusinessFacade
 import (
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
-	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -120,14 +119,7 @@ func GetBestCreators() ([]models.CreatorsList, error) {
 			bestCreators = append(bestCreators, res)
 		}
 	}
-	logs.InfoLogger.Println("______________BEST CREATORS_______________")
-	for _, element := range bestCreators {
-		logs.InfoLogger.Println("NFT Identifer: ", element.NftIdentifier)
-		logs.InfoLogger.Println("User Identifer: ", element.UserID)
-		logs.InfoLogger.Println("Total Starts: ", element.TotalStars)
-		logs.InfoLogger.Println("avg: ", element.AvgRating)
-	}
-	logs.InfoLogger.Println("______________END OF EST CREATORS_______________")
+
 	return bestCreators, nil
 }
 
