@@ -138,6 +138,7 @@ func GetReviewsbyFilter(reviewData requestDtos.ReviewFiltering) (models.ReviewPa
 		{Key: "userid", Value: 1},
 		{Key: "rating", Value: 1},
 		{Key: "description", Value: 1},
+		{Key: "timestamp", Value: 1},
 	}
 	var reviewPaginate []models.ReviewsforPagination
 	var returnData models.ReviewPaginatedResponse

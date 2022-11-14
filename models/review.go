@@ -34,6 +34,7 @@ type ReviewsforPagination struct {
 	UserID        string             `json:"userid" bson:"userid" validate:"required"`
 	Rating        float32            `json:"rating" bson:"rating"`
 	Description   string             `json:"description" bson:"description"`
+	Timestamp     string             `json:"timestamp" bson:"timestamp,omitempty"`
 }
 
 type ReviewPaginatedResponse struct {
