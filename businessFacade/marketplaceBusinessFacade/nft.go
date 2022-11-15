@@ -69,6 +69,7 @@ func GetProjectionDataNFTMatrixView() bson.D {
 		{Key: "trending", Value: 1},
 		{Key: "hotpicks", Value: 1},
 		{Key: "currentownerpk", Value: 1},
+		{Key: "attachmenttype", Value: 1},
 	}
 	return projection
 }
