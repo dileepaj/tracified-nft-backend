@@ -17,6 +17,7 @@ type NFT struct {
 	Category          string             `json:"categories" bson:"categories" validate:"required"`
 	Tags              []string           `json:"tags" bson:"tags"`
 	Imagebase64       string             `json:"imagebase64" bson:"imagebase64" validate:"required"`
+	AttachmentType    string             `json:"attachmenttype" bson:"attachmenttype" validate:"required"`
 	CurrentPrice      string             `json:"currentprice" bson:"currentprice" `
 	CurrentOwnerPK    string             `json:"currentownerpk" bson:"currentownerpk" validate:"required"`
 	IssuerPK          string             `json:"nftissuerpk" bson:"nftissuerpk" validate:"required"` //minter pK for POLYGON.ETH.Solana , stellar ==>unioque created account
@@ -40,6 +41,7 @@ type NFTContentforMatrix struct {
 	Blockchain     string `json:"blockchain" bson:"blockchain" validate:"required"`
 	NFTName        string `json:"nftname" bson:"nftname" validate:"required"`
 	Imagebase64    string `json:"imagebase64" bson:"imagebase64" validate:"required"`
+	AttachmentType string `json:"attachmenttype" bson:"attachmenttype" validate:"required"`
 	SellingStatus  string `json:"sellingstatus" bson:"sellingstatus" validate:"required"`
 	Trending       bool   `json:"trending" bson:"trending" `
 	HotPicks       bool   `json:"hotpicks" bson:"hotpicks" `
