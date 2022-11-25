@@ -34,6 +34,7 @@ type NFT struct {
 	Trending          bool               `json:"trending" bson:"trending" `
 	HotPicks          bool               `json:"hotpicks" bson:"hotpicks" `
 	Royalty           string             `json:"royalty" bson:"royalty"`
+	Thumbnail         string             `json:"thumbnail" bson:"thumbnail"`
 }
 type NFTContentforMatrix struct {
 	NFTIdentifier  string `json:"nftidentifier" bson:"nftidentifier" validate:"required"`
@@ -46,6 +47,7 @@ type NFTContentforMatrix struct {
 	Trending       bool   `json:"trending" bson:"trending" `
 	HotPicks       bool   `json:"hotpicks" bson:"hotpicks" `
 	CurrentOwnerPK string `json:"currentownerpk" bson:"currentownerpk" validate:"required"`
+	Thumbnail      string `json:"thumbnail" bson:"thumbnail"`
 }
 
 type Paginateresponse struct {
