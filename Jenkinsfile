@@ -52,47 +52,16 @@ node {
                 }
               }
     }
-        stage('Deploy to Staging') {
-              echo env.BRANCH_NAME
-              if (env.BRANCH_NAME == 'staging') {
-                echo 'Building and pushing image'
-                docker.withRegistry('453230908534.dkr.ecr.ap-south-1.amazonaws.com/tracified/nft-backend', 'ecr:ap-south-1:aws-ecr-credentials') {
-                  echo 'Building image'
-                  echo "${env.BUILD_ID}"                  
-                  def releaseImage = docker.build("tracified/nft-backend-staging:${env.BUILD_ID}")
-                  releaseImage.push()
-                  releaseImage.push('latest')
-                }
-                echo 'Deploying image in server'
-                withCredentials([[
-                  $class: 'AmazonWebServicesCredentialsBinding',
-                  accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                  credentialsId: 'aws-ecr-credentials',
-                  secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-                ]]) {
-                  ansiblePlaybook inventory: 'deploy/hosts', playbook: 'deploy/staging.yml', extras: '-u ubuntu -e GATEWAY_PORT=$GATEWAY_PORT'
-                }
-              }
-    }
         stage('Deploy to Prduction') {
               echo env.BRANCH_NAME
-              if (env.BRANCH_NAME == 'production') {
+              if (env.BRANCH_NAME == 'master') {
                 echo 'Building and pushing image'
-                docker.withRegistry('https://453230908534.dkr.ecr.ap-south-1.amazonaws.com/tracified/nft-backend', 'ecr:ap-south-1:aws-ecr-credentials') {
+                docker.withRegistry('https://453230908534.dkr.ecr.ap-south-1.amazonaws.com/tracified/nft-backend-production', 'ecr:ap-south-1:aws-ecr-credentials') {
                   echo 'Building image'
                   echo "${env.BUILD_ID}"                  
                   def releaseImage = docker.build("tracified/nft-backend-production:${env.BUILD_ID}")
                   releaseImage.push()
                   releaseImage.push('latest')
-                }
-                echo 'Deploying image in server'
-                withCredentials([[
-                  $class: 'AmazonWebServicesCredentialsBinding',
-                  accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                  credentialsId: 'aws-ecr-credentials',
-                  secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-                ]]) {
-                  ansiblePlaybook inventory: 'deploy/hosts', playbook: 'deploy/production.yml', extras: '-u ubuntu -e GATEWAY_PORT=$GATEWAY_PORT'
                 }
               }
     }
