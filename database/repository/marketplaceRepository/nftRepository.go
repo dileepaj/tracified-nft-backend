@@ -136,7 +136,6 @@ func (r *NFTRepository) FindNFTByIdId2Id3(idName1 string, id1 string, idName2 st
 			logs.ErrorLogger.Println(err.Error())
 			return nfts, err
 		}
-		logs.InfoLogger.Println("item info : ", nft)
 		nfts = append(nfts, nft)
 	}
 	logs.InfoLogger.Println("Data retreived from DB : ", nfts)

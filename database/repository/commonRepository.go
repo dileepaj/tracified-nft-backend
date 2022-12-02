@@ -184,7 +184,7 @@ func Remove(idName string, id, collection string) (int64, error) {
 }
 
 type paginateResponseType interface {
-	[]models.NFTContentforMatrix
+	[]models.NFTContentforMatrix | []models.CreatorInfo | []models.ReviewsforPagination
 }
 
 func PaginateResponse[PaginatedData paginateResponseType](filterConfig bson.M, projectionData bson.D, pagesize int32, pageNo int32, collectionName string, sortingFeildName string, object PaginatedData) (PaginatedData, models.PaginationTemplate, error) {
@@ -215,4 +215,34 @@ func PaginateResponse[PaginatedData paginateResponseType](filterConfig bson.M, p
 		return object, paginationdata, err
 	}
 	return object, paginationdata, nil
+}
+
+func PaginateWithCustomSort[PaginatedData paginateResponseType](filterConfig bson.M, projectionData bson.D, pagesize int32, pageNo int32, collectionName string, sortingFeildName string, sortyType int, object PaginatedData) (PaginatedData, models.PaginationTemplate, error) {
+	var paginationdata models.PaginationTemplate
+	ctx := context.Background()
+	DbName := "nftBackendQa"
+	connectionString := os.Getenv("BE_MONGOLAB_URI")
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionString))
+	if err != nil {
+		logs.ErrorLogger.Println("failed to connect to DB: ", err.Error())
+	}
+	dbConnection := client.Database(DbName)
+	filter := filterConfig
+	limit := int64(pagesize)
+	page := int64(pageNo)
+	collection := dbConnection.Collection(collectionName)
+	projection := projectionData
+	paginatedData, err := paginate.New(collection).Context(ctx).Limit(limit).Page(page).Sort(sortingFeildName, sortyType).Select(projection).Filter(filter).Decode(&object).Find()
+	paginationdata.TotalElements = int32(paginatedData.Pagination.Total)
+	paginationdata.TotalPages = int32(paginatedData.Pagination.TotalPage)
+	paginationdata.Currentpage = int32(paginatedData.Pagination.Page)
+	paginationdata.PageSize = int32(paginatedData.Pagination.PerPage)
+	paginationdata.Previouspage = int32(paginatedData.Pagination.Prev)
+	paginationdata.NextPage = int32(paginatedData.Pagination.Next)
+	if err != nil {
+		logs.ErrorLogger.Println("Pagination failure :", err.Error())
+		return object, paginationdata, err
+	}
+	return object, paginationdata, nil
+
 }

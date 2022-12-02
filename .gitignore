@@ -15,3 +15,5 @@
 # vendor/
 local.env
 .env
+
+.idea/

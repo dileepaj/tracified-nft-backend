@@ -3,6 +3,7 @@ package apiHandler
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/dileepaj/tracified-nft-backend/businessFacade/marketplaceBusinessFacade"
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
@@ -118,4 +119,52 @@ func DeleteReview(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+}
+
+func GetReviewbyFilter(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	vars := mux.Vars(r)
+	var reviewfilter requestDtos.ReviewFiltering
+	if vars["filtertype"] == "high" {
+		reviewfilter.Filterby = "rating"
+		reviewfilter.FilterType = -1
+
+	} else if vars["filtertype"] == "low" {
+		reviewfilter.Filterby = "rating"
+		reviewfilter.FilterType = 1
+
+	} else if vars["filtertype"] == "latest" {
+		reviewfilter.Filterby = "_id"
+		reviewfilter.FilterType = -1
+	}
+	pgsize, err1 := strconv.Atoi(vars["pagesize"])
+	if err1 != nil {
+		errors.BadRequest(w, "invalid page size.")
+		return
+	}
+	reviewfilter.PageSize = int32(pgsize)
+	requestedPage, err2 := strconv.Atoi(vars["pageno"])
+	if err2 != nil {
+		errors.BadRequest(w, "Requested page error: "+err2.Error())
+		return
+	}
+	if requestedPage < 0 {
+		requestedPage = 0
+	}
+	reviewfilter.RequestedPage = int32(requestedPage)
+	if vars["id"] == "" {
+		errors.BadRequest(w, "nft identifier missing.")
+		return
+	}
+	reviewfilter.NFTIdentifier = vars["id"]
+	result, paginateErr := marketplaceBusinessFacade.GetReviewsbyFilter(reviewfilter)
+	if paginateErr != nil {
+		errors.BadRequest(w, paginateErr.Error())
+		return
+	}
+	if reviewfilter.RequestedPage > result.PaginationInfo.TotalPages || reviewfilter.RequestedPage < 0 {
+		errors.NotFound(w, "Requested page not found")
+		return
+	}
+	commonResponse.SuccessStatus[models.ReviewPaginatedResponse](w, result)
 }
