@@ -292,16 +292,10 @@
     const myChart = new Chart(ctx, {
       type: "pie",
       data: pieChartStruct,
+      plugins: [ChartDataLabels],
       options: {
-        animation: {
-          duration: 0,
-        },
-        maintainAspectRatio: false,
         responsive: true,
         plugins: {
-          tooltips: {
-            enabled: true
-          },
           legend: {
             display: true,
             position: 'top',
@@ -311,24 +305,30 @@
             },
           },
           datalabels: {
-            display: 'auto',
-            color: '#fff',
+            color: "#000000",
             font: {
               size: 12,
             },
             formatter: (value, ctx) => {
-                let sum = 0;
-                let dataArr = ctx.chart.data.datasets[0].data;
-                dataArr.map(data => {
-                    sum += data;
-                });
-                let percentage = (value*100 / sum).toFixed(2)+"%";
-                return percentage;
+              let percentage = getPercentage(value, dataValue);
+              return percentage;
             },
           },
         },
+
+        maintainAspectRatio: false,
       },
     });
+  }
+
+
+  function getPercentage(value, dataSet) {
+    let sum = 0;
+    dataSet.map((data) => {
+      sum += data;
+    });
+    let percentage = ((value * 100) / sum).toFixed(2) + '%';
+    return percentage;
   }
 
   function displayBubblechart(data) {
