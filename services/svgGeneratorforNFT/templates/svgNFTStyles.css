@@ -477,3 +477,7 @@ li {
   line-height: 126.02%;
   color: #000000;
 }
+
+.card-body-2{
+  display: block;
+}
