@@ -86,8 +86,12 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 						if table.TableContent != "" && table.TableContent!="EMPTY" && element.WidgetId == table.WidgetId {
 							htmlBody += `<div class="card text-center justify-content-center m-3 default-font round-card" style="max-height: fit-content;">
 											<div class="card-header round-card-header scroll">` + table.TableTitle + `</div>
-											<div class="card-body text-center"  style="width: 100%;" >
-											<table class="table table-bordered table-responsive">` + table.TableContent + `</table>
+											<div class="card-body-2 text-center scroll"  style="width: 100%;" >
+											<div>
+											<div class="table-responsive scroll m-3" style="height:370px;">
+											<table class="table text-wrap table-hover table-bordered" style="word-wrap: break-word;">` + table.TableContent + `</table>
+											</div>
+											</div>
 											</div>
 										</div>`
 						}

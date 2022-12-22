@@ -3,14 +3,19 @@
     if (!!data.TableContent) {
       let cardId = "tracified" + data.WidgetId;
       createCard(cardId, data.TableTitle);
-      //craete boostarp cards Node and it to barchart
-      let tableDiv = document.createElement("div");
-      tableDiv.style = "width:100%; heigth:fit-content;";
+      let d=document.getElementById(cardId)
+      d.className='card-body-2 text-center scroll'
+      let tableWrapper=document.createElement('div')
+      let tableResponsiveDiv = document.createElement("div");
+      tableResponsiveDiv.className="table-responsive scroll m-3"
+      tableResponsiveDiv.style="height:370px;"
       let tableNode = document.createElement("table");
-      tableNode.className = `table table-bordered table-responsive`;
+      tableNode.className = `table text-wrap table-bordered  table-hover`;
       tableNode.innerHTML = data.TableContent;
-      tableDiv.append(tableNode);
-      document.getElementById(cardId).appendChild(tableDiv);
+
+      tableResponsiveDiv.append(tableNode)
+      tableWrapper.append(tableResponsiveDiv)
+      document.getElementById(cardId).appendChild(tableWrapper);
     }
   }
 
