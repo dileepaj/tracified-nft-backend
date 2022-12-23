@@ -183,10 +183,16 @@ var NftRoutes = models.Routers{
 		Handler: apiHandler.GetPaginatedNFTbySellingStatus,
 	},
 	models.Router{
-		Name:    "Get NFT pagination by Hotpick status",
+		Name:    "Get NFT pagination by Hotpick or trending status",
 		Method:  "Get",
 		Path:    "/nftspaginate/filterby/{type}/{blockchain}/{pagesize}/{requestedPage}",
 		Handler: apiHandler.GetPaginatedNFTforstatusFilters,
+	},
+	models.Router{
+		Name:    "Get NFT pagination by On Sale Hotpick or trending status",
+		Method:  "Get",
+		Path:    "/onsale/{type}/{blockchain}/{pagesize}/{requestedPage}",
+		Handler: apiHandler.GetPaginatedOnSaleNFTforstatusFilters,
 	},
 	models.Router{
 		Name:    "Get BEST CREATORS",

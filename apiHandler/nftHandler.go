@@ -598,6 +598,48 @@ func GetPaginatedNFTforstatusFilters(w http.ResponseWriter, r *http.Request) {
 }
 
 /**
+ **Description:function is used to paginate and return block chain specific nfts which are either trending or under hotpicks that are on Sale
+ **Returns:Paginated nft data
+ */
+func GetPaginatedOnSaleNFTforstatusFilters(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	var pagination requestDtos.NFTsForMatrixView
+	pagination.Blockchain = vars["blockchain"]
+	pgsize, err1 := strconv.Atoi(vars["pagesize"])
+	if err1 != nil {
+		errors.BadRequest(w, "Requested invalid page size.")
+		return
+	}
+	pagination.PageSize = int32(pgsize)
+	requestedPage, err2 := strconv.Atoi(vars["requestedPage"])
+	if err2 != nil {
+		errors.BadRequest(w, "Requested page error")
+	}
+
+	pagination.RequestedPage = int32(requestedPage)
+	if vars["type"] == "hotpicks" {
+		pagination.SortbyFeild = "hotpicks"
+	} else if vars["type"] == "trending" {
+		pagination.SortbyFeild = "trending"
+	}
+	results, err := marketplaceBusinessFacade.GetPaginatedOnSaleNFTbyStatusFilter(pagination)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		if pagination.RequestedPage < 0 {
+			errors.NotFound(w, "Requested page size should be greater than zero")
+			return
+		}
+		if results.PaginationInfo.TotalPages < pagination.RequestedPage {
+			errors.NotFound(w, "requested page does not exist")
+			return
+		}
+		commonResponse.SuccessStatus[models.Paginateresponse](w, results)
+	}
+}
+
+/**
  **Description: Get nfts that are on trending and hotpicks
  **Returns : Paginated nft data
  */
