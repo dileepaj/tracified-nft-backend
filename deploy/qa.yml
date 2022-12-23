@@ -67,4 +67,4 @@
             MK_SENDER_EMAIL_KEY: "{{lookup('env','MK_SENDER_EMAIL_KEY')}}"
             HOST_EMAIL: "{{lookup('env','HOST_EMAIL')}}"
             EMAIL_PORT: "{{lookup('env','EMAIL_PORT')}}"
-            BEARER_TOKEN: "{{lookup('env','BEARER_TOKEN')}}"
+         
