@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 
+	"github.com/dileepaj/tracified-nft-backend/commons"
 	"github.com/dileepaj/tracified-nft-backend/database/connections"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
@@ -190,7 +191,7 @@ type paginateResponseType interface {
 func PaginateResponse[PaginatedData paginateResponseType](filterConfig bson.M, projectionData bson.D, pagesize int32, pageNo int32, collectionName string, sortingFeildName string, object PaginatedData) (PaginatedData, models.PaginationTemplate, error) {
 	var paginationdata models.PaginationTemplate
 	ctx := context.Background()
-	DbName := "nftBackendQa"
+	DbName := commons.GoDotEnvVariable("DATABASE_NAME")
 	connectionString := os.Getenv("BE_MONGOLAB_URI")
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionString))
 	if err != nil {
@@ -220,7 +221,7 @@ func PaginateResponse[PaginatedData paginateResponseType](filterConfig bson.M, p
 func PaginateWithCustomSort[PaginatedData paginateResponseType](filterConfig bson.M, projectionData bson.D, pagesize int32, pageNo int32, collectionName string, sortingFeildName string, sortyType int, object PaginatedData) (PaginatedData, models.PaginationTemplate, error) {
 	var paginationdata models.PaginationTemplate
 	ctx := context.Background()
-	DbName := "nftBackendQa"
+	DbName := commons.GoDotEnvVariable("DATABASE_NAME")
 	connectionString := os.Getenv("BE_MONGOLAB_URI")
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionString))
 	if err != nil {
