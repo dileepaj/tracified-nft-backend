@@ -3,14 +3,19 @@
     if (!!data.TableContent) {
       let cardId = "tracified" + data.WidgetId;
       createCard(cardId, data.TableTitle);
-      //craete boostarp cards Node and it to barchart
-      let tableDiv = document.createElement("div");
-      tableDiv.style = "width:100%; heigth:fit-content;";
+      let d=document.getElementById(cardId)
+      d.className='card-body-2 text-center scroll'
+      let tableWrapper=document.createElement('div')
+      let tableResponsiveDiv = document.createElement("div");
+      tableResponsiveDiv.className="table-responsive scroll m-3"
+      tableResponsiveDiv.style="height:370px;"
       let tableNode = document.createElement("table");
-      tableNode.className = `table table-bordered table-responsive`;
+      tableNode.className = `table text-wrap table-bordered  table-hover`;
       tableNode.innerHTML = data.TableContent;
-      tableDiv.append(tableNode);
-      document.getElementById(cardId).appendChild(tableDiv);
+
+      tableResponsiveDiv.append(tableNode)
+      tableWrapper.append(tableResponsiveDiv)
+      document.getElementById(cardId).appendChild(tableWrapper);
     }
   }
 
@@ -89,12 +94,12 @@
           anchor1.className = "proof-anchor1";
           anchor1.href = "#" + data.Url;
           let anchor = document.createElement("a");
-          let proofModal=document.createElement("div")
-          proofModal.className ="proof-modal"
+          let proofModal = document.createElement("div")
+          proofModal.className = "proof-modal"
           anchor.className = "proof-anchor";
           anchor.href = "#" + data.Url;
           let openModal = document.createElement("div");
-          openModal.className="modalDialog";
+          openModal.className = "modalDialog";
           openModal.id = data.Url;
           let proofModal2 = document.createElement("div")
           proofModal2.className = "modal2";
@@ -102,7 +107,7 @@
           close.className = "close";
           close.title = "Close";
           close.href = "#close";
-        
+
           let iframe = document.createElement("iframe");
           iframe.className = "iframe-proofbot";
           iframe.title = "Proofbot";
@@ -292,16 +297,43 @@
     const myChart = new Chart(ctx, {
       type: "pie",
       data: pieChartStruct,
+      plugins: [ChartDataLabels],
       options: {
         responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          y: {
-            beginAtZero: true,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+            align: 'center',
+            labels: {
+              font: { size: data.FontSize },
+            },
+          },
+          datalabels: {
+            color: "#000000",
+            font: {
+              size: 12,
+            },
+            formatter: (value, ctx) => {
+              let percentage = getPercentage(value, dataValue);
+              return percentage;
+            },
           },
         },
+
+        maintainAspectRatio: false,
       },
     });
+  }
+
+
+  function getPercentage(value, dataSet) {
+    let sum = 0;
+    dataSet.map((data) => {
+      sum += data;
+    });
+    let percentage = ((value * 100) / sum).toFixed(2) + '%';
+    return percentage;
   }
 
   function displayBubblechart(data) {

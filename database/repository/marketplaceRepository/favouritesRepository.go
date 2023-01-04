@@ -57,15 +57,9 @@ func (r *FavouriteRepository) FindFavouritesbyUserPK(idName string, id string) (
 }
 
 func (r *FavouriteRepository) GetAllFavourites() ([]models.Favourite, error) {
-	session, err := connections.GetMongoSession()
-	if err != nil {
-		logs.ErrorLogger.Println("Error while getting session in getAllFavourite : FavouriteRepository.go : ", err.Error())
-	}
-	defer session.EndSession(context.TODO())
-
 	var favourite []models.Favourite
 	findOptions := options.Find()
-	result, err := session.Client().Database(connections.DbName).Collection(Favourite).Find(context.TODO(), bson.D{{}}, findOptions)
+	result, err := connections.GetSessionClient(Favourite).Find(context.TODO(), bson.D{{}}, findOptions)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured when trying to connect to DB and excute Find query in GetAllFavourite:FavouriteRepository.go: ", err.Error())
 		return favourite, err
