@@ -8,6 +8,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -54,6 +55,31 @@ func (r *WatchListRepository) FindWatchListbyUserPK(idName string, id string) ([
 		watchlists = append(watchlists, watchlist)
 	}
 	return watchlists, nil
+}
+
+func (r *WatchListRepository) FindWatchlistbyUserPKandNFTIdentifier(blockchain string, userpk string, nftID string) (models.WatchList, error) {
+	var watchlist models.WatchList
+	rst, err := repository.FindById1Id2Id3("blockchain", blockchain, "nftidentifier", nftID, "user", userpk, WatchList)
+	if err != nil {
+		return watchlist, err
+	}
+	for rst.Next(context.TODO()) {
+		decodeErr := rst.Decode(&watchlist)
+		if decodeErr != nil {
+			logs.ErrorLogger.Print("failed to decode watchlist data : ", err.Error())
+			return watchlist, err
+		}
+	}
+	return watchlist, nil
+}
+
+func (r *WatchListRepository) RemoveUserFromWatchlist(objectID primitive.ObjectID) (int64, error) {
+	result, err := connections.GetSessionClient(WatchList).DeleteOne(context.TODO(), bson.M{"_id": objectID})
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+		return 0, err
+	}
+	return result.DeletedCount, nil
 }
 
 func (r *WatchListRepository) GetAllWatchLists() ([]models.WatchList, error) {
