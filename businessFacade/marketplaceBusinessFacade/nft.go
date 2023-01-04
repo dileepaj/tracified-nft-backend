@@ -128,6 +128,30 @@ func GetPaginatedNFTbyStatusFilter(paginationData requestDtos.NFTsForMatrixView)
 	return models.Paginateresponse(response), err
 }
 
+func GetPaginatedOnSaleNFTbyStatusFilter(paginationData requestDtos.NFTsForMatrixView) (models.Paginateresponse, error) {
+	var filter = bson.M{}
+	if paginationData.SortbyFeild == "hotpicks" {
+		filter = bson.M{
+			"sellingstatus": "ON SALE",
+			"hotpicks":      true,
+		}
+	} else if paginationData.SortbyFeild == "trending" {
+		filter = bson.M{
+			"sellingstatus": "ON SALE",
+			"trending":      true,
+		}
+	}
+	projection := GetProjectionDataNFTMatrixView()
+
+	var nfts []models.NFTContentforMatrix
+	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts)
+	if err != nil {
+		logs.ErrorLogger.Println("Error occured :", err.Error())
+		return models.Paginateresponse(response), err
+	}
+	return models.Paginateresponse(response), err
+}
+
 func GetPaginatedResponseforBestCreations(paginationData requestDtos.NFTsForMatrixView) (models.Paginateresponse, error) {
 	filter := bson.M{
 		"blockchain": paginationData.Blockchain,

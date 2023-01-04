@@ -45,15 +45,9 @@ func (r *FaqRepository) GetUserFAQByStatus(idName string, id string) ([]response
 }
 
 func (r *FaqRepository) GetAllFaq() ([]models.Faq, error) {
-	session, err := connections.GetMongoSession()
-	if err != nil {
-		logs.ErrorLogger.Println("Error while getting session in getAllFaq : faqRepository.go : ", err.Error())
-	}
-	defer session.EndSession(context.TODO())
-
 	var allFaq []models.Faq
 	findOptions := options.Find()
-	result, err := session.Client().Database(connections.DbName).Collection(Faq).Find(context.TODO(), bson.D{{}}, findOptions)
+	result, err := connections.GetSessionClient(Faq).Find(context.TODO(), bson.D{{}}, findOptions)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured when trying to connect to DB and excute Find query in GetAllFaq:faqRepository.go: ", err.Error())
 		return allFaq, err
@@ -72,17 +66,11 @@ func (r *FaqRepository) GetAllFaq() ([]models.Faq, error) {
 
 func (r *FaqRepository) GetFaqByID(questionID string) (models.Faq, error) {
 	var faq models.Faq
-
-	session, err := connections.GetMongoSession()
-	if err != nil {
-		logs.ErrorLogger.Println("Error while getting session " + err.Error())
-	}
-	defer session.EndSession(context.TODO())
 	objectId, err := primitive.ObjectIDFromHex(questionID)
 	if err != nil {
 		logs.WarningLogger.Println("Error Occured when trying to convert hex string in to Object(ID) in GetFaqByID : faqRepository: ", err.Error())
 	}
-	rst, err := session.Client().Database(connections.DbName).Collection("faq").Find(context.TODO(), bson.M{"_id": objectId})
+	rst, err := connections.GetSessionClient("faq").Find(context.TODO(), bson.M{"_id": objectId})
 	if err != nil {
 		return faq, err
 	}
@@ -98,20 +86,13 @@ func (r *FaqRepository) GetFaqByID(questionID string) (models.Faq, error) {
 
 func (r *FaqRepository) UpdateFaqbyID(findBy string, id primitive.ObjectID, update primitive.M) (models.Faq, error) {
 	var faqResponse models.Faq
-
-	session, err := connections.GetMongoSession()
-	if err != nil {
-		logs.ErrorLogger.Println("Error while getting session " + err.Error())
-	}
-
-	defer session.EndSession(context.TODO())
 	upsert := false
 	after := options.After
 	opt := options.FindOneAndUpdateOptions{
 		ReturnDocument: &after,
 		Upsert:         &upsert,
 	}
-	rst := session.Client().Database(connections.DbName).Collection("faq").FindOneAndUpdate(context.TODO(), bson.M{"_id": id}, update, &opt)
+	rst := connections.GetSessionClient("faq").FindOneAndUpdate(context.TODO(), bson.M{"_id": id}, update, &opt)
 	if rst != nil {
 		err := rst.Decode((&faqResponse))
 		if err != nil {
@@ -127,20 +108,13 @@ func (r *FaqRepository) UpdateFaqbyID(findBy string, id primitive.ObjectID, upda
 
 func (r *FaqRepository) UpdateUserFAQ(findBy string, id primitive.ObjectID, update primitive.M) (models.UserQuestions, error) {
 	var userfaqResponse models.UserQuestions
-
-	session, err := connections.GetMongoSession()
-	if err != nil {
-		logs.ErrorLogger.Println("Error while getting session " + err.Error())
-	}
-
-	defer session.EndSession(context.TODO())
 	upsert := false
 	after := options.After
 	opt := options.FindOneAndUpdateOptions{
 		ReturnDocument: &after,
 		Upsert:         &upsert,
 	}
-	rst := session.Client().Database(connections.DbName).Collection("userFAQ").FindOneAndUpdate(context.TODO(), bson.M{"_id": id}, update, &opt)
+	rst := connections.GetSessionClient("userFAQ").FindOneAndUpdate(context.TODO(), bson.M{"_id": id}, update, &opt)
 	if rst != nil {
 		err := rst.Decode((&userfaqResponse))
 		if err != nil {
@@ -156,12 +130,7 @@ func (r *FaqRepository) UpdateUserFAQ(findBy string, id primitive.ObjectID, upda
 
 func (r *FaqRepository) FindUserFAQbyID(id primitive.ObjectID) (models.UserQuestions, error) {
 	var faq models.UserQuestions
-	session, err := connections.GetMongoSession()
-	if err != nil {
-		logs.ErrorLogger.Println("Error while getting session " + err.Error())
-	}
-	defer session.EndSession(context.TODO())
-	rst, err := session.Client().Database(connections.DbName).Collection("userFAQ").Find(context.TODO(), bson.M{"_id": id})
+	rst, err := connections.GetSessionClient("userFAQ").Find(context.TODO(), bson.M{"_id": id})
 	if err != nil {
 		return faq, err
 	}
@@ -177,17 +146,11 @@ func (r *FaqRepository) FindUserFAQbyID(id primitive.ObjectID) (models.UserQuest
 
 func (r *FaqRepository) GetFFAQAttachmentbyID(questionID string) (responseDtos.GetAttachmentbyID, error) {
 	var faq responseDtos.GetAttachmentbyID
-
-	session, err := connections.GetMongoSession()
-	if err != nil {
-		logs.ErrorLogger.Println("Error while getting session " + err.Error())
-	}
-	defer session.EndSession(context.TODO())
 	objectId, err := primitive.ObjectIDFromHex(questionID)
 	if err != nil {
 		logs.WarningLogger.Println("Error Occured when trying to convert hex string in to Object(ID) in GetFaqByID : faqRepository: ", err.Error())
 	}
-	rst, err := session.Client().Database(connections.DbName).Collection("userFAQ").Find(context.TODO(), bson.M{"_id": objectId})
+	rst, err := connections.GetSessionClient("userFAQ").Find(context.TODO(), bson.M{"_id": objectId})
 	if err != nil {
 		return faq, err
 	}
