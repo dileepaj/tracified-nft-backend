@@ -57,15 +57,9 @@ func (r *WatchListRepository) FindWatchListbyUserPK(idName string, id string) ([
 }
 
 func (r *WatchListRepository) GetAllWatchLists() ([]models.WatchList, error) {
-	session, err := connections.GetMongoSession()
-	if err != nil {
-		logs.ErrorLogger.Println("Error while getting session in getAllWatchList : WatchRepository.go : ", err.Error())
-	}
-	defer session.EndSession(context.TODO())
-
 	var watchlist []models.WatchList
 	findOptions := options.Find()
-	result, err := session.Client().Database(connections.DbName).Collection(WatchList).Find(context.TODO(), bson.D{{}}, findOptions)
+	result, err := connections.GetSessionClient(WatchList).Find(context.TODO(), bson.D{{}}, findOptions)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured when trying to connect to DB and excute Find query in GetAllWatchList:watchlistRepository.go: ", err.Error())
 		return watchlist, err

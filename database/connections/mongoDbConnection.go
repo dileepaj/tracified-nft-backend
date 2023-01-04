@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/dileepaj/tracified-nft-backend/commons"
+	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -28,4 +29,14 @@ func GetMongoSession() (mongo.Session, error) {
 		}
 	}
 	return mgoSession, nil
+}
+
+func GetSessionClient(collection string) (*mongo.Collection){
+	session, err := GetMongoSession()
+	if err != nil {
+		log.Println("Error while getting session " + err.Error())
+		logs.ErrorLogger.Println("Error while getting session " + err.Error())
+	}
+	defer session.EndSession(context.TODO())
+	return session.Client().Database(DbName).Collection(collection)
 }
