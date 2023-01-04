@@ -19,10 +19,10 @@ func LoadEnv() {
 	if err != nil {
 		logs.ErrorLogger.Println("Error loading .env1 file")
 	}
-	backendToken = os.Getenv("BACKENDTOKEN")
+	backendToken = os.Getenv("BACKEND_TOKEN")
 	EnvName = os.Getenv("BRANCH_NAME")
 	port = os.Getenv("BE_PORT")
-	backendBaseUrl = os.Getenv("BACKENDBASEURL")
+	backendBaseUrl = os.Getenv("BACKEND_BASEURL")
 }
 
 func GetBackenToken() string {
