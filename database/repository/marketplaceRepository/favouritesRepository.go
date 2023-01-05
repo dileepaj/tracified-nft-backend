@@ -8,6 +8,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -54,6 +55,31 @@ func (r *FavouriteRepository) FindFavouritesbyUserPK(idName string, id string) (
 		favourites = append(favourites, favourite)
 	}
 	return favourites, nil
+}
+
+func (r *FavouriteRepository) FindFavouritesbyUserPKandNFTIdentifier(blockchain string, userpk string, nftID string) (models.Favourite, error) {
+	var favourites models.Favourite
+	rst, err := repository.FindById1Id2Id3("blockchain", blockchain, "nftidentifier", nftID, "user", userpk, Favourite)
+	if err != nil {
+		return favourites, err
+	}
+	for rst.Next(context.TODO()) {
+		decodeErr := rst.Decode(&favourites)
+		if decodeErr != nil {
+			logs.ErrorLogger.Print("failed to decode favourites data : ", err.Error())
+			return favourites, err
+		}
+	}
+	return favourites, nil
+}
+
+func (r *FavouriteRepository) RemoveUserFromFavourites(objectID primitive.ObjectID) (int64, error) {
+	result, err := connections.GetSessionClient(Favourite).DeleteOne(context.TODO(), bson.M{"_id": objectID})
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+		return 0, err
+	}
+	return result.DeletedCount, nil
 }
 
 func (r *FavouriteRepository) GetAllFavourites() ([]models.Favourite, error) {
