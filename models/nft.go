@@ -35,6 +35,7 @@ type NFT struct {
 	HotPicks          bool               `json:"hotpicks" bson:"hotpicks" `
 	Royalty           string             `json:"royalty" bson:"royalty"`
 	Thumbnail         string             `json:"thumbnail" bson:"thumbnail"`
+	Commission        string             `json:"commission" bson:"commission"`
 }
 type NFTContentforMatrix struct {
 	NFTIdentifier  string `json:"nftidentifier" bson:"nftidentifier" validate:"required"`
