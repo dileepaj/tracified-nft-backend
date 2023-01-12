@@ -21,6 +21,12 @@ var NftRoutes = models.Routers{
 		Handler: apiHandler.GetAllNFTs,
 	},
 	models.Router{
+		Name:    "Get NFT Content",
+		Method:  "Get",
+		Path:    "/nft/{imagebase64}",
+		Handler: apiHandler.GetImageBase,
+	},
+	models.Router{
 		Name:    "GET NFTS By Selling status and filter by currentownerpk",
 		Method:  "Get",
 		Path:    "/selling/{sellingstatus}/{currentownerpk}",
