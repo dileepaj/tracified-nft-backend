@@ -36,4 +36,16 @@ var FavouritesRoutes = models.Routers{
 		Path:    "/favourite/{blockchain}/{nftidentifier}",
 		Handler: apiHandler.FavouritesByBlockchainAndIdentifier,
 	},
+	models.Router{
+		Name:    "verify favourite count By UserPK",
+		Method:  "GET",
+		Path:    "/verify/favouriteCount/{blockchain}/{user}/{nftidentifer}",
+		Handler: apiHandler.VerifyFavouriteTogglebUserPK,
+	},
+	models.Router{
+		Name:    "Remove user from favourite",
+		Method:  "DELETE",
+		Path:    "/favourite/{favouriteID}",
+		Handler: apiHandler.RemoveUserfromFavourite,
+	},
 }
