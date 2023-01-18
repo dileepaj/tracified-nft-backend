@@ -39,6 +39,28 @@ func (r *EndorsementRepository) UpdateEndorsement(findBy string, id string, find
 	}
 }
 
+func (r *EndorsementRepository) UpdateExisitngEndorsement(findBy string, id string, update primitive.M) (responseDtos.ResponseEndorsementUpdate, error) {
+	var endorseResponse responseDtos.ResponseEndorsementUpdate
+	upsert := false
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+	rst := connections.GetSessionClient("endorsement").FindOneAndUpdate(context.TODO(), bson.D{{findBy, id}}, update, &opt)
+	if rst != nil {
+		err := rst.Decode((&endorseResponse))
+		if err != nil {
+			logs.ErrorLogger.Println("Error occured while retreving data from collection endorsement in UpdateEndorsement:EndorsementRepository.go: ", err.Error())
+			return endorseResponse, err
+		}
+		return endorseResponse, nil
+	} else {
+		return endorseResponse, nil
+
+	}
+}
+
 func (r *EndorsementRepository) SaveEndorsement(endorse models.Endorse) (string, error) {
 	endorse.IsBestCreator = false
 	return repository.Save[models.Endorse](endorse, Endorsement)
