@@ -131,7 +131,6 @@ func (r *EndorsementRepository) GetPaginatedBestCreators(filterConfig bson.M, pr
 		sortingFeildName,
 		creators,
 	)
-	logs.InfoLogger.Println("content response: ", contentResponse)
 	var response models.PaginatedCreatorInfo
 	if err != nil {
 		logs.InfoLogger.Println("Pagination failure:", err.Error())
