@@ -9,6 +9,7 @@ import (
 
 	"github.com/dileepaj/tracified-nft-backend/configs"
 	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
+	"github.com/sirupsen/logrus"
 )
 
 var baseUrl = configs.GetBackeBaseUrl() + "/traceabilityProfiles/ecommerce/nft/"
@@ -16,6 +17,7 @@ var baseUrl = configs.GetBackeBaseUrl() + "/traceabilityProfiles/ecommerce/nft/"
 func GetOtpForBatchURL(productId string, batchId string, otpType string, token string) (string, int, error) {
 	if otpType == "Batch" && productId != "" && batchId != "" {
 		url := baseUrl + productId + "/" + batchId
+		logrus.Info("OTP generate url",url)
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
 			return "", req.Response.StatusCode, err
@@ -23,15 +25,17 @@ func GetOtpForBatchURL(productId string, batchId string, otpType string, token s
 		req.Header.Add("authorization", token)
 		req.Header.Add("cache-control", "no-cache")
 		res, err := http.DefaultClient.Do(req)
+		logrus.Info("OTP generate response",res)
 		if err != nil {
-			return "", res.StatusCode, err
+			logrus.Error("OTP generate ",err)
+			return "", 500, err
 		}
 		defer res.Body.Close()
 		body, _ := ioutil.ReadAll(res.Body)
 		if res.StatusCode == 200 || res.StatusCode == 204 {
 			return string(body), res.StatusCode, nil
 		}
-		return "", res.StatusCode, errors.New("Backend server connection issue")
+		return "", 500, errors.New("Backend server connection issue")
 	} else {
 		return "", 400, errors.New("Invalied OTP Type or batch")
 	}
@@ -40,6 +44,7 @@ func GetOtpForBatchURL(productId string, batchId string, otpType string, token s
 func GetOtpForArtifactURL(artifactId string, otpType string, token string) (string, int, error) {
 	if otpType == "Artifact" && artifactId != "" {
 		url := baseUrl + "artifact/id/" + artifactId
+		logrus.Info("OTP generate url",url)
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
 			return "", req.Response.StatusCode, err
@@ -48,7 +53,7 @@ func GetOtpForArtifactURL(artifactId string, otpType string, token string) (stri
 		req.Header.Add("cache-control", "no-cache")
 		res, err := http.DefaultClient.Do(req)
 		if err != nil {
-			return "", res.StatusCode, err
+			return "", 500, err
 		}
 		defer res.Body.Close()
 		body, _ := ioutil.ReadAll(res.Body)

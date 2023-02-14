@@ -489,3 +489,6 @@ ul.point > li {
       background: #00d9ff;
   }
   
+  .card-body-2{
+    display: block;
+  }

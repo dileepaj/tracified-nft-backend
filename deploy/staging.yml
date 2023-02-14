@@ -48,7 +48,7 @@
       docker_container:
         name: tracified-nft-backend
         image: 453230908534.dkr.ecr.ap-south-1.amazonaws.com/tracified/nft-backend-staging
-        published_ports: "3009:3009"
+        published_ports: "6081:6081"
         restart: yes
         restart_policy: on-failure
         state: started
@@ -59,4 +59,14 @@
             BE_PORT: "{{ lookup('env','BE_PORT') }}"
             BE_MONGOLAB_URI: "{{ lookup('env','BE_MONGOLAB_URI') }}"
             BRANCH_NAME: "{{lookup('env','BRANCH_NAME')}}"
- 
+            BACKEND_TOKEN: "{{lookup('env','BACKEND_TOKEN')}}"
+            BACKEND_BASEURL: "{{lookup('env','BACKEND_BASEURL')}}"
+            SENDER_EMAILADRESS: "{{lookup('env','SENDER_EMAILADRESS')}}"
+            SENDER_EMAILADRESS_APPPWD: "{{lookup('env','SENDER_EMAILADRESS_APPPWD')}}"
+            MK_SENDER_EMAILADDRESS: "{{lookup('env','MK_SENDER_EMAILADDRESS')}}"
+            MK_SENDER_EMAIL_KEY: "{{lookup('env','MK_SENDER_EMAIL_KEY')}}"
+            HOST_EMAIL: "{{lookup('env','HOST_EMAIL')}}"
+            EMAIL_PORT: "{{lookup('env','EMAIL_PORT')}}"
+            JWT_DECODE_KEY: "{{lookup('env','JWT_DECODE_KEY')}}"
+            DATABASE_NAME: "{{lookup('env','DATABASE_NAME')}}"
+

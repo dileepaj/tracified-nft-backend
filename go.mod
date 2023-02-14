@@ -16,6 +16,7 @@ require (
 require (
 	github.com/gobeam/mongo-go-pagination v0.0.8 // indirect
 	github.com/montanaflynn/stats v0.6.6 // indirect
+	github.com/sirupsen/logrus v1.9.0 // indirect
 )
 
 require (

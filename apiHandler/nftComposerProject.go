@@ -15,6 +15,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/utilities/validations"
 	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
+	"github.com/sirupsen/logrus"
 )
 
 // save html version of NFt and save it's json verson on DB
@@ -234,6 +235,7 @@ func GetRecentProjects(w http.ResponseWriter, r *http.Request) {
 			errors.BadRequest(w, "")
 		}
 	}
+	logrus.Info("AUTH ",ps)
 	w.WriteHeader(http.StatusUnauthorized)
 	logs.ErrorLogger.Println("Status Unauthorized")
 	return

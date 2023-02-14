@@ -6,7 +6,9 @@ import (
 	"strings"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/dileepaj/tracified-nft-backend/commons"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
+	"github.com/sirupsen/logrus"
 )
 
 type PermissionStatus struct {
@@ -22,13 +24,14 @@ func HasPermissions(reqToken string) PermissionStatus {
 		reqToken = splitToken[1]
 		claims := jwt.MapClaims{}
 		_, err := jwt.ParseWithClaims(reqToken, claims, func(token *jwt.Token) (interface{}, error) {
-			return []byte("bsof2sJXPp0T5G38L6RKq21mqayXyr4u"), nil //todo move this to env file
+			return []byte(commons.GoDotEnvVariable("JWT_DECODE_KEY")), nil
 		})
 		if err != nil {
 			if err.Error() == jwt.ErrSignatureInvalid.Error() {
 				logs.ErrorLogger.Println(err.Error())
 				return ps
 			}
+			logrus.Error(err.Error())
 			logs.ErrorLogger.Println(err.Error())
 			return ps
 		}
@@ -55,6 +58,7 @@ func HasPermissions(reqToken string) PermissionStatus {
 						}
 					}
 				} else {
+					logrus.Error("Permissions not found")
 					logs.ErrorLogger.Println("Permissions not found")
 					ps.Status = false
 				}
@@ -62,6 +66,7 @@ func HasPermissions(reqToken string) PermissionStatus {
 			}
 		}
 	} else {
+		logrus.Error("Bearer token not found")
 		logs.ErrorLogger.Println("Bearer token not found")
 		return ps
 	}

@@ -39,7 +39,7 @@ func GetEmailPort() int {
 
 func GetBearerToken() string {
 	LoadEnv()
-	bearerToken = os.Getenv("BEARER_TOKEN")
+	bearerToken = os.Getenv("BACKEND_TOKEN")
 	return bearerToken
 }
 
