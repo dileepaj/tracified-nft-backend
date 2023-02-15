@@ -25,6 +25,7 @@ func init() {
 		marketPlace.PartnerRoutes,
 		marketPlace.OneTimePassWordRoutes,
 		marketPlace.SvgGenerator,
+		marketPlace.MapGenerateRoutes,
 	}
 
 	for _, r := range routes {
