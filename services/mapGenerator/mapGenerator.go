@@ -12,7 +12,7 @@ import (
 
 func GetCityName(lat, lon string) (string, error) {
 	url := "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" + lon + "&lon=" + lat
-	logs.ErrorLogger.Println("URL: ", url)
+	logs.InfoLogger.Println("URL: ", url)
 	resp, err := http.Get(url)
 	if err != nil {
 		return "", err
@@ -20,12 +20,9 @@ func GetCityName(lat, lon string) (string, error) {
 	defer resp.Body.Close()
 	var mapTemplate models.Location
 	err = json.NewDecoder(resp.Body).Decode(&mapTemplate)
-	logs.InfoLogger.Println("response body : ", resp.Body)
 	if err != nil {
 		return "", err
 	}
-	logs.InfoLogger.Println("address: ", mapTemplate.Address)
-	logs.InfoLogger.Println("city: ", mapTemplate.Address.City)
 	if mapTemplate.Address.City == "" {
 		return mapTemplate.Address.Country, nil
 	}

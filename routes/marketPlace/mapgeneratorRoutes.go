@@ -12,4 +12,10 @@ var MapGenerateRoutes = models.Routers{
 		Path:    "/generatemap",
 		Handler: apiHandler.GenerateMap,
 	},
+	models.Router{
+		Name:    "Get Map",
+		Method:  "GET",
+		Path:    "/GetMap/{mapid}",
+		Handler: apiHandler.GetMapByID,
+	},
 }

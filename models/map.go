@@ -1,10 +1,15 @@
 package models
 
+import "go.mongodb.org/mongo-driver/bson/primitive"
+
 type MapInfo struct {
 	Longitude float64 `json:"longitude"`
 	Latitude  float64 `jsonL:"latitude"`
 }
-
+type GeneratedMap struct {
+	Id          primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	MapTemplate string             `json:"template" bson:"template"`
+}
 type Location struct {
 	PlaceID     int     `json:"place_id"`
 	Licence     string  `json:"licence"`
