@@ -13,5 +13,6 @@ type SVG struct {
 }
 
 type ThumbNail struct {
+	Id        string `json:"Id" bson:"_id,omitempty"`
 	ThumbNail string `json:"thumbnail" bson:"thumbnail" `
 }
