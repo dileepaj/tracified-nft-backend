@@ -148,7 +148,6 @@ func (r *NFTRepository) FindNFTByIdId2Id3(idName1 string, id1 string, idName2 st
 		}
 		nfts = append(nfts, nft)
 	}
-	logs.InfoLogger.Println("Data retreived from DB : ", nfts)
 	return nfts, nil
 }
 
@@ -184,6 +183,28 @@ func (r *NFTRepository) GetSVGByHash(hash string) (models.SVG, error) {
 		}
 	}
 	return svg, err
+}
+
+func (r *NFTRepository) GetThumbnailbyID(id string) (models.ThumbNail, error) {
+	var thumbnail models.ThumbNail
+	objectID, objerr := primitive.ObjectIDFromHex(id)
+	if objerr != nil {
+		logs.WarningLogger.Println("Error Occured when trying to convert hex string in to Object(ID) in GetThumbnailbyID : nftRepo: ", objerr.Error())
+		return thumbnail, objerr
+	}
+
+	rst, err := connections.GetSessionClient("nft").Find(context.TODO(), bson.M{"_id": objectID})
+	if err != nil {
+		return thumbnail, err
+	}
+	for rst.Next(context.TODO()) {
+		err = rst.Decode(&thumbnail)
+		if err != nil {
+			logs.ErrorLogger.Println("Failed to retrive NFT thumbnail: ", err.Error())
+			return thumbnail, err
+		}
+	}
+	return thumbnail, err
 }
 
 func (r *NFTRepository) FindLastNFTById(idName string, id string) ([]models.NFT, error) {
@@ -285,7 +306,6 @@ func (r *NFTRepository) UpdateNFTSALE(findBy string, id string, findby2 string, 
 	rst := connections.GetSessionClient("nft").FindOneAndUpdate(context.TODO(), bson.D{{findBy, id}, {findby2, id2}}, update, &opt)
 	if rst != nil {
 		err := rst.Decode((&nftResponse))
-		logs.InfoLogger.Println("data retreived from DB: ", rst)
 		if err != nil {
 			logs.ErrorLogger.Println("Error occured while retreving data from nft nft in UpdateNFTSALE:nftRepository.go: ", err.Error())
 			return nftResponse, err
@@ -414,7 +434,6 @@ func (r *NFTRepository) UpdateTrending(findBy string, id string, update primitiv
 	rst := connections.GetSessionClient("nft").FindOneAndUpdate(context.TODO(), bson.M{"nftidentifier": id}, update, &opt)
 	if rst != nil {
 		err := rst.Decode((&nftResponse))
-		logs.InfoLogger.Println("data retreived from DB: ", rst)
 		if err != nil {
 			logs.ErrorLogger.Println("Error occured while retreving data from nft nft in UpdateNFTSALE:nftRepository.go: ", err.Error())
 			return nftResponse, err
@@ -437,7 +456,6 @@ func (r *NFTRepository) UpdateHotPicks(findBy string, id string, update primitiv
 	rst := connections.GetSessionClient("nft").FindOneAndUpdate(context.TODO(), bson.M{"nftidentifier": id}, update, &opt)
 	if rst != nil {
 		err := rst.Decode((&nftResponse))
-		logs.InfoLogger.Println("data retreived from DB: ", rst)
 		if err != nil {
 			logs.ErrorLogger.Println("Error occured while retreving data from nft nft in UpdateNFTSALE:nftRepository.go: ", err.Error())
 			return nftResponse, err

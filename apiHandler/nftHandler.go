@@ -737,3 +737,18 @@ func GetBestCreators(w http.ResponseWriter, r *http.Request) {
 	commonResponse.SuccessStatus[models.PaginatedCreatorInfo](w, res)
 
 }
+
+func GetImagebyID(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	if len(vars["id"]) != 0 {
+		result, err := marketplaceBusinessFacade.GetThumbnailbyID(vars["id"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[models.ThumbNail](w, result)
+		}
+	} else {
+		errors.BadRequest(w, "")
+	}
+}
