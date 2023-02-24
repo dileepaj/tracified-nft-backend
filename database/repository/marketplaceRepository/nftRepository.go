@@ -185,6 +185,28 @@ func (r *NFTRepository) GetSVGByHash(hash string) (models.SVG, error) {
 	return svg, err
 }
 
+func (r *NFTRepository) GetThumbnailbyID(id string) (models.ThumbNail, error) {
+	var thumbnail models.ThumbNail
+	objectID, objerr := primitive.ObjectIDFromHex(id)
+	if objerr != nil {
+		logs.WarningLogger.Println("Error Occured when trying to convert hex string in to Object(ID) in GetThumbnailbyID : nftRepo: ", objerr.Error())
+		return thumbnail, objerr
+	}
+
+	rst, err := connections.GetSessionClient("nft").Find(context.TODO(), bson.M{"_id": objectID})
+	if err != nil {
+		return thumbnail, err
+	}
+	for rst.Next(context.TODO()) {
+		err = rst.Decode(&thumbnail)
+		if err != nil {
+			logs.ErrorLogger.Println("Failed to retrive NFT thumbnail: ", err.Error())
+			return thumbnail, err
+		}
+	}
+	return thumbnail, err
+}
+
 func (r *NFTRepository) FindLastNFTById(idName string, id string) ([]models.NFT, error) {
 	var nfts []models.NFT
 	rst := repository.FindOne(idName, id, "nft")

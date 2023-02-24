@@ -146,15 +146,15 @@ func PaginateResponse[PaginatedData paginateResponseType](filterConfig bson.M, p
 	collection := dbConnection.Collection(collectionName)
 	projection := projectionData
 	// var nfts []models.PaginateResponseMatrix
-	paginatedData, err := paginate.New(collection).Context(ctx).Limit(limit).Page(page).Sort(sortingFeildName, -1).Select(projection).Filter(filter).Decode(&object).Find()
+	paginatedData, paginateerr := paginate.New(collection).Context(ctx).Limit(limit).Page(page).Sort(sortingFeildName, -1).Select(projection).Filter(filter).Decode(&object).Find()
 	paginationdata.TotalElements = int32(paginatedData.Pagination.Total)
 	paginationdata.TotalPages = int32(paginatedData.Pagination.TotalPage)
 	paginationdata.Currentpage = int32(paginatedData.Pagination.Page)
 	paginationdata.PageSize = int32(paginatedData.Pagination.PerPage)
 	paginationdata.Previouspage = int32(paginatedData.Pagination.Prev)
 	paginationdata.NextPage = int32(paginatedData.Pagination.Next)
-	if err != nil {
-		logs.ErrorLogger.Println("Pagination failure :", err.Error())
+	if paginateerr != nil {
+		logs.ErrorLogger.Println("Pagination failure :", paginateerr.Error())
 		return object, paginationdata, err
 	}
 	return object, paginationdata, nil
