@@ -13,6 +13,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/utilities/validations"
 	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func CreateWatchList(w http.ResponseWriter, r *http.Request) {
@@ -54,6 +55,59 @@ func GetWatchListByUserPK(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+}
+
+func VerifyWatchListTogglebUserPK(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
+	vars := mux.Vars(r)
+	rst, err := marketplaceBusinessFacade.VerifyWatchListTogglebUserPK(vars["blockchain"], vars["user"], vars["nftidentifer"])
+	if err != nil {
+		logs.ErrorLogger.Print("Failed to perform watchlist retrival for user : ", err.Error())
+		errors.BadRequest(w, err.Error())
+		return
+	}
+	if rst.User == "" {
+		rst.User = "Add to watch"
+		w.WriteHeader(http.StatusOK)
+		err1 := json.NewEncoder(w).Encode(rst)
+		if err1 != nil {
+			logs.ErrorLogger.Println(err)
+		}
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	err1 := json.NewEncoder(w).Encode(rst)
+	if err1 != nil {
+		logs.ErrorLogger.Println(err)
+	}
+}
+
+func RemoveUserfromWatchList(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
+	vars := mux.Vars(r)
+	objectID, err := primitive.ObjectIDFromHex(vars["watchlistID"])
+	if err != nil {
+		logs.WarningLogger.Println("Invalid watchlistID: ", err.Error())
+		errors.BadRequest(w, "Invalid watchlistID")
+		return
+	}
+	rst, delerr := marketplaceBusinessFacade.RemoveUserFromWatchlist(objectID)
+	if delerr != nil {
+		logs.WarningLogger.Println("Failed to remove user from watchlist: ", err.Error())
+		errors.BadRequest(w, "Failed to remove user from watchlist")
+		return
+	}
+	if rst > 0 {
+		w.WriteHeader(http.StatusOK)
+		err1 := json.NewEncoder(w).Encode("Removed from watchlist")
+		if err1 != nil {
+			logs.ErrorLogger.Println(err)
+		}
+		return
+	} else {
+		errors.BadRequest(w, "Failed to remove user from watchlist")
+		return
+	}
 }
 
 func GetAllWatchLists(w http.ResponseWriter, r *http.Request) {

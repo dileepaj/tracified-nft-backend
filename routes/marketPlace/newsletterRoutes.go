@@ -5,7 +5,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/models"
 )
 
-//This routes handle the all watchlist  related routes in the marketplace
+// This routes handle the all watchlist  related routes in the marketplace
 var NewsLetterRoutes = models.Routers{
 
 	models.Router{
@@ -37,5 +37,11 @@ var NewsLetterRoutes = models.Routers{
 		Method:  "POST",
 		Path:    "/subscribe/",
 		Handler: apiHandler.Subscribe,
+	},
+	models.Router{
+		Name:    "Check Subscription",
+		Method:  "GET",
+		Path:    "/subscribe/check/{email}",
+		Handler: apiHandler.CheckIfSubscribed,
 	},
 }

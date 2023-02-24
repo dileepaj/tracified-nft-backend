@@ -38,6 +38,22 @@ func (r *NFTRepository) FindNFTById1AndNotId2(idName1 string, id1 string, idName
 	return nfts, nil
 }
 
+func (r *NFTRepository) FindImageBase(idName1 string) (models.NFT, error) {
+	var nft models.NFT
+	rst, err := connections.GetSessionClient("nft").Find(context.TODO(), bson.M{"imagebase64": idName1})
+	if err != nil {
+		return nft, err
+	}
+	for rst.Next(context.TODO()) {
+		err = rst.Decode(&nft)
+		if err != nil {
+			logs.ErrorLogger.Println("Error occured while retreving data from collection nft in GetImageBase64:NFTRepository.go: ", err.Error())
+			return nft, err
+		}
+	}
+	return nft, err
+}
+
 func (r *NFTRepository) FindNFTStory(idName1 string, id1 string, idName2 string, id2 string) ([]models.NFTStory, error) {
 	var nfts []models.NFTStory
 	rst, err := repository.FindById1AndNotId2(idName1, id1, idName2, id2, Story)

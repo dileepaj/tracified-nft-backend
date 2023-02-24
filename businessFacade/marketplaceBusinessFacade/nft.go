@@ -16,6 +16,10 @@ func StoreNFT(createNFTObject models.NFT) (string, error) {
 
 }
 
+func GetImageBase(nftcontent string) (models.NFT, error) {
+	return nftRepository.FindImageBase(nftcontent)
+}
+
 func StoreNFTStory(createNFTObject models.NFTStory) (string, error) {
 	rst, err1 := nftRepository.SaveNFTStory(createNFTObject)
 	if err1 != nil {
@@ -182,7 +186,7 @@ func GetTXNByBlockchainAndIdentifier(id string, blockchain string) ([]models.TXN
 
 func MakeSaleNFT(nft requestDtos.UpdateNFTSALERequest) (models.NFT, error) {
 	update := bson.M{
-		"$set": bson.M{"timestamp": nft.Timestamp, "currentprice": nft.CurrentPrice, "sellingstatus": nft.SellingStatus, "sellingtype": nft.SellingType, "marketcontract": nft.MarketContract, "currentownerpk": nft.CurrentOwnerPK, "royalty": nft.Royalty},
+		"$set": bson.M{"timestamp": nft.Timestamp, "currentprice": nft.CurrentPrice, "commission": nft.Commission, "sellingstatus": nft.SellingStatus, "sellingtype": nft.SellingType, "marketcontract": nft.MarketContract, "currentownerpk": nft.CurrentOwnerPK, "royalty": nft.Royalty},
 	}
 	return nftRepository.UpdateNFTSALE("nftidentifier", nft.NFTIdentifier, "blockchain", nft.Blockchain, update)
 }
