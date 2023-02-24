@@ -70,7 +70,7 @@ func GetProjectionDataNFTMatrixView() bson.D {
 		{Key: "hotpicks", Value: 1},
 		{Key: "currentownerpk", Value: 1},
 		{Key: "attachmenttype", Value: 1},
-		{Key: "thumbnail", Value: 1},
+		// {Key: "thumbnail", Value: 0},
 	}
 	return projection
 }
@@ -246,4 +246,8 @@ func UpdateNFT(nft requestDtos.UpdateMint) (models.NFT, error) {
 
 func GetNFTByNFTIdentifier(id string) ([]models.NFT, error) {
 	return nftRepository.FindNFTsById("nftidentifier", id)
+}
+
+func GetThumbnailbyID(id string) (models.ThumbNail, error) {
+	return nftRepository.GetThumbnailbyID(id)
 }
