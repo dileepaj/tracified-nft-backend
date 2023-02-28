@@ -291,7 +291,12 @@ func GetNFTByBlockchainAndUserPK(w http.ResponseWriter, r *http.Request) {
 		results, err := marketplaceBusinessFacade.GetNFTByBlockchainAndUserPK(vars["currentownerpk"], vars["blockchain"])
 		if err != nil {
 			errors.BadRequest(w, err.Error())
+			return
 		} else {
+			if results == nil {
+				errors.BadRequest(w, "No Content")
+				return
+			}
 			commonResponse.SuccessStatus[[]models.NFT](w, results)
 		}
 	} else {
