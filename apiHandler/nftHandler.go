@@ -55,6 +55,21 @@ func GetAllNFTs(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func GetImageBase(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	if vars["imagebase64"] != "" {
+		results, err := marketplaceBusinessFacade.GetImageBase(vars["imagebase64"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[models.NFT](w, results)
+		}
+	} else {
+		errors.BadRequest(w, "")
+	}
+}
+
 func SaveTXN(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;charset=UTF-8")
 	var txn models.TXN
