@@ -213,10 +213,15 @@ func GetNFTbyStatus(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			errors.BadRequest(w, err.Error())
 		} else {
+			if results[0].ArtistName == "" {
+				errors.BadRequest(w, "No Content")
+				return
+			}
 			commonResponse.SuccessStatus[[]models.NFT](w, results)
+			return
 		}
 	} else {
-		errors.BadRequest(w, "")
+		errors.BadRequest(w, "invalid status")
 	}
 }
 
