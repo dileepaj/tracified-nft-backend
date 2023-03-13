@@ -123,7 +123,6 @@ func MakeSale(w http.ResponseWriter, r *http.Request) {
 
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&makeSaleRequestObject)
-	logs.InfoLogger.Println("data retreived for sale : ", makeSaleRequestObject)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 	}
@@ -163,7 +162,6 @@ func GetOneONSaleNFT(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			errors.BadRequest(w, err.Error())
 		} else {
-			logs.InfoLogger.Println("Data to be sent back : ", results)
 			commonResponse.SuccessStatus[[]models.NFT](w, results)
 			return
 		}
@@ -523,7 +521,6 @@ func GetPaginatedNFTs(w http.ResponseWriter, r *http.Request) {
 	}
 	pagination.RequestedPage = int32(requestedPage)
 	pagination.SortbyFeild = "blockchain"
-	logs.InfoLogger.Println("Received pagination requested: ", pagination)
 	results, err := marketplaceBusinessFacade.GetNFTPagination(pagination)
 	if err != nil {
 		errors.BadRequest(w, err.Error())
@@ -735,7 +732,6 @@ func GetBestCreators(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		errors.BadRequest(w, "failed to get data : "+err.Error())
 	}
-	logs.InfoLogger.Println("END Pagination")
 	if RequestedPage < 0 {
 		errors.NotFound(w, "Requested page size should be greater than zero")
 		return

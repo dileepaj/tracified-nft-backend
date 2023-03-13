@@ -114,7 +114,6 @@ func UpdateUserFAQStatus(w http.ResponseWriter, r *http.Request) {
 		} else {
 			//If userfaq status is updated successfully another DB call is made to retive all the faq detials by id
 			faqdata, err1 := marketplaceBusinessFacade.GetUserFAQByID(updateObj.UserQuestionID)
-			logs.InfoLogger.Println("UserFAQ data recived: ", faqdata)
 			if err1 != nil {
 				logs.ErrorLogger.Println("Failed to get endorsment data : ", err1.Error())
 			}

@@ -79,7 +79,6 @@ func UpdateSvgBlockChain(w http.ResponseWriter, r *http.Request) {
 	var updateSVGObject models.SVG
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&updateSVGObject)
-	logs.InfoLogger.Println("Starting svg BC Update: ", updateSVGObject)
 	if err != nil {
 		logs.ErrorLogger.Println("Error while decoding into json in UpdateSvg:collectionHandler: " + err.Error())
 	}

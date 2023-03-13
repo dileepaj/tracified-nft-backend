@@ -102,7 +102,6 @@ func UpdateEndorsedStatus(w http.ResponseWriter, r *http.Request) {
 		} else {
 			//If endrosment status is updated successfully another DB call is made to retive all the enrosment detials by user
 			endorsmentrst, err1 := marketplaceBusinessFacade.GetEndorsmentByUserPK(updateObj.PublicKey)
-			logs.InfoLogger.Println("Endorsment data recived: ", endorsmentrst)
 			if err1 != nil {
 				logs.ErrorLogger.Println("Failed to get endorsment data : ", err1.Error())
 			}
