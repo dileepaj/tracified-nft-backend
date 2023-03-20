@@ -35,7 +35,7 @@ var NftRoutes = models.Routers{
 	models.Router{
 		Name:    "GET NFTS By Tag names",
 		Method:  "Get",
-		Path:    "/tags/{tags}",
+		Path:    "/tags/{tag}/{pagesize}/{requestedPage}",
 		Handler: apiHandler.GetNFTbyTags,
 	},
 	models.Router{
