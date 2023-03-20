@@ -1,13 +1,16 @@
 package svgNFTGenerator
 
 import (
-	"fmt"
+	//"fmt"
+
 	"strconv"
+	"strings"
 
 	customizedNFTrepository "github.com/dileepaj/tracified-nft-backend/database/repository/customizedNFTrepository"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/services"
 	"github.com/mitchellh/mapstructure"
+	//"github.com/mitchellh/mapstructure"
 )
 
 var (
@@ -21,18 +24,35 @@ var (
 	ruriRepository customizedNFTrepository.SvgRepository
 )
 
-func GenerateSVGTemplateforNFT(tdpData []models.TDP, batchID string, productID string) (string, error) {
+func GenerateSVGTemplateforNFT(tdpData [][]models.TDPParent, batchID string, productID string, receiverName string, message string) (string, error) {
+	//get gem type from tdp data
+	var gemVariety string = ""
+	var gemDetailsTDP []models.TraceabilityData
+	
+	for _, dataArr := range tdpData {
+		for _, maindata := range dataArr {
+			if maindata.StageID == "105" {
+				gemDetailsTDP = maindata.TraceabilityDataPackets[0].TraceabilityData
+				gemVariety = GetGemVariety(gemDetailsTDP)
+			}
+		}
+	}
+
 	var htmlStart = `<div class="nft-header default-font">
 						<div class="nft-header-content">
-							<img src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/Tracified-NFT-v5.png" class="nft-logo"/>
-							<label>` + batchID + `</label>
+							<img src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/Tracified-NFT-v5.png"
+								class="nft-logo" />
+							<div class="nft-header-title">
+								<label id="topTitle">NFT</label>
+								<label id="nftName">` + gemVariety + `</label>
+							</div>
 						</div>
 					</div>
 					<div class="d-flex justify-content-center align-content-center flex-wrap" id="container">`
 
-	var iframeImg = `<div class="iframe-wrapper"><iframe  src="https://tracified.sirv.com/Spins/RURI%20Gems%20Compressed/120614/120614.spin" class="iframe-img" frameborder="0" allowfullscreen="true"></iframe></div>`
+	var iframeImg = `<div class="iframe-wrapper"><iframe  src="https://tracified.sirv.com/Spins/RURI%20Gems%20Compressed/120614/120614.spin" class="iframe-img" frameborder="0" allowfullscreen="true"></iframe><span class="rotate-icon" style="margin-top : 30px;"></span></div>`
 
-	var stageStatus map[string]bool = make(map[string]bool)
+	/* var stageStatus map[string]bool = make(map[string]bool)
 
 	for _, maindata := range tdpData {
 
@@ -65,9 +85,433 @@ func GenerateSVGTemplateforNFT(tdpData []models.TDP, batchID string, productID s
 			stageStatus[maindata.StageID] = true
 		}
 
+	} */
+
+	//logs.InfoLogger.Println("TDP", tdpData)
+	
+	if receiverName != "" && message != "" {
+		GenerateOwnership(receiverName, message);
 	}
+
+	GenerateGemDetails(gemDetailsTDP, gemVariety)
+
+	timelineData := GenerateTimeline(tdpData)
+
+	GenerateDigitalTwin(gemDetailsTDP, timelineData)
+
 	template := svgStart + styleStart + styling + styleEnd + htmlStart + iframeImg + htmlBody + svgEnd
+	htmlBody = ""
+	/* template = strings.(template)
+	fmt.Println(template) */
+	template = strings.Replace(template, "\r", " ", -1)
+	template = strings.Replace(template, "\t", " ", -1)
+	template = strings.Replace(template, "\n", " ", -1)
 	return template, nil
+}
+
+//generate ownership section
+func GenerateOwnership (receiverName string, message string) {
+	htmlBody += `<div class="widget-div">
+					<div class="wrap-collabsible">
+						<input id="collapsible1" class="toggle" type="radio" name="toggle" checked="true"></input>
+						<label for="collapsible1" class="lbl-toggle" tabindex="0">
+							<span class="profile-icon"></span>
+							<label>Ownership</label>
+							<span class="arrow-down-icon"></span>
+						</label>
+						<div class="collapsible-content">
+							<div class="content-inner">
+								<div class="bdr">
+									<table class="table table-bordered rounded-20 overflow-hidden">
+										<tbody>
+											<tr>
+												<td class="tbl-text-normal">Owner's Name </td>
+												<td class="tbl-text-bold">` + receiverName + `</td>
+											</tr>
+											<tr>
+												<td class="tbl-text-normal">Message</td>
+												<td class="tbl-text-normal">
+													<p>` + message + `</p>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>`
+}
+
+//generate gem details section
+func GenerateGemDetails (tdp []models.TraceabilityData, gemVariety string) {
+	colour := ""
+	species := ""
+	shape := ""
+	carat := ""
+	measurements := ""
+	treatment := ""
+	tableContent := ""
+
+	for _, v := range tdp {
+		if v.Key == "colour" {
+			colour = v.Val.(string)
+		} else if v.Key == "species" {
+			species = v.Val.(string)
+		} else if v.Key == "shape" {
+			shape = v.Val.(string)
+		} else if v.Key == "carat" {
+			carat = v.Val.(string)
+		} else if v.Key == "measurement" {
+			measurements = v.Val.(string)
+		}else if v.Key == "treatment" {
+			treatment = v.Val.(string)
+		}
+		
+	}
+
+	if gemVariety != "" {
+		tableContent += `<tr><td class="tbl-text-normal">Variety</td><td class="tbl-text-bold">`+ gemVariety + `</td></tr>`
+	} 
+	if species != "" {
+		tableContent += `<tr><td class="tbl-text-normal">Species</td><td class="tbl-text-bold">`+species+`</td></tr>`
+	} 
+	if colour != "" {
+		tableContent += `<tr><td class="tbl-text-normal">Colour</td><td class="tbl-text-bold">`+colour+`</td></tr>`
+	} 
+	if shape != "" {
+		tableContent += `<tr><td class="tbl-text-normal">Shape</td><td class="tbl-text-bold">`+shape+`</td></tr>`
+	} 
+	if carat != "" {
+		tableContent += `<tr><td class="tbl-text-normal">Caret</td><td class="tbl-text-bold">`+carat+`</td></tr>`
+	}
+	if measurements != "" {
+		tableContent += `<tr><td class="tbl-text-normal">Measurements (mm)</td><td class="tbl-text-bold">`+measurements+`</td></tr>`
+	}
+	if treatment != "" {
+		tableContent += `<tr><td class="tbl-text-normal">Treatment</td><td class="tbl-text-bold">`+treatment+`</td></tr>`
+	}
+
+
+	htmlBody += `<div class="widget-div">
+					<div class="wrap-collabsible">
+						<input id="collapsible2" class="toggle" type="radio" name="toggle"></input>
+						<label for="collapsible2" class="lbl-toggle" tabindex="0">
+							<span class="gem-icon"></span>
+							<label>Gem Details</label>
+							<span class="arrow-down-icon"></span>
+						</label>
+						<div class="collapsible-content">
+							<div class="content-inner">
+								<div class="bdr">
+									<table class="table table-bordered rounded-20 overflow-hidden">
+										<tbody>
+											`+ tableContent +`
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>`
+}
+
+//get gem variety
+func GetGemVariety(tdp []models.TraceabilityData) string {
+	variety := ""
+	for _, v := range tdp {
+		if v.Key == "variety" {
+			variety = v.Val.(string)
+		} 
+		
+	}
+
+	return variety
+}
+
+func GenerateDigitalTwin(gemDetailsTDP []models.TraceabilityData, timelineData string) {
+	certificationImages := ""
+
+	images := GetImages(gemDetailsTDP) //get certification images
+	i := 0
+	for _, value := range images {
+		certificationImages += `<div class="img-wrapper">
+									<input type="checkbox" id="cert` + strconv.Itoa(i+1)+ `" class="img-zoom-in"></input>
+									<div class="img-fullscreen">
+										<label for="cert`+ strconv.Itoa(i+1) +`">
+											<span class="material-symbols-outlined">
+												close
+											</span>
+										</label>
+										<div class="img-div"
+											style="background-image: url('`+value.Image+`');">
+										</div>
+									</div>
+									<div class="img-div"
+										style="background-image: url('`+value.Image+`');">
+									</div>
+									<label for="cert`+ strconv.Itoa(i+1) +`" title="View Image">
+										<span class="zoom-icon"></span>
+									</label>
+								</div>`
+		i++
+
+	}
+
+	htmlBody += `<div class="widget-div">
+					<div class="wrap-collabsible">
+						<input id="collapsible3" class="toggle" type="radio" name="toggle"></input>
+						<label for="collapsible3" class="lbl-toggle" tabindex="0">
+							<span class="digital-twin-icon"></span>
+							<label>Digital Twin</label>
+							<span class="arrow-down-icon"></span>
+						</label>
+
+						<div class="collapsible-content">
+							<div class="toggle-div">
+								<input id="sidebar-toggle" type="checkbox"></input>
+								<label for="sidebar-toggle"><span class="open-menu-icon"></span></label>
+								<div id="sidebar">
+									<div id="sidebar-inner">
+										<ul class="sidebar-tabs">
+											<li class="tab">
+												<label for="tab1">
+													Certification
+													<span class="tab-arrow-icon"></span>
+												</label>
+											</li>
+											<li class="tab"><label for="tab2">Appraisal <span
+														class="tab-arrow-icon"></span> </label></li>
+											<li class="tab"><label for="tab3">Journey <span
+														class="tab-arrow-icon"></span> </label></li>
+											<li class="tab"><label for="tab4">Origin <span
+														class="tab-arrow-icon"></span> </label></li>
+											<li class="tab"><label for="tab5">Quality <span
+														class="tab-arrow-icon"></span> </label></li>
+											<li class="tab"><label for="tab6">Sustainability <span
+														class="tab-arrow-icon"></span> </label></li>
+											<li class="tab"><label for="tab7">Compliance <span
+														class="tab-arrow-icon"></span> </label></li>
+											<li class="tab"><label for="tab8">Timeline <span
+														class="tab-arrow-icon"></span> </label></li>
+										</ul>
+									</div>
+								</div>
+							</div>
+							<div class="content-inner">
+								<div class="tabbed">
+									<div style="display: flex; flex-direction : row">
+										<input type="radio" id="tab1" name="css-tabs" checked="true"></input>
+										<input type="radio" id="tab2" name="css-tabs"></input>
+										<input type="radio" id="tab3" name="css-tabs"></input>
+										<input type="radio" id="tab4" name="css-tabs"></input>
+										<input type="radio" id="tab5" name="css-tabs"></input>
+										<input type="radio" id="tab6" name="css-tabs"></input>
+										<input type="radio" id="tab7" name="css-tabs"></input>
+										<input type="radio" id="tab8" name="css-tabs"></input>
+										<ul class="tabs">
+											<li class="tab">
+												<label for="tab1">
+													Certification
+													<span class="tab-arrow-icon"></span>
+												</label>
+											</li>
+											<li class="tab"><label for="tab2">Appraisal <span
+														class="tab-arrow-icon"></span> </label></li>
+											<li class="tab"><label for="tab3">Journey <span
+														class="tab-arrow-icon"></span> </label></li>
+											<li class="tab"><label for="tab4">Origin <span
+														class="tab-arrow-icon"></span> </label></li>
+											<li class="tab"><label for="tab5">Quality <span
+														class="tab-arrow-icon"></span> </label></li>
+											<li class="tab"><label for="tab6">Sustainability <span
+														class="tab-arrow-icon"></span> </label></li>
+											<li class="tab"><label for="tab7">Compliance <span
+														class="tab-arrow-icon"></span> </label></li>
+											<li class="tab"><label for="tab8">Timeline <span
+														class="tab-arrow-icon"></span> </label></li>
+										</ul>
+
+										<!--Certification-->
+										<div class="tab-content">
+											<div class="img-list">
+											`+certificationImages+`	
+											</div>
+										</div>
+
+										<!--Appraisal-->
+										<div class="tab-content">
+											<div class="img-list">
+												<div class="img-wrapper">
+													<input type="checkbox" id="appr1" class="img-zoom-in"></input>
+													<div class="img-fullscreen">
+														<label for="appr1">
+															<span class="material-symbols-outlined">
+																close
+															</span>
+														</label>
+														<div class="img-div"
+															style="background-image : url('https://via.placeholder.com/400x570')">
+														</div>
+													</div>
+													<div class="img-div"
+														style="background-image : url('https://via.placeholder.com/400x570')">
+													</div>
+													<label for="appr1" title="View Image">
+														<span class="zoom-icon"></span>
+													</label>
+												</div>
+
+												<div class="img-wrapper">
+													<input type="checkbox" id="appr2" class="img-zoom-in"></input>
+													<div class="img-fullscreen">
+														<label for="appr2">
+															<span class="material-symbols-outlined">
+																close
+															</span>
+														</label>
+														<div class="img-div"
+															style="background-image : url('https://via.placeholder.com/400x570')">
+														</div>
+													</div>
+													<div class="img-div"
+														style="background-image : url('https://via.placeholder.com/400x570')">
+													</div>
+													<label for="appr2" title="View Image">
+														<span class="zoom-icon"></span>
+													</label>
+												</div>
+											</div>
+										</div>
+
+										<!--Journey-->
+										<div class="tab-content">
+											<iframe class="map" frameborder="0" scrolling="no" marginheight="0"
+												marginwidth="0"
+												src="https://www.openstreetmap.org/export/embed.html?bbox=139.7599768638611%2C35.70130685541025%2C139.78006124496463%2C35.71334671547798&amp;layer=mapnik&amp;marker=35.70732701275398%2C139.77001905441284"></iframe>
+										</div>
+
+										<!--Origin-->
+										<div class="tab-content">
+											<span class="tree-icon"></span>
+											<label class="tab-cont-heading">Begin With Mother Earth</label>
+											<div class="card-container">
+												<div class="tab-cont-card green">
+													<div class="card-div-1">
+														<span class="hexagon-icon"></span>
+													</div>
+													<div class="card-div-2">
+														<label class="bold-text">Provenance 原産地</label>
+														<label>No Records</label>
+													</div>
+												</div>
+												<div class="tab-cont-card green">
+													<div class="card-div-1">
+														<span class="leaves-icon"></span>
+													</div>
+													<div class="card-div-2">
+														<label class="bold-text">Natural 天然石</label>
+														<label>Corundum</label>
+													</div>
+												</div>
+											</div>
+
+
+										</div>
+
+										<!--Quality-->
+										<div class="tab-content">
+											<span class="badge-icon"></span>
+											<label class="tab-cont-heading">Commitment To Integrity</label>
+											<div class="card-container">
+												<div class="tab-cont-card blue">
+													<div class="card-div-1">
+														<span class="certificate-icon"></span>
+													</div>
+													<div class="card-div-2">
+														<label class="bold-text">Certification 鑑別</label>
+														<label>No Records</label>
+													</div>
+												</div>
+												<div class="tab-cont-card blue">
+													<div class="card-div-1">
+														<span class="treatment-icon"></span>
+													</div>
+													<div class="card-div-2">
+														<label class="bold-text">Treatment 処理</label>
+														<label>Corundum</label>
+													</div>
+												</div>
+											</div>
+
+										</div>
+
+										<!--Sustainability-->
+										<div class="tab-content">
+											<span class="sustainability-icon"></span>
+											<label class="tab-cont-heading">More Than A Gemstone</label>
+											<div class="card-container">
+												<div class="tab-cont-card orange">
+													<div class="card-div-1">
+														<span class="handshake-icon"></span>
+													</div>
+													<div class="card-div-2">
+														<label class="bold-text">Fairtrade 公正取引</label>
+														<label>No Records</label>
+													</div>
+												</div>
+												<div class="tab-cont-card orange">
+													<div class="card-div-1">
+														<span class="social-impact-icon"></span>
+													</div>
+													<div class="card-div-2">
+														<label class="bold-text">Social Impact 社会貢献</label>
+														<label>No Records</label>
+													</div>
+												</div>
+											</div>
+
+										</div>
+
+										<!--Compliance-->
+										<div class="tab-content">
+											<span class="handshake-outline-icon"></span>
+											<label class="tab-cont-heading">Ethical Conduct</label>
+											<div class="card-container">
+												<div class="tab-cont-card brown">
+													<div class="card-div-1">
+														<span class="mining-icon"></span>
+													</div>
+													<div class="card-div-2">
+														<label class="bold-text">Mining 採鉱</label>
+														<label>No Records</label>
+													</div>
+												</div>
+												<div class="tab-cont-card brown">
+													<div class="card-div-1">
+														<span class="trading-icon"></span>
+													</div>
+													<div class="card-div-2">
+														<label class="bold-text">Trading 貿易</label>
+														<label>20216DL3848</label>
+													</div>
+												</div>
+											</div>
+
+										</div>
+
+										<!--Timeline-->
+										<div class="tab-content">
+											<div class="tl-wrapper">
+											`+timelineData+`
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>`
 }
 
 // get gem images from stage 103
@@ -89,8 +533,139 @@ func GetGemImages(tdpData []models.TDP) []interface{} {
 	return imgArr
 }
 
+func GenerateTimeline (tdpData [][]models.TDPParent) string {
+	var stageData map[string]string = make(map[string]string)
+	var stageStatus map[string]bool = make(map[string]bool)
+	var timelineData string = ""
+	var stageTDP []models.TraceabilityData
+	infoStr := ""
+	stageName := ""
+
+	for _, dataArr := range tdpData {
+		for _, maindata := range dataArr {
+			if !stageStatus[maindata.StageID] {
+				stageName = ""
+
+				if maindata.StageID == "100" {
+					stageName = "Mining"
+				} else if maindata.StageID == "101" {
+					stageName = "Treatment"
+					
+				} else if maindata.StageID == "102" {
+					stageName = "Cutting"
+					
+				} else if maindata.StageID == "103" {
+					stageName = "Collection"
+				} 
+				
+				stageTDP = maindata.TraceabilityDataPackets[0].TraceabilityData
+				infoStr = ""
+
+				for _, data := range stageTDP {
+					if data.Type == 3 {
+						infoStr += `<div class="tl-info-container">
+										<label class="grey-text">`+strings.Replace(data.Key, "&", "&amp;", -1)+`</label>
+										<label class="tl-bold-text">`+strings.Split(data.Val.(string), "T")[0]+`</label>
+									</div>`
+					}
+				}
+
+				if infoStr == "" {
+					infoStr = `<div class="tl-info-container">
+									<label class="grey-text">No traceability data available for
+										this stage.</label>
+								</div>`
+				}
+
+				stageData[maindata.StageID] = `<div class="tl-stage">
+													<div class="tl-heading">
+														<div class="tl-circle">
+															<span class="stack-icon"></span>
+														</div>
+														<label>`+stageName+`</label>
+													</div>
+													<div class="tl-content">
+														`+infoStr+`
+													</div>
+												</div>`
+
+				stageStatus[maindata.StageID] = true
+			}
+		}
+	}
+
+	if stageData["100"] == "" {
+		stageData["100"] = `<div class="tl-stage">
+								<div class="tl-heading">
+									<div class="tl-circle">
+										<span class="stack-icon"></span>
+									</div>
+									<label>Mining</label>
+								</div>
+								<div class="tl-content">
+									<div class="tl-info-container">
+										<label class="grey-text">No traceability data available for
+											this stage.</label>
+									</div>
+								</div>
+							</div>`
+	}
+	if stageData["101"] == "" {
+		stageData["101"] = `<div class="tl-stage">
+								<div class="tl-heading">
+									<div class="tl-circle">
+										<span class="stack-icon"></span>
+									</div>
+									<label>Treatment</label>
+								</div>
+								<div class="tl-content">
+									<div class="tl-info-container">
+										<label class="grey-text">No traceability data available for
+											this stage.</label>
+									</div>
+								</div>
+							</div>`
+	}
+	if stageData["102"] == "" {
+		stageData["102"] = `<div class="tl-stage">
+								<div class="tl-heading">
+									<div class="tl-circle">
+										<span class="stack-icon"></span>
+									</div>
+									<label>Cutting</label>
+								</div>
+								<div class="tl-content">
+									<div class="tl-info-container">
+										<label class="grey-text">No traceability data available for
+											this stage.</label>
+									</div>
+								</div>
+							</div>`
+	}
+	if stageData["103"] == "" {
+		stageData["103"] = `<div class="tl-stage">
+								<div class="tl-heading">
+									<div class="tl-circle">
+										<span class="stack-icon"></span>
+									</div>
+									<label>Collection</label>
+								</div>
+								<div class="tl-content">
+									<div class="tl-info-container">
+										<label class="grey-text">No traceability data available for
+											this stage.</label>
+									</div>
+								</div>
+							</div>`
+	}
+
+	timelineData += stageData["100"] + stageData["101"] + stageData["102"] + stageData["103"]
+
+	return timelineData
+}
+
 // get collection name from stage 103
-func GetCollectionName(tdpData []models.TDP) {
+/* func GetCollectionName(tdpData []models.TDP) {
 	for _, maindata := range tdpData {
 		if maindata.StageID == "103" {
 			for _, v := range maindata.TraceabilityData {
@@ -302,7 +877,7 @@ func GenerateContent(stageID string, tdp []models.TraceabilityData, section stri
 	tableContent += `</tbody></table></div>`
 	htmlBody += heading + tableContent
 
-}
+} */
 
 // get images in a tdp
 func GetImages(tdp []models.TraceabilityData) map[int]models.GeoImageData {

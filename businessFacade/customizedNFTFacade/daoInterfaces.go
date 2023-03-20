@@ -7,4 +7,5 @@ import (
 var (
 	svgRepository customizedNFTrepository.SvgRepository
 	otpRepository customizedNFTrepository.OtpRepository
+	mapRepository customizedNFTrepository.MapRepository
 )

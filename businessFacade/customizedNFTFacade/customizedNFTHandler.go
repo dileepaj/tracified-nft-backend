@@ -142,7 +142,7 @@ func GenerateandSaveSVG(batchID string, email string, reciverName string, msg st
 	tdpData, _ := GetTDPDataByBatchID(batchID)
 	var userNftMapping models.UserNFTMapping
 	//Svg will be generated using the template
-	svgrst, _ := GenerateSVG(tdpData, batchID, productID)
+	svgrst, _ := GenerateSVG(tdpData, batchID, productID, reciverName, msg)
 	userNftMapping.BatchID = batchID
 	userNftMapping.SVG = svgrst
 	userNftMapping.Email = email
@@ -163,9 +163,10 @@ func GetSVGbyEmailandBatchID(email string, batchID string) (responseDtos.SVGforN
  **Param : batchID : batch ID of product
  **reutrns : []models.TDP : Contains a list of the TDP data for the provided batchID
  */
-func GetTDPDataByBatchID(batchID string) ([]models.TDP, error) {
-	var tdpData []models.TDP
-	url := "https://api.tracified.com/api/v2/traceabilityProfiles/tdparr/" + batchID
+func GetTDPDataByBatchID(batchID string) ([][]models.TDPParent, error) {
+	var tdpData [][]models.TDPParent
+	//url := "https://api.tracified.com/api/v2/traceabilityProfiles/tdparr/" + batchID
+	url := "https://api.tracified.com/api/v2/traceabilityProfiles/generic?identifier=" + batchID
 	var bearer = configs.GetBearerToken()
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -185,8 +186,8 @@ func GetTDPDataByBatchID(batchID string) ([]models.TDP, error) {
  **Param : batchID string : batchID
  **reutrns : reutrns the generated SVG as a string
  */
-func GenerateSVG(tdpData []models.TDP, batchID string, productID string) (string, error) {
-	return svgNFTGenerator.GenerateSVGTemplateforNFT(tdpData, batchID, productID)
+func GenerateSVG(tdpData [][]models.TDPParent, batchID string, productID string, receiverName string, message string) (string, error) {
+	return svgNFTGenerator.GenerateSVGTemplateforNFT(tdpData, batchID, productID, receiverName, message)
 }
 
 /**
