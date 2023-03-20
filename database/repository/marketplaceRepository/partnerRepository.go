@@ -21,16 +21,9 @@ func (r *PartnerRepository) CreatePartner(partner models.Partner) (string, error
 }
 
 func (r *PartnerRepository) GetAllPartner() ([]models.Partner, error) {
-	session, err := connections.GetMongoSession()
-	if err != nil {
-		logs.ErrorLogger.Println("Error while getting session in getAllPartner : partnerRepository.go : ", err.Error())
-	}
-	defer session.EndSession(context.TODO())
-
 	var allPartner []models.Partner
 	findOptions := options.Find()
-	findOptions.SetLimit(10)
-	result, err := session.Client().Database(connections.DbName).Collection(Partner).Find(context.TODO(), bson.D{{}}, findOptions)
+	result, err := connections.GetSessionClient(Partner).Find(context.TODO(), bson.D{{}}, findOptions)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured when trying to connect to DB and excute Find query in GetAllPartner:partnerRepository.go: ", err.Error())
 		return allPartner, err
@@ -49,17 +42,11 @@ func (r *PartnerRepository) GetAllPartner() ([]models.Partner, error) {
 
 func (r *PartnerRepository) GetPartnerByID(partnerID string) (models.Partner, error) {
 	var partner models.Partner
-
-	session, err := connections.GetMongoSession()
-	if err != nil {
-		logs.ErrorLogger.Println("Error while getting session " + err.Error())
-	}
-	defer session.EndSession(context.TODO())
 	objectId, err := primitive.ObjectIDFromHex(partnerID)
 	if err != nil {
 		logs.WarningLogger.Println("Error Occured when trying to convert hex string in to Object(ID) in GetPartnerByID : partnerRepository: ", err.Error())
 	}
-	rst, err := session.Client().Database(connections.DbName).Collection("partner").Find(context.TODO(), bson.M{"_id": objectId})
+	rst, err := connections.GetSessionClient("partner").Find(context.TODO(), bson.M{"_id": objectId})
 	if err != nil {
 		return partner, err
 	}
@@ -75,20 +62,13 @@ func (r *PartnerRepository) GetPartnerByID(partnerID string) (models.Partner, er
 
 func (r *PartnerRepository) UpdatePartnerbyID(findBy string, id primitive.ObjectID, update primitive.M) (models.Partner, error) {
 	var partnerResponse models.Partner
-
-	session, err := connections.GetMongoSession()
-	if err != nil {
-		logs.ErrorLogger.Println("Error while getting session " + err.Error())
-	}
-
-	defer session.EndSession(context.TODO())
 	upsert := false
 	after := options.After
 	opt := options.FindOneAndUpdateOptions{
 		ReturnDocument: &after,
 		Upsert:         &upsert,
 	}
-	rst := session.Client().Database(connections.DbName).Collection("partner").FindOneAndUpdate(context.TODO(), bson.M{"_id": id}, update, &opt)
+	rst := connections.GetSessionClient("partner").FindOneAndUpdate(context.TODO(), bson.M{"_id": id}, update, &opt)
 	if rst != nil {
 		err := rst.Decode((&partnerResponse))
 		if err != nil {

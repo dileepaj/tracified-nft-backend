@@ -3,6 +3,7 @@ package apiHandler
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/dileepaj/tracified-nft-backend/businessFacade/marketplaceBusinessFacade"
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
@@ -51,6 +52,21 @@ func GetAllNFTs(w http.ResponseWriter, r *http.Request) {
 			logs.ErrorLogger.Println(err)
 		}
 		return
+	}
+}
+
+func GetImageBase(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	if vars["imagebase64"] != "" {
+		results, err := marketplaceBusinessFacade.GetImageBase(vars["imagebase64"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[models.NFT](w, results)
+		}
+	} else {
+		errors.BadRequest(w, "")
 	}
 }
 
@@ -197,10 +213,15 @@ func GetNFTbyStatus(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			errors.BadRequest(w, err.Error())
 		} else {
+			if results[0].ArtistName == "" {
+				errors.BadRequest(w, "No Content")
+				return
+			}
 			commonResponse.SuccessStatus[[]models.NFT](w, results)
+			return
 		}
 	} else {
-		errors.BadRequest(w, "")
+		errors.BadRequest(w, "invalid status")
 	}
 }
 
@@ -224,7 +245,6 @@ func GetSVGBySHA256(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	if len(vars["hash"]) != 0 {
 		result, err := marketplaceBusinessFacade.GetSVGByHash(vars["hash"])
-		logs.InfoLogger.Println("data sent back : ", result)
 		if err != nil {
 			errors.BadRequest(w, err.Error())
 		} else {
@@ -291,7 +311,12 @@ func GetNFTByBlockchainAndUserPK(w http.ResponseWriter, r *http.Request) {
 		results, err := marketplaceBusinessFacade.GetNFTByBlockchainAndUserPK(vars["currentownerpk"], vars["blockchain"])
 		if err != nil {
 			errors.BadRequest(w, err.Error())
+			return
 		} else {
+			if results == nil {
+				errors.BadRequest(w, "No Content")
+				return
+			}
 			commonResponse.SuccessStatus[[]models.NFT](w, results)
 		}
 	} else {
@@ -456,6 +481,282 @@ func GetNFTStory(w http.ResponseWriter, r *http.Request) {
 			errors.BadRequest(w, err.Error())
 		} else {
 			commonResponse.SuccessStatus[[]models.NFTStory](w, results)
+		}
+	} else {
+		errors.BadRequest(w, "")
+	}
+}
+
+func GetNFTByCollection(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	if vars["collection"] != "" {
+		results, err := marketplaceBusinessFacade.GetNFTByCollection(vars["collection"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[[]models.NFT](w, results)
+		}
+	} else {
+		errors.BadRequest(w, "")
+	}
+}
+
+/**
+ **Description:Retrieves all nfts for the specified blockchain in a paginated format
+ **Returns:Object ID of the new OTP created
+ */
+func GetPaginatedNFTs(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	var pagination requestDtos.NFTsForMatrixView
+	pagination.Blockchain = vars["blockchain"]
+	pgsize, err1 := strconv.Atoi(vars["pagesize"])
+	if err1 != nil {
+		errors.BadRequest(w, "Requested invalid page size.")
+		return
+	}
+	pagination.PageSize = int32(pgsize)
+	requestedPage, err2 := strconv.Atoi(vars["requestedPage"])
+	if err2 != nil {
+		errors.BadRequest(w, "Requested page error")
+	}
+	pagination.RequestedPage = int32(requestedPage)
+	pagination.SortbyFeild = "blockchain"
+	logs.InfoLogger.Println("Received pagination requested: ", pagination)
+	results, err := marketplaceBusinessFacade.GetNFTPagination(pagination)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		if pagination.RequestedPage < 0 {
+			errors.NotFound(w, "Requested page size should be greater than zero")
+			return
+		}
+		if results.PaginationInfo.TotalPages < pagination.RequestedPage {
+			errors.NotFound(w, "requested page does not exist")
+			return
+		}
+		commonResponse.SuccessStatus[models.Paginateresponse](w, results)
+	}
+
+}
+
+/**
+ **Description: Retrieves nfts that are having the ON SALE status in a paginated format
+ **Returns:Paginated NfT Data
+ */
+func GetPaginatedNFTbySellingStatus(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	var pagination requestDtos.NFTsForMatrixView
+	if vars["sellingstatus"] == "ON SALE" {
+		pagination.Blockchain = vars["blockchain"]
+		pagesize, err1 := strconv.Atoi(vars["pagesize"])
+		if err1 != nil {
+			errors.BadRequest(w, "Requested invalid page size.")
+			return
+		}
+		pagination.PageSize = int32(pagesize)
+		requestedPage, err2 := strconv.Atoi(vars["requestedPage"])
+		if err2 != nil {
+			errors.BadRequest(w, "Requested page error")
+		}
+		pagination.RequestedPage = int32(requestedPage)
+		pagination.SortbyFeild = vars["sellingstatus"]
+		results, err := marketplaceBusinessFacade.GetPaginatedNFTbySellingStatus(pagination)
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			if pagination.RequestedPage < 0 {
+				errors.NotFound(w, "Requested page size should be greater than zero")
+				return
+			}
+			if results.PaginationInfo.TotalPages < int32(requestedPage) {
+				errors.NotFound(w, "requested page does not exist")
+				return
+			}
+			commonResponse.SuccessStatus[models.Paginateresponse](w, results)
+		}
+	}
+}
+
+/**
+ **Description:function is used to paginate and return block chain specific nfts which are either trending or under hotpicks
+ **Returns:Paginated nft data
+ */
+func GetPaginatedNFTforstatusFilters(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	var pagination requestDtos.NFTsForMatrixView
+	pagination.Blockchain = vars["blockchain"]
+	pgsize, err1 := strconv.Atoi(vars["pagesize"])
+	if err1 != nil {
+		errors.BadRequest(w, "Requested invalid page size.")
+		return
+	}
+	pagination.PageSize = int32(pgsize)
+	requestedPage, err2 := strconv.Atoi(vars["requestedPage"])
+	if err2 != nil {
+		errors.BadRequest(w, "Requested page error")
+	}
+
+	pagination.RequestedPage = int32(requestedPage)
+	if vars["type"] == "hotpicks" {
+		pagination.SortbyFeild = "hotpicks"
+	} else if vars["type"] == "trending" {
+		pagination.SortbyFeild = "trending"
+	}
+	results, err := marketplaceBusinessFacade.GetPaginatedNFTbyStatusFilter(pagination)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		if pagination.RequestedPage < 0 {
+			errors.NotFound(w, "Requested page size should be greater than zero")
+			return
+		}
+		if results.PaginationInfo.TotalPages < pagination.RequestedPage {
+			errors.NotFound(w, "requested page does not exist")
+			return
+		}
+		commonResponse.SuccessStatus[models.Paginateresponse](w, results)
+	}
+}
+
+/**
+ **Description:function is used to paginate and return block chain specific nfts which are either trending or under hotpicks that are on Sale
+ **Returns:Paginated nft data
+ */
+func GetPaginatedOnSaleNFTforstatusFilters(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	var pagination requestDtos.NFTsForMatrixView
+	pagination.Blockchain = vars["blockchain"]
+	pgsize, err1 := strconv.Atoi(vars["pagesize"])
+	if err1 != nil {
+		errors.BadRequest(w, "Requested invalid page size.")
+		return
+	}
+	pagination.PageSize = int32(pgsize)
+	requestedPage, err2 := strconv.Atoi(vars["requestedPage"])
+	if err2 != nil {
+		errors.BadRequest(w, "Requested page error")
+	}
+
+	pagination.RequestedPage = int32(requestedPage)
+	if vars["type"] == "hotpicks" {
+		pagination.SortbyFeild = "hotpicks"
+	} else if vars["type"] == "trending" {
+		pagination.SortbyFeild = "trending"
+	}
+	results, err := marketplaceBusinessFacade.GetPaginatedOnSaleNFTbyStatusFilter(pagination)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		if pagination.RequestedPage < 0 {
+			errors.NotFound(w, "Requested page size should be greater than zero")
+			return
+		}
+		if results.PaginationInfo.TotalPages < pagination.RequestedPage {
+			errors.NotFound(w, "requested page does not exist")
+			return
+		}
+		commonResponse.SuccessStatus[models.Paginateresponse](w, results)
+	}
+}
+
+/**
+ **Description: Get nfts that are on trending and hotpicks
+ **Returns : Paginated nft data
+ */
+func GetBestCreations(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	var bestcreations requestDtos.NFTsForMatrixView
+	bestcreations.Blockchain = vars["blockchain"]
+	PageSize, pageSizeerr := strconv.Atoi(vars["pagesize"])
+	if pageSizeerr != nil {
+		errors.BadRequest(w, "Requested page error")
+		return
+	}
+	bestcreations.PageSize = int32(PageSize)
+	RequestedPage, pageReqeustederr := strconv.Atoi(vars["requestedPage"])
+	if pageReqeustederr != nil {
+		errors.BadRequest(w, "Requested page error")
+		return
+	}
+	bestcreations.RequestedPage = int32(RequestedPage)
+	results, err := marketplaceBusinessFacade.GetPaginatedResponseforBestCreations(bestcreations)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		if bestcreations.RequestedPage < 0 {
+			errors.NotFound(w, "Requested page size should be greater than zero")
+			return
+		}
+		if results.PaginationInfo.TotalPages < bestcreations.RequestedPage {
+			errors.NotFound(w, "requested page does not exist")
+			return
+		}
+		commonResponse.SuccessStatus[models.Paginateresponse](w, results)
+	}
+
+}
+
+/**
+ **Description:Calcluate the avg rating for creators and return creators having a rating > 4
+ **Returns : Paginated creator information(name,email,publickey and avg rating)
+ */
+func GetBestCreators(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	var creatorPaginationInfo requestDtos.CreatorInfoforMatrixView
+	result, err := marketplaceBusinessFacade.GetBestCreators()
+	if err != nil {
+		errors.BadRequest(w, "Failed :"+err.Error())
+	}
+	_, updateErr := marketplaceBusinessFacade.UpdateBestCreators(result)
+	if updateErr != nil {
+		errors.BadRequest(w, updateErr.Error())
+		return
+	}
+	PageSize, pageSizeerr := strconv.Atoi(vars["pagesize"])
+	if pageSizeerr != nil {
+		errors.BadRequest(w, "Requested page error")
+		return
+	}
+	creatorPaginationInfo.PageSize = int32(PageSize)
+	RequestedPage, pageReqeustederr := strconv.Atoi(vars["requestedPage"])
+	if pageReqeustederr != nil {
+		errors.BadRequest(w, "Requested page error")
+		return
+	}
+	creatorPaginationInfo.RequestedPage = int32(RequestedPage)
+	res, err := marketplaceBusinessFacade.GetPaginatedBestCreators(creatorPaginationInfo)
+	if err != nil {
+		errors.BadRequest(w, "failed to get data : "+err.Error())
+	}
+	logs.InfoLogger.Println("END Pagination")
+	if RequestedPage < 0 {
+		errors.NotFound(w, "Requested page size should be greater than zero")
+		return
+	}
+	if res.PaginationInfo.TotalPages < int32(RequestedPage) {
+		errors.NotFound(w, "requested page does not exist")
+		return
+	}
+	commonResponse.SuccessStatus[models.PaginatedCreatorInfo](w, res)
+
+}
+
+func GetImagebyID(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	if len(vars["id"]) != 0 {
+		result, err := marketplaceBusinessFacade.GetThumbnailbyID(vars["id"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[models.ThumbNail](w, result)
 		}
 	} else {
 		errors.BadRequest(w, "")

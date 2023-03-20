@@ -37,7 +37,7 @@ func SaveWidget(widget models.Widget,token string) (responseDtos.WidgetIdRespons
 			otpString,codeStatus, err = otpService.GetOtpForArtifactURL(widget.ArtifactId, widget.OTPType,token)
 		} else {
 			otpString = ""
-			err = errors.New("Invalied OTP Type")
+			err = errors.New("Invalid OTP Type")
 		}
 
 		if err != nil {

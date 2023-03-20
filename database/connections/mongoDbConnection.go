@@ -3,18 +3,19 @@ package connections
 import (
 	"context"
 	"log"
-	"os"
 
+	"github.com/dileepaj/tracified-nft-backend/commons"
+	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var mgoSession mongo.Session
-var DbName="nftBackendQa"
+var DbName=commons.GoDotEnvVariable("DATABASE_NAME")
 
 func GetMongoSession() (mongo.Session, error) {
 
-	connectionString := os.Getenv("BE_MONGOLAB_URI")
+	connectionString := commons.GoDotEnvVariable("BE_MONGOLAB_URI")
 	if mgoSession == nil {
 		var err error
 		mongoClient, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(connectionString))
@@ -28,4 +29,14 @@ func GetMongoSession() (mongo.Session, error) {
 		}
 	}
 	return mgoSession, nil
+}
+
+func GetSessionClient(collection string) (*mongo.Collection){
+	session, err := GetMongoSession()
+	if err != nil {
+		log.Println("Error while getting session " + err.Error())
+		logs.ErrorLogger.Println("Error while getting session " + err.Error())
+	}
+	defer session.EndSession(context.TODO())
+	return session.Client().Database(DbName).Collection(collection)
 }

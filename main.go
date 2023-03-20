@@ -7,11 +7,15 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/routes"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"github.com/gorilla/handlers"
+	"github.com/joho/godotenv"
 )
 
 func main() {
 	logs.InfoLogger.Println("Tracified Backend")
-
+	err := godotenv.Load()
+	if err != nil {
+		logs.InfoLogger.Println("Info Issue with loading .env1 file")
+	}
 	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization", "Token"})
 	originsOk := handlers.AllowedOrigins([]string{"*"})
 	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"})

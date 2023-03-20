@@ -3,8 +3,6 @@ package configs
 import (
 	"os"
 	"strconv"
-
-	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 )
 
 var (
@@ -36,13 +34,12 @@ func GetEmailPort() int {
 	if err != nil {
 		return 587
 	}
-	logs.InfoLogger.Println("got senderEmailAddress: ", senderEmailAddress)
 	return emailPort
 }
 
 func GetBearerToken() string {
 	LoadEnv()
-	bearerToken = os.Getenv("BEARER_TOKEN")
+	bearerToken = os.Getenv("BACKEND_TOKEN")
 	return bearerToken
 }
 

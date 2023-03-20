@@ -1,6 +1,7 @@
 package apiHandler
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"net/http"
 
@@ -79,14 +80,16 @@ func GenerateSVG(W http.ResponseWriter, r *http.Request) {
 	}
 	rst, err1 := SVGGen(batchData.BatchID, requestCreateSVG.Email, requestCreateSVG.ReciverName, requestCreateSVG.CustomMessage, requestCreateSVG.ProductID)
 	if err1 != nil {
-		errors.BadRequest(W, err.Error())
+		errors.BadRequest(W, err1.Error())
 		return
 	}
 	commonResponse.SuccessStatus[string](W, rst.SVG)
 }
 
 func SVGGen(batchID string, email string, reciverName string, msg string, productID string) (responseDtos.SVGforNFTResponse, error) {
-	var tempBatchID = "RURI_VSAPPH_013" //? Templary hardcoded
+	//var tempBatchID = "RURI_VSAPPH_013" //? Templary hardcoded
+	tempBatchID := base64.StdEncoding.EncodeToString([]byte(`{"id":"RURI_VSAPPH_013","type":"barcode"}`))
+	//var tempBatchID = "eyJpZCI6IlJVUklfVlNBUFBIXzAxMyIsInR5cGUiOiJiYXJjb2RlIn0=" //identifier is base64 encoded {"id":"RURI_VSAPPH_013","type":"barcode"}
 	svg, err := customizedNFTFacade.GenerateandSaveSVG(tempBatchID, email, reciverName, msg, productID)
 	if err != nil {
 		return svg, err

@@ -29,6 +29,7 @@ type ResponseNFTMinter struct {
 	NftContentURL string `json:"nftcontenturl" bson:"nftcontenturl"`
 	NFTIdentifier string `json:"nftidentifier" bson:"nftidentifier" `
 	NFTTxnHash    string `json:"nfttxnhash" bson:"nfttxnhash" `
+	Thumbnail     string `json:"thumbnail" bson:"thumbnail"`
 }
 
 type ResponseNFTMintTXN struct {
@@ -38,4 +39,5 @@ type ResponseNFTMintTXN struct {
 	NFTName       string `json:"nftname" bson:"nftname"`
 	NftContentURL string `json:"nftcontenturl" bson:"nftcontenturl"`
 	NFTTxnHash    string `json:"nfttxnhash" bson:"nfttxnhash" `
+	Thumbnail     string `json:"thumbnail" bson:"thumbnail"`
 }

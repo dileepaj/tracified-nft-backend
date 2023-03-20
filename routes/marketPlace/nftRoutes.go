@@ -5,7 +5,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/models"
 )
 
-//This routes manage the all NFT related rotes in the marketpalce
+// This routes manage the all NFT related rotes in the marketpalce
 var NftRoutes = models.Routers{
 
 	models.Router{
@@ -19,6 +19,12 @@ var NftRoutes = models.Routers{
 		Method:  "GET",
 		Path:    "/marketplace",
 		Handler: apiHandler.GetAllNFTs,
+	},
+	models.Router{
+		Name:    "Get NFT Content",
+		Method:  "Get",
+		Path:    "/nft/{imagebase64}",
+		Handler: apiHandler.GetImageBase,
 	},
 	models.Router{
 		Name:    "GET NFTS By Selling status and filter by currentownerpk",
@@ -35,7 +41,7 @@ var NftRoutes = models.Routers{
 	models.Router{
 		Name:    "GET NFTS By Status",
 		Method:  "Get",
-		Path:    "/nft/{sellingstatus}",
+		Path:    "/nft/sale/{sellingstatus}",
 		Handler: apiHandler.GetNFTbyStatus,
 	},
 	models.Router{
@@ -164,5 +170,53 @@ var NftRoutes = models.Routers{
 		Path:    "/story/{nftidentifier}/{blockchain}",
 		Handler: apiHandler.GetNFTStory,
 	},
+	models.Router{
+		Name:    "Get NFT By Collection Name",
+		Method:  "Get",
+		Path:    "/nftcollection/{collection}",
+		Handler: apiHandler.GetNFTByCollection,
+	},
+	models.Router{
+		Name:    "Get NFT pagination",
+		Method:  "Get",
+		Path:    "/nftspaginate/{blockchain}/{pagesize}/{requestedPage}",
+		Handler: apiHandler.GetPaginatedNFTs,
+	},
+	models.Router{
+		Name:    "Get NFT pagination by selling status",
+		Method:  "Get",
+		Path:    "/nftspaginate/{blockchain}/{sellingstatus}/{pagesize}/{requestedPage}",
+		Handler: apiHandler.GetPaginatedNFTbySellingStatus,
+	},
+	models.Router{
+		Name:    "Get NFT pagination by Hotpick or trending status",
+		Method:  "Get",
+		Path:    "/nftspaginate/filterby/{type}/{blockchain}/{pagesize}/{requestedPage}",
+		Handler: apiHandler.GetPaginatedNFTforstatusFilters,
+	},
+	models.Router{
+		Name:    "Get NFT pagination by On Sale Hotpick or trending status",
+		Method:  "Get",
+		Path:    "/onsale/{type}/{blockchain}/{pagesize}/{requestedPage}",
+		Handler: apiHandler.GetPaginatedOnSaleNFTforstatusFilters,
+	},
+	models.Router{
+		Name:    "Get BEST CREATORS",
+		Method:  "Get",
+		Path:    "/explore/bestcreators/{pagesize}/{requestedPage}",
+		Handler: apiHandler.GetBestCreators,
+	},
 	//another route for getting nfts should be here but there are two functions for it already
+	models.Router{
+		Name:    "Get Blockchain specific best creations",
+		Method:  "GET",
+		Path:    "/explore/bestcreations/{blockchain}/{pagesize}/{requestedPage}",
+		Handler: apiHandler.GetBestCreations,
+	},
+	models.Router{
+		Name:    "Get thumbnail by ID",
+		Method:  "GET",
+		Path:    "/explore/thumbnail/{id}",
+		Handler: apiHandler.GetImagebyID,
+	},
 }

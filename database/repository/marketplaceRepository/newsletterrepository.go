@@ -14,25 +14,26 @@ import (
 
 type NewsLetterRepository struct{}
 
-var NewsLetter = "newsletter"
+var (
+	NewsLetter   = "newsletter"
+	Subscription = "subscription"
+)
 
 func (r *NewsLetterRepository) SaveNewsLetter(newsLetter models.NewsLetter) (string, error) {
-	//Calling the common repository save method and passing model class and collection name.
+	// Calling the common repository save method and passing model class and collection name.
 	return repository.Save(newsLetter, NewsLetter)
 }
 
-//retreving all nesletters from DB
-func (r *NewsLetterRepository) GetAllNewsLetters() ([]models.NewsLetter, error) {
-	session, err := connections.GetMongoSession()
-	if err != nil {
-		logs.ErrorLogger.Println("Error while getting session " + err.Error())
-	}
-	defer session.EndSession(context.TODO())
+func (r *NewsLetterRepository) AddSubscription(subscription models.Subscription) (string, error) {
+	// Calling the common repository save method and passing model class and collection name.
+	return repository.Save(subscription, Subscription)
+}
 
+// retreving all nesletters from DB
+func (r *NewsLetterRepository) GetAllNewsLetters() ([]models.NewsLetter, error) {
 	var allNewsLetters []models.NewsLetter
 	findOptions := options.Find()
-	findOptions.SetLimit(10)
-	result, err := session.Client().Database(connections.DbName).Collection(NewsLetter).Find(context.TODO(), bson.D{{}}, findOptions)
+	result, err := connections.GetSessionClient(NewsLetter).Find(context.TODO(), bson.D{{}}, findOptions)
 	if err != nil {
 		logs.ErrorLogger.Println("Error while retreving data in GetAllNewsLetters : newsletterrepository: ", err.Error())
 	}
@@ -48,11 +49,9 @@ func (r *NewsLetterRepository) GetAllNewsLetters() ([]models.NewsLetter, error) 
 	return allNewsLetters, err
 }
 
-//Retreving news letters by author name
+// Retreving news letters by author name
 func (r *NewsLetterRepository) GetNewsLetterByAuthor(authorname string) ([]models.NewsLetter, error) {
 	var newsLetters []models.NewsLetter
-	findOptions := options.Find()
-	findOptions.SetLimit(10)
 	result, err := repository.FindById("author", authorname, NewsLetter)
 	if err != nil {
 		logs.ErrorLogger.Println("Error while getting data from DB in GetNewsLetterByAuthor:newsletterrepository: ", err.Error())
@@ -70,20 +69,14 @@ func (r *NewsLetterRepository) GetNewsLetterByAuthor(authorname string) ([]model
 		return newsLetters, nil
 	}
 }
+
 func (r *NewsLetterRepository) GetNewsletterbyID(newsLetterID string) (models.NewsLetter, error) {
 	var newsletter models.NewsLetter
-
-	session, err := connections.GetMongoSession()
-	if err != nil {
-		logs.ErrorLogger.Println("Error while getting session " + err.Error())
-	}
-	defer session.EndSession(context.TODO())
-
 	objectID, err := primitive.ObjectIDFromHex(newsLetterID)
 	if err != nil {
 		logs.WarningLogger.Println("Error Occured when trying to convert hex string in to Object(ID) in getNewsletterbyID : NewsletterRepository: ", err.Error())
 	}
-	rst, err := session.Client().Database(connections.DbName).Collection("newsletter").Find(context.TODO(), bson.M{"_id": objectID})
+	rst, err := connections.GetSessionClient("newsletter").Find(context.TODO(), bson.M{"_id": objectID})
 	if err != nil {
 		return newsletter, err
 	}
@@ -95,5 +88,4 @@ func (r *NewsLetterRepository) GetNewsletterbyID(newsLetterID string) (models.Ne
 		}
 	}
 	return newsletter, err
-
 }

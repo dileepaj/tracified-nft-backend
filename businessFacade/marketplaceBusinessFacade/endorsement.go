@@ -34,12 +34,12 @@ func UpdateEndorsement(endorse requestDtos.UpdateEndorsementByPublicKey) (respon
 	update := bson.M{
 		"$set": bson.M{"rating": endorse.Rating, "review": endorse.Review, "status": endorse.Status},
 	}
-	return EndorsementRepository.UpdateEndorsement("publickey", endorse.PublicKey, update)
+	return EndorsementRepository.UpdateEndorsement("publickey", endorse.PublicKey, "email", endorse.Email, update)
 }
 
 func UpdateSetEndorsement(endorse requestDtos.UpdateEndorsement) (models.Endorse, error) {
 	update := bson.M{
-		"$set": bson.M{"name": endorse.Name, "email": endorse.Email, "contact": endorse.Contact},
+		"$set": bson.M{"name": endorse.Name, "email": endorse.Email, "contact": endorse.Contact, "profilepic": endorse.ProfilePic},
 	}
 	return EndorsementRepository.UpdateSetEndorsement("publickey", endorse.PublicKey, update)
 }
@@ -79,4 +79,54 @@ func SendEndorsmentEmail(endorsment models.Endorse) error {
 		}
 	}
 	return nil
+}
+
+func UpdateBestCreators(creatorlist []models.CreatorsList) ([]models.Endorse, error) {
+	var creator []models.Endorse
+
+	for _, item := range creatorlist {
+		nft, err := nftRepository.FindNFTsById("nftidentifier", item.NftIdentifier)
+		if len(nft) != 0 {
+			logs.InfoLogger.Println("GOT : ", nft)
+			if err != nil {
+				return creator, err
+			}
+			update := bson.M{
+				"$set": bson.M{"isbestcreator": true, "avgrating": item.AvgRating},
+			}
+			res, err1 := EndorsementRepository.UpDateBestCreators(nft[0].CreatorUserId, update)
+			logs.InfoLogger.Println("DB update reponse: ", res)
+			if err1 != nil {
+				return creator, err
+			}
+			creator = append(creator, res)
+		}
+	}
+	return creator, nil
+}
+
+func GetPaginatedBestCreators(paginationData requestDtos.CreatorInfoforMatrixView) (models.PaginatedCreatorInfo, error) {
+	projection := bson.D{
+		{Key: "name", Value: 1},
+		{Key: "publickey", Value: 1},
+		{Key: "email", Value: 1},
+		{Key: "avgrating", Value: 1},
+	}
+	filter := bson.M{
+		"isbestcreator": true,
+	}
+	var creatorinfo []models.CreatorInfo
+	response, err := EndorsementRepository.GetPaginatedBestCreators(
+		filter,
+		projection,
+		paginationData.PageSize,
+		paginationData.RequestedPage,
+		"endorsement",
+		"publickey",
+		creatorinfo)
+	if err != nil {
+		return response, err
+	}
+	logs.InfoLogger.Println("paginated response: ", response)
+	return models.PaginatedCreatorInfo(response), nil
 }

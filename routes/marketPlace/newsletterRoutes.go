@@ -32,4 +32,10 @@ var NewsLetterRoutes = models.Routers{
 		Path:    "/newsletter/{_id}/",
 		Handler: apiHandler.GetNewsletterByID,
 	},
+	models.Router{
+		Name:    "Subscription",
+		Method:  "POST",
+		Path:    "/subscribe/",
+		Handler: apiHandler.Subscribe,
+	},
 }

@@ -10,13 +10,14 @@ type NFT struct {
 	CreatorUserId     string             `json:"creatoruserid" bson:"creatoruserid" validate:"required"` //minter user id //stellar==> distributor user Id assect creator user id
 	Blockchain        string             `json:"blockchain" bson:"blockchain" validate:"required"`
 	NFTName           string             `json:"nftname" bson:"nftname" validate:"required"`
-	NftContentURL     string             `json:"nftcontenturl" bson:"nftcontenturl" validate:"required"`
+	NftContentURL     string             `json:"nftcontenturl" bson:"nftcontenturl"`
 	Description       string             `json:"description" bson:"description"`
 	Timestamp         string             `json:"timestamp" bson:"timestamp"`
 	Collection        string             `json:"collection" bson:"collection" validate:"required"`
 	Category          string             `json:"categories" bson:"categories" validate:"required"`
-	Tags              string             `json:"tags" bson:"tags"`
+	Tags              []string           `json:"tags" bson:"tags"`
 	Imagebase64       string             `json:"imagebase64" bson:"imagebase64" validate:"required"`
+	AttachmentType    string             `json:"attachmenttype" bson:"attachmenttype" validate:"required"`
 	CurrentPrice      string             `json:"currentprice" bson:"currentprice" `
 	CurrentOwnerPK    string             `json:"currentownerpk" bson:"currentownerpk" validate:"required"`
 	IssuerPK          string             `json:"nftissuerpk" bson:"nftissuerpk" validate:"required"` //minter pK for POLYGON.ETH.Solana , stellar ==>unioque created account
@@ -32,12 +33,44 @@ type NFT struct {
 	NFTTxnHash        string             `json:"nfttxnhash" bson:"nfttxnhash" `
 	Trending          bool               `json:"trending" bson:"trending" `
 	HotPicks          bool               `json:"hotpicks" bson:"hotpicks" `
+	Royalty           string             `json:"royalty" bson:"royalty"`
+	Thumbnail         string             `json:"thumbnail" bson:"thumbnail"`
+	Commission        string             `json:"commission" bson:"commission"`
+}
+type NFTContentforMatrix struct {
+	Id             primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
+	NFTIdentifier  string             `json:"nftidentifier" bson:"nftidentifier" validate:"required"`
+	CreatorUserId  string             `json:"creatoruserid" bson:"creatoruserid" validate:"required"`
+	Blockchain     string             `json:"blockchain" bson:"blockchain" validate:"required"`
+	NFTName        string             `json:"nftname" bson:"nftname" validate:"required"`
+	Imagebase64    string             `json:"imagebase64" bson:"imagebase64" validate:"required"`
+	AttachmentType string             `json:"attachmenttype" bson:"attachmenttype" validate:"required"`
+	SellingStatus  string             `json:"sellingstatus" bson:"sellingstatus" validate:"required"`
+	Trending       bool               `json:"trending" bson:"trending" `
+	HotPicks       bool               `json:"hotpicks" bson:"hotpicks" `
+	CurrentOwnerPK string             `json:"currentownerpk" bson:"currentownerpk" validate:"required"`
+	Thumbnail      string             `json:"thumbnail" bson:"thumbnail"`
 }
 
-//TenentName  	  string			 `json:"tenentname" bson:"ntenentname" validate:"required"` //com[pany Name
+type Paginateresponse struct {
+	Content        []NFTContentforMatrix `json:"content" bson:"content" validate:"required"`
+	PaginationInfo PaginationTemplate
+}
+
 type NFTStory struct {
 	Id            primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
 	NFTIdentifier string             `json:"NFTIdentifier" bson:"nftidentifier"`
 	Blockchain    string             `json:"Blockchain" bson:"blockchain"`
 	NFTStory      string             `json:"NFTStory" bson:"nftstory"`
+}
+
+type CreatorInfo struct {
+	ArtistName    string  `json:"name" bson:"name"`
+	Email         string  `json:"Email" bson:"email"`
+	PublicKey     string  `json:"PublicKey" bson:"publickey"`
+	Averagerating float32 `json:"avgrating" bson:"avgrating"`
+}
+type PaginatedCreatorInfo struct {
+	ArtistInfo     []CreatorInfo `json:"artistinfo" bson:"artistinfo" validate:"required"`
+	PaginationInfo PaginationTemplate
 }

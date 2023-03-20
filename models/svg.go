@@ -11,3 +11,8 @@ type SVG struct {
 	Hash           string             `json:"Hash" bson:"hash"`
 	Blockchain     string             `json:"blockchain" bson:"blockchain,omitempty"`
 }
+
+type ThumbNail struct {
+	Id        string `json:"Id" bson:"_id,omitempty"`
+	ThumbNail string `json:"thumbnail" bson:"thumbnail" `
+}

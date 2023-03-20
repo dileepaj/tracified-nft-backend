@@ -41,17 +41,28 @@ func (r *CollectionRepository) FindCollectionbyUserPK(idName string, id string) 
 	return collections, nil
 }
 
-func (r *CollectionRepository) GetAllCollections() ([]models.NFTCollection, error) {
-	session, err := connections.GetMongoSession()
+func (r *CollectionRepository) FindCollectionbyPublickey(idName string, id string) ([]models.NFTCollection, error) {
+	var collections []models.NFTCollection
+	rst, err := repository.FindById(idName, id, Collection)
 	if err != nil {
-		logs.ErrorLogger.Println("Error while getting session in getAllCollection : CollectionRepository.go : ", err.Error())
+		return collections, err
 	}
-	defer session.EndSession(context.TODO())
+	for rst.Next(context.TODO()) {
+		var collection models.NFTCollection
+		err = rst.Decode(&collection)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return collections, err
+		}
+		collections = append(collections, collection)
+	}
+	return collections, nil
+}
 
+func (r *CollectionRepository) GetAllCollections() ([]models.NFTCollection, error) {
 	var collections []models.NFTCollection
 	findOptions := options.Find()
-	findOptions.SetLimit(10)
-	result, err := session.Client().Database(connections.DbName).Collection(Collection).Find(context.TODO(), bson.D{{}}, findOptions)
+	result, err := connections.GetSessionClient(Collection).Find(context.TODO(), bson.D{{}}, findOptions)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured when trying to connect to DB and excute Find query in GetAllCollection:CollectionRepository.go: ", err.Error())
 		return collections, err
@@ -70,11 +81,6 @@ func (r *CollectionRepository) GetAllCollections() ([]models.NFTCollection, erro
 
 func (r *CollectionRepository) UpdateCollection(collection requestDtos.UpdateCollection) (models.NFTCollection, error) {
 	var responseCollectionStatus models.NFTCollection
-	session, err := connections.GetMongoSession()
-	if err != nil {
-		logs.ErrorLogger.Println("Error while getting session " + err.Error())
-	}
-	defer session.EndSession(context.TODO())
 	update := bson.M{
 		"$set": bson.M{"collectionname": collection.CollectionName},
 	}
@@ -84,7 +90,7 @@ func (r *CollectionRepository) UpdateCollection(collection requestDtos.UpdateCol
 		ReturnDocument: &after,
 		Upsert:         &upsert,
 	}
-	rst := session.Client().Database(connections.DbName).Collection("collections").FindOneAndUpdate(context.TODO(), bson.M{"_id": collection.Id}, update, &opt)
+	rst := connections.GetSessionClient(Collection).FindOneAndUpdate(context.TODO(), bson.M{"_id": collection.Id}, update, &opt)
 	if rst != nil {
 		err := rst.Decode((&responseCollectionStatus))
 		if err != nil {
@@ -99,12 +105,7 @@ func (r *CollectionRepository) UpdateCollection(collection requestDtos.UpdateCol
 }
 
 func (r *CollectionRepository) DeleteCollection(collection requestDtos.DeleteCollectionByUserPK) error {
-	session, err := connections.GetMongoSession()
-	if err != nil {
-		logs.ErrorLogger.Println("Error while getting session " + err.Error())
-	}
-	defer session.EndSession(context.TODO())
-	result, err := session.Client().Database(connections.DbName).Collection("collections").DeleteOne(context.TODO(), bson.M{"_id": collection.UserId})
+	result, err := connections.GetSessionClient(Collection).DeleteOne(context.TODO(), bson.M{"_id": collection.UserId})
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured when Connecting to DB and executing DeleteOne Query in DeleteCollection(CollectionRepository): ", err.Error())
 	}
@@ -119,11 +120,6 @@ func (r *CollectionRepository) SaveSVG(svg models.SVG) (string, error) {
 
 func (r *CollectionRepository) UpdateSVGBlockchain(id string, update primitive.M) (models.SVG, error) {
 	var svgUpdateResponse models.SVG
-	session, err := connections.GetMongoSession()
-	if err != nil {
-		logs.ErrorLogger.Println("Error while getting session " + err.Error())
-	}
-	defer session.EndSession(context.TODO())
 	upsert := false
 	after := options.After
 	opt := options.FindOneAndUpdateOptions{
@@ -135,11 +131,11 @@ func (r *CollectionRepository) UpdateSVGBlockchain(id string, update primitive.M
 		logs.WarningLogger.Println("Error Occured when trying to convert hex string in to Object(ID) in UpdateSVGBlockchain : collectionRepo: ", err.Error())
 	}
 	logs.InfoLogger.Println("Searching by ID: ", id)
-	rst := session.Client().Database(connections.DbName).Collection("svg").FindOneAndUpdate(context.TODO(), bson.M{"_id": objectID}, update, &opt)
+	rst := connections.GetSessionClient("svg").FindOneAndUpdate(context.TODO(), bson.M{"_id": objectID}, update, &opt)
 	if rst != nil {
 		err := rst.Decode((&svgUpdateResponse))
 		if err != nil {
-			logs.ErrorLogger.Println("Error occured while retreving data from collection faq in UpdateSVGBlockchain:collectionRepo.go: ", err.Error())
+			logs.ErrorLogger.Println("Error Occured while retreving data from collection faq in UpdateSVGBlockchain:collectionRepo.go: ", err.Error())
 			return svgUpdateResponse, err
 		}
 		return svgUpdateResponse, err
