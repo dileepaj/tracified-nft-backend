@@ -40,8 +40,11 @@ func GenerateSVGTemplateforNFT(tdpData [][]models.TDPParent, batchID string, pro
 
 	var htmlStart = `<div class="nft-header default-font">
 						<div class="nft-header-content">
-							<img src="https://s3.ap-south-1.amazonaws.com/qa.marketplace.nft.tracified.com/Tracified-RT-Logo-White.svg"
+							<div class="header-logo-cont">
+								<img src="https://ruri-nft.s3.ap-south-1.amazonaws.com/assets/images/RURI%2B1sa+1.png" class="ruri-logo" />
+								<img src="https://s3.ap-south-1.amazonaws.com/qa.marketplace.nft.tracified.com/Tracified-RT-Logo-White.svg"
 								class="nft-logo" />
+							</div>
 							<div class="nft-header-title">
 								<label id="topTitle">NFT</label>
 								<label id="nftName">` + gemVariety + `</label>

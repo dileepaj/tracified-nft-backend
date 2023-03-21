@@ -254,6 +254,20 @@
   height: 67px;
 }
 
+.ruri-logo {
+  width: 61px;
+  height: 77px;
+}
+
+.header-logo-cont {
+  display: flex;
+  flex-direction: row;
+  column-gap: 30px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
 .nft-footer-content {
   width: 90%;
   display: flex;
