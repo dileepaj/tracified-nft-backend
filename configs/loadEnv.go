@@ -29,6 +29,7 @@ func GetBackeBaseUrl() string {
 }
 
 func GetPort() string {
+	LoadEnv()
 	if port != "" {
 		return ":" + port
 	}
