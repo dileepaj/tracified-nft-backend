@@ -173,7 +173,7 @@ var NftRoutes = models.Routers{
 	models.Router{
 		Name:    "Get NFT By Collection Name",
 		Method:  "Get",
-		Path:    "/nftcollection/{collection}",
+		Path:    "/nftcollection/{blockchain}/{collection}/{pagesize}/{requestedPage}",
 		Handler: apiHandler.GetNFTByCollection,
 	},
 	models.Router{

@@ -213,6 +213,10 @@ func GetNFTbyTags(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		errors.BadRequest(w, err.Error())
 	} else {
+		if pagination.PageSize <= 0 {
+			errors.BadRequest(w, "Page size should be greater than zero")
+			return
+		}
 		if pagination.RequestedPage < 0 {
 			errors.BadRequest(w, "Requested page size should be greater than zero")
 			return
@@ -514,16 +518,46 @@ func GetNFTStory(w http.ResponseWriter, r *http.Request) {
 func GetNFTByCollection(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
 	vars := mux.Vars(r)
-	if vars["collection"] != "" {
-		results, err := marketplaceBusinessFacade.GetNFTByCollection(vars["collection"])
-		if err != nil {
-			errors.BadRequest(w, err.Error())
-		} else {
-			commonResponse.SuccessStatus[[]models.NFT](w, results)
-		}
-	} else {
-		errors.BadRequest(w, "")
+	var pagination requestDtos.NFTsForMatrixView
+	pagination.Blockchain = vars["blockchain"]
+	var CollectionToSearch = vars["collection"]
+	pgsize, err1 := strconv.Atoi(vars["pagesize"])
+	if err1 != nil {
+		errors.BadRequest(w, "Requested invalid page size.")
+		return
 	}
+	pagination.PageSize = int32(pgsize)
+	requestedPage, err2 := strconv.Atoi(vars["requestedPage"])
+	if err2 != nil {
+		errors.BadRequest(w, "Requested page error")
+		return
+	}
+	pagination.RequestedPage = int32(requestedPage)
+	pagination.SortbyFeild = "blockchain"
+	logs.InfoLogger.Println("Received pagination requested: ", pagination)
+	results, err := marketplaceBusinessFacade.GetNFTByCollection(pagination, CollectionToSearch)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		if pagination.PageSize <= 0 {
+			errors.BadRequest(w, "Page size should be greater than zero")
+			return
+		}
+		if pagination.RequestedPage < 0 {
+			errors.BadRequest(w, "Requested page size should be greater than zero")
+			return
+		}
+		if results.PaginationInfo.TotalPages < pagination.RequestedPage {
+			errors.BadRequest(w, "requested page does not exist")
+			return
+		}
+		if results.Content == nil {
+			errors.BadRequest(w, "Collection does not have any NFTs")
+			return
+		}
+		commonResponse.SuccessStatus[models.Paginateresponse](w, results)
+	}
+
 }
 
 /**
