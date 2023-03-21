@@ -167,6 +167,7 @@ func GetTDPDataByBatchID(batchID string) ([][]models.TDPParent, error) {
 	var tdpData [][]models.TDPParent
 	//url := "https://api.tracified.com/api/v2/traceabilityProfiles/tdparr/" + batchID
 	url := "https://api.tracified.com/api/v2/traceabilityProfiles/generic?identifier=" + batchID
+
 	var bearer = configs.GetBearerToken()
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
