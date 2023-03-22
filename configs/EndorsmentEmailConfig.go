@@ -23,7 +23,15 @@ func GetEndorsmentSenderEmailKey() string {
 
 func GetAcceptedEndorsmentEmail(name string, rating string, review string) string {
 	var startRate string
-	if rating == "1" {
+	if rating == "0.5" {
+		startRate = `
+        <img src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/NFT_Market/star-half.png">
+        <img src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/NFT_Market/star-empty.png">
+        <img src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/NFT_Market/star-empty.png">
+        <img src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/NFT_Market/star-empty.png">
+        <img src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/NFT_Market/star-empty.png">
+        `
+	} else if rating == "1" {
 		startRate = `
         <img src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/NFT_Market/star-full.png">
         <img src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/NFT_Market/star-empty.png">
@@ -385,7 +393,15 @@ func GetAcceptedEndorsmentEmail(name string, rating string, review string) strin
 
 func GetDeclinedEndorsmentEmail(name string, rating string, review string) string {
 	var startRate string
-	if rating == "1" {
+	if rating == "0.5" {
+		startRate = `
+        <img src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/NFT_Market/star-half.png">
+        <img src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/NFT_Market/star-empty.png">
+        <img src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/NFT_Market/star-empty.png">
+        <img src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/NFT_Market/star-empty.png">
+        <img src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/NFT_Market/star-empty.png">
+        `
+	} else if rating == "1" {
 		startRate = `
         <img src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/NFT_Market/star-full.png">
         <img src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/NFT_Market/star-empty.png">
@@ -496,7 +512,7 @@ func GetDeclinedEndorsmentEmail(name string, rating string, review string) strin
           font-style: normal;
           font-weight: 400;
           font-size: 15px;"><strong>Hi ` + name + `, </strong><br/><br/>
-                                Tracified Marketplace team has completed evaluating your endorsment and had <strong> decided to decline your endorsment request as it has not met the tracified marketplace requirments</strong>. Please feel free to <a href="#">contact Tracified team </a> for further clarifications
+                                Tracified Marketplace team has completed evaluating your endorsement and had <strong> decided to decline your endorsement request as it has not met the Tracified marketplace requirements</strong>. Please feel free to <a href="#">contact Tracified team </a> for further clarifications
                                 <br><br>
                                 Please refer below for the feedback given on your endorsement.
                             </p>

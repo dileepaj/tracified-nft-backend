@@ -37,6 +37,13 @@ func UpdateEndorsement(endorse requestDtos.UpdateEndorsementByPublicKey) (respon
 	return EndorsementRepository.UpdateEndorsement("publickey", endorse.PublicKey, "email", endorse.Email, update)
 }
 
+func UpdateExsistingUserStatus(user models.Endorse) (responseDtos.ResponseEndorsementUpdate, error) {
+	update := bson.M{
+		"$set": bson.M{"name": user.Name, "email": user.Email, "contact": user.Contact, "description": user.Description, "status": "Pending", "review": "", "rating": "0"},
+	}
+	return EndorsementRepository.UpdateExisitngEndorsement("publickey", user.PublicKey, update)
+}
+
 func UpdateSetEndorsement(endorse requestDtos.UpdateEndorsement) (models.Endorse, error) {
 	update := bson.M{
 		"$set": bson.M{"name": endorse.Name, "email": endorse.Email, "contact": endorse.Contact, "profilepic": endorse.ProfilePic},
@@ -49,7 +56,7 @@ func SendEndorsmentEmail(endorsment models.Endorse) error {
 		msg := gomail.NewMessage()
 		msg.SetHeader("From", configs.GetEndrosmentSenderEmailAddres())
 		msg.SetHeader("To", endorsment.Email)
-		msg.SetHeader("Subject", "Tracified Marketplace Endorsment Response")
+		msg.SetHeader("Subject", "Tracified Marketplace Endorsement Response")
 		msg.SetBody("text/html", configs.GetAcceptedEndorsmentEmail(endorsment.Name, endorsment.Rating, endorsment.Review))
 		endorsmentEmail := gomail.NewDialer(
 			configs.GetEmailHost(),
@@ -57,7 +64,7 @@ func SendEndorsmentEmail(endorsment models.Endorse) error {
 			configs.GetEndrosmentSenderEmailAddres(),
 			configs.GetEndorsmentSenderEmailKey())
 		if err := endorsmentEmail.DialAndSend(msg); err != nil {
-			logs.ErrorLogger.Println("Failed to send Endrosment email: ", err.Error())
+			logs.ErrorLogger.Println("Failed to send Endorsment email: ", err.Error())
 			return err
 		}
 		logs.InfoLogger.Println("endorsment email sent to :", endorsment.Email)
@@ -66,7 +73,7 @@ func SendEndorsmentEmail(endorsment models.Endorse) error {
 		msg := gomail.NewMessage()
 		msg.SetHeader("From", configs.GetEndrosmentSenderEmailAddres())
 		msg.SetHeader("To", endorsment.Email)
-		msg.SetHeader("Subject", "Tracified Marketplace Endorsment Response")
+		msg.SetHeader("Subject", "Tracified Marketplace Endorsement Response")
 		msg.SetBody("text/html", configs.GetDeclinedEndorsmentEmail(endorsment.Name, endorsment.Rating, endorsment.Review))
 		endorsmentEmail := gomail.NewDialer(
 			configs.GetEmailHost(),

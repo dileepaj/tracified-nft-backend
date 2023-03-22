@@ -3,6 +3,7 @@ package marketplaceBusinessFacade
 import (
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func CreateFavourites(favs models.Favourite) (string, error) {
@@ -16,6 +17,13 @@ func GetFavouritesByBlockchainAndIdentifier(blockchain string, id string) ([]mod
 func GetFavouritesByUserPK(userid string) ([]models.Favourite, error) {
 	return FavouriteRepository.FindFavouritesbyUserPK("user", userid)
 
+}
+
+func VerifyFavouriteTogglebUserPK(blockchain string, userpk string, nftidentifier string) (models.Favourite, error) {
+	return FavouriteRepository.FindFavouritesbyUserPKandNFTIdentifier(blockchain, userpk, nftidentifier)
+}
+func RemoveUserFromFavourites(objectID primitive.ObjectID) (int64, error) {
+	return FavouriteRepository.RemoveUserFromFavourites(objectID)
 }
 
 func GetAllFavourites() ([]models.Favourite, error) {
