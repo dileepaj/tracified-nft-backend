@@ -28,10 +28,10 @@ func GenerateSVGTemplateforNFT(tdpData [][]models.TDPParent, batchID string, pro
 	//get gem type from tdp data
 	var gemVariety string = ""
 	var gemDetailsTDP []models.TraceabilityData
-	
+
 	for _, dataArr := range tdpData {
 		for _, maindata := range dataArr {
-			if maindata.StageID == "105" {
+			if maindata.StageID == "104" {
 				gemDetailsTDP = maindata.TraceabilityDataPackets[0].TraceabilityData
 				gemVariety = GetGemVariety(gemDetailsTDP)
 			}
@@ -40,8 +40,11 @@ func GenerateSVGTemplateforNFT(tdpData [][]models.TDPParent, batchID string, pro
 
 	var htmlStart = `<div class="nft-header default-font">
 						<div class="nft-header-content">
-							<img src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/Tracified-NFT-v5.png"
+							<div class="header-logo-cont">
+								<img src="https://ruri-nft.s3.ap-south-1.amazonaws.com/assets/images/RURI%2B1sa+1.png" class="ruri-logo" />
+								<img src="https://s3.ap-south-1.amazonaws.com/qa.marketplace.nft.tracified.com/Tracified-RT-Logo-White.svg"
 								class="nft-logo" />
+							</div>
 							<div class="nft-header-title">
 								<label id="topTitle">NFT</label>
 								<label id="nftName">` + gemVariety + `</label>
@@ -88,29 +91,29 @@ func GenerateSVGTemplateforNFT(tdpData [][]models.TDPParent, batchID string, pro
 	} */
 
 	//logs.InfoLogger.Println("TDP", tdpData)
-	
+
 	if receiverName != "" && message != "" {
-		GenerateOwnership(receiverName, message);
+		GenerateOwnership(receiverName, message)
 	}
 
 	GenerateGemDetails(gemDetailsTDP, gemVariety)
 
-	timelineData := GenerateTimeline(tdpData)
+	//timelineData := GenerateTimeline(tdpData)
 
-	GenerateDigitalTwin(gemDetailsTDP, timelineData)
+	//GenerateDigitalTwin(gemDetailsTDP, timelineData)
 
 	template := svgStart + styleStart + styling + styleEnd + htmlStart + iframeImg + htmlBody + svgEnd
 	htmlBody = ""
 	/* template = strings.(template)
 	fmt.Println(template) */
-	template = strings.Replace(template, "\r", " ", -1)
+	/* template = strings.Replace(template, "\r", " ", -1)
 	template = strings.Replace(template, "\t", " ", -1)
-	template = strings.Replace(template, "\n", " ", -1)
+	template = strings.Replace(template, "\n", " ", -1) */
 	return template, nil
 }
 
-//generate ownership section
-func GenerateOwnership (receiverName string, message string) {
+// generate ownership section
+func GenerateOwnership(receiverName string, message string) {
 	htmlBody += `<div class="widget-div">
 					<div class="wrap-collabsible">
 						<input id="collapsible1" class="toggle" type="radio" name="toggle" checked="true"></input>
@@ -143,8 +146,8 @@ func GenerateOwnership (receiverName string, message string) {
 				</div>`
 }
 
-//generate gem details section
-func GenerateGemDetails (tdp []models.TraceabilityData, gemVariety string) {
+// generate gem details section
+func GenerateGemDetails(tdp []models.TraceabilityData, gemVariety string) {
 	colour := ""
 	species := ""
 	shape := ""
@@ -158,40 +161,39 @@ func GenerateGemDetails (tdp []models.TraceabilityData, gemVariety string) {
 			colour = v.Val.(string)
 		} else if v.Key == "species" {
 			species = v.Val.(string)
-		} else if v.Key == "shape" {
+		} else if v.Key == "shape&cut" {
 			shape = v.Val.(string)
 		} else if v.Key == "carat" {
-			carat = v.Val.(string)
+			carat = strconv.FormatFloat(v.Val.(float64), 'f', 2, 32)
 		} else if v.Key == "measurement" {
 			measurements = v.Val.(string)
-		}else if v.Key == "treatment" {
+		} else if v.Key == "treatment" {
 			treatment = v.Val.(string)
 		}
-		
+
 	}
 
 	if gemVariety != "" {
-		tableContent += `<tr><td class="tbl-text-normal">Variety</td><td class="tbl-text-bold">`+ gemVariety + `</td></tr>`
-	} 
+		tableContent += `<tr><td class="tbl-text-normal">Variety</td><td class="tbl-text-bold">` + gemVariety + `</td></tr>`
+	}
 	if species != "" {
-		tableContent += `<tr><td class="tbl-text-normal">Species</td><td class="tbl-text-bold">`+species+`</td></tr>`
-	} 
+		tableContent += `<tr><td class="tbl-text-normal">Species</td><td class="tbl-text-bold">` + species + `</td></tr>`
+	}
 	if colour != "" {
-		tableContent += `<tr><td class="tbl-text-normal">Colour</td><td class="tbl-text-bold">`+colour+`</td></tr>`
-	} 
+		tableContent += `<tr><td class="tbl-text-normal">Colour</td><td class="tbl-text-bold">` + colour + `</td></tr>`
+	}
 	if shape != "" {
-		tableContent += `<tr><td class="tbl-text-normal">Shape</td><td class="tbl-text-bold">`+shape+`</td></tr>`
-	} 
+		tableContent += `<tr><td class="tbl-text-normal">Shape</td><td class="tbl-text-bold">` + shape + `</td></tr>`
+	}
 	if carat != "" {
-		tableContent += `<tr><td class="tbl-text-normal">Caret</td><td class="tbl-text-bold">`+carat+`</td></tr>`
+		tableContent += `<tr><td class="tbl-text-normal">Caret</td><td class="tbl-text-bold">` + carat + `</td></tr>`
 	}
 	if measurements != "" {
-		tableContent += `<tr><td class="tbl-text-normal">Measurements (mm)</td><td class="tbl-text-bold">`+measurements+`</td></tr>`
+		tableContent += `<tr><td class="tbl-text-normal">Measurements (mm)</td><td class="tbl-text-bold">` + measurements + `</td></tr>`
 	}
 	if treatment != "" {
-		tableContent += `<tr><td class="tbl-text-normal">Treatment</td><td class="tbl-text-bold">`+treatment+`</td></tr>`
+		tableContent += `<tr><td class="tbl-text-normal">Treatment</td><td class="tbl-text-bold">` + treatment + `</td></tr>`
 	}
-
 
 	htmlBody += `<div class="widget-div">
 					<div class="wrap-collabsible">
@@ -206,7 +208,7 @@ func GenerateGemDetails (tdp []models.TraceabilityData, gemVariety string) {
 								<div class="bdr">
 									<table class="table table-bordered rounded-20 overflow-hidden">
 										<tbody>
-											`+ tableContent +`
+											` + tableContent + `
 										</tbody>
 									</table>
 								</div>
@@ -216,14 +218,14 @@ func GenerateGemDetails (tdp []models.TraceabilityData, gemVariety string) {
 				</div>`
 }
 
-//get gem variety
+// get gem variety
 func GetGemVariety(tdp []models.TraceabilityData) string {
 	variety := ""
 	for _, v := range tdp {
 		if v.Key == "variety" {
 			variety = v.Val.(string)
-		} 
-		
+		}
+
 	}
 
 	return variety
@@ -236,21 +238,21 @@ func GenerateDigitalTwin(gemDetailsTDP []models.TraceabilityData, timelineData s
 	i := 0
 	for _, value := range images {
 		certificationImages += `<div class="img-wrapper">
-									<input type="checkbox" id="cert` + strconv.Itoa(i+1)+ `" class="img-zoom-in"></input>
+									<input type="checkbox" id="cert` + strconv.Itoa(i+1) + `" class="img-zoom-in"></input>
 									<div class="img-fullscreen">
-										<label for="cert`+ strconv.Itoa(i+1) +`">
+										<label for="cert` + strconv.Itoa(i+1) + `">
 											<span class="material-symbols-outlined">
 												close
 											</span>
 										</label>
 										<div class="img-div"
-											style="background-image: url('`+value.Image+`');">
+											style="background-image: url('` + value.Image + `');">
 										</div>
 									</div>
 									<div class="img-div"
-										style="background-image: url('`+value.Image+`');">
+										style="background-image: url('` + value.Image + `');">
 									</div>
-									<label for="cert`+ strconv.Itoa(i+1) +`" title="View Image">
+									<label for="cert` + strconv.Itoa(i+1) + `" title="View Image">
 										<span class="zoom-icon"></span>
 									</label>
 								</div>`
@@ -335,7 +337,7 @@ func GenerateDigitalTwin(gemDetailsTDP []models.TraceabilityData, timelineData s
 										<!--Certification-->
 										<div class="tab-content">
 											<div class="img-list">
-											`+certificationImages+`	
+											` + certificationImages + `	
 											</div>
 										</div>
 
@@ -503,7 +505,7 @@ func GenerateDigitalTwin(gemDetailsTDP []models.TraceabilityData, timelineData s
 										<!--Timeline-->
 										<div class="tab-content">
 											<div class="tl-wrapper">
-											`+timelineData+`
+											` + timelineData + `
 											</div>
 										</div>
 									</div>
@@ -533,7 +535,7 @@ func GetGemImages(tdpData []models.TDP) []interface{} {
 	return imgArr
 }
 
-func GenerateTimeline (tdpData [][]models.TDPParent) string {
+func GenerateTimeline(tdpData [][]models.TDPParent) string {
 	var stageData map[string]string = make(map[string]string)
 	var stageStatus map[string]bool = make(map[string]bool)
 	var timelineData string = ""
@@ -550,22 +552,22 @@ func GenerateTimeline (tdpData [][]models.TDPParent) string {
 					stageName = "Mining"
 				} else if maindata.StageID == "101" {
 					stageName = "Treatment"
-					
+
 				} else if maindata.StageID == "102" {
 					stageName = "Cutting"
-					
+
 				} else if maindata.StageID == "103" {
 					stageName = "Collection"
-				} 
-				
+				}
+
 				stageTDP = maindata.TraceabilityDataPackets[0].TraceabilityData
 				infoStr = ""
 
 				for _, data := range stageTDP {
 					if data.Type == 3 {
 						infoStr += `<div class="tl-info-container">
-										<label class="grey-text">`+strings.Replace(data.Key, "&", "&amp;", -1)+`</label>
-										<label class="tl-bold-text">`+strings.Split(data.Val.(string), "T")[0]+`</label>
+										<label class="grey-text">` + strings.Replace(data.Key, "&", "&amp;", -1) + `</label>
+										<label class="tl-bold-text">` + strings.Split(data.Val.(string), "T")[0] + `</label>
 									</div>`
 					}
 				}
@@ -582,10 +584,10 @@ func GenerateTimeline (tdpData [][]models.TDPParent) string {
 														<div class="tl-circle">
 															<span class="stack-icon"></span>
 														</div>
-														<label>`+stageName+`</label>
+														<label>` + stageName + `</label>
 													</div>
 													<div class="tl-content">
-														`+infoStr+`
+														` + infoStr + `
 													</div>
 												</div>`
 
