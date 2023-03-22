@@ -2,6 +2,8 @@ package configs
 
 import (
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 var (
@@ -12,6 +14,7 @@ var (
 )
 
 func LoadEnv() {
+	godotenv.Load(".env")
 	backendToken = os.Getenv("BACKEND_TOKEN")
 	EnvName = os.Getenv("BRANCH_NAME")
 	port = os.Getenv("BE_PORT")

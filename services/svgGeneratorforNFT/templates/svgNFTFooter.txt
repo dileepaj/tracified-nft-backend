@@ -1,8 +1,18 @@
-</div>
-<div class="text-center nft-footer">
-    <div class="nft-footer-content default-font">
-        <label>Powered by </label> <img src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/tracified-logo+(1).png" class="logo"/>
-    </div>
-</div>
-</div>
-</foreignObject></svg>
+        </div>
+            <div class="text-center nft-footer">
+                <div class="nft-footer-content default-font">
+                    <label>Powered by </label> <img
+                        src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/tracified-white.png"
+                        class="logo" />
+                </div>
+            </div>
+        </div>
+    </foreignObject>
+    <script>
+        <![CDATA[
+        function closeSidebar() {
+            document.getElementById("sidebar-toggle").checked = false;
+        }
+        ]]>
+    </script>
+</svg>

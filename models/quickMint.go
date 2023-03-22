@@ -103,3 +103,13 @@ type Appraiser struct {
 	Name          string `json:"name" bson:"name,omitempty"`
 	Qualification string `json:"qualification" bson:"qualification,omitempty"`
 }
+
+type TDPParent struct {
+	StageID          string             `json:"stageID" bson:"stagetid,omitempty"`
+	TraceabilityDataPackets []TDP 		`json:"traceabilityDataPackets" bson:"traceabilityDataPackets,omitempty"`
+	Id               string             `json:"id" bson:"id,omitempty"`
+	Identifier       string             `json:"identifier" bson:"identifier,omitempty"`
+}
+
+
+
