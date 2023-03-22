@@ -58,8 +58,19 @@ func GetNFTStory(id string, blockchain string) ([]models.NFTStory, error) {
 	return nftRepository.FindNFTStory("nftidentifier", id, "blockchain", blockchain)
 }
 
-func GetNFTByCollection(collection string) ([]models.NFT, error) {
-	return nftRepository.FindNFTByCollection("collection", collection)
+func GetNFTByCollection(paginationData requestDtos.NFTsForMatrixView, collectiontoSearch string) (models.Paginateresponse, error) {
+	filter := bson.M{
+		"blockchain": paginationData.Blockchain,
+		"collection": collectiontoSearch,
+	}
+	projection := GetProjectionDataNFTMatrixView()
+	var nfts []models.NFTContentforMatrix
+	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts)
+	if err != nil {
+		logs.ErrorLogger.Println("Error occurred :", err.Error())
+		return models.Paginateresponse(response), err
+	}
+	return models.Paginateresponse(response), err
 }
 
 func GetProjectionDataNFTMatrixView() bson.D {
@@ -199,8 +210,19 @@ func GetNFTBySellingStatus(status string) ([]models.NFT, error) {
 	return nftRepository.FindNFTsById("sellingstatus", status)
 }
 
-func GetNFTbyTagsName(tags string) ([]models.NFT, error) {
-	return nftRepository.FindNFTsById("tags", tags)
+func GEtNFTbyTagsName(paginationData requestDtos.NFTsForMatrixView, tagToSearch string) (models.Paginateresponse, error) {
+	filter := bson.M{
+		"sellingstatus": "ON SALE",
+		"tags":          tagToSearch,
+	}
+	projection := GetProjectionDataNFTMatrixView()
+	var nfts []models.NFTContentforMatrix
+	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts)
+	if err != nil {
+		logs.ErrorLogger.Println("Error occurred :", err.Error())
+		return models.Paginateresponse(response), err
+	}
+	return models.Paginateresponse(response), err
 }
 
 func GetNFTbyAccount(userId string) ([]models.NFT, error) {
