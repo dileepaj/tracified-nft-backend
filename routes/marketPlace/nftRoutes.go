@@ -41,7 +41,7 @@ var NftRoutes = models.Routers{
 	models.Router{
 		Name:    "GET NFTS By Status",
 		Method:  "Get",
-		Path:    "/nft/sale/{sellingstatus}",
+		Path:    "/nft/sales/{sellingstatus}",
 		Handler: apiHandler.GetNFTbyStatus,
 	},
 	models.Router{

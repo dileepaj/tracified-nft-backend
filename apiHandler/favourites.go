@@ -12,6 +12,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"github.com/dileepaj/tracified-nft-backend/utilities/validations"
 	"github.com/gorilla/mux"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func CreateFavourites(w http.ResponseWriter, r *http.Request) {
@@ -61,6 +62,59 @@ func GetFavouritesByUserPK(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+}
+
+func VerifyFavouriteTogglebUserPK(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
+	vars := mux.Vars(r)
+	rst, err := marketplaceBusinessFacade.VerifyFavouriteTogglebUserPK(vars["blockchain"], vars["user"], vars["nftidentifer"])
+	if err != nil {
+		logs.ErrorLogger.Print("Failed to perform favourites retrival for user : ", err.Error())
+		errors.BadRequest(w, err.Error())
+		return
+	}
+	if rst.User == "" {
+		rst.User = "Add to favourite"
+		w.WriteHeader(http.StatusOK)
+		err1 := json.NewEncoder(w).Encode(rst)
+		if err1 != nil {
+			logs.ErrorLogger.Println(err)
+		}
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	err1 := json.NewEncoder(w).Encode(rst)
+	if err1 != nil {
+		logs.ErrorLogger.Println(err)
+	}
+}
+
+func RemoveUserfromFavourite(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
+	vars := mux.Vars(r)
+	objectID, err := primitive.ObjectIDFromHex(vars["favouriteID"])
+	if err != nil {
+		logs.WarningLogger.Println("Invalid favouriteID: ", err.Error())
+		errors.BadRequest(w, "Invalid favouriteID")
+		return
+	}
+	rst, delerr := marketplaceBusinessFacade.RemoveUserFromFavourites(objectID)
+	if delerr != nil {
+		logs.WarningLogger.Println("Failed to remove user from favouriteID: ", err.Error())
+		errors.BadRequest(w, "Failed to remove user from favourites")
+		return
+	}
+	if rst > 0 {
+		w.WriteHeader(http.StatusOK)
+		err1 := json.NewEncoder(w).Encode("Removed from favourites")
+		if err1 != nil {
+			logs.ErrorLogger.Println(err)
+		}
+		return
+	} else {
+		errors.BadRequest(w, "Failed to remove user from favourites")
+		return
+	}
 }
 
 func GetAllFavourites(w http.ResponseWriter, r *http.Request) {

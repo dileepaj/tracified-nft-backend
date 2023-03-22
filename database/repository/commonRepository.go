@@ -138,6 +138,7 @@ func PaginateResponse[PaginatedData paginateResponseType](filterConfig bson.M, p
 	if err != nil {
 		logs.ErrorLogger.Println("failed to connect to DB: ", err.Error())
 	}
+	defer client.Disconnect(ctx);
 	dbConnection := client.Database(DbName)
 	filter := filterConfig
 	limit := int64(pagesize)
@@ -168,6 +169,7 @@ func PaginateWithCustomSort[PaginatedData paginateResponseType](filterConfig bso
 	if err != nil {
 		logs.ErrorLogger.Println("failed to connect to DB: ", err.Error())
 	}
+	defer client.Disconnect(ctx);
 	dbConnection := client.Database(DbName)
 	filter := filterConfig
 	limit := int64(pagesize)

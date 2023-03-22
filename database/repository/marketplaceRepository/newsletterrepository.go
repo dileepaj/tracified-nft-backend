@@ -89,3 +89,19 @@ func (r *NewsLetterRepository) GetNewsletterbyID(newsLetterID string) (models.Ne
 	}
 	return newsletter, err
 }
+func (r *NewsLetterRepository) CheckIfSubscribed(email string) (string, error) {
+	var subscription models.Subscription
+	rst := repository.FindOne("mail", email, Subscription)
+	errdecode := rst.Decode(&subscription)
+	if errdecode != nil {
+		logs.ErrorLogger.Println("failed to decode : ", errdecode.Error())
+		return "error", errdecode
+	}
+	if subscription.UserMail == "" {
+		subscription.UserMail = "not subscribed"
+	} else {
+		subscription.UserMail = "subscribed"
+	}
+
+	return subscription.UserMail, nil
+}

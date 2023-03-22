@@ -37,6 +37,13 @@ func UpdateEndorsement(endorse requestDtos.UpdateEndorsementByPublicKey) (respon
 	return EndorsementRepository.UpdateEndorsement("publickey", endorse.PublicKey, "email", endorse.Email, update)
 }
 
+func UpdateExsistingUserStatus(user models.Endorse) (responseDtos.ResponseEndorsementUpdate, error) {
+	update := bson.M{
+		"$set": bson.M{"name": user.Name, "email": user.Email, "contact": user.Contact, "description": user.Description, "status": "Pending", "review": "", "rating": "0"},
+	}
+	return EndorsementRepository.UpdateExisitngEndorsement("publickey", user.PublicKey, update)
+}
+
 func UpdateSetEndorsement(endorse requestDtos.UpdateEndorsement) (models.Endorse, error) {
 	update := bson.M{
 		"$set": bson.M{"name": endorse.Name, "email": endorse.Email, "contact": endorse.Contact, "profilepic": endorse.ProfilePic},

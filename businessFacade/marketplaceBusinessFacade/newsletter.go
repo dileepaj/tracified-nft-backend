@@ -8,7 +8,7 @@ import (
 )
 
 /*
-	Function below Calls the respective newsletterRepository methods and parses data accordingly
+Function below Calls the respective newsletterRepository methods and parses data accordingly
 */
 func CreateNewsLetter(newsletter models.NewsLetter) (string, error) {
 	return newsletterRepository.SaveNewsLetter(newsletter)
@@ -45,4 +45,8 @@ func SubscribeToNewsLetter(mail string) error {
 	}
 	logs.InfoLogger.Println("subscription email sent to :", mail)
 	return nil
+}
+
+func CheckIfSubscribed(mail string) (string, error) {
+	return newsletterRepository.CheckIfSubscribed(mail)
 }

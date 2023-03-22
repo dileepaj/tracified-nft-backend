@@ -27,12 +27,28 @@ func CreateEndorsement(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		errors.BadRequest(w, err.Error())
 	} else {
-		result, err := marketplaceBusinessFacade.StoreEndorse(endorse)
+		user, err := marketplaceBusinessFacade.GetEndorsedStatus(endorse.PublicKey)
 		if err != nil {
-			errors.BadRequest(w, err.Error())
-		} else {
-			commonResponse.SuccessStatus[string](w, result)
+			logs.ErrorLogger.Println("Fialed to Check User :", err.Error())
+			errors.BadRequest(w, "User Registration failed")
 		}
+		if user.PublicKey == "" {
+			result, err := marketplaceBusinessFacade.StoreEndorse(endorse)
+			if err != nil {
+				errors.BadRequest(w, err.Error())
+				return
+			} else {
+				commonResponse.SuccessStatus[string](w, result)
+			}
+			return
+		}
+		_, updateErr := marketplaceBusinessFacade.UpdateExsistingUserStatus(endorse)
+		if updateErr != nil {
+			errors.BadRequest(w, "Error occured")
+			return
+		}
+		commonResponse.SuccessStatus[string](w, "Re-endorsment request Saved")
+
 	}
 }
 

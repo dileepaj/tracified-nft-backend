@@ -19,6 +19,7 @@ type UpdateNFTSALERequest struct {
 	CurrentOwnerPK string `json:"currentownerpk" bson:"currentownerpk"`
 	Royalty        string `json:"royalty" bson:"royalty"`
 	Blockchain     string `json:"blockchain" bson:"blockchain"`
+	Commission     string `json:"commission" bson:"commission"`
 }
 
 type UpdateMint struct {
