@@ -219,4 +219,10 @@ var NftRoutes = models.Routers{
 		Path:    "/explore/thumbnail/{id}",
 		Handler: apiHandler.GetImagebyID,
 	},
+	models.Router{
+		Name:    "Get profile content",
+		Method:  "GET",
+		Path:    "/profilecontent/{pubkey}/{blockchain}/{filter}/{pagesize}/{requestedPage}",
+		Handler: apiHandler.GetProfileContent,
+	},
 }
