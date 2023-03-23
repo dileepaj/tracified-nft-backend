@@ -139,7 +139,7 @@ func FormatBatchIDString(text string) models.ItemData {
  */
 func GenerateandSaveSVG(batchID string, email string, reciverName string, msg string, productID string) (responseDtos.SVGforNFTResponse, error) {
 	var userSVGMapRst responseDtos.SVGforNFTResponse
-	tdpData, _ := GetTDPDataByBatchID(batchID)
+	tdpData, _ := GetDigitalTwinData(batchID)
 	var userNftMapping models.UserNFTMapping
 	//Svg will be generated using the template
 	svgrst, _ := GenerateSVG(tdpData, batchID, productID, reciverName, msg)
@@ -182,13 +182,37 @@ func GetTDPDataByBatchID(batchID string) ([][]models.TDPParent, error) {
 }
 
 /**
+ * Descrition : Retrives the relevent digital twin json for a specific batch ID
+ **Param : batchID : batch ID of product
+ **reutrns : []models.Component : Contains a list of the TDP data for the provided batchID
+ */
+func GetDigitalTwinData(batchID string) ([]models.Component, error) {
+	var digitalTwinData []models.Component
+
+	url := "https://qa.api.tracified.com/api/v2/traceabilityProfiles/customer/digitaltwin/UnVyaWRlbW8wMDE=?itemId=641ae3713851f647ec088c76"
+
+	var bearer = configs.GetBearerToken()
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		logs.ErrorLogger.Println("unable to get data :", err.Error())
+		return digitalTwinData, err
+	}
+	req.Header.Add("Authorization", bearer)
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	body, err := ioutil.ReadAll(resp.Body)
+	json.Unmarshal([]byte(string(body)), &digitalTwinData)
+	return digitalTwinData, nil
+}
+
+/**
  * Descrition : Generates and returns the SVG
  **Param : []models.TDP : Contains a list of the TDP data for the provided batchID
  **Param : batchID string : batchID
  **reutrns : reutrns the generated SVG as a string
  */
-func GenerateSVG(tdpData [][]models.TDPParent, batchID string, productID string, receiverName string, message string) (string, error) {
-	return svgNFTGenerator.GenerateSVGTemplateforNFT(tdpData, batchID, productID, receiverName, message)
+func GenerateSVG(data []models.Component, batchID string, productID string, receiverName string, message string) (string, error) {
+	return svgNFTGenerator.GenerateSVGTemplateforNFT(data, batchID, productID, receiverName, message)
 }
 
 /**
