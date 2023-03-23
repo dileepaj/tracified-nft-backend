@@ -820,3 +820,48 @@ func GetImagebyID(w http.ResponseWriter, r *http.Request) {
 		errors.BadRequest(w, "")
 	}
 }
+func GetProfileContent(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	var pagination requestDtos.NFTsForMatrixView
+	pagination.SortbyFeild = vars["pubkey"]
+	pagination.Blockchain = vars["blockchain"]
+	filterBy := vars["filter"]
+	pgsize, err1 := strconv.Atoi(vars["pagesize"])
+	if err1 != nil {
+		errors.BadRequest(w, "Requested invalid page size.")
+		return
+	}
+	pagination.PageSize = int32(pgsize)
+	requestedPage, err2 := strconv.Atoi(vars["requestedPage"])
+	if err2 != nil {
+		errors.BadRequest(w, "Requested page error")
+		return
+	}
+	pagination.RequestedPage = int32(requestedPage)
+
+	logs.InfoLogger.Println("Received pagination requested: ", pagination)
+	results, err := marketplaceBusinessFacade.GetUserProfileContent(pagination, filterBy)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		if pagination.PageSize <= 0 {
+			errors.BadRequest(w, "Page size should be greater than zero")
+			return
+		}
+		if pagination.RequestedPage < 0 {
+			errors.BadRequest(w, "Requested page size should be greater than zero")
+			return
+		}
+		if results.PaginationInfo.TotalPages < pagination.RequestedPage {
+			errors.BadRequest(w, "requested page does not exist")
+			return
+		}
+		if results.Content == nil {
+			errors.BadRequest(w, "No Content for account: "+vars["pubkey"])
+			return
+		}
+		commonResponse.SuccessStatus[models.Paginateresponse](w, results)
+	}
+
+}

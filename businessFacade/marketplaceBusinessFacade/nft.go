@@ -1,6 +1,8 @@
 package marketplaceBusinessFacade
 
 import (
+	"fmt"
+
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
@@ -276,4 +278,58 @@ func GetNFTByNFTIdentifier(id string) ([]models.NFT, error) {
 
 func GetThumbnailbyID(id string) (models.ThumbNail, error) {
 	return nftRepository.GetThumbnailbyID(id)
+}
+func GetUserProfileContent(paginationData requestDtos.NFTsForMatrixView, filterquest string) (models.Paginateresponse, error) {
+	var filter bson.M
+	var nfts []models.NFTContentforMatrix
+	var emptyNft models.Paginateresponse
+	if paginationData.Blockchain != "ethereum" &&
+		paginationData.Blockchain != "polygon" &&
+		paginationData.Blockchain != "stellar" &&
+		paginationData.Blockchain != "solana" {
+		err := fmt.Errorf("invalid blockchain: %s", paginationData.Blockchain)
+		return emptyNft, err
+	}
+	if filterquest == "minted" {
+		filter = bson.M{
+			"blockchain":     paginationData.Blockchain,
+			"currentownerpk": paginationData.SortbyFeild,
+			"sellingstatus":  "Minted",
+		}
+	} else if filterquest == "hotpicks" {
+		filter = bson.M{
+			"blockchain":     paginationData.Blockchain,
+			"currentownerpk": paginationData.SortbyFeild,
+			"hotpicks":       true,
+		}
+	} else if filterquest == "favorite" {
+		filter = bson.M{
+			"blockchain":     paginationData.Blockchain,
+			"currentownerpk": paginationData.SortbyFeild,
+			"trending":       true,
+		}
+	} else if filterquest == "bought" {
+		filter = bson.M{
+			"blockchain":     paginationData.Blockchain,
+			"currentownerpk": paginationData.SortbyFeild,
+			"sellingstatus":  "NOTFORSALE",
+		}
+	} else if filterquest == "onsale" {
+		filter = bson.M{
+			"blockchain":     paginationData.Blockchain,
+			"currentownerpk": paginationData.SortbyFeild,
+			"sellingstatus":  "ON SALE",
+		}
+	} else {
+		err := fmt.Errorf("invalid Filter: %s ", filterquest)
+		return emptyNft, err
+	}
+	projection := GetProjectionDataNFTMatrixView()
+
+	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts)
+	if err != nil {
+		logs.ErrorLogger.Println("Error occurred :", err.Error())
+		return models.Paginateresponse(response), err
+	}
+	return models.Paginateresponse(response), err
 }

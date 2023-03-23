@@ -2,6 +2,8 @@ package commons
 
 import (
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 // use godot package to load/read the .env file and
