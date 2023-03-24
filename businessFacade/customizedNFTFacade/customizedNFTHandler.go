@@ -1,6 +1,7 @@
 package customizedNFTFacade
 
 import (
+	b64 "encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -139,7 +140,7 @@ func FormatBatchIDString(text string) models.ItemData {
  */
 func GenerateandSaveSVG(batchID string, email string, reciverName string, msg string, productID string) (responseDtos.SVGforNFTResponse, error) {
 	var userSVGMapRst responseDtos.SVGforNFTResponse
-	tdpData, _ := GetDigitalTwinData(batchID)
+	tdpData, _ := GetDigitalTwinData(batchID, productID)
 	var userNftMapping models.UserNFTMapping
 	//Svg will be generated using the template
 	svgrst, _ := GenerateSVG(tdpData, batchID, productID, reciverName, msg)
@@ -186,10 +187,12 @@ func GetTDPDataByBatchID(batchID string) ([][]models.TDPParent, error) {
  **Param : batchID : batch ID of product
  **reutrns : []models.Component : Contains a list of the TDP data for the provided batchID
  */
-func GetDigitalTwinData(batchID string) ([]models.Component, error) {
+func GetDigitalTwinData(batchID string, productID string) ([]models.Component, error) {
 	var digitalTwinData []models.Component
 
-	url := "https://qa.api.tracified.com/api/v2/traceabilityProfiles/customer/digitaltwin/UnVyaWRlbW8wMDE=?itemId=641ae3713851f647ec088c76"
+	bEnc := b64.StdEncoding.EncodeToString([]byte("Ruridemo001"))
+
+	url := `https://qa.api.tracified.com/api/v2/traceabilityProfiles/customer/digitaltwin/` + bEnc + `?itemId=` + "641ae3713851f647ec088c76"
 
 	var bearer = configs.GetBearerToken()
 	req, err := http.NewRequest("GET", url, nil)

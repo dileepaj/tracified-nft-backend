@@ -126,14 +126,11 @@ func GenerateTable(data models.Component) {
 	var icon string
 
 	for _, tab := range data.Tabs {
-		for _, tabChild := range tab.Children {
-			for _, component := range tabChild.Children {
-				if component.Component == "key-value" {
-					var valueWithProof models.ValueWithProof
-					mapstructure.Decode(component.Value, &valueWithProof)
-					tableContent += `<tr><td class="tbl-text-normal">` + component.Key + `</td><td class="tbl-text-bold">` + valueWithProof.Value.(string) + `</td></tr>`
-				}
-
+		for _, component := range tab.Children {
+			if component.Component == "key-value" {
+				var valueWithProof models.ValueWithProof
+				mapstructure.Decode(component.Value, &valueWithProof)
+				tableContent += `<tr><td class="tbl-text-normal">` + component.Key + `</td><td class="tbl-text-bold">` + valueWithProof.Value.(string) + `</td></tr>`
 			}
 		}
 	}
@@ -173,22 +170,9 @@ func GenerateVerticalTabs(data models.Component) {
 	sidebarTabs := ""
 	radioButtons := ""
 	content := ""
-
-	for index, tab := range data.VerticalTab {
+	for _, tab := range data.VerticalTab {
 		if tab.Component == "overview" {
-			cont, mainTbs, sidebarTbs, radioBtns := GenerateOverview(tab.Children[0], index)
-			content += cont
-			mainTabs += mainTbs
-			sidebarTabs += sidebarTbs
-			radioButtons += radioBtns
-		} else if tab.Component == "map" {
-			cont, mainTbs, sidebarTbs, radioBtns := GenerateJourneyMap(tab, index)
-			content += cont
-			mainTabs += mainTbs
-			sidebarTabs += sidebarTbs
-			radioButtons += radioBtns
-		} else if tab.Component == "timeline" {
-			cont, mainTbs, sidebarTbs, radioBtns := GenerateTimeline(tab, index)
+			cont, mainTbs, sidebarTbs, radioBtns := GenerateOverview(tab)
 			content += cont
 			mainTabs += mainTbs
 			sidebarTabs += sidebarTbs
@@ -241,14 +225,49 @@ func GenerateVerticalTabs(data models.Component) {
 						</div>
 					</div>
 				</div>`
+
 }
 
 // Generate overview tabs
-func GenerateOverview(tab models.Component, index int) (string, string, string, string) {
+func GenerateOverview(data models.Component) (string, string, string, string) {
+	mainTabs := ""
+	sidebarTabs := ""
+	radioButtons := ""
 	content := ""
-	mainTab, sidebarTab, radioButton := GenerateTabLabels(tab.Title, index)
 
-	for _, childComponent := range tab.Children {
+	for index, tab := range data.Children {
+		if tab.Component == "vertical-card-container" {
+			cont, mainTbs, sidebarTbs, radioBtns := GenerateVerticalCardContainer(tab, index)
+			content += cont
+			mainTabs += mainTbs
+			sidebarTabs += sidebarTbs
+			radioButtons += radioBtns
+		} else if tab.Component == "map" {
+			cont, mainTbs, sidebarTbs, radioBtns := GenerateJourneyMap(tab, index)
+			content += cont
+			mainTabs += mainTbs
+			sidebarTabs += sidebarTbs
+			radioButtons += radioBtns
+		} else if tab.Component == "timeline" {
+			cont, mainTbs, sidebarTbs, radioBtns := GenerateTimeline(tab, index)
+			content += cont
+			mainTabs += mainTbs
+			sidebarTabs += sidebarTbs
+			radioButtons += radioBtns
+		}
+
+	}
+
+	return content, mainTabs, sidebarTabs, radioButtons
+
+}
+
+// Generate vertical card container
+func GenerateVerticalCardContainer(data models.Component, index int) (string, string, string, string) {
+	content := ""
+	mainTab, sidebarTab, radioButton := GenerateTabLabels(data.Title, index)
+
+	for i, childComponent := range data.Children {
 		if childComponent.Component == "image-slider" {
 			res := GenerateImageSlider(childComponent, index)
 			content += `<div class="tab-content">
@@ -257,20 +276,93 @@ func GenerateOverview(tab models.Component, index int) (string, string, string, 
 							</div>
 						</div>`
 		} else if childComponent.Component == "decorated-key-value" {
-			res := GenerateDecoratedKeyValues(tab)
-			content += `<div class="tab-content">
-							` + res + `
+			if i == 0 {
+				res1 := GenerateDecoratedKeyValues(data, i)
+				res2 := GenerateDecoratedKeyValuesHeading(data, res1)
+				content += `<div class="tab-content">
+							` + res2 + `
 						</div>`
+			}
+
 		}
 	}
 
 	return content, mainTab, sidebarTab, radioButton
 }
 
+func GenerateDecoratedKeyValuesHeading(data models.Component, cards string) string {
+	icon := ""
+
+	if data.Title == "Origin" {
+		icon = `<span class="tree-icon"></span>`
+	} else if data.Title == "Quality" {
+		icon = `<span class="badge-icon"></span>`
+	} else if data.Title == "Sustainability" {
+		icon = `<span class="sustainability-icon"></span>`
+	} else if data.Title == "Compliance" {
+		icon = `<span class="handshake-outline-icon"></span>`
+	} else {
+		icon = data.Icon
+	}
+
+	content := `` + icon + `
+				<label class="tab-cont-heading">` + data.Subtitle + `</label>
+				<div class="card-container">
+					` + cards + `
+				</div>`
+
+	return content
+}
+
+// Generate decorated key values
+func GenerateDecoratedKeyValues(data models.Component, index int) string {
+	cards := ""
+	color := ""
+
+	if data.Title == "Origin" {
+		color = "green"
+	} else if data.Title == "Quality" {
+		color = "blue"
+	} else if data.Title == "Sustainability" {
+		color = "orange"
+	} else if data.Title == "Compliance" {
+		color = "brown"
+	} else {
+		color = ""
+	}
+
+	for _, child := range data.Children {
+		if child.Component == "decorated-key-value" {
+			img := ""
+			val := "No Records"
+			var decoratedVal models.ValueWithProof
+			mapstructure.Decode(child.Value, &decoratedVal)
+
+			if child.Icon != "" {
+				img = `<img class="dt-icon-img" src="` + child.Icon + `" />`
+			}
+			if decoratedVal.Value != nil && decoratedVal.Value.(string) != "" {
+				val = decoratedVal.Value.(string)
+			}
+
+			cards += `<div class="tab-cont-card ` + color + `">
+							<div class="card-div-1">
+								` + img + `
+							</div>
+							<div class="card-div-2">
+								<label class="bold-text">` + child.Key + `</label>
+								<label>` + val + `</label>
+							</div>
+						</div>`
+		}
+	}
+
+	return cards
+}
+
 // Generate image slider
 func GenerateImageSlider(imageSlider models.Component, parentIndex int) string {
 	content := ""
-	fmt.Println("generating image slider")
 
 	for i, image := range imageSlider.Images.Value {
 		content += `<div class="img-wrapper">
@@ -336,61 +428,6 @@ func GenerateJourneyMap(tab models.Component, index int) (string, string, string
 	return content, mainTab, sidebarTab, radioButton
 }
 
-// Generate decorated key values
-func GenerateDecoratedKeyValues(data models.Component) string {
-	icon := ""
-	color := ""
-	cards := ""
-
-	if data.Title == "Origin" {
-		icon = `<span class="tree-icon"></span>`
-		color = "green"
-	} else if data.Title == "Quality" {
-		icon = `<span class="badge-icon"></span>`
-		color = "blue"
-	} else if data.Title == "Sustainability" {
-		icon = `<span class="sustainability-icon"></span>`
-		color = "orange"
-	} else if data.Title == "Compliance" {
-		icon = `<span class="handshake-outline-icon"></span>`
-		color = "brown"
-	} else {
-		icon = data.Icon
-		color = ""
-	}
-
-	for _, child := range data.Children {
-		if child.Component == "decorated-key-value" {
-			img := ""
-			val := "No Records"
-			if child.Icon != "" {
-				img = `<img class="dt-icon-img" src="` + child.Icon + `" />`
-			}
-			if child.Value.(string) != "" {
-				val = child.Value.(string)
-			}
-
-			cards += `<div class="tab-cont-card ` + color + `">
-						<div class="card-div-1">
-							` + img + `
-						</div>
-						<div class="card-div-2">
-							<label class="bold-text">` + child.Key + `</label>
-							<label>` + val + `</label>
-						</div>
-					</div>`
-		}
-	}
-
-	content := `` + icon + `
-				<label class="tab-cont-heading">` + data.Subtitle + `</label>
-				<div class="card-container">
-					` + cards + `
-				</div>`
-
-	return content
-}
-
 // Generate Timeline
 func GenerateTimeline(data models.Component, index int) (string, string, string, string) {
 	content := ``
@@ -402,10 +439,15 @@ func GenerateTimeline(data models.Component, index int) (string, string, string,
 		infoStr := ""
 		for _, info := range stage.Children {
 			if info.Component == "key-value" {
+
 				val := "No Data Available"
-				if info.Value.(string) != "" {
-					val = info.Value.(string)
+				var decoratedVal models.ValueWithProof
+				mapstructure.Decode(info.Value, &decoratedVal)
+
+				if decoratedVal.Value != nil && decoratedVal.Value.(string) != "" {
+					val = decoratedVal.Value.(string)
 				}
+
 				infoStr += `<div class="tl-info-container">
 								<label class="grey-text">` + strings.Replace(info.Key, "&", "&amp;", -1) + `</label>
 								<label class="tl-bold-text">` + val + `</label>
@@ -433,6 +475,15 @@ func GenerateTimeline(data models.Component, index int) (string, string, string,
 				</div>`
 
 	return content, mainTab, sidebarTab, radioButton
+}
+
+func GetWordWrap(value string) string {
+	fmt.Println(len(strings.Split(value, " ")))
+	if len(strings.Split(value, " ")) == 1 {
+		return `style="word-break: break-all;"`
+	} else {
+		return ""
+	}
 }
 
 // Create labels for vertical tabs
