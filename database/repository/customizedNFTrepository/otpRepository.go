@@ -16,6 +16,7 @@ import (
 )
 
 var UserAuth = "userAuth"
+var RURI = "rurinft"
 
 type OtpRepository struct{}
 
@@ -145,4 +146,22 @@ func (r *OtpRepository) ResendOTP(otpDataSet models.UserAuth) (string, error) {
 			return responseOtp.BatchID, err
 		}
 	}
+}
+
+func (r *OtpRepository) ValidateNFTStatus(email string, otp string) (string, error) {
+	var authrst models.WalletNFT
+	rst, err := repository.FindById1AndId2("email", email, "otp", otp, RURI)
+	if err != nil {
+		logs.ErrorLogger.Println("failed to return data from DB: ", err.Error())
+	}
+	logs.InfoLogger.Println("rst : ", rst)
+	for rst.Next(context.TODO()) {
+		err = rst.Decode(&authrst)
+		if err != nil {
+			logs.ErrorLogger.Println("Error occured while retreving data from collection ruriotp in ValidateOTP:OtpRepository.go: ", err.Error())
+			return authrst.NFTStatus, err
+		}
+	}
+	logs.InfoLogger.Println("Model : ", authrst.NFTStatus)
+	return authrst.NFTStatus, nil
 }

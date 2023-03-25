@@ -18,6 +18,7 @@ var NFT = "nft"
 var Tags = "tags"
 var Owner = "owner"
 var Story = "nftstory"
+var RURI = "rurinft"
 
 func (r *NFTRepository) FindNFTById1AndNotId2(idName1 string, id1 string, idName2 string, id2 string) ([]models.NFT, error) {
 	var nfts []models.NFT
@@ -485,4 +486,29 @@ func (r *NFTRepository) GetNFTPaginatedResponse(filterConfig bson.M, projectionD
 	response.Content = contentResponse
 	response.PaginationInfo = paginationResponse
 	return response, nil
+}
+
+func (r *NFTRepository) SaveWalletNFT(nft models.WalletNFT) (string, error) {
+	return repository.Save[models.WalletNFT](nft, RURI)
+}
+
+func (r *NFTRepository) GetAllWalletNFTs() ([]models.WalletNFT, error) {
+	var nft []models.WalletNFT
+	findOptions := options.Find()
+
+	result, err := connections.GetSessionClient(RURI).Find(context.TODO(), bson.D{{}}, findOptions)
+	if err != nil {
+		logs.ErrorLogger.Println("Error occured when trying to connect to DB and excute Find query in GetAllWalletNFTs:NFTRepository.go: ", err.Error())
+		return nft, err
+	}
+	for result.Next(context.TODO()) {
+		var nfts models.WalletNFT
+		err = result.Decode(&nfts)
+		if err != nil {
+			logs.ErrorLogger.Println("Error occured while retreving data from collection nfts in GetAllWalletNFTs:nftsRepository.go: ", err.Error())
+			return nft, err
+		}
+		nft = append(nft, nfts)
+	}
+	return nft, nil
 }

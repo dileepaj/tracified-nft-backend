@@ -74,3 +74,18 @@ type PaginatedCreatorInfo struct {
 	ArtistInfo     []CreatorInfo `json:"artistinfo" bson:"artistinfo" validate:"required"`
 	PaginationInfo PaginationTemplate
 }
+
+type WalletNFT struct {
+	IssuerPublicKey string `json:"issuerpublickey" bson:"issuerpublickey"`
+	NFTCreator      string `json:"nftcreator" bson:"nftcreator"`
+	NFTName         string `json:"nftname" bson:"nftname"`
+	NFTContent      string `json:"nftcontent" bson:"nftcontent"`
+	Description     string `json:"description" bson:"description"`
+	Collection      string `json:"collection" bson:"collection"`
+	BlockChain      string `json:"blockChain" bson:"blockChain"`
+	NFTStatus       string `json:"nftstatus" bson:"nftstatus"`
+	OTP             string `json:"otp" bson:"otp"`
+	Email           string `json:"email" bson:"email"`
+	Timestamp       string `json:"timestamp" bson:"timestamp"`
+	TXNHash         string `json:"txnhash" bson:"txnhash"`
+}
