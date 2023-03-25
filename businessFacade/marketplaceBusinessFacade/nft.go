@@ -7,6 +7,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func StoreNFT(createNFTObject models.NFT) (string, error) {
@@ -213,9 +214,10 @@ func GetNFTBySellingStatus(status string) ([]models.NFT, error) {
 }
 
 func GEtNFTbyTagsName(paginationData requestDtos.NFTsForMatrixView, tagToSearch string) (models.Paginateresponse, error) {
+	regexPattern := primitive.Regex{Pattern: tagToSearch, Options: "i"}
 	filter := bson.M{
 		"sellingstatus": "ON SALE",
-		"tags":          tagToSearch,
+		"tags":          regexPattern,
 	}
 	projection := GetProjectionDataNFTMatrixView()
 	var nfts []models.NFTContentforMatrix
