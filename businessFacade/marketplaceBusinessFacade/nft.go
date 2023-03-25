@@ -348,3 +348,7 @@ func StoreWalletNFT(createNFTObject models.WalletNFT) (string, error) {
 func GetAllWalletNFTs() ([]models.WalletNFT, error) {
 	return nftRepository.GetAllWalletNFTs()
 }
+
+func GetNFTByBlockchainAndIdentifier(id string, blockchain string) (models.NFT, error) {
+	return nftRepository.GetNFTByIDAndBC("nftidentifier", id, "blockchain", blockchain)
+}

@@ -512,3 +512,19 @@ func (r *NFTRepository) GetAllWalletNFTs() ([]models.WalletNFT, error) {
 	}
 	return nft, nil
 }
+
+func (r *NFTRepository) GetNFTByIDAndBC(idName1 string, id1 string, idName2 string, id2 string) (models.NFT, error) {
+	var nft models.NFT
+	rst, err := repository.FindById1AndNotId2(idName1, id1, idName2, id2, NFT)
+	if err != nil {
+		return nft, err
+	}
+	for rst.Next(context.TODO()) {
+		err = rst.Decode(&nft)
+		if err != nil {
+			logs.ErrorLogger.Println("Error occured while retreving data from collection nft in GetNFTByIDAndBC:NFTRepository.go: ", err.Error())
+			return nft, err
+		}
+	}
+	return nft, err
+}

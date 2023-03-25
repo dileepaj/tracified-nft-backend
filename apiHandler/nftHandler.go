@@ -905,3 +905,18 @@ func GetAllWalletNFTs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func GetNFTByBlockchainAndIdentifier(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	if vars["nftidentifier"] != "" || vars["blockchain"] != "" {
+		results, err := marketplaceBusinessFacade.GetNFTByBlockchainAndIdentifier(vars["nftidentifier"], vars["blockchain"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[models.NFT](w, results)
+		}
+	} else {
+		errors.BadRequest(w, "")
+	}
+}

@@ -237,4 +237,10 @@ var NftRoutes = models.Routers{
 		Path:    "/walletnfts",
 		Handler: apiHandler.GetAllWalletNFTs,
 	},
+	models.Router{
+		Name:    "Get NFT By Blockchain And NftIdentifier",
+		Method:  "Get",
+		Path:    "/nftstats/{nftidentifier}/{blockchain}",
+		Handler: apiHandler.GetNFTByBlockchainAndIdentifier,
+	},
 }
