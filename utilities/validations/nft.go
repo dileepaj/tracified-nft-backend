@@ -70,3 +70,12 @@ func ValidateRequestTXNObject(e models.TXN) error {
 	}
 	return nil
 }
+
+func ValidateWalletNft(e models.WalletNFT) error {
+	validate = validator.New()
+	err := validate.Struct(e)
+	if err != nil {
+		return err
+	}
+	return nil
+}
