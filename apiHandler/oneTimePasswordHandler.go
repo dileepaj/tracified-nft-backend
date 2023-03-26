@@ -103,23 +103,34 @@ func ValidateOTP(W http.ResponseWriter, r *http.Request) {
 	}
 	//Checks if the API has the ncessary params filled
 	if requestValidateOTP.OTPCode != "" || requestValidateOTP.Email != "" {
-		rst, err := customizedNFTFacade.ValidateOTP(requestValidateOTP.Email, requestValidateOTP.OTPCode)
-		logs.InfoLogger.Println("rst: ", rst)
-		if err != nil {
-			errors.BadRequest(W, "Failed to validate OTP")
+		status, errs := customizedNFTFacade.GetNFTStatus(requestValidateOTP.Email, requestValidateOTP.OTPCode)
+		if errs != nil {
+			errors.BadRequest(W, "Failed to NFT Status")
 			return
+		} else {
+			logs.InfoLogger.Println("status: ", status)
+			if status == "Minted" {
+				errors.BadRequest(W, "NFT already Minted")
+				return
+			}
+			rst, err := customizedNFTFacade.ValidateOTP(requestValidateOTP.Email, requestValidateOTP.OTPCode)
+			logs.InfoLogger.Println("rst: ", rst)
+			if err != nil {
+				errors.BadRequest(W, "Failed to validate OTP")
+				return
+			}
+			if rst == "Invalid OTP" {
+				errors.BadRequest(W, rst)
+				return
+			}
+			var tempBatchID = rst
+			rst1, err1 := customizedNFTFacade.GetSVGbyEmailandBatchID(requestValidateOTP.Email, tempBatchID)
+			if err != nil {
+				errors.BadRequest(W, err1.Error())
+				return
+			}
+			commonResponse.SuccessStatus[string](W, rst1.SVG)
 		}
-		if rst == "Invalid OTP" {
-			commonResponse.SuccessStatus[string](W, rst)
-			return
-		}
-		// var tempBatchID = "RURI_VSAPPH_013" //? Templary hardcoded
-		// rst1, err1 := customizedNFTFacade.GetSVGbyEmailandBatchID(requestValidateOTP.Email, tempBatchID)
-		// if err != nil {
-		// 	errors.BadRequest(W, err1.Error())
-		// 	return
-		// }
-		commonResponse.SuccessStatus[string](W, rst)
 	} else {
 		errors.BadRequest(W, "Email or OTP missing")
 		return

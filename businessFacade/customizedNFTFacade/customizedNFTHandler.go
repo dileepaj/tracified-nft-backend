@@ -212,3 +212,7 @@ func UpdateUserMappingbySha256(request models.UserNFTMapping) (responseDtos.SVGf
 func GetSVGbySha256(hash string) (string, error) {
 	return svgRepository.GetSVGbySha256(hash)
 }
+
+func GetNFTStatus(email string, otp string) (string, error) {
+	return otpRepository.ValidateNFTStatus(email, otp)
+}
