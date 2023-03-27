@@ -129,7 +129,12 @@ func ValidateOTP(W http.ResponseWriter, r *http.Request) {
 				errors.BadRequest(W, err1.Error())
 				return
 			}
-			commonResponse.SuccessStatus[string](W, rst1.SVG)
+			Response := models.Response{
+				SVG:    rst1.SVG,
+				SVGID:  rst1.SvgID,
+				Status: status,
+			}
+			commonResponse.SuccessStatus[models.Response](W, Response)
 		}
 	} else {
 		errors.BadRequest(W, "Email or OTP missing")
