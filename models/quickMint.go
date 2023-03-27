@@ -105,11 +105,14 @@ type Appraiser struct {
 }
 
 type TDPParent struct {
-	StageID          string             `json:"stageID" bson:"stagetid,omitempty"`
-	TraceabilityDataPackets []TDP 		`json:"traceabilityDataPackets" bson:"traceabilityDataPackets,omitempty"`
-	Id               string             `json:"id" bson:"id,omitempty"`
-	Identifier       string             `json:"identifier" bson:"identifier,omitempty"`
+	StageID                 string `json:"stageID" bson:"stagetid,omitempty"`
+	TraceabilityDataPackets []TDP  `json:"traceabilityDataPackets" bson:"traceabilityDataPackets,omitempty"`
+	Id                      string `json:"id" bson:"id,omitempty"`
+	Identifier              string `json:"identifier" bson:"identifier,omitempty"`
 }
 
-
-
+type Response struct {
+	SVG    string
+	SVGID  string
+	Status string
+}
