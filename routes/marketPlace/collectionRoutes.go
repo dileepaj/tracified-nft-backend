@@ -42,4 +42,10 @@ var CollectionRoutes = models.Routers{
 		Path:    "/collection/userpk/{userid}",
 		Handler: apiHandler.DeleteCollectionByUserPK,
 	},
+	models.Router{
+		Name:    "GET Collection by UserID and Mail",
+		Method:  "Get",
+		Path:    "/collection/user/{userid}/{publickey}",
+		Handler: apiHandler.GetCollectionByUserPKAndMail,
+	},
 }

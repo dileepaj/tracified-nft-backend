@@ -226,6 +226,18 @@ var NftRoutes = models.Routers{
 		Handler: apiHandler.GetProfileContent,
 	},
 	models.Router{
+		Name:    "Save Deployed Contract",
+		Method:  "POST",
+		Path:    "/contract/save",
+		Handler: apiHandler.SaveContract,
+	},
+	models.Router{
+		Name:    "Get Contract By User",
+		Method:  "Get",
+		Path:    "/contract/{user}/{blockchain}",
+		Handler: apiHandler.GetContractByUserAndBC,
+},
+models.Router{
 		Name:    "Save NFT RURI",
 		Method:  "POST",
 		Path:    "/walletnft/save",

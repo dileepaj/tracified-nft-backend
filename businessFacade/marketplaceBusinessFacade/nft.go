@@ -336,6 +336,19 @@ func GetUserProfileContent(paginationData requestDtos.NFTsForMatrixView, filterq
 	return models.Paginateresponse(response), err
 }
 
+func StoreContracts(createContractObject models.ContractInfo) (string, error) {
+	rst, err1 := nftRepository.SaveContract(createContractObject)
+	if err1 != nil {
+		return "Contract not saved", err1
+	}
+	return rst, nil
+
+}
+
+func GetContractbyBlockchainAndUser(blockchain string, user string) ([]models.ContractInfo, error) {
+	return nftRepository.FindContractByBCandUser("blockchain", blockchain, "user", user)
+}
+
 func StoreWalletNFT(createNFTObject models.WalletNFT) (string, error) {
 	rst, err1 := nftRepository.SaveWalletNFT(createNFTObject)
 	if err1 != nil {
