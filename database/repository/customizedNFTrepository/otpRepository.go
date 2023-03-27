@@ -71,7 +71,7 @@ func (r *OtpRepository) ValidateOTP(email string, otp string) (string, error) {
 	if now > authrst.ExpireDate {
 		return "Expired OTP", nil
 	}
-	return "Valid OTP", nil
+	return authrst.BatchID, nil
 }
 func UpdateOTPStatus(otpID primitive.ObjectID) (bool, error) {
 	update := bson.M{
