@@ -348,3 +348,20 @@ func StoreContracts(createContractObject models.ContractInfo) (string, error) {
 func GetContractbyBlockchainAndUser(blockchain string, user string) ([]models.ContractInfo, error) {
 	return nftRepository.FindContractByBCandUser("blockchain", blockchain, "user", user)
 }
+
+func StoreWalletNFT(createNFTObject models.WalletNFT) (string, error) {
+	rst, err1 := nftRepository.SaveWalletNFT(createNFTObject)
+	if err1 != nil {
+		return "NFT not saved", err1
+	}
+	return rst, nil
+
+}
+
+func GetAllWalletNFTs() ([]models.WalletNFT, error) {
+	return nftRepository.GetAllWalletNFTs()
+}
+
+func GetNFTByBlockchainAndIdentifier(id string, blockchain string) (models.NFT, error) {
+	return nftRepository.GetNFTByIDAndBC("nftidentifier", id, "blockchain", blockchain)
+}

@@ -236,5 +236,23 @@ var NftRoutes = models.Routers{
 		Method:  "Get",
 		Path:    "/contract/{user}/{blockchain}",
 		Handler: apiHandler.GetContractByUserAndBC,
+},
+models.Router{
+		Name:    "Save NFT RURI",
+		Method:  "POST",
+		Path:    "/walletnft/save",
+		Handler: apiHandler.SaveNFTFromWallet,
+	},
+	models.Router{
+		Name:    "GET Minted Wallet NFTs",
+		Method:  "GET",
+		Path:    "/walletnfts",
+		Handler: apiHandler.GetAllWalletNFTs,
+	},
+	models.Router{
+		Name:    "Get NFT By Blockchain And NftIdentifier",
+		Method:  "Get",
+		Path:    "/nftstats/{nftidentifier}/{blockchain}",
+		Handler: apiHandler.GetNFTByBlockchainAndIdentifier,
 	},
 }

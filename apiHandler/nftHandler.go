@@ -866,6 +866,61 @@ func GetProfileContent(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func SaveNFTFromWallet(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;charset=UTF-8")
+	var wnft models.WalletNFT
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&wnft)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+	}
+
+	err = validations.ValidateWalletNft(wnft)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		result, err := marketplaceBusinessFacade.StoreWalletNFT(wnft)
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[string](w, result)
+		}
+	}
+}
+
+func GetAllWalletNFTs(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
+	results, err1 := marketplaceBusinessFacade.GetAllWalletNFTs()
+
+	if err1 != nil {
+		ErrorMessage := err1.Error()
+		errors.BadRequest(w, ErrorMessage)
+		return
+	} else {
+		w.WriteHeader(http.StatusOK)
+		err := json.NewEncoder(w).Encode(results)
+		if err != nil {
+			logs.ErrorLogger.Println(err)
+		}
+		return
+	}
+}
+
+func GetNFTByBlockchainAndIdentifier(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	if vars["nftidentifier"] != "" || vars["blockchain"] != "" {
+		results, err := marketplaceBusinessFacade.GetNFTByBlockchainAndIdentifier(vars["nftidentifier"], vars["blockchain"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[models.NFT](w, results)
+		}
+	} else {
+		errors.BadRequest(w, "")
+	}
+}
+
 func SaveContract(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;charset=UTF-8")
 	var contracts models.ContractInfo
@@ -903,3 +958,4 @@ func GetContractByUserAndBC(w http.ResponseWriter, r *http.Request) {
 		errors.BadRequest(w, "")
 	}
 }
+
