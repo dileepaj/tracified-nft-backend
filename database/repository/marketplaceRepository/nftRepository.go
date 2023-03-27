@@ -18,6 +18,7 @@ var NFT = "nft"
 var Tags = "tags"
 var Owner = "owner"
 var Story = "nftstory"
+var Contract = "contracts"
 
 func (r *NFTRepository) FindNFTById1AndNotId2(idName1 string, id1 string, idName2 string, id2 string) ([]models.NFT, error) {
 	var nfts []models.NFT
@@ -485,4 +486,27 @@ func (r *NFTRepository) GetNFTPaginatedResponse(filterConfig bson.M, projectionD
 	response.Content = contentResponse
 	response.PaginationInfo = paginationResponse
 	return response, nil
+}
+
+func (r *NFTRepository) SaveContract(contract models.ContractInfo) (string, error) {
+	return repository.Save[models.ContractInfo](contract, Contract)
+}
+
+func (r *NFTRepository) FindContractByBCandUser(idName1 string, id1 string, idName2 string, id2 string) ([]models.ContractInfo, error) {
+	var contract []models.ContractInfo
+	rst, err := repository.FindById1AndNotId2(idName1, id1, idName2, id2, Contract)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+		return contract, err
+	}
+	for rst.Next(context.TODO()) {
+		var contracts models.ContractInfo
+		err = rst.Decode(&contracts)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return contract, err
+		}
+		contract = append(contract, contracts)
+	}
+	return contract, nil
 }

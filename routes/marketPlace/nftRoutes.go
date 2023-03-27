@@ -225,4 +225,16 @@ var NftRoutes = models.Routers{
 		Path:    "/profilecontent/{pubkey}/{blockchain}/{filter}/{pagesize}/{requestedPage}",
 		Handler: apiHandler.GetProfileContent,
 	},
+	models.Router{
+		Name:    "Save Deployed Contract",
+		Method:  "POST",
+		Path:    "/contract/save",
+		Handler: apiHandler.SaveContract,
+	},
+	models.Router{
+		Name:    "Get Contract By User",
+		Method:  "Get",
+		Path:    "/contract/{user}/{blockchain}",
+		Handler: apiHandler.GetContractByUserAndBC,
+	},
 }

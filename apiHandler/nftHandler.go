@@ -865,3 +865,41 @@ func GetProfileContent(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+func SaveContract(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;charset=UTF-8")
+	var contracts models.ContractInfo
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&contracts)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+	}
+
+	err = validations.ValidateInsertContract(contracts)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		result, err := marketplaceBusinessFacade.StoreContracts(contracts)
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[string](w, result)
+		}
+	}
+}
+
+func GetContractByUserAndBC(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+
+	vars := mux.Vars(r)
+	if len(vars["user"]) != 0 && len(vars["blockchain"]) != 0 {
+		result, err := marketplaceBusinessFacade.GetContractbyBlockchainAndUser((vars["blockchain"]), (vars["user"]))
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[[]models.ContractInfo](w, result)
+		}
+	} else {
+		errors.BadRequest(w, "")
+	}
+}

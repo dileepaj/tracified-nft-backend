@@ -74,3 +74,9 @@ type PaginatedCreatorInfo struct {
 	ArtistInfo     []CreatorInfo `json:"artistinfo" bson:"artistinfo" validate:"required"`
 	PaginationInfo PaginationTemplate
 }
+
+type ContractInfo struct {
+	ContractAddress string `json:"contractaddress" bson:"contractaddress"`
+	User            string `json:"user" bson:"user"`
+	Blockchain      string `json:"blockchain" bson:"blockchain"`
+}
