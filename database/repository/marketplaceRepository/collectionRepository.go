@@ -144,3 +144,22 @@ func (r *CollectionRepository) UpdateSVGBlockchain(id string, update primitive.M
 	}
 
 }
+
+func (r *CollectionRepository) FindCollectionByKeyAndMail(idName1 string, id1 string, idName2 string, id2 string) ([]models.NFTCollection, error) {
+	var collection []models.NFTCollection
+	rst, err := repository.FindById1AndNotId2(idName1, id1, idName2, id2, Collection)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+		return collection, err
+	}
+	for rst.Next(context.TODO()) {
+		var collections models.NFTCollection
+		err = rst.Decode(&collections)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return collection, err
+		}
+		collection = append(collection, collections)
+	}
+	return collection, nil
+}

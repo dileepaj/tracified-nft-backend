@@ -75,6 +75,13 @@ type PaginatedCreatorInfo struct {
 	PaginationInfo PaginationTemplate
 }
 
+
+type ContractInfo struct {
+	ContractAddress string `json:"contractaddress" bson:"contractaddress"`
+	User            string `json:"user" bson:"user"`
+	Blockchain      string `json:"blockchain" bson:"blockchain"`
+}
+
 type WalletNFT struct {
 	IssuerPublicKey string `json:"issuerpublickey" bson:"issuerpublickey"`
 	NFTCreator      string `json:"nftcreator" bson:"nftcreator"`
