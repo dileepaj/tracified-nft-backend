@@ -8,12 +8,14 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"github.com/gorilla/handlers"
 	"github.com/joho/godotenv"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
 	logs.InfoLogger.Println("Tracified Backend")
 	err := godotenv.Load()
 	if err != nil {
+		logrus.Println("Info Issue with loading .env1 file")
 		logs.InfoLogger.Println("Info Issue with loading .env1 file")
 	}
 	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization", "Token"})
