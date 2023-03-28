@@ -111,6 +111,69 @@ type TDPParent struct {
 	Identifier              string `json:"identifier" bson:"identifier,omitempty"`
 }
 
+// new ruri nft development
+type DigitalTwin struct {
+	Name        string      `json:"name" bson:"name,omitempty"`
+	Item        string      `json:"item" bson:"item,omitempty"`
+	VerticalTab []Component `json:"verticalTab" bson:"verticalTab,omitempty"`
+}
+
+type Component struct {
+	Title       string       `json:"title" bson:"title,omitempty"`
+	Name        string       `json:"name" bson:"name,omitempty"`
+	Item        string       `json:"item" bson:"item,omitempty"`
+	VerticalTab []Component  `json:"verticalTab" bson:"verticalTab,omitempty"`
+	Tabs        []Component  `json:"tabs" bson:"tabs,omitempty"`
+	Subtitle    string       `json:"subtitle" bson:"subtitle,omitempty"`
+	Component   string       `json:"component" bson:"component,omitempty"`
+	Icon        string       `json:"icon" bson:"icon,omitempty"`
+	Images      Images       `json:"images" bson:"images,omitempty"`
+	Key         string       `json:"key" bson:"key,omitempty"`
+	Value       any          `json:"value" bson:"value,omitempty"`
+	Coordinates []Coordinate `json:"coordinates" bson:"coordinates,omitempty"`
+	Children    []Component  `json:"children" bson:"name,omitempty"`
+}
+
+type Coordinate struct {
+	Title       string            `json:"title" bson:"title,omitempty"`
+	Description string            `json:"description" bson:"description,omitempty"`
+	Values      []CoordinateValue `json:"values" bson:"values,omitempty"`
+}
+
+type CoordinateValue struct {
+	Lat  float64 `json:"lat" bson:"lat,omitempty"`
+	Long float64 `json:"long" bson:"long,omitempty"`
+}
+
+type ValueWithProof struct {
+	Provable bool     `json:"provable" bson:"provable,omitempty"`
+	Proofs   []Proof  `json:"proofs" bson:"proofs,omitempty"`
+	Value    any      `json:"value" bson:"value,omitempty"`
+	UserId   []string `json:"userid" bson:"userid,omitempty"`
+	TdpId    []string `json:"tdpid" bson:"tdpid,omitempty"`
+}
+
+type Proof struct {
+	Name        string `json:"name" bson:"name,omitempty"`
+	Description string `json:"description" bson:"description,omitempty"`
+}
+
+type Images struct {
+	/* Provable bool         `json:"provable" bson:"provable,omitempty"`
+	Proofs   []Proof      `json:"proofs" bson:"proofs,omitempty"` */
+	Value []ImageValue `json:"value" bson:"value,omitempty"`
+	/* 	UserId   []string     `json:"userid" bson:"userid,omitempty"`
+	   	TdpId    []string     `json:"tdpid" bson:"tdpid,omitempty"` */
+}
+
+type ImageValue struct {
+	Img       string `json:"img" bson:"img,omitempty"`
+	Comment   string `json:"comment" bson:"comment,omitempty"`
+	Time      string `json:"time" bson:"time,omitempty"`
+	FieldName string `json:"fieldName" bson:"fieldName,omitempty"`
+
+}
+
 type Response struct {
 	SVG    string
 	SVGID  string

@@ -1,9 +1,8 @@
 package apiHandler
 
 import (
-	"encoding/base64"
+	//"encoding/json"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	customizedNFTFacade "github.com/dileepaj/tracified-nft-backend/businessFacade/customizedNFTFacade"
@@ -74,12 +73,12 @@ func GenerateSVG(W http.ResponseWriter, r *http.Request) {
 		errors.BadRequest(W, err.Error())
 		return
 	}
-	batchData, err := customizedNFTFacade.GetBatchIDDatabyItemID(requestCreateSVG.ProductID)
+	batchData, err := customizedNFTFacade.GetBatchIDDatabyItemID(requestCreateSVG.ShopID)
 	if err != nil {
 		errors.BadRequest(W, err.Error())
 		return
 	}
-	rst, err1 := SVGGen(batchData.BatchID, requestCreateSVG.Email, requestCreateSVG.ReciverName, requestCreateSVG.CustomMessage, requestCreateSVG.ProductID)
+	rst, err1 := SVGGen(batchData.BatchID, requestCreateSVG.Email, requestCreateSVG.ReciverName, requestCreateSVG.CustomMessage, batchData.ItemID)
 	if err1 != nil {
 		errors.BadRequest(W, err1.Error())
 		return
@@ -89,10 +88,9 @@ func GenerateSVG(W http.ResponseWriter, r *http.Request) {
 
 func SVGGen(batchID string, email string, reciverName string, msg string, productID string) (responseDtos.SVGforNFTResponse, error) {
 	//var tempBatchID = "RURI_VSAPPH_013" //? Templary hardcoded
-	fmt.Println(batchID)
-	tempBatchID := base64.StdEncoding.EncodeToString([]byte(`{"id":"` + "VSAPPH_013" + `","type":"barcode"}`))
+	//tempBatchID := base64.StdEncoding.EncodeToString([]byte(`{"id":"` + "VSAPPH_013" + `","type":"barcode"}`))
 	//var tempBatchID = "eyJpZCI6IlJVUklfVlNBUFBIXzAxMyIsInR5cGUiOiJiYXJjb2RlIn0=" //identifier is base64 encoded {"id":"RURI_VSAPPH_013","type":"barcode"}
-	svg, err := customizedNFTFacade.GenerateandSaveSVG(tempBatchID, email, reciverName, msg, productID)
+	svg, err := customizedNFTFacade.GenerateandSaveSVG(batchID, email, reciverName, msg, productID)
 	if err != nil {
 		return svg, err
 	}
