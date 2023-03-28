@@ -35,13 +35,13 @@ var NftRoutes = models.Routers{
 	models.Router{
 		Name:    "GET NFTS By Tag names",
 		Method:  "Get",
-		Path:    "/tags/{tags}",
+		Path:    "/tags/{tag}/{pagesize}/{requestedPage}",
 		Handler: apiHandler.GetNFTbyTags,
 	},
 	models.Router{
 		Name:    "GET NFTS By Status",
 		Method:  "Get",
-		Path:    "/nft/sale/{sellingstatus}",
+		Path:    "/nft/sales/{sellingstatus}",
 		Handler: apiHandler.GetNFTbyStatus,
 	},
 	models.Router{
@@ -173,7 +173,7 @@ var NftRoutes = models.Routers{
 	models.Router{
 		Name:    "Get NFT By Collection Name",
 		Method:  "Get",
-		Path:    "/nftcollection/{collection}",
+		Path:    "/nftcollection/{blockchain}/{collection}/{pagesize}/{requestedPage}",
 		Handler: apiHandler.GetNFTByCollection,
 	},
 	models.Router{
@@ -218,5 +218,41 @@ var NftRoutes = models.Routers{
 		Method:  "GET",
 		Path:    "/explore/thumbnail/{id}",
 		Handler: apiHandler.GetImagebyID,
+	},
+	models.Router{
+		Name:    "Get profile content",
+		Method:  "GET",
+		Path:    "/profilecontent/{pubkey}/{blockchain}/{filter}/{pagesize}/{requestedPage}",
+		Handler: apiHandler.GetProfileContent,
+	},
+	models.Router{
+		Name:    "Save Deployed Contract",
+		Method:  "POST",
+		Path:    "/contract/save",
+		Handler: apiHandler.SaveContract,
+	},
+	models.Router{
+		Name:    "Get Contract By User",
+		Method:  "Get",
+		Path:    "/contract/{user}/{blockchain}",
+		Handler: apiHandler.GetContractByUserAndBC,
+},
+models.Router{
+		Name:    "Save NFT RURI",
+		Method:  "POST",
+		Path:    "/walletnft/save",
+		Handler: apiHandler.SaveNFTFromWallet,
+	},
+	models.Router{
+		Name:    "GET Minted Wallet NFTs",
+		Method:  "GET",
+		Path:    "/walletnfts",
+		Handler: apiHandler.GetAllWalletNFTs,
+	},
+	models.Router{
+		Name:    "Get NFT By Blockchain And NftIdentifier",
+		Method:  "Get",
+		Path:    "/nftstats/{nftidentifier}/{blockchain}",
+		Handler: apiHandler.GetNFTByBlockchainAndIdentifier,
 	},
 }

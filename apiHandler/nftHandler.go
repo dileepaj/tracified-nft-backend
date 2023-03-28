@@ -193,15 +193,43 @@ func GetBlockchainSpecificNFT(w http.ResponseWriter, r *http.Request) {
 func GetNFTbyTags(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
 	vars := mux.Vars(r)
-	if vars["tags"] != "" {
-		results, err := marketplaceBusinessFacade.GetNFTbyTagsName(vars["tags"])
-		if err != nil {
-			errors.BadRequest(w, err.Error())
-		} else {
-			commonResponse.SuccessStatus[[]models.NFT](w, results)
-		}
+	var pagination requestDtos.NFTsForMatrixView
+	var tagToSearch = vars["tag"]
+	pgsize, err1 := strconv.Atoi(vars["pagesize"])
+	if err1 != nil {
+		errors.BadRequest(w, "Requested invalid page size.")
+		return
+	}
+	pagination.PageSize = int32(pgsize)
+	requestedPage, err2 := strconv.Atoi(vars["requestedPage"])
+	if err2 != nil {
+		errors.BadRequest(w, "Requested page error")
+		return
+	}
+	pagination.RequestedPage = int32(requestedPage)
+	pagination.SortbyFeild = "timestamp"
+	logs.InfoLogger.Println("Received pagination requested: ", pagination)
+	results, err := marketplaceBusinessFacade.GEtNFTbyTagsName(pagination, tagToSearch)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
 	} else {
-		errors.BadRequest(w, "")
+		if pagination.PageSize <= 0 {
+			errors.BadRequest(w, "Page size should be greater than zero")
+			return
+		}
+		if pagination.RequestedPage < 0 {
+			errors.BadRequest(w, "Requested page size should be greater than zero")
+			return
+		}
+		if results.PaginationInfo.TotalPages < pagination.RequestedPage {
+			errors.BadRequest(w, "requested page does not exist")
+			return
+		}
+		if results.Content == nil {
+			errors.BadRequest(w, "Requested tag does not exist")
+			return
+		}
+		commonResponse.SuccessStatus[models.Paginateresponse](w, results)
 	}
 }
 
@@ -490,16 +518,46 @@ func GetNFTStory(w http.ResponseWriter, r *http.Request) {
 func GetNFTByCollection(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
 	vars := mux.Vars(r)
-	if vars["collection"] != "" {
-		results, err := marketplaceBusinessFacade.GetNFTByCollection(vars["collection"])
-		if err != nil {
-			errors.BadRequest(w, err.Error())
-		} else {
-			commonResponse.SuccessStatus[[]models.NFT](w, results)
-		}
-	} else {
-		errors.BadRequest(w, "")
+	var pagination requestDtos.NFTsForMatrixView
+	pagination.Blockchain = vars["blockchain"]
+	var CollectionToSearch = vars["collection"]
+	pgsize, err1 := strconv.Atoi(vars["pagesize"])
+	if err1 != nil {
+		errors.BadRequest(w, "Requested invalid page size.")
+		return
 	}
+	pagination.PageSize = int32(pgsize)
+	requestedPage, err2 := strconv.Atoi(vars["requestedPage"])
+	if err2 != nil {
+		errors.BadRequest(w, "Requested page error")
+		return
+	}
+	pagination.RequestedPage = int32(requestedPage)
+	pagination.SortbyFeild = "blockchain"
+	logs.InfoLogger.Println("Received pagination requested: ", pagination)
+	results, err := marketplaceBusinessFacade.GetNFTByCollection(pagination, CollectionToSearch)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		if pagination.PageSize <= 0 {
+			errors.BadRequest(w, "Page size should be greater than zero")
+			return
+		}
+		if pagination.RequestedPage < 0 {
+			errors.BadRequest(w, "Requested page size should be greater than zero")
+			return
+		}
+		if results.PaginationInfo.TotalPages < pagination.RequestedPage {
+			errors.BadRequest(w, "requested page does not exist")
+			return
+		}
+		if results.Content == nil {
+			errors.BadRequest(w, "Collection does not have any NFTs")
+			return
+		}
+		commonResponse.SuccessStatus[models.Paginateresponse](w, results)
+	}
+
 }
 
 /**
@@ -762,3 +820,142 @@ func GetImagebyID(w http.ResponseWriter, r *http.Request) {
 		errors.BadRequest(w, "")
 	}
 }
+func GetProfileContent(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	var pagination requestDtos.NFTsForMatrixView
+	pagination.SortbyFeild = vars["pubkey"]
+	pagination.Blockchain = vars["blockchain"]
+	filterBy := vars["filter"]
+	pgsize, err1 := strconv.Atoi(vars["pagesize"])
+	if err1 != nil {
+		errors.BadRequest(w, "Requested invalid page size.")
+		return
+	}
+	pagination.PageSize = int32(pgsize)
+	requestedPage, err2 := strconv.Atoi(vars["requestedPage"])
+	if err2 != nil {
+		errors.BadRequest(w, "Requested page error")
+		return
+	}
+	pagination.RequestedPage = int32(requestedPage)
+
+	logs.InfoLogger.Println("Received pagination requested: ", pagination)
+	results, err := marketplaceBusinessFacade.GetUserProfileContent(pagination, filterBy)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		if pagination.PageSize <= 0 {
+			errors.BadRequest(w, "Page size should be greater than zero")
+			return
+		}
+		if pagination.RequestedPage < 0 {
+			errors.BadRequest(w, "Requested page size should be greater than zero")
+			return
+		}
+		if results.PaginationInfo.TotalPages < pagination.RequestedPage {
+			errors.BadRequest(w, "requested page does not exist")
+			return
+		}
+		if results.Content == nil {
+			errors.BadRequest(w, "No Content for account: "+vars["pubkey"])
+			return
+		}
+		commonResponse.SuccessStatus[models.Paginateresponse](w, results)
+	}
+
+}
+
+func SaveNFTFromWallet(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;charset=UTF-8")
+	var wnft models.WalletNFT
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&wnft)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+	}
+
+	err = validations.ValidateWalletNft(wnft)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		result, err := marketplaceBusinessFacade.StoreWalletNFT(wnft)
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[string](w, result)
+		}
+	}
+}
+
+func GetAllWalletNFTs(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
+	results, err1 := marketplaceBusinessFacade.GetAllWalletNFTs()
+
+	if err1 != nil {
+		ErrorMessage := err1.Error()
+		errors.BadRequest(w, ErrorMessage)
+		return
+	} else {
+		w.WriteHeader(http.StatusOK)
+		err := json.NewEncoder(w).Encode(results)
+		if err != nil {
+			logs.ErrorLogger.Println(err)
+		}
+		return
+	}
+}
+
+func GetNFTByBlockchainAndIdentifier(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	vars := mux.Vars(r)
+	if vars["nftidentifier"] != "" || vars["blockchain"] != "" {
+		results, err := marketplaceBusinessFacade.GetNFTByBlockchainAndIdentifier(vars["nftidentifier"], vars["blockchain"])
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[models.NFT](w, results)
+		}
+	} else {
+		errors.BadRequest(w, "")
+	}
+}
+
+func SaveContract(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;charset=UTF-8")
+	var contracts models.ContractInfo
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&contracts)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+	}
+
+	err = validations.ValidateInsertContract(contracts)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+	} else {
+		result, err := marketplaceBusinessFacade.StoreContracts(contracts)
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[string](w, result)
+		}
+	}
+}
+
+func GetContractByUserAndBC(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+
+	vars := mux.Vars(r)
+	if len(vars["user"]) != 0 && len(vars["blockchain"]) != 0 {
+		result, err := marketplaceBusinessFacade.GetContractbyBlockchainAndUser((vars["blockchain"]), (vars["user"]))
+		if err != nil {
+			errors.BadRequest(w, err.Error())
+		} else {
+			commonResponse.SuccessStatus[[]models.ContractInfo](w, result)
+		}
+	} else {
+		errors.BadRequest(w, "")
+	}
+}
+

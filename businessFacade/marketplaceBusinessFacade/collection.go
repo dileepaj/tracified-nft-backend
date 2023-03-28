@@ -26,3 +26,7 @@ func UpdateCollection(update requestDtos.UpdateCollection) (models.NFTCollection
 func DeleteCollectionByUserPK(collection requestDtos.DeleteCollectionByUserPK) error {
 	return CollectionRepository.DeleteCollection(collection)
 }
+
+func GetCollectionByUserPKByMail(userid string, publickey string) ([]models.NFTCollection, error) {
+	return CollectionRepository.FindCollectionByKeyAndMail("userid", userid, "publickey", publickey)
+}

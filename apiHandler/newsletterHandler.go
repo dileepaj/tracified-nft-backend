@@ -114,3 +114,24 @@ func Subscribe(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
+func CheckIfSubscribed(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	vars := mux.Vars(r)
+	rst, err := marketplaceBusinessFacade.CheckIfSubscribed(vars["email"])
+	if err != nil {
+		w.WriteHeader(http.StatusOK)
+		message := "not subscribed"
+		err = json.NewEncoder(w).Encode(message)
+		if err != nil {
+			logs.ErrorLogger.Println(err)
+		}
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	message := rst
+	err = json.NewEncoder(w).Encode(message)
+	if err != nil {
+		logs.ErrorLogger.Println(err)
+	}
+}

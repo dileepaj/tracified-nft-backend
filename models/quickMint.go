@@ -171,4 +171,11 @@ type ImageValue struct {
 	Comment   string `json:"comment" bson:"comment,omitempty"`
 	Time      string `json:"time" bson:"time,omitempty"`
 	FieldName string `json:"fieldName" bson:"fieldName,omitempty"`
+
+}
+
+type Response struct {
+	SVG    string
+	SVGID  string
+	Status string
 }

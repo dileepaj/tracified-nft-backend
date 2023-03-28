@@ -5,7 +5,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/models"
 )
 
-//This routes handle the all watchlist  related routes in the marketplace
+// This routes handle the all watchlist  related routes in the marketplace
 var WatchListRoutes = models.Routers{
 
 	models.Router{
@@ -37,5 +37,17 @@ var WatchListRoutes = models.Routers{
 		Method:  "Get",
 		Path:    "/watched/{blockchain}/{nftidentifier}",
 		Handler: apiHandler.GetWatchListsByBlockchainAndIdentifier,
+	},
+	models.Router{
+		Name:    "verify WatchList count By UserPK",
+		Method:  "GET",
+		Path:    "/verify/watchlistCount/{blockchain}/{user}/{nftidentifer}",
+		Handler: apiHandler.VerifyWatchListTogglebUserPK,
+	},
+	models.Router{
+		Name:    "Remove user from watchlist",
+		Method:  "DELETE",
+		Path:    "/watchlist/{watchlistID}",
+		Handler: apiHandler.RemoveUserfromWatchList,
 	},
 }
