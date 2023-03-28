@@ -421,9 +421,9 @@ func GenerateJourneyMap(tab models.Component, index int) (string, string, string
 	}
 
 	content := `<div class="tab-content">
-					<iframe class="map" frameborder="0" scrolling="no" marginheight="0"
+					<embed class="map" frameborder="0" scrolling="no" marginheight="0"
 						marginwidth="0"
-						src="` + backendUrl + `/GetMap/` + rst + `"></iframe>
+						src="` + backendUrl + `/GetMap/` + rst + `"></embed>
 				</div>`
 
 	mainTab, sidebarTab, radioButton := GenerateTabLabels("Journey", index)
