@@ -101,7 +101,7 @@
   font-weight: 700;
   font-size: 16px;
   line-height: 126.02%;
-  word-break: break-all;
+  word-wrap: break-word;
 }
 
 .tbl-text-normal {
@@ -109,7 +109,7 @@
   font-weight: 400;
   font-size: 16px;
   line-height: 126.02%;
-  word-break: break-all;
+  word-wrap: break-word;
 }
 
 .widget-div {
@@ -254,6 +254,20 @@
   height: 67px;
 }
 
+.ruri-logo {
+  width: 61px;
+  height: 77px;
+}
+
+.header-logo-cont {
+  display: flex;
+  flex-direction: row;
+  column-gap: 30px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
 .nft-footer-content {
   width: 90%;
   display: flex;
@@ -328,6 +342,11 @@
 
 .td-carousel {
   height: 350px !important;
+}
+
+.dt-icon-img {
+  width: 71px;
+  height: 96px;
 }
 
 .gem-icon {
@@ -1071,7 +1090,7 @@ li {
   width: calc(60% - 20px);
   display: flex;
   flex-direction: column;
-  word-break: break-all;
+  word-wrap: break-word;
 }
 
 .card-div-1 {
@@ -1091,6 +1110,7 @@ li {
   flex-direction: column;
   align-items: center;
   row-gap: 40px;
+  width: 90%;
 }
 
 .green {
@@ -1192,7 +1212,7 @@ li {
   align-items: center;
 
   color: #475558;
-  word-break: break-all;
+  word-wrap: break-word;
   word-wrap: break-word;
 }
 

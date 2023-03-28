@@ -1,10 +1,13 @@
 package marketplaceBusinessFacade
 
 import (
+	"fmt"
+
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func StoreNFT(createNFTObject models.NFT) (string, error) {
@@ -58,8 +61,19 @@ func GetNFTStory(id string, blockchain string) ([]models.NFTStory, error) {
 	return nftRepository.FindNFTStory("nftidentifier", id, "blockchain", blockchain)
 }
 
-func GetNFTByCollection(collection string) ([]models.NFT, error) {
-	return nftRepository.FindNFTByCollection("collection", collection)
+func GetNFTByCollection(paginationData requestDtos.NFTsForMatrixView, collectiontoSearch string) (models.Paginateresponse, error) {
+	filter := bson.M{
+		"blockchain": paginationData.Blockchain,
+		"collection": collectiontoSearch,
+	}
+	projection := GetProjectionDataNFTMatrixView()
+	var nfts []models.NFTContentforMatrix
+	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts)
+	if err != nil {
+		logs.ErrorLogger.Println("Error occurred :", err.Error())
+		return models.Paginateresponse(response), err
+	}
+	return models.Paginateresponse(response), err
 }
 
 func GetProjectionDataNFTMatrixView() bson.D {
@@ -186,7 +200,7 @@ func GetTXNByBlockchainAndIdentifier(id string, blockchain string) ([]models.TXN
 
 func MakeSaleNFT(nft requestDtos.UpdateNFTSALERequest) (models.NFT, error) {
 	update := bson.M{
-		"$set": bson.M{"timestamp": nft.Timestamp, "currentprice": nft.CurrentPrice, "commission": nft.Commission, "sellingstatus": nft.SellingStatus, "sellingtype": nft.SellingType, "marketcontract": nft.MarketContract, "currentownerpk": nft.CurrentOwnerPK, "royalty": nft.Royalty},
+		"$set": bson.M{"timestamp": nft.Timestamp, "currentprice": nft.CurrentPrice, "sellingstatus": nft.SellingStatus, "sellingtype": nft.SellingType, "marketcontract": nft.MarketContract, "currentownerpk": nft.CurrentOwnerPK, "royalty": nft.Royalty, "commission": nft.Commission},
 	}
 	return nftRepository.UpdateNFTSALE("nftidentifier", nft.NFTIdentifier, "blockchain", nft.Blockchain, update)
 }
@@ -199,8 +213,20 @@ func GetNFTBySellingStatus(status string) ([]models.NFT, error) {
 	return nftRepository.FindNFTsById("sellingstatus", status)
 }
 
-func GetNFTbyTagsName(tags string) ([]models.NFT, error) {
-	return nftRepository.FindNFTsById("tags", tags)
+func GEtNFTbyTagsName(paginationData requestDtos.NFTsForMatrixView, tagToSearch string) (models.Paginateresponse, error) {
+	regexPattern := primitive.Regex{Pattern: tagToSearch, Options: "i"}
+	filter := bson.M{
+		"sellingstatus": "ON SALE",
+		"tags":          regexPattern,
+	}
+	projection := GetProjectionDataNFTMatrixView()
+	var nfts []models.NFTContentforMatrix
+	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts)
+	if err != nil {
+		logs.ErrorLogger.Println("Error occurred :", err.Error())
+		return models.Paginateresponse(response), err
+	}
+	return models.Paginateresponse(response), err
 }
 
 func GetNFTbyAccount(userId string) ([]models.NFT, error) {
@@ -254,4 +280,88 @@ func GetNFTByNFTIdentifier(id string) ([]models.NFT, error) {
 
 func GetThumbnailbyID(id string) (models.ThumbNail, error) {
 	return nftRepository.GetThumbnailbyID(id)
+}
+func GetUserProfileContent(paginationData requestDtos.NFTsForMatrixView, filterquest string) (models.Paginateresponse, error) {
+	var filter bson.M
+	var nfts []models.NFTContentforMatrix
+	var emptyNft models.Paginateresponse
+	if paginationData.Blockchain != "ethereum" &&
+		paginationData.Blockchain != "polygon" &&
+		paginationData.Blockchain != "stellar" &&
+		paginationData.Blockchain != "solana" {
+		err := fmt.Errorf("invalid blockchain: %s", paginationData.Blockchain)
+		return emptyNft, err
+	}
+	if filterquest == "minted" {
+		filter = bson.M{
+			"blockchain":     paginationData.Blockchain,
+			"currentownerpk": paginationData.SortbyFeild,
+			"sellingstatus":  "Minted",
+		}
+	} else if filterquest == "hotpicks" {
+		filter = bson.M{
+			"blockchain":     paginationData.Blockchain,
+			"currentownerpk": paginationData.SortbyFeild,
+			"hotpicks":       true,
+		}
+	} else if filterquest == "favorite" {
+		filter = bson.M{
+			"blockchain":     paginationData.Blockchain,
+			"currentownerpk": paginationData.SortbyFeild,
+			"trending":       true,
+		}
+	} else if filterquest == "bought" {
+		filter = bson.M{
+			"blockchain":     paginationData.Blockchain,
+			"currentownerpk": paginationData.SortbyFeild,
+			"sellingstatus":  "NOTFORSALE",
+		}
+	} else if filterquest == "onsale" {
+		filter = bson.M{
+			"blockchain":     paginationData.Blockchain,
+			"currentownerpk": paginationData.SortbyFeild,
+			"sellingstatus":  "ON SALE",
+		}
+	} else {
+		err := fmt.Errorf("invalid Filter: %s ", filterquest)
+		return emptyNft, err
+	}
+	projection := GetProjectionDataNFTMatrixView()
+
+	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts)
+	if err != nil {
+		logs.ErrorLogger.Println("Error occurred :", err.Error())
+		return models.Paginateresponse(response), err
+	}
+	return models.Paginateresponse(response), err
+}
+
+func StoreContracts(createContractObject models.ContractInfo) (string, error) {
+	rst, err1 := nftRepository.SaveContract(createContractObject)
+	if err1 != nil {
+		return "Contract not saved", err1
+	}
+	return rst, nil
+
+}
+
+func GetContractbyBlockchainAndUser(blockchain string, user string) ([]models.ContractInfo, error) {
+	return nftRepository.FindContractByBCandUser("blockchain", blockchain, "user", user)
+}
+
+func StoreWalletNFT(createNFTObject models.WalletNFT) (string, error) {
+	rst, err1 := nftRepository.SaveWalletNFT(createNFTObject)
+	if err1 != nil {
+		return "NFT not saved", err1
+	}
+	return rst, nil
+
+}
+
+func GetAllWalletNFTs() ([]models.WalletNFT, error) {
+	return nftRepository.GetAllWalletNFTs()
+}
+
+func GetNFTByBlockchainAndIdentifier(id string, blockchain string) (models.NFT, error) {
+	return nftRepository.GetNFTByIDAndBC("nftidentifier", id, "blockchain", blockchain)
 }

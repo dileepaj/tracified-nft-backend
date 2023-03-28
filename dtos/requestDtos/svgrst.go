@@ -5,7 +5,7 @@ type SVGHashUpdateRequst struct {
 	Hash  string `json:"hash" bson:"hash,omitempty"`
 }
 type GenerateSVGReqeust struct {
-	ProductID     string `json:"productID" bson:"productID,omitempty"`
+	ShopID        string `json:"shopID" bson:"shopID,omitempty"`
 	Email         string `json:"email" bson:"email,omitempty"`
 	ReciverName   string `json:"recivername" bson:"recivername,omitempty"`
 	CustomMessage string `json:"custommsg" bson:"custommsg,omitempty"`

@@ -2,6 +2,7 @@ package apiHandler
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -207,4 +208,24 @@ func DeleteCollectionByUserPK(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+}
+
+func GetCollectionByUserPKAndMail(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
+	vars := mux.Vars(r)
+	fmt.Println("we hwre ", vars["userid"], vars["publickey"])
+	results, err1 := marketplaceBusinessFacade.GetCollectionByUserPKByMail(vars["userid"], vars["publickey"])
+	if err1 != nil {
+		ErrorMessage := err1.Error()
+		errors.BadRequest(w, ErrorMessage)
+		return
+	} else {
+		w.WriteHeader(http.StatusOK)
+		err := json.NewEncoder(w).Encode(results)
+		if err != nil {
+			logs.ErrorLogger.Println(err)
+		}
+		return
+	}
+
 }

@@ -1,6 +1,7 @@
 package customizedNFTFacade
 
 import (
+	//b64 "encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -91,11 +92,15 @@ func SendEmail(otp string, email string) error {
  **returns : models.RuriItemData(contains batchID) and error is there is any
  * TODO:DO a null check for the response
  */
-func GetBatchIDDatabyItemID(productID string) (models.ItemData, error) {
+func GetBatchIDDatabyItemID(shopID string) (models.ItemData, error) {
 	// ?https://qa.ecom.api.tracified.com/shopifymappings/nisaltest.myshopify.com/6779546796091 <-- sample url
 	var itemdata models.ItemData
 	var shopname = "nisaltest.myshopify.com"
-	url := "https://qa.ecom.api.tracified.com/shopifymappings/" + shopname + "/" + productID
+	url := "https://qa.ecom.api.tracified.com/shopifymappings/" + shopname + "/" + "6779546796091"
+
+	//shopify := "https://ecom.api.tracified.com/shopifymappings/ruri-jp.myshopify.com/" + shopID
+
+	//url := shopify + shopID
 	logs.InfoLogger.Println("API call url: ", url)
 	rst, err := http.Get(url)
 	if err != nil {
@@ -139,7 +144,7 @@ func FormatBatchIDString(text string) models.ItemData {
  */
 func GenerateandSaveSVG(batchID string, email string, reciverName string, msg string, productID string) (responseDtos.SVGforNFTResponse, error) {
 	var userSVGMapRst responseDtos.SVGforNFTResponse
-	tdpData, _ := GetTDPDataByBatchID(batchID)
+	tdpData, _ := GetDigitalTwinData(batchID, productID)
 	var userNftMapping models.UserNFTMapping
 	//Svg will be generated using the template
 	svgrst, _ := GenerateSVG(tdpData, batchID, productID, reciverName, msg)
@@ -167,6 +172,7 @@ func GetTDPDataByBatchID(batchID string) ([][]models.TDPParent, error) {
 	var tdpData [][]models.TDPParent
 	//url := "https://api.tracified.com/api/v2/traceabilityProfiles/tdparr/" + batchID
 	url := "https://api.tracified.com/api/v2/traceabilityProfiles/generic?identifier=" + batchID
+
 	var bearer = configs.GetBearerToken()
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -181,13 +187,48 @@ func GetTDPDataByBatchID(batchID string) ([][]models.TDPParent, error) {
 }
 
 /**
+ * Descrition : Retrives the relevent digital twin json for a specific batch ID
+ **Param : batchID : batch ID of product
+ **reutrns : []models.Component : Contains a list of the TDP data for the provided batchID
+ */
+func GetDigitalTwinData(batchID string, productID string) ([]models.Component, error) {
+	var digitalTwinData []models.Component
+
+	//bEnc := b64.StdEncoding.EncodeToString([]byte(batchID))
+
+	//dtUrl := configs.GetDigitalTwin()
+	//+ bEnc + `?itemId=` + productID
+	url := "https://qa.api.tracified.com/api/v2/traceabilityProfiles/customer/digitaltwin/UnVyaWRlbW8wMDE=?itemId=641ae3713851f647ec088c76"
+
+	var bearer = configs.GetBearerToken()
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		logs.ErrorLogger.Println("unable to get data :", err.Error())
+		return digitalTwinData, err
+	}
+	req.Header.Add("Authorization", bearer)
+	client := &http.Client{}
+	resp, err1 := client.Do(req)
+
+	if err1 != nil {
+		logs.ErrorLogger.Println("unable to get data :", err.Error())
+		return digitalTwinData, err
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	json.Unmarshal([]byte(string(body)), &digitalTwinData)
+	return digitalTwinData, nil
+}
+
+/**
  * Descrition : Generates and returns the SVG
  **Param : []models.TDP : Contains a list of the TDP data for the provided batchID
  **Param : batchID string : batchID
  **reutrns : reutrns the generated SVG as a string
  */
-func GenerateSVG(tdpData [][]models.TDPParent, batchID string, productID string, receiverName string, message string) (string, error) {
-	return svgNFTGenerator.GenerateSVGTemplateforNFT(tdpData, batchID, productID, receiverName, message)
+
+func GenerateSVG(data []models.Component, batchID string, productID string, receiverName string, message string) (string, error) {
+	return svgNFTGenerator.GenerateSVGTemplateforNFT(data, batchID, productID, receiverName, message)
 }
 
 /**
@@ -210,4 +251,8 @@ func UpdateUserMappingbySha256(request models.UserNFTMapping) (responseDtos.SVGf
  */
 func GetSVGbySha256(hash string) (string, error) {
 	return svgRepository.GetSVGbySha256(hash)
+}
+
+func GetNFTStatus(email string, otp string) (string, error) {
+	return otpRepository.ValidateNFTStatus(email, otp)
 }
