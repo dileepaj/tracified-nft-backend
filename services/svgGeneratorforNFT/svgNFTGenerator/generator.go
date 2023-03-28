@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/dileepaj/tracified-nft-backend/configs"
 	"github.com/dileepaj/tracified-nft-backend/database/repository/customizedNFTrepository"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/services"
@@ -25,6 +26,7 @@ var (
 	collectionName = ""
 	ruriRepository customizedNFTrepository.SvgRepository
 	mapRepository  customizedNFTrepository.MapRepository
+	backendUrl     = configs.GetBackeBaseUrl()
 )
 
 func GenerateSVGTemplateforNFT(data []models.Component, batchID string, productID string, receiverName string, message string) (string, error) {
@@ -421,7 +423,7 @@ func GenerateJourneyMap(tab models.Component, index int) (string, string, string
 	content := `<div class="tab-content">
 					<iframe class="map" frameborder="0" scrolling="no" marginheight="0"
 						marginwidth="0"
-						src="http://localhost:6081/GetMap/` + rst + `"></iframe>
+						src="` + backendUrl + `/GetMap/` + rst + `"></iframe>
 				</div>`
 
 	mainTab, sidebarTab, radioButton := GenerateTabLabels("Journey", index)
