@@ -130,7 +130,6 @@ func (r *CollectionRepository) UpdateSVGBlockchain(id string, update primitive.M
 	if err != nil {
 		logs.WarningLogger.Println("Error Occured when trying to convert hex string in to Object(ID) in UpdateSVGBlockchain : collectionRepo: ", err.Error())
 	}
-	logs.InfoLogger.Println("Searching by ID: ", id)
 	rst := connections.GetSessionClient("svg").FindOneAndUpdate(context.TODO(), bson.M{"_id": objectID}, update, &opt)
 	if rst != nil {
 		err := rst.Decode((&svgUpdateResponse))

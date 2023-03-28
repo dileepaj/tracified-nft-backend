@@ -226,6 +226,7 @@ func GetDigitalTwinData(batchID string, productID string) ([]models.Component, e
  **Param : batchID string : batchID
  **reutrns : reutrns the generated SVG as a string
  */
+
 func GenerateSVG(data []models.Component, batchID string, productID string, receiverName string, message string) (string, error) {
 	return svgNFTGenerator.GenerateSVGTemplateforNFT(data, batchID, productID, receiverName, message)
 }

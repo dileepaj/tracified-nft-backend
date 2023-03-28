@@ -3,6 +3,7 @@ package svgNFTGenerator
 import (
 	//"fmt"
 	"fmt"
+
 	"strconv"
 	"strings"
 
@@ -28,6 +29,7 @@ var (
 	mapRepository  customizedNFTrepository.MapRepository
 	backendUrl     = configs.GetBackeBaseUrl()
 )
+
 
 func GenerateSVGTemplateforNFT(data []models.Component, batchID string, productID string, receiverName string, message string) (string, error) {
 	//get gem type from tdp data
@@ -190,7 +192,6 @@ func GenerateVerticalTabs(data models.Component) {
 	} else {
 		icon = `<img src="` + data.Icon + `" />`
 	}
-
 	htmlBody += `<div class="widget-div">
 					<div class="wrap-collabsible">
 						<input id="collapsible3" class="toggle" type="radio" name="toggle"></input>
@@ -221,6 +222,7 @@ func GenerateVerticalTabs(data models.Component) {
 										</ul>
 
 										` + content + `
+
 									</div>
 								</div>
 							</div>
