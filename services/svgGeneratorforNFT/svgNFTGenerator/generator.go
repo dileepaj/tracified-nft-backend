@@ -333,21 +333,22 @@ func GenerateDecoratedKeyValues(data models.Component, index int) string {
 
 	for _, child := range data.Children {
 		if child.Component == "decorated-key-value" {
-			img := ""
+			//img := ""
 			val := "No Records"
 			var decoratedVal models.ValueWithProof
 			mapstructure.Decode(child.Value, &decoratedVal)
+			keyValIcon := GetDecoratedKeyValueIcon(child.Key)
 
-			if child.Icon != "" {
+			/* if child.Icon != "" {
 				img = `<img class="dt-icon-img" src="` + child.Icon + `" />`
-			}
+			} */
 			if decoratedVal.Value != nil && decoratedVal.Value.(string) != "" {
 				val = decoratedVal.Value.(string)
 			}
 
 			cards += `<div class="tab-cont-card ` + color + `">
 							<div class="card-div-1">
-								` + img + `
+								<span class="` + keyValIcon + `"></span>
 							</div>
 							<div class="card-div-2">
 								<label class="bold-text">` + child.Key + `</label>
@@ -482,6 +483,29 @@ func GetWordWrap(value string) string {
 	if len(strings.Split(value, " ")) == 1 {
 		return `style="word-break: break-all;"`
 	} else {
+		return ""
+	}
+}
+
+func GetDecoratedKeyValueIcon(key string) string {
+	switch key {
+	case "Provenance 原産地":
+		return "hexagon-icon"
+	case "Natural 天然石":
+		return "leaves-icon"
+	case "Certification 鑑別":
+		return "certificate-icon"
+	case "Treatment 処理":
+		return "treatment-icon"
+	case "Fairtrade 公正取引":
+		return "handshake-icon"
+	case "Social Impact 社会貢献":
+		return "social-impact-icon"
+	case "Mining 採鉱":
+		return "mining-icon"
+	case "Trading 貿易":
+		return "trading-icon"
+	default:
 		return ""
 	}
 }

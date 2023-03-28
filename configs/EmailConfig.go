@@ -43,6 +43,18 @@ func GetBearerToken() string {
 	return bearerToken
 }
 
+func GetShopify() string {
+	LoadEnv()
+	bearerToken = os.Getenv("RURI_SHOPIFY")
+	return bearerToken
+}
+
+func GetDigitalTwin() string {
+	LoadEnv()
+	bearerToken = os.Getenv("DIGITALTWIN")
+	return bearerToken
+}
+
 func GetEmail(otp string) string {
 	var emailTemplate = `<table border="0" cellpadding="0" cellspacing="0" width="100%">
     <!-- LOGO -->
