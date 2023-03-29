@@ -520,7 +520,8 @@ func GetNFTByCollection(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	var pagination requestDtos.NFTsForMatrixView
 	pagination.Blockchain = vars["blockchain"]
-	CollectionToSearch := vars["collection"]
+	var CollectionToSearch = vars["collection"]
+	var pubKey = vars["pubkey"]
 	pgsize, err1 := strconv.Atoi(vars["pagesize"])
 	if err1 != nil {
 		errors.BadRequest(w, "Requested invalid page size.")
@@ -535,7 +536,7 @@ func GetNFTByCollection(w http.ResponseWriter, r *http.Request) {
 	pagination.RequestedPage = int32(requestedPage)
 	pagination.SortbyFeild = "blockchain"
 	logs.InfoLogger.Println("Received pagination requested: ", pagination)
-	results, err := marketplaceBusinessFacade.GetNFTByCollection(pagination, CollectionToSearch)
+	results, err := marketplaceBusinessFacade.GetNFTByCollection(pagination, CollectionToSearch, pubKey)
 	if err != nil {
 		errors.BadRequest(w, err.Error())
 	} else {
