@@ -173,7 +173,7 @@ var NftRoutes = models.Routers{
 	models.Router{
 		Name:    "Get NFT By Collection Name",
 		Method:  "Get",
-		Path:    "/nftcollection/{blockchain}/{collection}/{pagesize}/{requestedPage}",
+		Path:    "/nftcollection/{blockchain}/{collection}/{pubkey}/{pagesize}/{requestedPage}",
 		Handler: apiHandler.GetNFTByCollection,
 	},
 	models.Router{
@@ -236,8 +236,8 @@ var NftRoutes = models.Routers{
 		Method:  "Get",
 		Path:    "/contract/{user}/{blockchain}",
 		Handler: apiHandler.GetContractByUserAndBC,
-},
-models.Router{
+	},
+	models.Router{
 		Name:    "Save NFT RURI",
 		Method:  "POST",
 		Path:    "/walletnft/save",

@@ -514,9 +514,9 @@ func (r *NFTRepository) SaveWalletNFT(nft models.WalletNFT) (string, error) {
 	return repository.Save[models.WalletNFT](nft, RURI)
 }
 
-func (r *NFTRepository) GetAllWalletNFTs() ([]models.WalletNFT, error) {
-	var nft []models.WalletNFT
-	findOptions := options.Find()
+func (r *NFTRepository) GetAllWalletNFTs() ([]models.ResponseWalletNFT, error) {
+	var nft []models.ResponseWalletNFT
+	findOptions := options.Find().SetProjection(bson.M{"otp": 0})
 
 	result, err := connections.GetSessionClient(RURI).Find(context.TODO(), bson.D{{}}, findOptions)
 	if err != nil {
@@ -524,7 +524,7 @@ func (r *NFTRepository) GetAllWalletNFTs() ([]models.WalletNFT, error) {
 		return nft, err
 	}
 	for result.Next(context.TODO()) {
-		var nfts models.WalletNFT
+		var nfts models.ResponseWalletNFT
 		err = result.Decode(&nfts)
 		if err != nil {
 			logs.ErrorLogger.Println("Error occured while retreving data from collection nfts in GetAllWalletNFTs:nftsRepository.go: ", err.Error())

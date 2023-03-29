@@ -130,9 +130,8 @@ func ValidateOTP(W http.ResponseWriter, r *http.Request) {
 				return
 			}
 			Response := models.Response{
-				SVG:    rst1.SVG,
 				SVGID:  rst1.SvgID,
-				Status: status,
+				Status: "Valid",
 			}
 			commonResponse.SuccessStatus[models.Response](W, Response)
 		}

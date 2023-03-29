@@ -175,7 +175,6 @@ type ImageValue struct {
 }
 
 type Response struct {
-	SVG    string
 	SVGID  string
 	Status string
 }

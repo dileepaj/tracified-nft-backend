@@ -61,10 +61,11 @@ func GetNFTStory(id string, blockchain string) ([]models.NFTStory, error) {
 	return nftRepository.FindNFTStory("nftidentifier", id, "blockchain", blockchain)
 }
 
-func GetNFTByCollection(paginationData requestDtos.NFTsForMatrixView, collectiontoSearch string) (models.Paginateresponse, error) {
+func GetNFTByCollection(paginationData requestDtos.NFTsForMatrixView, collectiontoSearch string, pubkey string) (models.Paginateresponse, error) {
 	filter := bson.M{
-		"blockchain": paginationData.Blockchain,
-		"collection": collectiontoSearch,
+		"blockchain":    paginationData.Blockchain,
+		"collection":    collectiontoSearch,
+		"creatoruserid": pubkey,
 	}
 	projection := GetProjectionDataNFTMatrixView()
 	var nfts []models.NFTContentforMatrix
@@ -358,7 +359,7 @@ func StoreWalletNFT(createNFTObject models.WalletNFT) (string, error) {
 
 }
 
-func GetAllWalletNFTs() ([]models.WalletNFT, error) {
+func GetAllWalletNFTs() ([]models.ResponseWalletNFT, error) {
 	return nftRepository.GetAllWalletNFTs()
 }
 
