@@ -110,4 +110,5 @@ type ResponseWalletNFT struct {
 	Timestamp       string `json:"timestamp" bson:"timestamp"`
 	TXNHash         string `json:"txnhash" bson:"txnhash"`
 	ShopID          string `json:"shopid" bson:"shopid"`
+	Thumbnail       string
 }
