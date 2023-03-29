@@ -194,7 +194,7 @@ func GetNFTbyTags(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
 	vars := mux.Vars(r)
 	var pagination requestDtos.NFTsForMatrixView
-	var tagToSearch = vars["tag"]
+	tagToSearch := vars["tag"]
 	pgsize, err1 := strconv.Atoi(vars["pagesize"])
 	if err1 != nil {
 		errors.BadRequest(w, "Requested invalid page size.")
@@ -520,7 +520,7 @@ func GetNFTByCollection(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	var pagination requestDtos.NFTsForMatrixView
 	pagination.Blockchain = vars["blockchain"]
-	var CollectionToSearch = vars["collection"]
+	CollectionToSearch := vars["collection"]
 	pgsize, err1 := strconv.Atoi(vars["pagesize"])
 	if err1 != nil {
 		errors.BadRequest(w, "Requested invalid page size.")
@@ -557,7 +557,6 @@ func GetNFTByCollection(w http.ResponseWriter, r *http.Request) {
 		}
 		commonResponse.SuccessStatus[models.Paginateresponse](w, results)
 	}
-
 }
 
 /**
@@ -596,7 +595,6 @@ func GetPaginatedNFTs(w http.ResponseWriter, r *http.Request) {
 		}
 		commonResponse.SuccessStatus[models.Paginateresponse](w, results)
 	}
-
 }
 
 /**
@@ -757,7 +755,6 @@ func GetBestCreations(w http.ResponseWriter, r *http.Request) {
 		}
 		commonResponse.SuccessStatus[models.Paginateresponse](w, results)
 	}
-
 }
 
 /**
@@ -803,7 +800,6 @@ func GetBestCreators(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	commonResponse.SuccessStatus[models.PaginatedCreatorInfo](w, res)
-
 }
 
 func GetImagebyID(w http.ResponseWriter, r *http.Request) {
@@ -820,6 +816,7 @@ func GetImagebyID(w http.ResponseWriter, r *http.Request) {
 		errors.BadRequest(w, "")
 	}
 }
+
 func GetProfileContent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
 	vars := mux.Vars(r)
@@ -863,7 +860,6 @@ func GetProfileContent(w http.ResponseWriter, r *http.Request) {
 		}
 		commonResponse.SuccessStatus[models.Paginateresponse](w, results)
 	}
-
 }
 
 func SaveNFTFromWallet(w http.ResponseWriter, r *http.Request) {
@@ -891,6 +887,11 @@ func SaveNFTFromWallet(w http.ResponseWriter, r *http.Request) {
 func GetAllWalletNFTs(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
 	results, err1 := marketplaceBusinessFacade.GetAllWalletNFTs()
+
+	for i, result := range results {
+		thumbnailUrl := "https://tracified.sirv.com/Spins/RURI%20Gems/" + result.ShopID + "/" + result.ShopID + ".jpg"
+		results[i].Thumbnail = thumbnailUrl
+	}
 
 	if err1 != nil {
 		ErrorMessage := err1.Error()
@@ -958,4 +959,3 @@ func GetContractByUserAndBC(w http.ResponseWriter, r *http.Request) {
 		errors.BadRequest(w, "")
 	}
 }
-
