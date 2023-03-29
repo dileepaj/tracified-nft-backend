@@ -358,7 +358,7 @@ func StoreWalletNFT(createNFTObject models.WalletNFT) (string, error) {
 
 }
 
-func GetAllWalletNFTs() ([]models.WalletNFT, error) {
+func GetAllWalletNFTs() ([]models.ResponseWalletNFT, error) {
 	return nftRepository.GetAllWalletNFTs()
 }
 

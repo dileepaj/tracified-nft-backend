@@ -195,3 +195,8 @@ type Children struct {
 	Key       string `json:"Key" bson:"Key" `
 	Value     string `json:"Value" bson:"value" `
 }
+
+type SVGforNFTResponse struct {
+	SvgID string `json:"svgid" bson:"_id,omitempty"`
+	SVG   string `json:"svg" bson:"svg,omitempty"`
+}

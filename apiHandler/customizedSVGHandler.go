@@ -83,7 +83,7 @@ func GenerateSVG(W http.ResponseWriter, r *http.Request) {
 		errors.BadRequest(W, err1.Error())
 		return
 	}
-	commonResponse.SuccessStatus[string](W, rst.SVG)
+	commonResponse.SuccessStatus[responseDtos.SVGforNFTResponse](W, rst)
 }
 
 func SVGGen(batchID string, email string, reciverName string, msg string, productID string) (responseDtos.SVGforNFTResponse, error) {
