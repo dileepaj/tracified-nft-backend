@@ -889,16 +889,17 @@ func GetAllWalletNFTs(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
 	results, err1 := marketplaceBusinessFacade.GetAllWalletNFTs()
 
-	for i, result := range results {
-		thumbnailUrl := "https://tracified.sirv.com/Spins/RURI%20Gems/" + result.ShopID + "/" + result.ShopID + ".jpg"
-		results[i].Thumbnail = thumbnailUrl
-	}
-
 	if err1 != nil {
 		ErrorMessage := err1.Error()
 		errors.BadRequest(w, ErrorMessage)
 		return
 	} else {
+		if len(results) > 0 {
+			for i, result := range results {
+				thumbnailUrl := "https://tracified.sirv.com/Spins/RURI%20Gems/" + result.ShopID + "/" + result.ShopID + ".jpg"
+				results[i].Thumbnail = thumbnailUrl
+			}
+		}
 		w.WriteHeader(http.StatusOK)
 		err := json.NewEncoder(w).Encode(results)
 		if err != nil {
