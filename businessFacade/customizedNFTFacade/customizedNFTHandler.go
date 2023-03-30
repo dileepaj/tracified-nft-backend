@@ -1,8 +1,9 @@
 package customizedNFTFacade
 
 import (
-	//b64 "encoding/base64"
+	b64 "encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -93,20 +94,23 @@ func SendEmail(otp string, email string) error {
  * TODO:DO a null check for the response
  */
 func GetBatchIDDatabyItemID(shopID string) (models.ItemData, error) {
-	// ?https://qa.ecom.api.tracified.com/shopifymappings/nisaltest.myshopify.com/6779546796091 <-- sample url
 	var itemdata models.ItemData
-	var shopname = "nisaltest.myshopify.com"
-	url := "https://qa.ecom.api.tracified.com/shopifymappings/" + shopname + "/" + "6779546796091"
 
-	//shopify := "https://ecom.api.tracified.com/shopifymappings/ruri-jp.myshopify.com/" + shopID
+	shopify := configs.GetRuriShopifyUrl()
 
-	//url := shopify + shopID
-	logs.InfoLogger.Println("API call url: ", url)
+	url := shopify + shopID
+
 	rst, err := http.Get(url)
+
 	if err != nil {
 		logs.ErrorLogger.Println("APi call err : ", err.Error())
 		return itemdata, err
+	} else if rst.StatusCode == 404 {
+		err1 := errors.New("Item not found")
+		logs.ErrorLogger.Println("APi call err : ", err1.Error())
+		return itemdata, err1
 	}
+
 	body, err := ioutil.ReadAll(rst.Body)
 	defer rst.Body.Close()
 	logs.InfoLogger.Println("result:", string(body))
@@ -142,12 +146,12 @@ func FormatBatchIDString(text string) models.ItemData {
  **Param : email : email address of user
  **reutrns : models.UserNFTMapping : Contains the generated SVG
  */
-func GenerateandSaveSVG(batchID, email , reciverName , msg , productID ,nftname string) (responseDtos.SVGforNFTResponse, error) {
+func GenerateandSaveSVG(batchID, email, reciverName, msg, productID, shopID string, nftname string) (responseDtos.SVGforNFTResponse, error) {
 	var userSVGMapRst responseDtos.SVGforNFTResponse
 	tdpData, _ := GetDigitalTwinData(batchID, productID)
 	var userNftMapping models.UserNFTMapping
 	//Svg will be generated using the template
-	svgrst, _ := GenerateSVG(tdpData, batchID, productID, reciverName, msg, nftname)
+	svgrst, _ := GenerateSVG(tdpData, batchID, productID, shopID, reciverName, msg, nftname)
 	userNftMapping.BatchID = batchID
 	userNftMapping.SVG = svgrst
 	userNftMapping.Email = email
@@ -195,11 +199,11 @@ func GetTDPDataByBatchID(batchID string) ([][]models.TDPParent, error) {
 func GetDigitalTwinData(batchID string, productID string) ([]models.Component, error) {
 	var digitalTwinData []models.Component
 
-	//bEnc := b64.StdEncoding.EncodeToString([]byte(batchID))
+	bEnc := b64.StdEncoding.EncodeToString([]byte(batchID))
 
-	//dtUrl := configs.GetDigitalTwin()
-	//+ bEnc + `?itemId=` + productID
-	url := "https://qa.api.tracified.com/api/v2/traceabilityProfiles/customer/digitaltwin/UnVyaWRlbW8wMDE=?itemId=641ae3713851f647ec088c76"
+	dtUrl := configs.GetDigitalTwinUrl()
+
+	url := dtUrl + bEnc + `?itemId=` + productID
 
 	var bearer = configs.GetBearerToken()
 	req, err := http.NewRequest("GET", url, nil)
@@ -227,8 +231,8 @@ func GetDigitalTwinData(batchID string, productID string) ([]models.Component, e
  **Param : batchID string : batchID
  **reutrns : reutrns the generated SVG as a string
  */
-func GenerateSVG(data []models.Component, batchID string, productID string, receiverName string, message string, nftname string) (string, error) {
-	return svgNFTGenerator.GenerateSVGTemplateforNFT(data, batchID, productID, receiverName, message, nftname)
+func GenerateSVG(data []models.Component, batchID string, productID string, shopID string, receiverName string, message string, nftname string) (string, error) {
+	return svgNFTGenerator.GenerateSVGTemplateforNFT(data, batchID, productID, shopID, receiverName, message, nftname)
 }
 
 /**
