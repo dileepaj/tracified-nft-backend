@@ -9,5 +9,6 @@ type GenerateSVGReqeust struct {
 	ShopID        string `json:"shopId" bson:"shopid,omitempty"`
 	Email         string `json:"email" bson:"email,omitempty"`
 	ReciverName   string `json:"recivername" bson:"recivername,omitempty"`
-	CustomMessage string `json:"custommsg" bson:"custommsg,omitempty"`
+	CustomMessage string `json:"custommsg" bson:"custommsg",omitempty"`
+	NFTName string `json:"nftname" bson:"nftname"`
 }

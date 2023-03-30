@@ -29,7 +29,7 @@ var (
 	backendUrl     = configs.GetBackeBaseUrl()
 )
 
-func GenerateSVGTemplateforNFT(data []models.Component, batchID string, productID string, receiverName string, message string) (string, error) {
+func GenerateSVGTemplateforNFT(data []models.Component, batchID string, productID string, receiverName string, message string, nftname string) (string, error) {
 	//get gem type from tdp data
 	/* var gemVariety string = ""
 	var gemDetailsTDP []models.TraceabilityData
@@ -61,7 +61,7 @@ func GenerateSVGTemplateforNFT(data []models.Component, batchID string, productI
 	var iframeImg = `<div class="iframe-wrapper"><iframe  src="https://tracified.sirv.com/Spins/RURI%20Gems%20Compressed/120614/120614.spin" class="iframe-img" frameborder="0" allowfullscreen="true"></iframe><span class="rotate-icon" style="margin-top : 30px;"></span></div>`
 
 	if receiverName != "" && message != "" {
-		GenerateOwnership(receiverName, message)
+		GenerateOwnership(receiverName, message, nftname)
 	}
 
 	GenerateContent(data)
@@ -77,7 +77,7 @@ func GenerateSVGTemplateforNFT(data []models.Component, batchID string, productI
 }
 
 // generate ownership section
-func GenerateOwnership(receiverName string, message string) {
+func GenerateOwnership(receiverName string, message string ,nftname string) {
 	htmlBody += `<div class="widget-div">
 					<div class="wrap-collabsible">
 						<input id="collapsible1" class="toggle" type="radio" name="toggle" checked="true"></input>
@@ -95,6 +95,12 @@ func GenerateOwnership(receiverName string, message string) {
 												<td class="tbl-text-normal">Owner's Name </td>
 												<td class="tbl-text-bold">` + receiverName + `</td>
 											</tr>
+											<tr>
+											<td class="tbl-text-normal">NFT Name</td>
+											<td class="tbl-text-normal">
+												<p>` + nftname + `</p>
+											</td>
+										</tr>
 											<tr>
 												<td class="tbl-text-normal">Message</td>
 												<td class="tbl-text-normal">

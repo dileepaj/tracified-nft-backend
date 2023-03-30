@@ -142,15 +142,16 @@ func FormatBatchIDString(text string) models.ItemData {
  **Param : email : email address of user
  **reutrns : models.UserNFTMapping : Contains the generated SVG
  */
-func GenerateandSaveSVG(batchID string, email string, reciverName string, msg string, productID string) (responseDtos.SVGforNFTResponse, error) {
+func GenerateandSaveSVG(batchID, email , reciverName , msg , productID ,nftname string) (responseDtos.SVGforNFTResponse, error) {
 	var userSVGMapRst responseDtos.SVGforNFTResponse
 	tdpData, _ := GetDigitalTwinData(batchID, productID)
 	var userNftMapping models.UserNFTMapping
 	//Svg will be generated using the template
-	svgrst, _ := GenerateSVG(tdpData, batchID, productID, reciverName, msg)
+	svgrst, _ := GenerateSVG(tdpData, batchID, productID, reciverName, msg, nftname)
 	userNftMapping.BatchID = batchID
 	userNftMapping.SVG = svgrst
 	userNftMapping.Email = email
+	userNftMapping.NFTName = nftname
 	//Generated SVG data will get added to the DB
 	rst, err := svgRepository.SaveUserMapping(userNftMapping)
 	if err != nil {
@@ -226,8 +227,8 @@ func GetDigitalTwinData(batchID string, productID string) ([]models.Component, e
  **Param : batchID string : batchID
  **reutrns : reutrns the generated SVG as a string
  */
-func GenerateSVG(data []models.Component, batchID string, productID string, receiverName string, message string) (string, error) {
-	return svgNFTGenerator.GenerateSVGTemplateforNFT(data, batchID, productID, receiverName, message)
+func GenerateSVG(data []models.Component, batchID string, productID string, receiverName string, message string, nftname string) (string, error) {
+	return svgNFTGenerator.GenerateSVGTemplateforNFT(data, batchID, productID, receiverName, message, nftname)
 }
 
 /**

@@ -78,6 +78,7 @@ type UserNFTMapping struct {
 	Email   string             `json:"email" bson:"email,omitempty"`
 	SVG     string             `json:"svg" bson:"svg,omitempty"`
 	Hash    string             `json:"hash" bson:"hash,omitempty"`
+	NFTName string             `json:"nftname" bson:"nftname,omitempty"`
 }
 
 type CollectorInfo struct {
@@ -171,7 +172,6 @@ type ImageValue struct {
 	Comment   string `json:"comment" bson:"comment,omitempty"`
 	Time      string `json:"time" bson:"time,omitempty"`
 	FieldName string `json:"fieldName" bson:"fieldName,omitempty"`
-
 }
 
 type Response struct {
