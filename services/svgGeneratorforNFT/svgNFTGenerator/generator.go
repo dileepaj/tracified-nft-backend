@@ -300,9 +300,9 @@ func GenerateVerticalCardContainer(data models.Component, index int) (string, st
 }
 
 func GenerateDecoratedKeyValuesHeading(data models.Component, cards string) string {
-	icon := ""
+	icon := `<span class="tree-icon" style="background-image:url('` + data.Icon + `')"></span>`
 
-	if data.Title == "Origin" {
+	/* if data.Title == "Origin" {
 		icon = `<span class="tree-icon"></span>`
 	} else if data.Title == "Quality" {
 		icon = `<span class="badge-icon"></span>`
@@ -312,7 +312,7 @@ func GenerateDecoratedKeyValuesHeading(data models.Component, cards string) stri
 		icon = `<span class="handshake-outline-icon"></span>`
 	} else {
 		icon = data.Icon
-	}
+	} */
 
 	content := `` + icon + `
 				<label class="tab-cont-heading">` + data.Subtitle + `</label>
@@ -346,7 +346,7 @@ func GenerateDecoratedKeyValues(data models.Component, index int) string {
 			val := "No Records"
 			var decoratedVal models.ValueWithProof
 			mapstructure.Decode(child.Value, &decoratedVal)
-			keyValIcon := GetDecoratedKeyValueIcon(child.Key)
+			//keyValIcon := GetDecoratedKeyValueIcon(child.Key)
 
 			/* if child.Icon != "" {
 				img = `<img class="dt-icon-img" src="` + child.Icon + `" />`
@@ -357,7 +357,7 @@ func GenerateDecoratedKeyValues(data models.Component, index int) string {
 
 			cards += `<div class="tab-cont-card ` + color + `">
 							<div class="card-div-1">
-								<span class="` + keyValIcon + `"></span>
+								<span class="hexagon-icon" style="background-image:url('` + child.Icon + `')"></span>
 							</div>
 							<div class="card-div-2">
 								<label class="bold-text">` + child.Key + `</label>
