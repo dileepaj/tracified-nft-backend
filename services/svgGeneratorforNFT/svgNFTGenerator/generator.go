@@ -27,7 +27,7 @@ var (
 	collectionName = ""
 	ruriRepository customizedNFTrepository.SvgRepository
 	mapRepository  customizedNFTrepository.MapRepository
-	backendUrl     = configs.GetBackeBaseUrl()
+	backendUrl     = configs.GetNftBackendBaseUrl()
 )
 
 func GenerateSVGTemplateforNFT(data []models.Component, batchID string, productID string, shopID string, receiverName string, message string, nftname string) (string, error) {
