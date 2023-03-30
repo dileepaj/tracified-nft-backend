@@ -15,7 +15,7 @@ func main() {
 	logs.InfoLogger.Println("Tracified Backend")
 	err := godotenv.Load()
 	if err != nil {
-		logrus.Println("Info Issue with loading .env1 file")
+		logrus.Println("Info Issue with loading .env file")
 		logs.InfoLogger.Println("Info Issue with loading .env1 file")
 	}
 	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization", "Token"})
