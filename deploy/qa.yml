@@ -80,3 +80,6 @@
             EMAIL_PORT: "{{lookup('env','EMAIL_PORT')}}"
             JWT_DECODE_KEY: "{{lookup('env','JWT_DECODE_KEY')}}"
             DATABASE_NAME: "{{lookup('env','DATABASE_NAME')}}"
+            RURI_SHOPIFY: "{{lookup('env','RURI_SHOPIFY')}}"
+            DIGITALTWIN: "{{lookup('env','DIGITALTWIN')}}"
+            NFT_BACKEND_BASEURL: "{{lookup('env','NFT_BACKEND_BASEURL')}}"

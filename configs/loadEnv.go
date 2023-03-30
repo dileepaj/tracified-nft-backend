@@ -11,6 +11,9 @@ var (
 	port           = ""
 	EnvName        = ""
 	backendBaseUrl = ""
+	ruriShopify    = ""
+	digitalTwin    = ""
+	nftBackendUrl  = ""
 )
 
 func LoadEnv() {
@@ -19,6 +22,9 @@ func LoadEnv() {
 	EnvName = os.Getenv("BRANCH_NAME")
 	port = os.Getenv("BE_PORT")
 	backendBaseUrl = os.Getenv("BACKEND_BASEURL")
+	nftBackendUrl = os.Getenv("NFT_BACKEND_BASEURL")
+	ruriShopify = os.Getenv("RURI_SHOPIFY")
+	digitalTwin = os.Getenv("DIGITALTWIN")
 }
 
 func GetBackenToken() string {
@@ -37,4 +43,19 @@ func GetPort() string {
 		return ":" + port
 	}
 	return ":6080"
+}
+
+func GetRuriShopifyUrl() string {
+	LoadEnv()
+	return ruriShopify
+}
+
+func GetDigitalTwinUrl() string {
+	LoadEnv()
+	return digitalTwin
+}
+
+func GetNftBackendBaseUrl() string {
+	LoadEnv()
+	return nftBackendUrl
 }
