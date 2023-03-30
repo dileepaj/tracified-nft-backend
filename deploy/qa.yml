@@ -48,7 +48,7 @@
       shell: "$(/home/{{ ansible_user }}/.local/bin/aws ecr get-login --no-include-email --region ap-south-1)"
       environment:
         AWS_ACCESS_KEY_ID: "{{ lookup('env','AWS_ACCESS_KEY_ID') }}"
-        AWS_SECRET_ACCESS_KEY : "{{ lookup('env','AWS_SECRET_ACCESS_KEY') }}"
+        AWS_SECRET_ACCESS_KEY: "{{ lookup('env','AWS_SECRET_ACCESS_KEY') }}"
     - name: Create volume for docker
       become: true
       docker_volume:
@@ -67,16 +67,18 @@
         volumes:
           - nft_backend_logs:/app/logs
         env:
-            BE_PORT: "{{ lookup('env','BE_PORT') }}"
-            BE_MONGOLAB_URI: "{{ lookup('env','BE_MONGOLAB_URI') }}"
-            BRANCH_NAME: "{{lookup('env','BRANCH_NAME')}}"
-            BACKEND_TOKEN: "{{lookup('env','BACKEND_TOKEN')}}"
-            BACKEND_BASEURL: "{{lookup('env','BACKEND_BASEURL')}}"
-            SENDER_EMAILADRESS: "{{lookup('env','SENDER_EMAILADRESS')}}"
-            SENDER_EMAILADRESS_APPPWD: "{{lookup('env','SENDER_EMAILADRESS_APPPWD')}}"
-            MK_SENDER_EMAILADDRESS: "{{lookup('env','MK_SENDER_EMAILADDRESS')}}"
-            MK_SENDER_EMAIL_KEY: "{{lookup('env','MK_SENDER_EMAIL_KEY')}}"
-            HOST_EMAIL: "{{lookup('env','HOST_EMAIL')}}"
-            EMAIL_PORT: "{{lookup('env','EMAIL_PORT')}}"
-            JWT_DECODE_KEY: "{{lookup('env','JWT_DECODE_KEY')}}"
-            DATABASE_NAME: "{{lookup('env','DATABASE_NAME')}}"
+          BE_PORT: "{{ lookup('env','BE_PORT') }}"
+          BE_MONGOLAB_URI: "{{ lookup('env','BE_MONGOLAB_URI') }}"
+          BRANCH_NAME: "{{lookup('env','BRANCH_NAME')}}"
+          BACKEND_TOKEN: "{{lookup('env','BACKEND_TOKEN')}}"
+          BACKEND_BASEURL: "{{lookup('env','BACKEND_BASEURL')}}"
+          SENDER_EMAILADRESS: "{{lookup('env','SENDER_EMAILADRESS')}}"
+          SENDER_EMAILADRESS_APPPWD: "{{lookup('env','SENDER_EMAILADRESS_APPPWD')}}"
+          MK_SENDER_EMAILADDRESS: "{{lookup('env','MK_SENDER_EMAILADDRESS')}}"
+          MK_SENDER_EMAIL_KEY: "{{lookup('env','MK_SENDER_EMAIL_KEY')}}"
+          HOST_EMAIL: "{{lookup('env','HOST_EMAIL')}}"
+          EMAIL_PORT: "{{lookup('env','EMAIL_PORT')}}"
+          JWT_DECODE_KEY: "{{lookup('env','JWT_DECODE_KEY')}}"
+          DATABASE_NAME: "{{lookup('env','DATABASE_NAME')}}"
+          RURI_SHOPIFY: "{{lookup('env','RURI_SHOPIFY')}}"
+          DIGITALTWIN: "{{lookup('env','DIGITALTWIN')}}"
