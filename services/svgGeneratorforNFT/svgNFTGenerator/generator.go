@@ -419,8 +419,8 @@ func GenerateJourneyMap(tab models.Component, index int) (string, string, string
 
 	} */
 
-	mapInfo = append(mapInfo, models.MapInfo{6.927079, 79.861244})
-	mapInfo = append(mapInfo, models.MapInfo{35.652832, 139.839478})
+	mapInfo = append(mapInfo, models.MapInfo{6.849186, 79.865924})
+	mapInfo = append(mapInfo, models.MapInfo{35.671090, 139.762642})
 
 	generatedMap := mapGenerator.GenerateMap(mapInfo)
 	var newMap models.GeneratedMap
