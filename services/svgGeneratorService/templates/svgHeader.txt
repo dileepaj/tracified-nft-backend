@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="100vw" height="100vh" viewBox="0 0 NaN NaN"><foreignObject width="100vw" height="100vh" x="0" y="0" externalResourcesRequired="true">
+<svg xmlns="http://www.w3.org/2000/svg" width="100vw" height="100vh"><foreignObject width="100vw" height="100vh" x="0" y="0" externalResourcesRequired="true">
 <div  style="width:100vw; height:100vh; overflow-y:auto; overflow-x:auto;" xmlns="http://www.w3.org/1999/xhtml">
       <meta charset="UTF-8" />
       <meta http-equiv="X-UA-Compatible" content="IE=edge" />
