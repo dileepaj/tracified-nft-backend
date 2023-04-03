@@ -142,8 +142,9 @@ type Coordinate struct {
 }
 
 type CoordinateValue struct {
-	Lat  float64 `json:"lat" bson:"lat,omitempty"`
-	Long float64 `json:"long" bson:"long,omitempty"`
+	Title string  `json:"title" bson:"title,omitempty"`
+	Lat   float64 `json:"lat" bson:"lat,omitempty"`
+	Long  float64 `json:"long" bson:"long,omitempty"`
 }
 
 type ValueWithProof struct {
