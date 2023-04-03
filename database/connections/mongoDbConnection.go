@@ -22,7 +22,7 @@ func GetMongoSession() (mongo.Session, error) {
 		if err != nil {
 			return nil, err
 		}
-		defer mongoClient.Disconnect(context.Background())
+		mgoSession, err = mongoClient.StartSession()
 		if err != nil {
 			log.Println("Error while connecting to the DB : " + err.Error())
 			return nil, err
