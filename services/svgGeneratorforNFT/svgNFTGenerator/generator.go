@@ -3,6 +3,7 @@ package svgNFTGenerator
 import (
 	//"fmt"
 	"fmt"
+
 	"strconv"
 	"strings"
 
@@ -196,7 +197,6 @@ func GenerateVerticalTabs(data models.Component) {
 	} else {
 		icon = `<img src="` + data.Icon + `" />`
 	}
-
 	htmlBody += `<div class="widget-div">
 					<div class="wrap-collabsible">
 						<input id="collapsible3" class="toggle" type="radio" name="toggle"></input>
@@ -227,6 +227,7 @@ func GenerateVerticalTabs(data models.Component) {
 										</ul>
 
 										` + content + `
+
 									</div>
 								</div>
 							</div>

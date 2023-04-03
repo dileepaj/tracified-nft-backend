@@ -34,7 +34,8 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 	var contentOrderData []models.ContentOrderData = svgData.ContentOrderData
 	htmlStart := `	<div class="cont-div">
 					<div class="nft-header default-font">
-					<img src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/Tracified-NFT-v5.png" class="nft-logo"/>
+					<img src="https://s3.ap-south-1.amazonaws.com/qa.marketplace.nft.tracified.com/Tracified-RT-Logo-White.svg"
+					class="nft-logo"/>
 					<label>` + svgData.NFTName + `</label>
 					</div>
 				<div class="d-flex justify-content-center align-content-center flex-wrap" id="container">`
@@ -83,7 +84,7 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 			} else if element.Type == "Table" {
 				if len(tables) > 0 {
 					for _, table := range tables {
-						if table.TableContent != "" && table.TableContent!="EMPTY" && element.WidgetId == table.WidgetId {
+						if table.TableContent != "" && table.TableContent != "EMPTY" && element.WidgetId == table.WidgetId {
 							htmlBody += `<div class="card text-center justify-content-center m-3 default-font round-card" style="max-height: fit-content;">
 											<div class="card-header round-card-header scroll">` + table.TableTitle + `</div>
 											<div class="card-body-2 text-center scroll"  style="width: 100%;" >
@@ -130,9 +131,9 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 									if proofUrl.Urls != "" {
 										var removeAndsymble string = strings.Replace(proofUrl.Urls, "&", "&amp;", -1)
 
-										htmlBotcard += `<a class="proof-anchor1" href="#`+ removeAndsymble + `">
-														<div class="proof-url"><a class="proof-anchor" href="#`+ removeAndsymble + `">
-														`+ GetProofName(proofUrl.Type) + `</a><span class="material-symbols-outlined open-icon">open_in_new</span>
+										htmlBotcard += `<a class="proof-anchor1" href="#` + removeAndsymble + `">
+														<div class="proof-url"><a class="proof-anchor" href="#` + removeAndsymble + `">
+														` + GetProofName(proofUrl.Type) + `</a><span class="material-symbols-outlined open-icon">open_in_new</span>
 														
 														<div id="` + removeAndsymble + `" class="modalDialog"><div class="modal2">
 														<a href="#close" title="Close" class="close">
@@ -141,7 +142,7 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 														<iframe src="` + removeAndsymble + `" class="iframe-proofbot" title="Proofbot"></iframe>
 														</div></div>
 														</div></a>`
-														
+
 									}
 								}
 								htmlBotcard += `</div></div>`
@@ -172,7 +173,7 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
                                 						<img class="timeline-icon" src="` + data.Icon + `" /><span class="timeline-stage">` + replaceAndSymbol(data.Title) + `</span>
 													  </li>
 													  <div class="card p-3 point">`
-								if(len(data.Children) > 0) {
+								if len(data.Children) > 0 {
 									for _, timelineChild := range data.Children {
 										if timelineChild.NewTDP == true {
 											htmlTimelineBody += `<span class="tdp-added-date">Added : ` + timelineChild.Timestamp + `</span>`
@@ -181,8 +182,8 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 									}
 								} else {
 									htmlTimelineBody += `<span class="timeline-key">දිනය/தேதி</span><p><span class="timeline-value">No date available</span></p>`
-								}					  
-								
+								}
+
 								for _, image := range data.Images {
 									htmlTimelineBody += `
 														<div class="img-timeline-image" style="background-image: url(` + image + `);">
@@ -214,7 +215,7 @@ func GetProofName(proofType string) string {
 	} else if proofType == "pococ" {
 		return "Proof of Change of Custody"
 	} else {
-		return proofType;
+		return proofType
 	}
 }
 
