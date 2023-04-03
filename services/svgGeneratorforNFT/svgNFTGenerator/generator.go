@@ -408,19 +408,20 @@ func GenerateJourneyMap(tab models.Component, index int) (string, string, string
 
 	var mapInfo []models.MapInfo
 
-	/* for _, c := range tab.Coordinates {
+	for _, c := range tab.Coordinates {
 		for _, c1 := range c.Values {
 			coordinate := c1
 			var cmap models.MapInfo
+			cmap.Title = c.Title
 			cmap.Latitude = coordinate.Lat
 			cmap.Longitude = coordinate.Long
 			mapInfo = append(mapInfo, cmap)
 		}
 
-	} */
+	}
 
-	mapInfo = append(mapInfo, models.MapInfo{6.849186, 79.865924})
-	mapInfo = append(mapInfo, models.MapInfo{35.671090, 139.762642})
+	/* mapInfo = append(mapInfo, models.MapInfo{6.927079, 79.861244})
+	mapInfo = append(mapInfo, models.MapInfo{35.652832, 139.839478}) */
 
 	generatedMap := mapGenerator.GenerateMap(mapInfo)
 	var newMap models.GeneratedMap
