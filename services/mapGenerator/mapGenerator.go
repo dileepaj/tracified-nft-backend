@@ -36,12 +36,12 @@ func GeneratePoints(mapdata []models.MapInfo) string {
 
 		long := fmt.Sprintf("%f", v.Longitude)
 		lat := fmt.Sprintf("%f", v.Latitude)
-		cityname, cityerr := GetCityName(lat, long)
+		/* cityname, cityerr := GetCityName(lat, long)
 		if cityerr != nil {
 			logs.ErrorLogger.Println("failed to get city name: ", cityerr.Error())
 			return ""
-		}
-		geoData += `["` + cityname + `",` + long + `,` + lat + `]`
+		} */
+		geoData += `["` + v.Title + `",` + lat + `,` + long + `]`
 		if i != len(mapdata)-1 {
 			geoData += `,`
 		}
