@@ -120,19 +120,20 @@ type DigitalTwin struct {
 }
 
 type Component struct {
-	Title       string       `json:"title" bson:"title,omitempty"`
-	Name        string       `json:"name" bson:"name,omitempty"`
-	Item        string       `json:"item" bson:"item,omitempty"`
-	VerticalTab []Component  `json:"verticalTab" bson:"verticalTab,omitempty"`
-	Tabs        []Component  `json:"tabs" bson:"tabs,omitempty"`
-	Subtitle    string       `json:"subtitle" bson:"subtitle,omitempty"`
-	Component   string       `json:"component" bson:"component,omitempty"`
-	Icon        string       `json:"icon" bson:"icon,omitempty"`
-	Images      Images       `json:"images" bson:"images,omitempty"`
-	Key         string       `json:"key" bson:"key,omitempty"`
-	Value       any          `json:"value" bson:"value,omitempty"`
-	Coordinates []Coordinate `json:"coordinates" bson:"coordinates,omitempty"`
-	Children    []Component  `json:"children" bson:"name,omitempty"`
+	Title       string         `json:"title" bson:"title,omitempty"`
+	Name        string         `json:"name" bson:"name,omitempty"`
+	Item        string         `json:"item" bson:"item,omitempty"`
+	VerticalTab []Component    `json:"verticalTab" bson:"verticalTab,omitempty"`
+	Tabs        []Component    `json:"tabs" bson:"tabs,omitempty"`
+	Subtitle    string         `json:"subtitle" bson:"subtitle,omitempty"`
+	Component   string         `json:"component" bson:"component,omitempty"`
+	Icon        string         `json:"icon" bson:"icon,omitempty"`
+	Images      Images         `json:"images" bson:"images,omitempty"`
+	Key         string         `json:"key" bson:"key,omitempty"`
+	Value       any            `json:"value" bson:"value,omitempty"`
+	Coordinates []Coordinate   `json:"coordinates" bson:"coordinates,omitempty"`
+	Children    []Component    `json:"children" bson:"name,omitempty"`
+	Slides      ValueWithProof `json:"slides" bson:"slides,omitempty"`
 }
 
 type Coordinate struct {
@@ -179,4 +180,3 @@ type Response struct {
 	SVGID  string
 	Status string
 }
-

@@ -45,7 +45,7 @@ func GenerateSVGTemplateforNFT(data []models.Component, batchID string, productI
 	} */
 
 	var htmlStart = `<div class="nft-header default-font">
-						<div class="nft-header-content">
+						<div class="nft-header-content cont-wrapper">
 							<div class="header-logo-cont">
 								<img src="https://ruri-nft.s3.ap-south-1.amazonaws.com/assets/images/RURI%2B1sa+1.png" class="ruri-logo" />
 								<img src="https://s3.ap-south-1.amazonaws.com/qa.marketplace.nft.tracified.com/Tracified-RT-Logo-White.svg"
@@ -59,7 +59,7 @@ func GenerateSVGTemplateforNFT(data []models.Component, batchID string, productI
 					</div>
 					<div class="d-flex justify-content-center align-content-center flex-wrap" id="container">`
 
-	var iframeImg = `<div class="iframe-wrapper"><iframe  src="https://tracified.sirv.com/Spins/RURI%20Gems/` + shopID + `/` + shopID + `.spin" class="iframe-img" frameborder="0" allowfullscreen="true"></iframe><span class="rotate-icon" style="margin-top : 30px;"></span></div>`
+	var iframeImg = `<div class="iframe-wrapper cont-wrapper"><iframe   src="https://tracified.sirv.com/Spins/RURI%20Gems/` + shopID + `/` + shopID + `.spin" class="iframe-img" frameborder="0" allowfullscreen="true"></iframe><span class="rotate-icon" style="margin-top : 30px;"></span></div>`
 
 	if receiverName != "" && message != "" {
 		GenerateOwnership(receiverName, message, nftname)
@@ -79,7 +79,7 @@ func GenerateSVGTemplateforNFT(data []models.Component, batchID string, productI
 
 // generate ownership section
 func GenerateOwnership(receiverName string, message string, nftname string) {
-	htmlBody += `<div class="widget-div">
+	htmlBody += `<div class="widget-div cont-wrapper">
 					<div class="wrap-collabsible">
 						<input id="collapsible1" class="toggle" type="radio" name="toggle" checked="true"></input>
 						<label for="collapsible1" class="lbl-toggle" tabindex="0">
@@ -150,7 +150,7 @@ func GenerateTable(data models.Component) {
 		icon = `<img src="` + data.Icon + `" />`
 	}
 
-	htmlBody += `<div class="widget-div">
+	htmlBody += `<div class="widget-div cont-wrapper">
 					<div class="wrap-collabsible">
 						<input id="collapsible2" class="toggle" type="radio" name="toggle"></input>
 						<label for="collapsible2" class="lbl-toggle" tabindex="0">
@@ -197,7 +197,7 @@ func GenerateVerticalTabs(data models.Component) {
 	} else {
 		icon = `<img src="` + data.Icon + `" />`
 	}
-	htmlBody += `<div class="widget-div">
+	htmlBody += `<div class="widget-div cont-wrapper">
 					<div class="wrap-collabsible">
 						<input id="collapsible3" class="toggle" type="radio" name="toggle"></input>
 						<label for="collapsible3" class="lbl-toggle" tabindex="0">
@@ -450,7 +450,7 @@ func GenerateTimeline(data models.Component, index int) (string, string, string,
 
 	mainTab, sidebarTab, radioButton := GenerateTabLabels(data.Title, index)
 
-	for _, stage := range data.Children {
+	for i, stage := range data.Children {
 		infoStr := ""
 		for _, info := range stage.Children {
 			if info.Component == "key-value" {
@@ -463,22 +463,71 @@ func GenerateTimeline(data models.Component, index int) (string, string, string,
 					val = decoratedVal.Value.(string)
 				}
 
-				infoStr += `<div class="tl-info-container">
+				infoStr += `<div class="tl-info-container tl-key-value">
 								<label class="grey-text">` + strings.Replace(info.Key, "&", "&amp;", -1) + `</label>
 								<label class="tl-bold-text">` + val + `</label>
 							</div>`
+
+			} else if info.Component == "image-slider" {
+				imgCont := ""
+				var imgs []models.ImageValue
+				mapstructure.Decode(info.Slides.Value, &imgs)
+
+				if len(imgs) > 0 {
+					for j, image := range imgs {
+						var prev = 0
+						var next = 0
+
+						if j == 0 {
+							prev = len(imgs) - 1
+						} else {
+							prev = j - 1
+						}
+
+						if j == len(imgs) {
+							next = 0
+						} else {
+							next = j + 1
+						}
+
+						prevStr := strconv.Itoa(i) + strconv.Itoa(prev)
+						nextStr := strconv.Itoa(j) + strconv.Itoa(next)
+
+						imgCont += `<li id="carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `"
+										tabindex="0"
+										class="carousel__slide" style="background-image: url('` + image.Img + `');">
+										<div class="carousel__snapper">
+										<a href="#carousel__slide` + prevStr + `"
+											class="carousel__prev">Go to last slide</a>
+										<a href="#carousel__slide` + nextStr + `"
+											class="carousel__next">Go to next slide</a>
+										</div>
+										
+									</li>`
+					}
+
+					if imgCont != "" {
+						infoStr += `<div class="tl-info-container">
+						<section class="carousel" aria-label="Gallery">
+							<ol class="carousel__viewport">
+							` + imgCont + `
+							</ol>
+						</section>
+					</div>`
+					}
+				}
 			}
 		}
 
 		tlCont += `<div class="tl-stage">
 					<div class="tl-heading">
 						<div class="tl-circle">
-							<span class="stack-icon"></span>
+							<span class="tl-stage-icon" style="background-image: url('` + stage.Icon + `');"></span>
 						</div>
 						<label>` + stage.Title + `</label>
 					</div>
 					<div class="tl-content">
-						` + infoStr + `
+						<div class="tl-inner-wrapper">` + infoStr + `</div>
 					</div>
 					</div>`
 	}

@@ -1,6 +1,6 @@
         </div>
             <div class="text-center nft-footer">
-                <div class="nft-footer-content default-font">
+                <div class="nft-footer-content default-font cont-wrapper">
                     <label>Powered by </label> <img
                         src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/tracified-white.png"
                         class="logo" />
