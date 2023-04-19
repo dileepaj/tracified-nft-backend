@@ -525,7 +525,7 @@ func GenerateTimeline(data models.Component, index int) (string, string, string,
 							prev = j - 1
 						}
 
-						if j == len(imgs) {
+						if j == len(imgs)-1 {
 							next = 0
 						} else {
 							next = j + 1
