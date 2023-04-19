@@ -180,3 +180,9 @@ type Response struct {
 	SVGID  string
 	Status string
 }
+
+type TxnResp struct {
+	Status         string   `json:"Status" bson:"Status,omitempty"`
+	TxnHash        string   `json:"Txnhash" bson:"Txnhash,omitempty"`
+	AvailableProof []string `json:"AvailableProof" bson:"AvailableProof,omitempty"`
+}
