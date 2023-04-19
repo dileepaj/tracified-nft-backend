@@ -2,7 +2,10 @@ package svgNFTGenerator
 
 import (
 	//"fmt"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 
 	"strconv"
 	"strings"
@@ -45,7 +48,7 @@ func GenerateSVGTemplateforNFT(data []models.Component, batchID string, productI
 	} */
 
 	var htmlStart = `<div class="nft-header default-font">
-						<div class="nft-header-content">
+						<div class="nft-header-content cont-wrapper">
 							<div class="header-logo-cont">
 								<img src="https://ruri-nft.s3.ap-south-1.amazonaws.com/assets/images/RURI%2B1sa+1.png" class="ruri-logo" />
 								<img src="https://s3.ap-south-1.amazonaws.com/qa.marketplace.nft.tracified.com/Tracified-RT-Logo-White.svg"
@@ -59,7 +62,24 @@ func GenerateSVGTemplateforNFT(data []models.Component, batchID string, productI
 					</div>
 					<div class="d-flex justify-content-center align-content-center flex-wrap" id="container">`
 
-	var iframeImg = `<div class="iframe-wrapper"><iframe  src="https://tracified.sirv.com/Spins/RURI%20Gems/` + shopID + `/` + shopID + `.spin" class="iframe-img" frameborder="0" allowfullscreen="true"></iframe><span class="rotate-icon" style="margin-top : 30px;"></span></div>`
+	var iframeImg = `<div class="iframe-wrapper cont-wrapper"><iframe   src="https://tracified.sirv.com/Spins/RURI%20Gems/` + shopID + `/` + shopID + `.spin" class="iframe-img" frameborder="0" allowfullscreen="true"></iframe><span class="rotate-icon" style="margin-top : 30px;"></span></div>`
+	var proofToggle = `<div class="proof-toggle-wrapper cont-wrapper">
+							<label>View available blockchain proofs</label>
+							<label class="switch">
+							<input id="proveToggle" type="checkbox" onclick="onChangeProofToggle()" />
+							<span class="slider round">
+							</span>
+							</label>
+									</div>
+						<div class="proof-tip-wrapper cont-wrapper provable-val">
+							<label>
+							Click on 
+							<span class="material-symbols-outlined">
+							check_circle
+							</span>
+							icons to view proofs.
+							</label>
+						</div>`
 
 	if receiverName != "" && message != "" {
 		GenerateOwnership(receiverName, message, nftname)
@@ -67,7 +87,7 @@ func GenerateSVGTemplateforNFT(data []models.Component, batchID string, productI
 
 	GenerateContent(data)
 
-	template := svgStart + styleStart + styling + styleEnd + htmlStart + iframeImg + htmlBody + svgEnd
+	template := svgStart + styleStart + styling + styleEnd + htmlStart + iframeImg + proofToggle + htmlBody + svgEnd
 	htmlBody = ""
 	/* template = strings.(template)
 	fmt.Println(template) */
@@ -79,7 +99,7 @@ func GenerateSVGTemplateforNFT(data []models.Component, batchID string, productI
 
 // generate ownership section
 func GenerateOwnership(receiverName string, message string, nftname string) {
-	htmlBody += `<div class="widget-div">
+	htmlBody += `<div class="widget-div cont-wrapper">
 					<div class="wrap-collabsible">
 						<input id="collapsible1" class="toggle" type="radio" name="toggle" checked="true"></input>
 						<label for="collapsible1" class="lbl-toggle" tabindex="0">
@@ -139,7 +159,14 @@ func GenerateTable(data models.Component) {
 			if component.Component == "key-value" {
 				var valueWithProof models.ValueWithProof
 				mapstructure.Decode(component.Value, &valueWithProof)
-				tableContent += `<tr><td class="tbl-text-normal">` + component.Key + `</td><td class="tbl-text-bold">` + valueWithProof.Value.(string) + `</td></tr>`
+
+				proofContentStr := ""
+				proofTick := ""
+				if valueWithProof.Provable && len(valueWithProof.TdpId) > 0 {
+					proofContentStr, proofTick = GenerateProofContentStr(component.Key, valueWithProof)
+				}
+
+				tableContent += `<tr><td class="tbl-text-normal">` + component.Key + `</td><td class="tbl-text-bold">` + valueWithProof.Value.(string) + " " + proofTick + proofContentStr + `</td></tr>`
 			}
 		}
 	}
@@ -150,7 +177,7 @@ func GenerateTable(data models.Component) {
 		icon = `<img src="` + data.Icon + `" />`
 	}
 
-	htmlBody += `<div class="widget-div">
+	htmlBody += `<div class="widget-div cont-wrapper">
 					<div class="wrap-collabsible">
 						<input id="collapsible2" class="toggle" type="radio" name="toggle"></input>
 						<label for="collapsible2" class="lbl-toggle" tabindex="0">
@@ -197,7 +224,7 @@ func GenerateVerticalTabs(data models.Component) {
 	} else {
 		icon = `<img src="` + data.Icon + `" />`
 	}
-	htmlBody += `<div class="widget-div">
+	htmlBody += `<div class="widget-div cont-wrapper">
 					<div class="wrap-collabsible">
 						<input id="collapsible3" class="toggle" type="radio" name="toggle"></input>
 						<label for="collapsible3" class="lbl-toggle" tabindex="0">
@@ -355,15 +382,21 @@ func GenerateDecoratedKeyValues(data models.Component, index int) string {
 				val = decoratedVal.Value.(string)
 			}
 
+			proofContentStr := ""
+			proofTick := ""
+			if decoratedVal.Provable && len(decoratedVal.TdpId) > 0 {
+				proofContentStr, proofTick = GenerateProofContentStr(child.Key, decoratedVal)
+			}
+
 			cards += `<div class="tab-cont-card ` + color + `">
 							<div class="card-div-1">
 								<span class="hexagon-icon" style="background-image:url('` + child.Icon + `')"></span>
 							</div>
 							<div class="card-div-2">
 								<label class="bold-text">` + child.Key + `</label>
-								<label>` + val + `</label>
+								<label>` + val + " " + proofTick + `</label>
 							</div>
-						</div>`
+						</div>` + proofContentStr
 		}
 	}
 
@@ -379,21 +412,10 @@ func GenerateImageSlider(imageSlider models.Component, parentIndex int) string {
 			content += `<p>No Records</p>`
 		} else {
 			content += `<div class="img-wrapper">
-			<input type="checkbox" id="cert` + strconv.Itoa(parentIndex) + strconv.Itoa(i+1) + `" class="img-zoom-in"></input>
-			<div class="img-fullscreen">
-				<label for="cert` + strconv.Itoa(parentIndex) + strconv.Itoa(i+1) + `">
-					<span class="material-symbols-outlined">
-						close
-					</span>
-				</label>
-				<div class="img-div"
-					style="background-image: url('` + image.Img + `');">
-				</div>
-			</div>
-			<div class="img-div"
+			<div id="cert` + strconv.Itoa(parentIndex) + strconv.Itoa(i+1) + `" class="img-div"
 				style="background-image: url('` + image.Img + `');">
 			</div>
-			<label for="cert` + strconv.Itoa(parentIndex) + strconv.Itoa(i+1) + `" title="View Image">
+			<label onclick="openFullScreenImg('cert` + strconv.Itoa(parentIndex) + strconv.Itoa(i+1) + `')" title="View Image">
 				<span class="zoom-icon"></span>
 			</label>
 		</div>`
@@ -447,10 +469,11 @@ func GenerateJourneyMap(tab models.Component, index int) (string, string, string
 func GenerateTimeline(data models.Component, index int) (string, string, string, string) {
 	content := ``
 	tlCont := ""
+	imgSliderCount := 0
 
 	mainTab, sidebarTab, radioButton := GenerateTabLabels(data.Title, index)
 
-	for _, stage := range data.Children {
+	for i, stage := range data.Children {
 		infoStr := ""
 		for _, info := range stage.Children {
 			if info.Component == "key-value" {
@@ -463,22 +486,94 @@ func GenerateTimeline(data models.Component, index int) (string, string, string,
 					val = decoratedVal.Value.(string)
 				}
 
-				infoStr += `<div class="tl-info-container">
+				proofContentStr := ""
+				proofTick := ""
+				if decoratedVal.Provable && len(decoratedVal.TdpId) > 0 {
+					proofContentStr, proofTick = GenerateProofContentStr(info.Key, decoratedVal)
+				}
+
+				infoStr += `<div class="tl-info-container tl-key-value">
 								<label class="grey-text">` + strings.Replace(info.Key, "&", "&amp;", -1) + `</label>
-								<label class="tl-bold-text">` + val + `</label>
-							</div>`
+								<label class="tl-bold-text">` + val + " " + proofTick + `</label>
+							</div>` + proofContentStr
+
+			} else if info.Component == "image-slider" {
+				imgCont := ""
+				var imgs []models.ImageValue
+				mapstructure.Decode(info.Slides.Value, &imgs)
+
+				proofModalStr := ""
+				proofTickIcon := ""
+				if info.Slides.Provable && len(info.Slides.TdpId) > 0 {
+					id := "slider" + strconv.Itoa(imgSliderCount) + "-modal"
+					proofTickIcon = `<span class="material-symbols-outlined provable-tick-wrapper provable-val" onclick="openModal('` + id + `')">
+														check_circle
+													</span>
+									`
+					proofModalStr = GenerateImgProofModalStr(info.Slides, id)
+					imgSliderCount++
+				}
+
+				if len(imgs) > 0 {
+					for j, image := range imgs {
+						var prev = 0
+						var next = 0
+
+						if j == 0 {
+							prev = len(imgs) - 1
+						} else {
+							prev = j - 1
+						}
+
+						if j == len(imgs)-1 {
+							next = 0
+						} else {
+							next = j + 1
+						}
+
+						prevStr := strconv.Itoa(i) + strconv.Itoa(prev)
+						nextStr := strconv.Itoa(j) + strconv.Itoa(next)
+						dateStr := strings.ReplaceAll(strings.Split(image.Time, "T")[0], "-", "/")
+
+						imgCont += `<li id="carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `"
+										tabindex="0"
+										class="carousel__slide" style="background-image: url('` + image.Img + `');">
+										<div class="carousel__snapper">
+										<a href="#carousel__slide` + prevStr + `"
+											class="carousel__prev">Go to last slide</a>
+										<a href="#carousel__slide` + nextStr + `"
+											class="carousel__next">Go to next slide</a>
+										</div>
+										<label class="date-text">` + dateStr + `<span class="material-symbols-outlined tl-view-image" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
+                                            web_asset
+                                            </span></label>
+										` + proofTickIcon + `
+									</li>`
+					}
+
+					if imgCont != "" {
+						infoStr += `<div class="tl-info-container">
+						<section class="carousel" aria-label="Gallery">
+							<ol class="carousel__viewport">
+							` + imgCont + `
+							</ol>
+						</section>
+						` + proofModalStr + `
+					</div>`
+					}
+				}
 			}
 		}
 
 		tlCont += `<div class="tl-stage">
 					<div class="tl-heading">
 						<div class="tl-circle">
-							<span class="stack-icon"></span>
+							<span class="tl-stage-icon" style="background-image: url('` + stage.Icon + `');"></span>
 						</div>
 						<label>` + stage.Title + `</label>
 					</div>
 					<div class="tl-content">
-						` + infoStr + `
+						<div class="tl-inner-wrapper">` + infoStr + `</div>
 					</div>
 					</div>`
 	}
@@ -548,4 +643,143 @@ func GenerateTabLabels(title string, index int) (string, string, string) {
 				</li>`
 
 	return mainTab, sidebarTab, radioButton
+}
+
+// Generate proof modal for key value pairs
+func GenerateProofContentStr(key string, proofInfo models.ValueWithProof) (string, string) {
+	id := strings.ReplaceAll(key, " ", "") + "-modal"
+
+	txnHash, err := GetTxnHash(proofInfo.TdpId[0])
+
+	if err != nil {
+		return "", ""
+	}
+
+	table := GenerateProofTable(txnHash, proofInfo)
+
+	proofTick := `<span class="material-symbols-outlined provable-tick-wrapper provable-val" onclick="openModal('` + id + `')">
+						check_circle
+					</span>
+					`
+
+	proofContentStr := `	<!--modal for proof-->
+										<div id="` + id + `" class="modal-window">
+											<div>
+												<div class="modal-header">
+													<h4 class="modal-heading">Proof Details Of: ` + key + `</h4>
+													<span class="material-symbols-outlined modal-close" onclick="closeModal('` + id + `')">
+														close
+													</span>
+												</div>
+												<div class="modal-cont">
+													<div class="modal-tab">	
+														<label>Blockchain Proofs</label>
+													</div>
+													<table class="table proof-table">
+														<thead>
+															<tr>
+																<th scope="col">Proof Type</th>
+																<th scope="col">Transaction ID</th>
+																<th scope="col">Description</th>
+																<th scope="col">Proofs</th>
+															</tr>
+														</thead>
+														<tbody>
+															` + table + `
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>`
+
+	return proofContentStr, proofTick
+}
+
+// Generate proof modal for image sliders
+func GenerateImgProofModalStr(proofInfo models.ValueWithProof, id string) string {
+	txnHash, err := GetTxnHash(proofInfo.TdpId[0])
+
+	if err != nil {
+		return ""
+	}
+
+	table := GenerateProofTable(txnHash, proofInfo)
+
+	proofContentStr := `<!--modal for proof-->
+										<div id="` + id + `" class="modal-window">
+											<div>
+												<div class="modal-header">
+													<h4 class="modal-heading">Proof Details Of: ` + "Images" + `</h4>
+													<span class="material-symbols-outlined modal-close" onclick="closeModal('` + id + `')">
+														close
+													</span>
+												</div>
+												<div class="modal-cont">
+													<div class="modal-tab">	
+														<label>Blockchain Proofs</label>
+													</div>
+													<table class="table proof-table">
+														<thead>
+															<tr>
+																<th scope="col">Proof Type</th>
+																<th scope="col">Transaction ID</th>
+																<th scope="col">Description</th>
+																<th scope="col">Proofs</th>
+															</tr>
+														</thead>
+														<tbody>
+															` + table + `
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>`
+
+	return proofContentStr
+}
+
+// Generate proof table displayed in the modal
+func GenerateProofTable(txnHash string, proofInfo models.ValueWithProof) string {
+	table := ""
+
+	for _, proof := range proofInfo.Proofs {
+		table += `<tr>
+						<td style="width : 15%">` + proof.Name + `</td>
+						<td style="max-width : 35%; "><label style="word-break: break-all;">` + txnHash + `</label></td>
+						<td style="width : 30%">` + proof.Description + `</td>
+						<td><a class="proof-link" href="https://proofbot.tillit.world/?type=` + strings.ToLower(proof.Name) + `&amp;txn=` + txnHash + `" target="_blank">Proof <span class="material-symbols-outlined">
+							open_in_new
+							</span></a>
+						</td>
+					</tr>`
+	}
+
+	return table
+}
+
+// Get transaction hash for tdp
+func GetTxnHash(tdpID string) (string, error) {
+	txnHash := ""
+	url := `https://gateway.tracified.com/GetTransactions?txn=` + tdpID + `&page=1&perPage=10`
+	var txnResp []models.TxnResp
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		logs.ErrorLogger.Println("unable to get data :", err.Error())
+		return txnHash, err
+	}
+
+	client := &http.Client{}
+	resp, err1 := client.Do(req)
+
+	if err1 != nil {
+		logs.ErrorLogger.Println("unable to get data :", err.Error())
+		return txnHash, err
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	json.Unmarshal([]byte(string(body)), &txnResp)
+	txnHash = txnResp[0].TxnHash
+
+	return txnHash, nil
 }

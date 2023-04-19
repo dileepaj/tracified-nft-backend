@@ -1,6 +1,15 @@
+        <div id="img-fs-div" class="img-fullscreen">
+            <label onclick="closeFullScreenImg()">
+                <span class="material-symbols-outlined">
+                    close
+                </span>
+            </label>
+            <div id="img-fs-view" class="img-div">
+            </div>
+		</div>
         </div>
             <div class="text-center nft-footer">
-                <div class="nft-footer-content default-font">
+                <div class="nft-footer-content default-font cont-wrapper">
                     <label>Powered by </label> <img
                         src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/tracified-white.png"
                         class="logo" />
@@ -13,6 +22,57 @@
         function closeSidebar() {
             document.getElementById("sidebar-toggle").checked = false;
         }
+         function openFullScreenImg(id) {
+            var url = document.getElementById(id).style.backgroundImage;
+            var imgFs = document.getElementById('img-fs-div');
+            var img = document.getElementById('img-fs-view');
+
+            img.style.backgroundImage =url;
+            imgFs.style.display = "flex"
+        }
+        function closeFullScreenImg() {
+            var imgFs = document.getElementById('img-fs-div');
+            var img = document.getElementById('img-fs-view');
+
+            img.style.backgroundImage = "";
+            imgFs.style.display = "none"
+        }
+        function onChangeProofToggle () {
+                  var checkbox = document.getElementById('proveToggle');
+                  var provaleAarr = document.getElementsByClassName('provable-val');
+                  var proofWrapper = document.getElementsByClassName('proof-toggle-wrapper');
+                  
+                  if (checkbox.checked == true)
+                  {
+                    for (var i = 0; i < provaleAarr.length; i++) {
+                              provaleAarr[i].classList.add("provable");
+                    }
+                      
+                    proofWrapper[0].style.marginBottom = "20px";
+                  }
+                  else {
+                      for (var i = 0; i < provaleAarr.length; i++) {
+                          provaleAarr[i].classList.remove("provable");
+                      }
+                      proofWrapper[0].style.marginBottom = "40px";
+                  }
+            }
+
+			function openModal(id) {
+				var checkbox = document.getElementById('proveToggle');
+				if (checkbox.checked == true)
+                {
+                    document.getElementById(id).style.visibility = "visible";
+					document.getElementById(id).style.opacity = 1;
+                   
+                }
+				
+			}
+
+			function closeModal(id) {
+				document.getElementById(id).style.visibility = "hidden";
+				document.getElementById(id).style.visibility = 0;
+			}
         ]]>
     </script>
 </svg>

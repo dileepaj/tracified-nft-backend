@@ -250,6 +250,12 @@ var NftRoutes = models.Routers{
 		Handler: apiHandler.GetAllWalletNFTs,
 	},
 	models.Router{
+		Name:    "GET Minted Wallet NFTs by userPK",
+		Method:  "GET",
+		Path:    "/walletnfts/{publickey}",
+		Handler: apiHandler.GetWalletNFTsbyPK,
+	},
+	models.Router{
 		Name:    "Get NFT By Blockchain And NftIdentifier",
 		Method:  "Get",
 		Path:    "/nftstats/{nftidentifier}/{blockchain}",
