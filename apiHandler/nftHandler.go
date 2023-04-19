@@ -895,12 +895,36 @@ func GetAllWalletNFTs(w http.ResponseWriter, r *http.Request) {
 				thumbnailUrl := "https://tracified.sirv.com/Spins/RURI%20Gems/" + result.ShopID + "/" + result.ShopID + ".jpg"
 				results[i].Thumbnail = thumbnailUrl
 			}
+		} else {
+			ErrorMessage := "No NFTs found"
+			errors.BadRequest(w, ErrorMessage)
+			return
 		}
-		w.WriteHeader(http.StatusOK)
-		err := json.NewEncoder(w).Encode(results)
-		if err != nil {
-			logs.ErrorLogger.Println(err)
+		commonResponse.SuccessStatus(w, results)
+		return
+	}
+}
+
+func GetWalletNFTsbyPK(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
+	vars := mux.Vars(r)
+	results, err1 := marketplaceBusinessFacade.GetAllWalletNFTsbyPK(vars["publickey"])
+	if err1 != nil {
+		ErrorMessage := err1.Error()
+		errors.BadRequest(w, ErrorMessage)
+		return
+	} else {
+		if len(results) > 0 {
+			for i, result := range results {
+				thumbnailUrl := "https://tracified.sirv.com/Spins/RURI%20Gems/" + result.ShopID + "/" + result.ShopID + ".jpg"
+				results[i].Thumbnail = thumbnailUrl
+			}
+		} else {
+			ErrorMessage := "No NFTs for public key"
+			errors.BadRequest(w, ErrorMessage)
+			return
 		}
+		commonResponse.SuccessStatus(w, results)
 		return
 	}
 }
