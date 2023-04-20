@@ -73,6 +73,10 @@
 				document.getElementById(id).style.visibility = "hidden";
 				document.getElementById(id).style.visibility = 0;
 			}
+
+            function copyToClipboard(val) {
+				navigator.clipboard.writeText(val);
+			}
         ]]>
     </script>
 </svg>

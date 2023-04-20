@@ -649,13 +649,13 @@ func GenerateTabLabels(title string, index int) (string, string, string) {
 func GenerateProofContentStr(key string, proofInfo models.ValueWithProof) (string, string) {
 	id := strings.ReplaceAll(key, " ", "") + "-modal"
 
-	txnHash, err := GetTxnHash(proofInfo.TdpId[0])
+	txnHash, url, err := GetTxnHash(proofInfo.TdpId[0])
 
 	if err != nil {
 		return "", ""
 	}
 
-	table := GenerateProofTable(txnHash, proofInfo)
+	table := GenerateProofTable(txnHash, url, proofInfo)
 
 	proofTick := `<span class="material-symbols-outlined provable-tick-wrapper provable-val" onclick="openModal('` + id + `')">
 						check_circle
@@ -697,13 +697,13 @@ func GenerateProofContentStr(key string, proofInfo models.ValueWithProof) (strin
 
 // Generate proof modal for image sliders
 func GenerateImgProofModalStr(proofInfo models.ValueWithProof, id string) string {
-	txnHash, err := GetTxnHash(proofInfo.TdpId[0])
+	txnHash, url, err := GetTxnHash(proofInfo.TdpId[0])
 
 	if err != nil {
 		return ""
 	}
 
-	table := GenerateProofTable(txnHash, proofInfo)
+	table := GenerateProofTable(txnHash, url, proofInfo)
 
 	proofContentStr := `<!--modal for proof-->
 										<div id="` + id + `" class="modal-window">
@@ -739,15 +739,30 @@ func GenerateImgProofModalStr(proofInfo models.ValueWithProof, id string) string
 }
 
 // Generate proof table displayed in the modal
-func GenerateProofTable(txnHash string, proofInfo models.ValueWithProof) string {
+func GenerateProofTable(txnHash string, url string, proofInfo models.ValueWithProof) string {
 	table := ""
 
 	for _, proof := range proofInfo.Proofs {
+
+		txnStr := txnHash[0:10] + "..."
+		descStyle := ""
+
+		if len(strings.Split(proof.Description, " ")) == 1 {
+			descStyle = "; word-break: break-all;"
+		}
+
+		proofName := GetProofName(proof.Name)
+
 		table += `<tr>
-						<td style="width : 15%">` + proof.Name + `</td>
-						<td style="max-width : 35%; "><label style="word-break: break-all;">` + txnHash + `</label></td>
-						<td style="width : 30%">` + proof.Description + `</td>
-						<td><a class="proof-link" href="https://proofbot.tillit.world/?type=` + strings.ToLower(proof.Name) + `&amp;txn=` + txnHash + `" target="_blank">Proof <span class="material-symbols-outlined">
+						<td style="width : 15%">` + proofName + `</td>
+						<td style="max-width : 25%; ">
+							<div class="txn-wrapper">
+								<a href="` + url + `" target="_blank" class="txn-hash-link">` + txnStr + `</a>
+								<span class="copy-icon" onclick="copyToClipboard('` + txnHash + `')"></span>
+							</div>
+						</td>
+						<td style="width : 40%` + descStyle + `">` + proof.Description + `</td>
+						<td><a class="proof-link" href="https://explorer.tillit.world/txn/` + txnHash + `" target="_blank">Proof <span class="material-symbols-outlined">
 							open_in_new
 							</span></a>
 						</td>
@@ -757,16 +772,32 @@ func GenerateProofTable(txnHash string, proofInfo models.ValueWithProof) string 
 	return table
 }
 
+func GetProofName(proof string) string {
+	switch strings.ToLower(proof) {
+	case "poe":
+		return "Proof of Existence"
+	case "pog":
+		return "Proof of Genesis"
+	case "poc":
+		return "Proof of Continuity"
+	case "poac":
+		return "Proof of Authorize Change"
+	default:
+		return proof
+	}
+}
+
 // Get transaction hash for tdp
-func GetTxnHash(tdpID string) (string, error) {
+func GetTxnHash(tdpID string) (string, string, error) {
 	txnHash := ""
+	stellarUrl := ""
 	url := `https://gateway.tracified.com/GetTransactions?txn=` + tdpID + `&page=1&perPage=10`
 	var txnResp []models.TxnResp
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		logs.ErrorLogger.Println("unable to get data :", err.Error())
-		return txnHash, err
+		return txnHash, stellarUrl, err
 	}
 
 	client := &http.Client{}
@@ -774,12 +805,13 @@ func GetTxnHash(tdpID string) (string, error) {
 
 	if err1 != nil {
 		logs.ErrorLogger.Println("unable to get data :", err.Error())
-		return txnHash, err
+		return txnHash, stellarUrl, err
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	json.Unmarshal([]byte(string(body)), &txnResp)
 	txnHash = txnResp[0].TxnHash
+	stellarUrl = txnResp[0].URL
 
-	return txnHash, nil
+	return txnHash, stellarUrl, nil
 }

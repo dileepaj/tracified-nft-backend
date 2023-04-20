@@ -185,4 +185,5 @@ type TxnResp struct {
 	Status         string   `json:"Status" bson:"Status,omitempty"`
 	TxnHash        string   `json:"Txnhash" bson:"Txnhash,omitempty"`
 	AvailableProof []string `json:"AvailableProof" bson:"AvailableProof,omitempty"`
+	URL            string   `json:"Url" bson:"Url,omitempty"`
 }
