@@ -1845,6 +1845,7 @@ input:checked + .slider:before {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  row-gap: 10px;
 }
 
 .people-info > label {
