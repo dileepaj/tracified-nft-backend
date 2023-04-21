@@ -68,6 +68,7 @@ type UserAuth struct {
 	Email      string             `json:"email" bson:"email,omitempty"`
 	Otp        string             `json:"otp" bson:"otp,omitempty"`
 	BatchID    string             `json:"batchid" bson:"batchid,omitempty"`
+	ShopID     string             `json:"shopid" bson:"shopid,omitempty"`
 	Validated  string             `json:"validated" bson:"validated,omitempty"`
 	ExpireDate primitive.DateTime `json:"expDate" bson:"expDate,omitempty"`
 }
@@ -177,6 +178,7 @@ type ImageValue struct {
 }
 
 type Response struct {
+	ShopID string
 	SVGID  string
 	Status string
 }
