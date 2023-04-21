@@ -68,6 +68,7 @@ type UserAuth struct {
 	Email      string             `json:"email" bson:"email,omitempty"`
 	Otp        string             `json:"otp" bson:"otp,omitempty"`
 	BatchID    string             `json:"batchid" bson:"batchid,omitempty"`
+	ShopID     string             `json:"shopid" bson:"shopid,omitempty"`
 	Validated  string             `json:"validated" bson:"validated,omitempty"`
 	ExpireDate primitive.DateTime `json:"expDate" bson:"expDate,omitempty"`
 }
@@ -177,6 +178,7 @@ type ImageValue struct {
 }
 
 type Response struct {
+	ShopID string
 	SVGID  string
 	Status string
 }
@@ -186,4 +188,12 @@ type TxnResp struct {
 	TxnHash        string   `json:"Txnhash" bson:"Txnhash,omitempty"`
 	AvailableProof []string `json:"AvailableProof" bson:"AvailableProof,omitempty"`
 	URL            string   `json:"Url" bson:"Url,omitempty"`
+}
+
+type Users struct {
+	FirstName string `json:"firstName" bson:"firstName,omitempty"`
+	LastName  string `json:"lastName" bson:"lastName,omitempty"`
+	Type      string `json:"type" bson:"type,omitempty"`
+	ImageURL  string `json:"imageUrl" bson:"imageUrl,omitempty"`
+	UserId    string `json:"userid" bson:"userid,omitempty"`
 }

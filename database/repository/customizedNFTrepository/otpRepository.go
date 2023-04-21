@@ -35,7 +35,7 @@ func (r *OtpRepository) SaveOTP(otpDataSet models.UserAuth) (string, error) {
  * *param : otp, otp entered by user
  * *reutrns : respective batchID if the otp is valid
  */
-func (r *OtpRepository) ValidateOTP(email string, otp string) (string, error) {
+func (r *OtpRepository) ValidateOTP(email string, otp string) (string, string, error) {
 	var authrst models.UserAuth
 	rst, err := repository.FindById1AndId2("email", email, "otp", otp, UserAuth)
 	if err != nil {
@@ -45,20 +45,18 @@ func (r *OtpRepository) ValidateOTP(email string, otp string) (string, error) {
 		err = rst.Decode(&authrst)
 		if err != nil {
 			logs.ErrorLogger.Println("Error occured while retreving data from collection ruriotp in ValidateOTP:OtpRepository.go: ", err.Error())
-			return "", err
+			return "", "", err
 		}
 	}
 
 	if authrst.BatchID == "" {
-		return "Invalid OTP", err
+		return "Invalid OTP", "", err
 
 	} else {
-
-		logs.InfoLogger.Println("obj ID passed :", authrst.OtpID)
 		rest, err := UpdateOTPStatus(authrst.OtpID)
 		if !rest {
 			logs.ErrorLogger.Println("Failed to update DB: ", err.Error())
-			return "Update Failed", err
+			return "Update Failed", "", err
 		}
 	}
 	now := primitive.NewDateTimeFromTime(time.Now())
@@ -69,9 +67,9 @@ func (r *OtpRepository) ValidateOTP(email string, otp string) (string, error) {
 	// logs.InfoLogger.Println("NOW: ", Dummydate)
 	// logs.InfoLogger.Println("EXP: ", authrst.ExpireDate)
 	if now > authrst.ExpireDate {
-		return "Expired OTP", nil
+		return "Expired OTP", "", nil
 	}
-	return authrst.BatchID, nil
+	return authrst.BatchID, authrst.ShopID, nil
 }
 func UpdateOTPStatus(otpID primitive.ObjectID) (bool, error) {
 	update := bson.M{
@@ -162,6 +160,5 @@ func (r *OtpRepository) ValidateNFTStatus(email string, otp string) (string, err
 			return authrst.NFTStatus, err
 		}
 	}
-	logs.InfoLogger.Println("Model : ", authrst.NFTStatus)
 	return authrst.NFTStatus, nil
 }

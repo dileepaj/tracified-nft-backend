@@ -52,7 +52,7 @@ func SaveOTP(otpDataSet models.UserAuth) (string, error) {
  * *param : otp, otp entered by user
  * *reutrns : respective batchID if the otp is valid
  */
-func ValidateOTP(email string, otp string) (string, error) {
+func ValidateOTP(email string, otp string) (string, string, error) {
 	return otpRepository.ValidateOTP(email, otp)
 }
 

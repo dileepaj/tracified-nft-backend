@@ -2,10 +2,12 @@ package svgNFTGenerator
 
 import (
 	//"fmt"
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"regexp"
 
 	"strconv"
 	"strings"
@@ -21,19 +23,21 @@ import (
 )
 
 var (
-	svgStart       = services.ReadFromFile("services/svgGeneratorforNFT/templates/svgNFTHeader.txt")
-	svgEnd         = services.ReadFromFile("services/svgGeneratorforNFT/templates/svgNFTFooter.txt")
-	styling        = services.ReadFromFile("services/svgGeneratorforNFT/templates/svgNFTStyles.css") //!Need to implement
-	styleStart     = `<style>`
-	styleEnd       = `</style>`
-	htmlBody       = ""
-	collectionName = ""
-	ruriRepository customizedNFTrepository.SvgRepository
-	mapRepository  customizedNFTrepository.MapRepository
-	backendUrl     = configs.GetNftBackendBaseUrl()
+	svgStart        = services.ReadFromFile("services/svgGeneratorforNFT/templates/svgNFTHeader.txt")
+	svgEnd          = services.ReadFromFile("services/svgGeneratorforNFT/templates/svgNFTFooter.txt")
+	styling         = services.ReadFromFile("services/svgGeneratorforNFT/templates/svgNFTStyles.css") //!Need to implement
+	styleStart      = `<style>`
+	styleEnd        = `</style>`
+	htmlBody        = ""
+	collectionName  = ""
+	ruriRepository  customizedNFTrepository.SvgRepository
+	mapRepository   customizedNFTrepository.MapRepository
+	backendUrl      = configs.GetNftBackendBaseUrl()
+	proofModalCount = 0
 )
 
 func GenerateSVGTemplateforNFT(data []models.Component, batchID string, productID string, shopID string, receiverName string, message string, nftname string) (string, error) {
+	proofModalCount = 0
 	//get gem type from tdp data
 	/* var gemVariety string = ""
 	var gemDetailsTDP []models.TraceabilityData
@@ -651,46 +655,135 @@ func GenerateProofContentStr(key string, proofInfo models.ValueWithProof) (strin
 
 	txnHash, url, err := GetTxnHash(proofInfo.TdpId[0])
 
+	tab1 := proofModalCount
+	tab2 := proofModalCount + 1
+	tab3 := proofModalCount + 2
+
+	proofModalCount += 3
+
 	if err != nil {
 		return "", ""
 	}
 
 	table := GenerateProofTable(txnHash, url, proofInfo)
 
+	users, err1 := GetUsers(proofInfo.UserId)
+
+	if err1 != nil {
+		return "", ""
+	}
+
+	table2, cards := GenerateUsersContent(users, tab1, tab2, tab3)
+
 	proofTick := `<span class="material-symbols-outlined provable-tick-wrapper provable-val" onclick="openModal('` + id + `')">
 						check_circle
-					</span>
-					`
+					</span>`
 
-	proofContentStr := `	<!--modal for proof-->
-										<div id="` + id + `" class="modal-window">
-											<div>
-												<div class="modal-header">
-													<h4 class="modal-heading">Proof Details Of: ` + key + `</h4>
-													<span class="material-symbols-outlined modal-close" onclick="closeModal('` + id + `')">
-														close
-													</span>
-												</div>
-												<div class="modal-cont">
-													<div class="modal-tab">	
-														<label>Blockchain Proofs</label>
-													</div>
-													<table class="table proof-table">
-														<thead>
-															<tr>
-																<th scope="col">Proof Type</th>
-																<th scope="col">Transaction ID</th>
-																<th scope="col">Description</th>
-																<th scope="col">Proofs</th>
-															</tr>
-														</thead>
-														<tbody>
-															` + table + `
-														</tbody>
-													</table>
-												</div>
+	proofContentStr := `<!--modal for proof-->
+					<div id="` + id + `" class="modal-window">
+						<div>
+							<div class="modal-header">
+								<h4 class="modal-heading">Proof Details Of: ` + key + `</h4>
+								<span class="material-symbols-outlined modal-close" onclick="closeModal('` + id + `')">
+									close
+								</span>
+							</div>
+							<div class="modal-cont">
+								<div class="modal-tab">	
+									<label id="modal-tab-lbl-` + strconv.Itoa(tab1) + `" class="modal-tab-label modal-tab-label-active" onclick="openTab('modal-tab-` + strconv.Itoa(tab1) + `', 'modal-tab-` + strconv.Itoa(tab2) + `', 'modal-tab-` + strconv.Itoa(tab3) + `', 'modal-tab-lbl-` + strconv.Itoa(tab1) + `', 'modal-tab-lbl-` + strconv.Itoa(tab2) + `', 'modal-tab-lbl-` + strconv.Itoa(tab3) + `')">Overview</label>
+									<label id="modal-tab-lbl-` + strconv.Itoa(tab2) + `" class="modal-tab-label" onclick="openTab('modal-tab-` + strconv.Itoa(tab2) + `', 'modal-tab-` + strconv.Itoa(tab1) + `', 'modal-tab-` + strconv.Itoa(tab3) + `', 'modal-tab-lbl-` + strconv.Itoa(tab2) + `', 'modal-tab-lbl-` + strconv.Itoa(tab1) + `', 'modal-tab-lbl-` + strconv.Itoa(tab3) + `')">Blockchain Proofs</label>
+									<label  id="modal-tab-lbl-` + strconv.Itoa(tab3) + `" class="modal-tab-label" onclick="openTab('modal-tab-` + strconv.Itoa(tab3) + `', 'modal-tab-` + strconv.Itoa(tab2) + `', 'modal-tab-` + strconv.Itoa(tab1) + `', 'modal-tab-lbl-` + strconv.Itoa(tab3) + `', 'modal-tab-lbl-` + strconv.Itoa(tab2) + `', 'modal-tab-lbl-` + strconv.Itoa(tab1) + `')">People &amp; Technologies</label>
+								</div>
+								<div id="modal-tab-` + strconv.Itoa(tab1) + `" class="modal-tab-cont modal-tab-overview" style="display: flex">
+									<div class="overview-card">
+										<div class="header">
+											<span class="material-symbols-outlined">
+												visibility
+											</span>
+											<label>Blockchain Proofs</label>
+										</div>
+										<div class="body">
+											<p>Visit TilliT Explorer to view transaction details and blockchain proofs.</p>
+											<a href="https://explorer.tillit.world/txn/` + txnHash + `" target="_blank" >
+											Tillit Explorer <span class="material-symbols-outlined">
+											open_in_new
+											</span>
+											</a>
+										</div>
+									</div>
+									<div class="overview-card">
+										<div class="header">
+											<span class="material-symbols-outlined">
+												account_circle
+											</span>
+											<label>People</label>
+										</div>
+										<div class="body people-content">
+											` + cards + `
+										</div>
+									</div>
+									<div class="overview-card">
+										<div class="header">
+											<span class="material-symbols-outlined">
+												phone_android
+											</span>
+											<label>Technology</label>
+										</div>
+										<div class="body">
+											<button class="overview-btn tech-btn" onclick="openTab('modal-tab-` + strconv.Itoa(tab3) + `', 'modal-tab-` + strconv.Itoa(tab2) + `', 'modal-tab-` + strconv.Itoa(tab1) + `', 'modal-tab-lbl-` + strconv.Itoa(tab3) + `', 'modal-tab-lbl-` + strconv.Itoa(tab2) + `', 'modal-tab-lbl-` + strconv.Itoa(tab1) + `')">
+												<img class="btn-img" src="data:image/png;base64,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" ></img>
+											</button>
+										</div>
+									</div>
+									<div class="overview-card">
+										<div class="header">
+											<span class="blockchain-icon">
+											</span>
+											<label>Blockchain Network</label>
+										</div>
+										<div class="body">
+											<div class="bc-net-card">
+												<span class="stellar-icon"></span>
+												<label>Stellar</label>
 											</div>
-										</div>`
+											
+										</div>
+									</div>
+								</div>
+								<div id="modal-tab-` + strconv.Itoa(tab2) + `" class="modal-tab-cont">
+									<table class="table proof-table">
+										<thead>
+											<tr>
+												<th scope="col">Proof Type</th>
+												<th scope="col">Transaction ID</th>
+												<th scope="col">Description</th>
+												<th scope="col">Proofs</th>
+											</tr>
+										</thead>
+										<tbody>
+											` + table + `
+										</tbody>
+									</table>
+								</div>
+								<div id="modal-tab-` + strconv.Itoa(tab3) + `" class="modal-tab-cont">
+									<table class="table people-and-tech-table">
+										<thead>
+											<tr>
+												<th scope="col">Data Added By</th>
+												<th scope="col">Data Source</th>
+												<th scope="col">Trace Power</th>
+												<th scope="col">Endorsement</th>
+												<th scope="col">Badges</th>
+											</tr>
+										</thead>
+										<tbody>
+											` + table2 + `
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>`
 
 	return proofContentStr, proofTick
 }
@@ -703,34 +796,124 @@ func GenerateImgProofModalStr(proofInfo models.ValueWithProof, id string) string
 		return ""
 	}
 
+	tab1 := proofModalCount
+	tab2 := proofModalCount + 1
+	tab3 := proofModalCount + 2
+
+	proofModalCount += 3
+
 	table := GenerateProofTable(txnHash, url, proofInfo)
+
+	users, err1 := GetUsers(proofInfo.UserId)
+
+	if err1 != nil {
+		return ""
+	}
+
+	table2, cards := GenerateUsersContent(users, tab1, tab2, tab3)
 
 	proofContentStr := `<!--modal for proof-->
 										<div id="` + id + `" class="modal-window">
 											<div>
 												<div class="modal-header">
-													<h4 class="modal-heading">Proof Details Of: ` + "Images" + `</h4>
+													<h4 class="modal-heading">Proof Details Of: ` + `Images` + `</h4>
 													<span class="material-symbols-outlined modal-close" onclick="closeModal('` + id + `')">
 														close
 													</span>
 												</div>
 												<div class="modal-cont">
 													<div class="modal-tab">	
-														<label>Blockchain Proofs</label>
+														<label id="modal-tab-lbl-` + strconv.Itoa(tab1) + `" class="modal-tab-label modal-tab-label-active" onclick="openTab('modal-tab-` + strconv.Itoa(tab1) + `', 'modal-tab-` + strconv.Itoa(tab2) + `', 'modal-tab-` + strconv.Itoa(tab3) + `', 'modal-tab-lbl-` + strconv.Itoa(tab1) + `', 'modal-tab-lbl-` + strconv.Itoa(tab2) + `', 'modal-tab-lbl-` + strconv.Itoa(tab3) + `')">Overview</label>
+														<label id="modal-tab-lbl-` + strconv.Itoa(tab2) + `" class="modal-tab-label" onclick="openTab('modal-tab-` + strconv.Itoa(tab2) + `', 'modal-tab-` + strconv.Itoa(tab1) + `', 'modal-tab-` + strconv.Itoa(tab3) + `', 'modal-tab-lbl-` + strconv.Itoa(tab2) + `', 'modal-tab-lbl-` + strconv.Itoa(tab1) + `', 'modal-tab-lbl-` + strconv.Itoa(tab3) + `')">Blockchain Proofs</label>
+														<label  id="modal-tab-lbl-` + strconv.Itoa(tab3) + `" class="modal-tab-label" onclick="openTab('modal-tab-` + strconv.Itoa(tab3) + `', 'modal-tab-` + strconv.Itoa(tab2) + `', 'modal-tab-` + strconv.Itoa(tab1) + `', 'modal-tab-lbl-` + strconv.Itoa(tab3) + `', 'modal-tab-lbl-` + strconv.Itoa(tab2) + `', 'modal-tab-lbl-` + strconv.Itoa(tab1) + `')">People &amp; Technologies</label>
 													</div>
-													<table class="table proof-table">
-														<thead>
-															<tr>
-																<th scope="col">Proof Type</th>
-																<th scope="col">Transaction ID</th>
-																<th scope="col">Description</th>
-																<th scope="col">Proofs</th>
-															</tr>
-														</thead>
-														<tbody>
-															` + table + `
-														</tbody>
-													</table>
+													<div id="modal-tab-` + strconv.Itoa(tab1) + `" class="modal-tab-cont modal-tab-overview" style="display: flex">
+														<div class="overview-card">
+															<div class="header">
+																<span class="material-symbols-outlined">
+																	visibility
+																</span>
+																<label>Blockchain Proofs</label>
+															</div>
+															<div class="body">
+																<p>Visit TilliT Explorer to view transaction details and blockchain proofs.</p>
+																<a href="https://explorer.tillit.world/txn/` + txnHash + `" target="_blank" >
+																Tillit Explorer <span class="material-symbols-outlined">
+																open_in_new
+																</span>
+																</a>
+															</div>
+														</div>
+														<div class="overview-card">
+															<div class="header">
+																<span class="material-symbols-outlined">
+																	account_circle
+																</span>
+																<label>People</label>
+															</div>
+															<div class="body people-content">
+																` + cards + `
+															</div>
+														</div>
+														<div class="overview-card">
+															<div class="header">
+																<span class="material-symbols-outlined">
+																	phone_android
+																</span>
+																<label>Technology</label>
+															</div>
+															<div class="body">
+																<button class="overview-btn tech-btn" onclick="openTab('modal-tab-` + strconv.Itoa(tab3) + `', 'modal-tab-` + strconv.Itoa(tab2) + `', 'modal-tab-` + strconv.Itoa(tab1) + `', 'modal-tab-lbl-` + strconv.Itoa(tab3) + `', 'modal-tab-lbl-` + strconv.Itoa(tab2) + `', 'modal-tab-lbl-` + strconv.Itoa(tab1) + `')">
+																	<img class="btn-img" src="data:image/png;base64,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" ></img>
+																</button>
+															</div>
+														</div>
+														<div class="overview-card">
+															<div class="header">
+																<span class="blockchain-icon">
+																</span>
+																<label>Blockchain Network</label>
+															</div>
+															<div class="body">
+																<div class="bc-net-card">
+																	<span class="stellar-icon"></span>
+																	<label>Stellar</label>
+																</div>
+																
+															</div>
+														</div>
+													</div>
+													<div id="modal-tab-` + strconv.Itoa(tab2) + `" class="modal-tab-cont">
+														<table class="table proof-table">
+															<thead>
+																<tr>
+																	<th scope="col">Proof Type</th>
+																	<th scope="col">Transaction ID</th>
+																	<th scope="col">Description</th>
+																	<th scope="col">Proofs</th>
+																</tr>
+															</thead>
+															<tbody>
+																` + table + `
+															</tbody>
+														</table>
+													</div>
+													<div id="modal-tab-` + strconv.Itoa(tab3) + `" class="modal-tab-cont">
+														<table class="table people-and-tech-table">
+															<thead>
+																<tr>
+																	<th scope="col">Data Added By</th>
+																	<th scope="col">Data Source</th>
+																	<th scope="col">Trace Power</th>
+																	<th scope="col">Endorsement</th>
+																	<th scope="col">Badges</th>
+																</tr>
+															</thead>
+															<tbody>
+																` + table2 + `
+															</tbody>
+														</table>
+													</div>
 												</div>
 											</div>
 										</div>`
@@ -772,6 +955,54 @@ func GenerateProofTable(txnHash string, url string, proofInfo models.ValueWithPr
 	return table
 }
 
+// Generate user table and cards
+func GenerateUsersContent(users []models.Users, tab1 int, tab2 int, tab3 int) (string, string) {
+	table := ""
+	cards := ""
+
+	re := regexp.MustCompile(`[A-Z][^A-Z]*`)
+
+	for _, user := range users {
+
+		userType := ""
+
+		splitType := re.FindAllString(user.Type, -1)
+
+		for _, s := range splitType {
+			userType += s + " "
+
+		}
+
+		table += `<tr>
+						<td style="width : 25%">` + user.FirstName + ` ` + user.LastName + ` <br/> ` + userType + `</td>
+						<td style="max-width : 20%; ">
+							<img class="tbl-img" src="data:image/png;base64,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" ></img>
+						</td>
+						<td style="width : 20%;">N/A</td>
+						<td style="width : 20%;">
+							N/A
+						</td>
+						<td style="width : 15%;">
+							N/A
+						</td>
+					</tr>`
+
+		cards += `<button class="overview-btn people-btn" onclick="openTab('modal-tab-` + strconv.Itoa(tab3) + `', 'modal-tab-` + strconv.Itoa(tab2) + `', 'modal-tab-` + strconv.Itoa(tab1) + `', 'modal-tab-lbl-` + strconv.Itoa(tab3) + `', 'modal-tab-lbl-` + strconv.Itoa(tab2) + `', 'modal-tab-lbl-` + strconv.Itoa(tab1) + `')">
+						<img class="btn-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4lq60B8QUO-IJ7Ocv-5Nn77keApow2URygWAZRwdxYltUVb8jlQ" ></img>
+						<div class="people-info">
+							<label>` + user.FirstName + ` ` + user.LastName + `</label>
+							<label>` + userType + `</label>
+						</div>
+						<span class="material-symbols-outlined">
+							chevron_right
+						</span>
+					</button>`
+	}
+
+	return table, cards
+}
+
+// Get proof name
 func GetProofName(proof string) string {
 	switch strings.ToLower(proof) {
 	case "poe":
@@ -791,7 +1022,10 @@ func GetProofName(proof string) string {
 func GetTxnHash(tdpID string) (string, string, error) {
 	txnHash := ""
 	stellarUrl := ""
-	url := `https://gateway.tracified.com/GetTransactions?txn=` + tdpID + `&page=1&perPage=10`
+
+	gatewayUrl := configs.GetGatewayUrl()
+
+	url := gatewayUrl + `/GetTransactions?txn=` + tdpID + `&page=1&perPage=10`
 	var txnResp []models.TxnResp
 
 	req, err := http.NewRequest("GET", url, nil)
@@ -814,4 +1048,42 @@ func GetTxnHash(tdpID string) (string, string, error) {
 	stellarUrl = txnResp[0].URL
 
 	return txnHash, stellarUrl, nil
+}
+
+// Get user details from admin backend
+func GetUsers(userID []string) ([]models.Users, error) {
+	adminBackend := configs.GetAdminBackendUrl()
+	url := adminBackend + `/sign/getUsersDetails`
+	var users []models.Users
+
+	values := map[string][]string{"ids": userID}
+
+	jsonValue, err1 := json.Marshal(values)
+
+	if err1 != nil {
+		logs.ErrorLogger.Println("unable to get data :", err1.Error())
+		return users, err1
+	}
+
+	req, err2 := http.NewRequest("POST", url, bytes.NewBuffer(jsonValue))
+
+	if err2 != nil {
+		logs.ErrorLogger.Println("unable to get data :", err2.Error())
+		return users, err2
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err3 := client.Do(req)
+
+	if err3 != nil {
+		logs.ErrorLogger.Println("unable to get data :", err3.Error())
+		return users, err3
+	}
+
+	body, err3 := ioutil.ReadAll(resp.Body)
+	json.Unmarshal([]byte(string(body)), &users)
+
+	return users, nil
 }
