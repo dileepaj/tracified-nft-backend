@@ -927,8 +927,18 @@ func GenerateProofTable(txnHash string, url string, proofInfo models.ValueWithPr
 	table := ""
 
 	for _, proof := range proofInfo.Proofs {
+		txnStr := ""
 
-		txnStr := txnHash[0:10] + "..."
+		if proof.Name == "" {
+			continue
+		}
+
+		if len(txnHash) > 0 {
+			txnStr = txnHash[0:10] + "..."
+		} else {
+			txnStr = "N/A"
+		}
+
 		descStyle := ""
 
 		if len(strings.Split(proof.Description, " ")) == 1 {
@@ -1051,8 +1061,11 @@ func GetTxnHash(tdpID string) (string, string, error) {
 
 	body, err := ioutil.ReadAll(resp.Body)
 	json.Unmarshal([]byte(string(body)), &txnResp)
-	txnHash = txnResp[0].TxnHash
-	stellarUrl = txnResp[0].URL
+
+	if len(txnResp) > 0 {
+		txnHash = txnResp[0].TxnHash
+		stellarUrl = txnResp[0].URL
+	}
 
 	txnMap[tdpID] = append(txnMap[tdpID], txnHash)
 	txnMap[tdpID] = append(txnMap[tdpID], stellarUrl)
