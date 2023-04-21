@@ -187,3 +187,11 @@ type TxnResp struct {
 	AvailableProof []string `json:"AvailableProof" bson:"AvailableProof,omitempty"`
 	URL            string   `json:"Url" bson:"Url,omitempty"`
 }
+
+type Users struct {
+	FirstName string `json:"firstName" bson:"firstName,omitempty"`
+	LastName  string `json:"lastName" bson:"lastName,omitempty"`
+	Type      string `json:"type" bson:"type,omitempty"`
+	ImageURL  string `json:"imageUrl" bson:"imageUrl,omitempty"`
+	UserId    string `json:"userid" bson:"userid,omitempty"`
+}
