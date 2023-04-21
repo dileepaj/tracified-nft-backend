@@ -34,6 +34,7 @@ var (
 	mapRepository   customizedNFTrepository.MapRepository
 	backendUrl      = configs.GetNftBackendBaseUrl()
 	proofModalCount = 0
+	txnMap          = make(map[string][]string)
 )
 
 func GenerateSVGTemplateforNFT(data []models.Component, batchID string, productID string, shopID string, receiverName string, message string, nftname string) (string, error) {
@@ -926,8 +927,18 @@ func GenerateProofTable(txnHash string, url string, proofInfo models.ValueWithPr
 	table := ""
 
 	for _, proof := range proofInfo.Proofs {
+		txnStr := ""
 
-		txnStr := txnHash[0:10] + "..."
+		if proof.Name == "" {
+			continue
+		}
+
+		if len(txnHash) > 0 {
+			txnStr = txnHash[0:10] + "..."
+		} else {
+			txnStr = "N/A"
+		}
+
 		descStyle := ""
 
 		if len(strings.Split(proof.Description, " ")) == 1 {
@@ -1023,6 +1034,12 @@ func GetTxnHash(tdpID string) (string, string, error) {
 	txnHash := ""
 	stellarUrl := ""
 
+	val, exists := txnMap[tdpID]
+
+	if exists {
+		return val[0], val[1], nil
+	}
+
 	gatewayUrl := configs.GetGatewayUrl()
 
 	url := gatewayUrl + `/GetTransactions?txn=` + tdpID + `&page=1&perPage=10`
@@ -1044,8 +1061,14 @@ func GetTxnHash(tdpID string) (string, string, error) {
 
 	body, err := ioutil.ReadAll(resp.Body)
 	json.Unmarshal([]byte(string(body)), &txnResp)
-	txnHash = txnResp[0].TxnHash
-	stellarUrl = txnResp[0].URL
+
+	if len(txnResp) > 0 {
+		txnHash = txnResp[0].TxnHash
+		stellarUrl = txnResp[0].URL
+	}
+
+	txnMap[tdpID] = append(txnMap[tdpID], txnHash)
+	txnMap[tdpID] = append(txnMap[tdpID], stellarUrl)
 
 	return txnHash, stellarUrl, nil
 }
