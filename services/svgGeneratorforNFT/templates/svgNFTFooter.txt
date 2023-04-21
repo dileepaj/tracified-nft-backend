@@ -77,6 +77,18 @@
             function copyToClipboard(val) {
 				navigator.clipboard.writeText(val);
 			}
+
+            function openTab(id1, id2, id3, lbl1, lbl2, lbl3) {
+				document.getElementById(id1).style.display = "flex";
+				document.getElementById(id2).style.display = "none";
+				document.getElementById(id3).style.display = "none";
+
+				document.getElementById(lbl1).classList.add("modal-tab-label-active");
+				document.getElementById(lbl2).classList.remove("modal-tab-label-active");
+				document.getElementById(lbl3).classList.remove("modal-tab-label-active");
+
+
+			}
         ]]>
     </script>
 </svg>
