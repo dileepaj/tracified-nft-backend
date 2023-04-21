@@ -45,7 +45,7 @@ func InitNFT(W http.ResponseWriter, r *http.Request) {
 				errors.BadRequest(W, "Failed to retrive BatchID data")
 				return
 			} // If batch ID is retreived user email,otp and batch ID will be sent to be saved in the ruriOtp DB
-			_, error := SaveUserOTPMapping(requestGenOTP.Email, otp, batchData.BatchID)
+			_, error := SaveUserOTPMapping(requestGenOTP.Email, otp, batchData.BatchID, requestGenOTP.ProductID)
 			if error != nil {
 				errors.BadRequest(W, error.Error())
 				return
@@ -64,11 +64,12 @@ func InitNFT(W http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func SaveUserOTPMapping(email string, otp string, batchID string) (string, error) {
+func SaveUserOTPMapping(email string, otp string, batchID string, shopId string) (string, error) {
 	var userAuth models.UserAuth
 	userAuth.Email = email
 	userAuth.Otp = otp
 	userAuth.BatchID = batchID // Default number of attempts
+	userAuth.ShopID = shopId
 	userAuth.Validated = "False"
 	userAuth.ExpireDate = primitive.NewDateTimeFromTime(GenerateOTPExpireDate())
 	logs.InfoLogger.Println("NEW exp date created: ", userAuth.ExpireDate)
@@ -110,13 +111,11 @@ func ValidateOTP(W http.ResponseWriter, r *http.Request) {
 			errors.BadRequest(W, "Failed to NFT Status")
 			return
 		} else {
-			logs.InfoLogger.Println("status: ", status)
 			if status == "Minted" {
 				errors.BadRequest(W, "NFT already Minted")
 				return
 			}
-			rst, err := customizedNFTFacade.ValidateOTP(requestValidateOTP.Email, requestValidateOTP.OTPCode)
-			logs.InfoLogger.Println("rst: ", rst)
+			rst, shopID, err := customizedNFTFacade.ValidateOTP(requestValidateOTP.Email, requestValidateOTP.OTPCode)
 			if err != nil {
 				errors.BadRequest(W, "Failed to validate OTP")
 				return
@@ -132,6 +131,7 @@ func ValidateOTP(W http.ResponseWriter, r *http.Request) {
 				return
 			}
 			Response := models.Response{
+				ShopID: shopID,
 				SVGID:  rst1.SvgID,
 				Status: "Valid",
 			}
