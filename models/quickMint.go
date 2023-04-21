@@ -68,6 +68,7 @@ type UserAuth struct {
 	Email      string             `json:"email" bson:"email,omitempty"`
 	Otp        string             `json:"otp" bson:"otp,omitempty"`
 	BatchID    string             `json:"batchid" bson:"batchid,omitempty"`
+	ShopID     string             `json:"shopid" bson:"shopid,omitempty"`
 	Validated  string             `json:"validated" bson:"validated,omitempty"`
 	ExpireDate primitive.DateTime `json:"expDate" bson:"expDate,omitempty"`
 }
@@ -120,19 +121,20 @@ type DigitalTwin struct {
 }
 
 type Component struct {
-	Title       string       `json:"title" bson:"title,omitempty"`
-	Name        string       `json:"name" bson:"name,omitempty"`
-	Item        string       `json:"item" bson:"item,omitempty"`
-	VerticalTab []Component  `json:"verticalTab" bson:"verticalTab,omitempty"`
-	Tabs        []Component  `json:"tabs" bson:"tabs,omitempty"`
-	Subtitle    string       `json:"subtitle" bson:"subtitle,omitempty"`
-	Component   string       `json:"component" bson:"component,omitempty"`
-	Icon        string       `json:"icon" bson:"icon,omitempty"`
-	Images      Images       `json:"images" bson:"images,omitempty"`
-	Key         string       `json:"key" bson:"key,omitempty"`
-	Value       any          `json:"value" bson:"value,omitempty"`
-	Coordinates []Coordinate `json:"coordinates" bson:"coordinates,omitempty"`
-	Children    []Component  `json:"children" bson:"name,omitempty"`
+	Title       string         `json:"title" bson:"title,omitempty"`
+	Name        string         `json:"name" bson:"name,omitempty"`
+	Item        string         `json:"item" bson:"item,omitempty"`
+	VerticalTab []Component    `json:"verticalTab" bson:"verticalTab,omitempty"`
+	Tabs        []Component    `json:"tabs" bson:"tabs,omitempty"`
+	Subtitle    string         `json:"subtitle" bson:"subtitle,omitempty"`
+	Component   string         `json:"component" bson:"component,omitempty"`
+	Icon        string         `json:"icon" bson:"icon,omitempty"`
+	Images      Images         `json:"images" bson:"images,omitempty"`
+	Key         string         `json:"key" bson:"key,omitempty"`
+	Value       any            `json:"value" bson:"value,omitempty"`
+	Coordinates []Coordinate   `json:"coordinates" bson:"coordinates,omitempty"`
+	Children    []Component    `json:"children" bson:"name,omitempty"`
+	Slides      ValueWithProof `json:"slides" bson:"slides,omitempty"`
 }
 
 type Coordinate struct {
@@ -142,8 +144,9 @@ type Coordinate struct {
 }
 
 type CoordinateValue struct {
-	Lat  float64 `json:"lat" bson:"lat,omitempty"`
-	Long float64 `json:"long" bson:"long,omitempty"`
+	Title string  `json:"title" bson:"title,omitempty"`
+	Lat   float64 `json:"lat" bson:"lat,omitempty"`
+	Long  float64 `json:"long" bson:"long,omitempty"`
 }
 
 type ValueWithProof struct {
@@ -175,7 +178,22 @@ type ImageValue struct {
 }
 
 type Response struct {
+	ShopID string
 	SVGID  string
 	Status string
 }
 
+type TxnResp struct {
+	Status         string   `json:"Status" bson:"Status,omitempty"`
+	TxnHash        string   `json:"Txnhash" bson:"Txnhash,omitempty"`
+	AvailableProof []string `json:"AvailableProof" bson:"AvailableProof,omitempty"`
+	URL            string   `json:"Url" bson:"Url,omitempty"`
+}
+
+type Users struct {
+	FirstName string `json:"firstName" bson:"firstName,omitempty"`
+	LastName  string `json:"lastName" bson:"lastName,omitempty"`
+	Type      string `json:"type" bson:"type,omitempty"`
+	ImageURL  string `json:"imageUrl" bson:"imageUrl,omitempty"`
+	UserId    string `json:"userid" bson:"userid,omitempty"`
+}

@@ -363,6 +363,10 @@ func GetAllWalletNFTs() ([]models.ResponseWalletNFT, error) {
 	return nftRepository.GetAllWalletNFTs()
 }
 
+func GetAllWalletNFTsbyPK(publickey string) ([]models.ResponseWalletNFT, error) {
+	return nftRepository.GetWalletNFTsbyPK(publickey)
+}
+
 func GetNFTByBlockchainAndIdentifier(id string, blockchain string) (models.NFT, error) {
 	return nftRepository.GetNFTByIDAndBC("nftidentifier", id, "blockchain", blockchain)
 }

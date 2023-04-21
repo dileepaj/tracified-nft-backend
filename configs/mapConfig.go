@@ -65,7 +65,7 @@ func GetLowerScript() string {
 		var marker = new L.marker([locations[i][1], locations[i][2]]).addTo(map);
 		var popup = new L.popup({ autoClose: false })
 		  .setLatLng([locations[i][1], locations[i][2]])
-		  .setContent(` + "`<p><center><b>${locations[i][0]}</b><br/>(${locations[i][1]} , ${locations[i][2]})</center></p>`" + `)
+		  .setContent(` + "`<p><center><b>${locations[i][0]}</b></center></p>`" + `)
 		  .openOn(map);
 	
 		marker.bindPopup(popup);

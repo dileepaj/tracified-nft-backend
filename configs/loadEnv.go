@@ -14,6 +14,8 @@ var (
 	ruriShopify    = ""
 	digitalTwin    = ""
 	nftBackendUrl  = ""
+	adminBackend   = ""
+	gateway        = ""
 )
 
 func LoadEnv() {
@@ -25,6 +27,8 @@ func LoadEnv() {
 	nftBackendUrl = os.Getenv("NFT_BACKEND_BASEURL")
 	ruriShopify = os.Getenv("RURI_SHOPIFY")
 	digitalTwin = os.Getenv("DIGITALTWIN")
+	adminBackend = os.Getenv("ADMIN_BACKEND")
+	gateway = os.Getenv("GATEWAY")
 }
 
 func GetBackenToken() string {
@@ -58,4 +62,14 @@ func GetDigitalTwinUrl() string {
 func GetNftBackendBaseUrl() string {
 	LoadEnv()
 	return nftBackendUrl
+}
+
+func GetAdminBackendUrl() string {
+	LoadEnv()
+	return adminBackend
+}
+
+func GetGatewayUrl() string {
+	LoadEnv()
+	return gateway
 }

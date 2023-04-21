@@ -72,3 +72,5 @@
             RURI_SHOPIFY: "{{lookup('env','RURI_SHOPIFY')}}"
             DIGITALTWIN: "{{lookup('env','DIGITALTWIN')}}"
             NFT_BACKEND_BASEURL: "{{lookup('env','NFT_BACKEND_BASEURL')}}"
+            ADMIN_BACKEND: "{{lookup('env','ADMIN_BACKEND')}}"
+            GATEWAY: "{{lookup('env','GATEWAY')}}"

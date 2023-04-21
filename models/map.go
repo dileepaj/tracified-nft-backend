@@ -3,6 +3,7 @@ package models
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
 type MapInfo struct {
+	Title     string  `json:"title" bson:"title,omitempty"`
 	Longitude float64 `json:"longitude"`
 	Latitude  float64 `jsonL:"latitude"`
 }

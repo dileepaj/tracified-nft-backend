@@ -19,7 +19,7 @@ var Tags = "tags"
 var Owner = "owner"
 var Story = "nftstory"
 var Contract = "contracts"
-var RURI = "rurinft"
+var walletnft = "walletnft"
 
 func (r *NFTRepository) FindNFTById1AndNotId2(idName1 string, id1 string, idName2 string, id2 string) ([]models.NFT, error) {
 	var nfts []models.NFT
@@ -486,7 +486,6 @@ func (r *NFTRepository) GetNFTPaginatedResponse(filterConfig bson.M, projectionD
 	return response, nil
 }
 
-
 func (r *NFTRepository) SaveContract(contract models.ContractInfo) (string, error) {
 	return repository.Save[models.ContractInfo](contract, Contract)
 }
@@ -508,17 +507,17 @@ func (r *NFTRepository) FindContractByBCandUser(idName1 string, id1 string, idNa
 		contract = append(contract, contracts)
 	}
 	return contract, nil
-  }
+}
 
 func (r *NFTRepository) SaveWalletNFT(nft models.WalletNFT) (string, error) {
-	return repository.Save[models.WalletNFT](nft, RURI)
+	return repository.Save[models.WalletNFT](nft, walletnft)
 }
 
 func (r *NFTRepository) GetAllWalletNFTs() ([]models.ResponseWalletNFT, error) {
 	var nft []models.ResponseWalletNFT
 	findOptions := options.Find().SetProjection(bson.M{"otp": 0})
 
-	result, err := connections.GetSessionClient(RURI).Find(context.TODO(), bson.D{{}}, findOptions)
+	result, err := connections.GetSessionClient(walletnft).Find(context.TODO(), bson.D{{}}, findOptions)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured when trying to connect to DB and excute Find query in GetAllWalletNFTs:NFTRepository.go: ", err.Error())
 		return nft, err
@@ -528,6 +527,27 @@ func (r *NFTRepository) GetAllWalletNFTs() ([]models.ResponseWalletNFT, error) {
 		err = result.Decode(&nfts)
 		if err != nil {
 			logs.ErrorLogger.Println("Error occured while retreving data from collection nfts in GetAllWalletNFTs:nftsRepository.go: ", err.Error())
+			return nft, err
+		}
+		nft = append(nft, nfts)
+	}
+	return nft, nil
+}
+
+func (r *NFTRepository) GetWalletNFTsbyPK(publickey string) ([]models.ResponseWalletNFT, error) {
+	var nft []models.ResponseWalletNFT
+	findOptions := options.Find().SetProjection(bson.M{"otp": 0})
+
+	result, err := connections.GetSessionClient(walletnft).Find(context.TODO(), bson.D{{"nftcreator", publickey}}, findOptions)
+	if err != nil {
+		logs.ErrorLogger.Println("Error occured when trying to connect to DB and excute Find query in GetWalletNFTsbyPK:NFTRepository.go: ", err.Error())
+		return nft, err
+	}
+	for result.Next(context.TODO()) {
+		var nfts models.ResponseWalletNFT
+		err = result.Decode(&nfts)
+		if err != nil {
+			logs.ErrorLogger.Println("Error occured while retreving data from collection nfts in GetWalletNFTsbyPK:nftsRepository.go: ", err.Error())
 			return nft, err
 		}
 		nft = append(nft, nfts)
