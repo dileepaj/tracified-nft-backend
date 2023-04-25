@@ -55,8 +55,8 @@ func GetLowerScript() string {
 	
 	  //create markers with description
 	  var map = L.map("map");
-	  mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
-	  L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+	  mapLink = '<a href="https://openstreetmap.org">OpenStreetMap</a>';
+	  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 		attribution: "&copy; " + mapLink + " Contributors",
 		maxZoom: 18,
 	  }).addTo(map);
