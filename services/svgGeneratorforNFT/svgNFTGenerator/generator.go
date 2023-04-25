@@ -104,6 +104,21 @@ func GenerateSVGTemplateforNFT(data []models.Component, batchID string, productI
 
 // generate ownership section
 func GenerateOwnership(receiverName string, message string, nftname string) {
+
+	receiverStyle := ""
+	nftnameStyle := ""
+	messageStyle := ""
+
+	if len(strings.Split(receiverName, " ")) == 1 {
+		receiverStyle = `style="word-break: break-word;"`
+	}
+	if len(strings.Split(nftname, " ")) == 1 {
+		nftnameStyle = `style="word-break: break-word;"`
+	}
+	if len(strings.Split(message, " ")) == 1 {
+		messageStyle = `style="word-break: break-word;"`
+	}
+
 	htmlBody += `<div class="widget-div cont-wrapper">
 					<div class="wrap-collabsible">
 						<input id="collapsible1" class="toggle" type="radio" name="toggle" checked="true"></input>
@@ -119,17 +134,17 @@ func GenerateOwnership(receiverName string, message string, nftname string) {
 										<tbody>
 											<tr>
 												<td class="tbl-text-normal">Owner's Name </td>
-												<td class="tbl-text-bold">` + receiverName + `</td>
+												<td class="tbl-text-bold" ` + receiverStyle + `>` + receiverName + `</td>
 											</tr>
 											<tr>
 											<td class="tbl-text-normal">NFT Name</td>
-											<td class="tbl-text-normal">
+											<td class="tbl-text-normal" ` + nftnameStyle + `>
 												<p>` + nftname + `</p>
 											</td>
 										</tr>
 											<tr>
 												<td class="tbl-text-normal">Message</td>
-												<td class="tbl-text-normal">
+												<td class="tbl-text-normal" ` + messageStyle + `>
 													<p>` + message + `</p>
 												</td>
 											</tr>
@@ -171,7 +186,13 @@ func GenerateTable(data models.Component) {
 					proofContentStr, proofTick = GenerateProofContentStr(component.Key, valueWithProof)
 				}
 
-				tableContent += `<tr><td class="tbl-text-normal">` + component.Key + `</td><td class="tbl-text-bold">` + valueWithProof.Value.(string) + " " + proofTick + proofContentStr + `</td></tr>`
+				style := ""
+
+				if len(strings.Split(valueWithProof.Value.(string), " ")) == 1 {
+					style = `style="word-break: break-word;"`
+				}
+
+				tableContent += `<tr><td class="tbl-text-normal">` + component.Key + `</td><td class="tbl-text-bold" ` + style + `>` + valueWithProof.Value.(string) + " " + proofTick + proofContentStr + `</td></tr>`
 			}
 		}
 	}
@@ -241,7 +262,7 @@ func GenerateVerticalTabs(data models.Component) {
 						<div class="collapsible-content">
 							<div class="toggle-div">
 								<input id="sidebar-toggle" type="checkbox"></input>
-								<label for="sidebar-toggle"><span class="open-menu-icon"></span></label>
+								<label class="tab-header" for="sidebar-toggle"><span class="open-menu-icon"></span> <label id="tab-name"></label></label>
 								<div id="sidebar">
 									<div id="sidebar-inner">
 										<ul class="sidebar-tabs">
@@ -627,7 +648,7 @@ func GetDecoratedKeyValueIcon(key string) string {
 // Create labels for vertical tabs
 func GenerateTabLabels(title string, index int) (string, string, string) {
 	sidebarTab := `<li class="tab">
-						<label for="tab` + strconv.Itoa(index+1) + `" onclick="closeSidebar()">
+						<label for="tab` + strconv.Itoa(index+1) + `" onclick="closeSidebar('` + title + `')">
 							` + title + `
 							<span class="tab-arrow-icon"></span>
 						</label>
@@ -641,7 +662,7 @@ func GenerateTabLabels(title string, index int) (string, string, string) {
 	radioButton := `<input type="radio" id="tab` + strconv.Itoa(index+1) + `" name="css-tabs" ` + checked + `></input>`
 
 	mainTab := `<li class="tab">
-					<label for="tab` + strconv.Itoa(index+1) + `" >
+					<label for="tab` + strconv.Itoa(index+1) + `" onclick="setTabName('` + title + `')">
 					` + title + `
 						<span class="tab-arrow-icon"></span>
 					</label>
