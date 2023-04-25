@@ -104,6 +104,21 @@ func GenerateSVGTemplateforNFT(data []models.Component, batchID string, productI
 
 // generate ownership section
 func GenerateOwnership(receiverName string, message string, nftname string) {
+
+	receiverStyle := ""
+	nftnameStyle := ""
+	messageStyle := ""
+
+	if len(strings.Split(receiverName, " ")) == 1 {
+		receiverStyle = `style="word-break: break-word;"`
+	}
+	if len(strings.Split(nftname, " ")) == 1 {
+		nftnameStyle = `style="word-break: break-word;"`
+	}
+	if len(strings.Split(message, " ")) == 1 {
+		messageStyle = `style="word-break: break-word;"`
+	}
+
 	htmlBody += `<div class="widget-div cont-wrapper">
 					<div class="wrap-collabsible">
 						<input id="collapsible1" class="toggle" type="radio" name="toggle" checked="true"></input>
@@ -119,17 +134,17 @@ func GenerateOwnership(receiverName string, message string, nftname string) {
 										<tbody>
 											<tr>
 												<td class="tbl-text-normal">Owner's Name </td>
-												<td class="tbl-text-bold">` + receiverName + `</td>
+												<td class="tbl-text-bold" ` + receiverStyle + `>` + receiverName + `</td>
 											</tr>
 											<tr>
 											<td class="tbl-text-normal">NFT Name</td>
-											<td class="tbl-text-normal">
+											<td class="tbl-text-normal" ` + nftnameStyle + `>
 												<p>` + nftname + `</p>
 											</td>
 										</tr>
 											<tr>
 												<td class="tbl-text-normal">Message</td>
-												<td class="tbl-text-normal">
+												<td class="tbl-text-normal" ` + messageStyle + `>
 													<p>` + message + `</p>
 												</td>
 											</tr>
