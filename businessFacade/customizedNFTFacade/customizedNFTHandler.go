@@ -4,7 +4,6 @@ import (
 	b64 "encoding/base64"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -31,7 +30,6 @@ func GenerateOTP(email string) (string, error) {
 	secretLength := 4
 	otp := gotp.RandomSecret(secretLength)
 	if otp != "" {
-		fmt.Println("Current OTP is", otp)
 		return otp, nil
 	}
 	return otp, nil
