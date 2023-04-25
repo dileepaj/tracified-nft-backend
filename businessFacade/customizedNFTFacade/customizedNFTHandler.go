@@ -111,7 +111,6 @@ func GetBatchIDDatabyItemID(shopID string) (models.ItemData, error) {
 
 	body, err := ioutil.ReadAll(rst.Body)
 	defer rst.Body.Close()
-	logs.InfoLogger.Println("result:", string(body))
 	var data = string(body)
 	itemdata = FormatBatchIDString(data)
 	if err != nil {
@@ -134,7 +133,6 @@ func FormatBatchIDString(text string) models.ItemData {
 	itemdata.ItemID = strings.Replace(splitData[0], "\"", "", -1)
 	itemdata.HasTracability = strings.Replace(splitData[1], "\"", "", -1)
 	itemdata.BatchID = strings.Replace(splitData[2], "\"", "", -1)
-	logs.InfoLogger.Println("data to be returned:", itemdata)
 	return itemdata
 }
 
@@ -257,4 +255,8 @@ func GetSVGbySha256(hash string) (string, error) {
 
 func GetNFTStatus(email string, otp string) (string, error) {
 	return otpRepository.ValidateNFTStatus(email, otp)
+}
+
+func GetNFTStatusbyShopID(shopID string) (string, error) {
+	return otpRepository.ValidateNFTStatusbyShopId(shopID)
 }

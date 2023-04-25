@@ -26,6 +26,23 @@ type OtpRepository struct{}
  **reutrns : objectID if dat gets stored or an error if it dosnt
  */
 func (r *OtpRepository) SaveOTP(otpDataSet models.UserAuth) (string, error) {
+	var authrst models.UserAuth
+	rst, err := repository.FindById1AndId2("email", otpDataSet.Email, "shopid", otpDataSet.ShopID, UserAuth)
+	for rst.Next(context.TODO()) {
+		err = rst.Decode(&authrst)
+		if err != nil {
+			logs.ErrorLogger.Println("Error occured while retreving data from collection ruriotp in ValidateOTP:OtpRepository.go: ", err.Error())
+			return "", err
+		}
+	}
+	if authrst.Email != "" {
+		if authrst.Validated == "True" {
+			err := fmt.Errorf("OTP already validated")
+			return "", err
+		}
+		err := fmt.Errorf("OTP for this email already exists")
+		return "", err
+	}
 	return repository.Save(otpDataSet, UserAuth)
 }
 
@@ -110,6 +127,10 @@ func (r *OtpRepository) ResendOTP(otpDataSet models.UserAuth) (string, error) {
 			return "", err
 		}
 	}
+	if authrst.Validated == "True" {
+		err := fmt.Errorf("OTP already validated")
+		return "", err
+	}
 	if authrst.BatchID == "" { //*IF OTP was not stored in DB new entry will be made
 		fmt.Println("data not recorded in DB")
 		return repository.Save(otpDataSet, UserAuth)
@@ -130,7 +151,7 @@ func (r *OtpRepository) ResendOTP(otpDataSet models.UserAuth) (string, error) {
 			ReturnDocument: &after,
 			Upsert:         &upsert,
 		}
-		rst := session.Client().Database(connections.DbName).Collection(UserAuth).FindOneAndUpdate(context.TODO(), bson.M{"email": otpDataSet.Email}, update, &opt)
+		rst := session.Client().Database(connections.DbName).Collection(UserAuth).FindOneAndUpdate(context.TODO(), bson.M{"email": otpDataSet.Email, "batchid": otpDataSet.BatchID}, update, &opt)
 		var responseOtp models.UserAuth
 		if rst != nil {
 			err := rst.Decode(&responseOtp)
@@ -149,6 +170,22 @@ func (r *OtpRepository) ResendOTP(otpDataSet models.UserAuth) (string, error) {
 func (r *OtpRepository) ValidateNFTStatus(email string, otp string) (string, error) {
 	var authrst models.WalletNFT
 	rst, err := repository.FindById1AndId2("email", email, "otp", otp, walletnft)
+	if err != nil {
+		logs.ErrorLogger.Println("failed to return data from DB: ", err.Error())
+	}
+	for rst.Next(context.TODO()) {
+		err = rst.Decode(&authrst)
+		if err != nil {
+			logs.ErrorLogger.Println("Error occured while retreving data from collection ruriotp in ValidateOTP:OtpRepository.go: ", err.Error())
+			return authrst.NFTStatus, err
+		}
+	}
+	return authrst.NFTStatus, nil
+}
+
+func (r *OtpRepository) ValidateNFTStatusbyShopId(shopid string) (string, error) {
+	var authrst models.WalletNFT
+	rst, err := repository.FindById("shopid", shopid, walletnft)
 	if err != nil {
 		logs.ErrorLogger.Println("failed to return data from DB: ", err.Error())
 	}

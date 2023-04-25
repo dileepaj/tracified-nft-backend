@@ -11,6 +11,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/utilities/commonResponse"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
+	"github.com/dileepaj/tracified-nft-backend/utilities/validations"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -30,6 +31,10 @@ func InitNFT(W http.ResponseWriter, r *http.Request) {
 	}
 	// Checks if the API has the ncessary params filled
 	if requestGenOTP.ProductID != "" || requestGenOTP.Email != "" {
+		if !validations.ValidateEmailFormat(requestGenOTP.Email) {
+			errors.BadRequest(W, "Invalid Email address")
+			return
+		}
 		logs.InfoLogger.Println(requestGenOTP.ProductID, requestGenOTP.Email)
 		// Generate OTP
 		otp, err := customizedNFTFacade.GenerateOTP(requestGenOTP.Email)
@@ -106,6 +111,10 @@ func ValidateOTP(W http.ResponseWriter, r *http.Request) {
 	}
 	// Checks if the API has the ncessary params filled
 	if requestValidateOTP.OTPCode != "" || requestValidateOTP.Email != "" {
+		if !validations.ValidateEmailFormat(requestValidateOTP.Email) {
+			errors.BadRequest(W, "Invalid Email address")
+			return
+		}
 		status, errs := customizedNFTFacade.GetNFTStatus(requestValidateOTP.Email, requestValidateOTP.OTPCode)
 		if errs != nil {
 			errors.BadRequest(W, "Failed to NFT Status")
@@ -115,6 +124,7 @@ func ValidateOTP(W http.ResponseWriter, r *http.Request) {
 				errors.BadRequest(W, "NFT already Minted")
 				return
 			}
+
 			rst, shopID, err := customizedNFTFacade.ValidateOTP(requestValidateOTP.Email, requestValidateOTP.OTPCode)
 			if err != nil {
 				errors.BadRequest(W, "Failed to validate OTP")
@@ -122,6 +132,11 @@ func ValidateOTP(W http.ResponseWriter, r *http.Request) {
 			}
 			if rst == "Invalid OTP" {
 				errors.BadRequest(W, rst)
+				return
+			}
+			rstshopid, shopIderr := customizedNFTFacade.GetNFTStatusbyShopID(shopID)
+			if shopIderr != nil || rstshopid == "Minted" {
+				errors.BadRequest(W, "NFT has been minted Item")
 				return
 			}
 			tempBatchID := rst
@@ -157,6 +172,10 @@ func ResentOTP(W http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if requestResendOTP.ProductID != "" || requestResendOTP.Email != "" {
+		if !validations.ValidateEmailFormat(requestResendOTP.Email) {
+			errors.BadRequest(W, "Invalid Email address")
+			return
+		}
 		otp, err := customizedNFTFacade.GenerateOTP(requestResendOTP.Email)
 		if err != nil {
 			errors.BadRequest(W, "Failed to retrive BatchID data")
@@ -169,12 +188,13 @@ func ResentOTP(W http.ResponseWriter, r *http.Request) {
 			}
 			rst, err := UpdateCustomerIndormation(requestResendOTP.Email, batchData.BatchID, otp)
 			if err != nil {
-				errors.BadRequest(W, "failed to send email!")
+				errors.BadRequest(W, "Failed oepration : "+err.Error())
 				return
 			}
 			err1 := customizedNFTFacade.SendEmail(otp, requestResendOTP.Email)
 			if err1 != nil {
-				errors.BadRequest(W, "incorrect email address")
+				errors.BadRequest(W, "Failed to send email")
+				return
 			} else {
 				commonResponse.SuccessStatus[string](W, rst)
 			}
