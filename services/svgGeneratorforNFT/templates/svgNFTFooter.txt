@@ -19,10 +19,19 @@
     </foreignObject>
     <script>
         <![CDATA[
-        function closeSidebar() {
+
+        setTabName('Certification');
+
+		function setTabName(name) {
+			document.getElementById('tab-name').innerText = name;
+		}
+
+        function closeSidebar(tabName) {
             document.getElementById("sidebar-toggle").checked = false;
+			setTabName(tabName)
         }
-         function openFullScreenImg(id) {
+
+        function openFullScreenImg(id) {
             var url = document.getElementById(id).style.backgroundImage;
             var imgFs = document.getElementById('img-fs-div');
             var img = document.getElementById('img-fs-view');
