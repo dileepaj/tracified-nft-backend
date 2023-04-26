@@ -8,6 +8,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/businessFacade/marketplaceBusinessFacade"
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
+	"github.com/dileepaj/tracified-nft-backend/utilities/commonMethods"
 	"github.com/dileepaj/tracified-nft-backend/utilities/commonResponse"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
@@ -867,7 +868,8 @@ func SaveNFTFromWallet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 	}
-
+	OTPencode := commonMethods.StringToSHA256(wnft.OTP)
+	wnft.OTP = OTPencode
 	err = validations.ValidateWalletNft(wnft)
 	if err != nil {
 		errors.BadRequest(w, err.Error())
