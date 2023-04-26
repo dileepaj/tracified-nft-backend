@@ -8,6 +8,7 @@ import (
 	customizedNFTFacade "github.com/dileepaj/tracified-nft-backend/businessFacade/customizedNFTFacade"
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
+	"github.com/dileepaj/tracified-nft-backend/utilities/commonMethods"
 	"github.com/dileepaj/tracified-nft-backend/utilities/commonResponse"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
@@ -50,12 +51,12 @@ func InitNFT(W http.ResponseWriter, r *http.Request) {
 				errors.BadRequest(W, "Failed to retrive BatchID data")
 				return
 			} // If batch ID is retreived user email,otp and batch ID will be sent to be saved in the ruriOtp DB
-			_, error := SaveUserOTPMapping(requestGenOTP.Email, otp, batchData.BatchID, requestGenOTP.ProductID)
+			encodedOTP := commonMethods.StringToSHA256(otp)
+			_, error := SaveUserOTPMapping(requestGenOTP.Email, encodedOTP, batchData.BatchID, requestGenOTP.ProductID)
 			if error != nil {
 				errors.BadRequest(W, error.Error())
 				return
 			} else {
-
 				err1 := customizedNFTFacade.SendEmail(otp, requestGenOTP.Email)
 				if err1 != nil {
 					errors.BadRequest(W, "Incorrect email address")
@@ -111,11 +112,12 @@ func ValidateOTP(W http.ResponseWriter, r *http.Request) {
 	}
 	// Checks if the API has the ncessary params filled
 	if requestValidateOTP.OTPCode != "" || requestValidateOTP.Email != "" {
+		encodedOTP := commonMethods.StringToSHA256(requestValidateOTP.OTPCode)
 		if !validations.ValidateEmailFormat(requestValidateOTP.Email) {
 			errors.BadRequest(W, "Invalid Email address")
 			return
 		}
-		status, errs := customizedNFTFacade.GetNFTStatus(requestValidateOTP.Email, requestValidateOTP.OTPCode)
+		status, errs := customizedNFTFacade.GetNFTStatus(requestValidateOTP.Email, encodedOTP)
 		if errs != nil {
 			errors.BadRequest(W, "Failed to NFT Status")
 			return
@@ -124,8 +126,7 @@ func ValidateOTP(W http.ResponseWriter, r *http.Request) {
 				errors.BadRequest(W, "NFT already Minted")
 				return
 			}
-
-			rst, shopID, err := customizedNFTFacade.ValidateOTP(requestValidateOTP.Email, requestValidateOTP.OTPCode)
+			rst, shopID, err := customizedNFTFacade.ValidateOTP(requestValidateOTP.Email, encodedOTP)
 			if err != nil {
 				errors.BadRequest(W, "Failed to validate OTP")
 				return
@@ -186,7 +187,8 @@ func ResentOTP(W http.ResponseWriter, r *http.Request) {
 				errors.BadRequest(W, "Failed to retrive BatchID data")
 				return
 			}
-			rst, err := UpdateCustomerIndormation(requestResendOTP.Email, batchData.BatchID, otp)
+			encodedOTP := commonMethods.StringToSHA256(otp)
+			rst, err := UpdateCustomerIndormation(requestResendOTP.Email, batchData.BatchID, encodedOTP)
 			if err != nil {
 				errors.BadRequest(W, "Failed oepration : "+err.Error())
 				return
