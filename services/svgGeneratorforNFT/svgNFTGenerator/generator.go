@@ -541,6 +541,7 @@ func GenerateTimeline(data models.Component, index int) (string, string, string,
 				}
 
 				if len(imgs) > 0 {
+
 					for j, image := range imgs {
 						var prev = 0
 						var next = 0
@@ -558,28 +559,52 @@ func GenerateTimeline(data models.Component, index int) (string, string, string,
 						}
 
 						prevStr := strconv.Itoa(i) + strconv.Itoa(prev)
-						nextStr := strconv.Itoa(j) + strconv.Itoa(next)
+						nextStr := strconv.Itoa(i) + strconv.Itoa(next)
 						dateStr := strings.ReplaceAll(strings.Split(image.Time, "T")[0], "-", "/")
 
-						imgCont += `<li id="carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `"
-										tabindex="0"
-										class="carousel__slide" style="background-image: url('` + image.Img + `');">
-										<div class="carousel__snapper">
-										<a href="#carousel__slide` + prevStr + `"
-											class="carousel__prev">Go to last slide</a>
-										<a href="#carousel__slide` + nextStr + `"
-											class="carousel__next">Go to next slide</a>
-										</div>
-										<label class="date-text">` + dateStr + `<span class="material-symbols-outlined tl-view-image" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
-                                            web_asset
-                                            </span></label>
-										` + proofTickIcon + `
-									</li>`
+						if len(imgs) > 1 {
+							imgCont += `<li id="carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `"
+											tabindex="0"
+											class="carousel__slide" style="background-image: url('` + image.Img + `');">
+											<div class="carousel__snapper">
+											<a href="#carousel__slide` + prevStr + `"
+												class="carousel__prev">Go to last slide</a>
+											<a href="#carousel__slide` + nextStr + `"
+												class="carousel__next">Go to next slide</a>
+											</div>
+											<label class="date-text">` + dateStr + `<span class="material-symbols-outlined tl-view-image" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
+												web_asset
+												</span></label>
+											` + proofTickIcon + `
+										</li>`
+						} else {
+							imgCont += `<li id="carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `"
+											tabindex="0"
+											class="carousel__slide" style="background-image: url('` + image.Img + `');">
+											<div class="carousel__snapper">
+											<a
+												class="carousel__prev">Go to last slide</a>
+											<a
+												class="carousel__next">Go to next slide</a>
+											</div>
+											<label class="date-text">` + dateStr + `<span class="material-symbols-outlined tl-view-image" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
+												web_asset
+												</span></label>
+											` + proofTickIcon + `
+										</li>`
+						}
+
+					}
+
+					disabledClass := ""
+
+					if len(imgs) == 1 {
+						disabledClass = "disabled-carousel"
 					}
 
 					if imgCont != "" {
 						infoStr += `<div class="tl-info-container">
-						<section class="carousel" aria-label="Gallery">
+						<section class="carousel ` + disabledClass + `" aria-label="Gallery">
 							<ol class="carousel__viewport">
 							` + imgCont + `
 							</ol>
