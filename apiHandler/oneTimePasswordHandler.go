@@ -3,7 +3,6 @@ package apiHandler
 import (
 	"encoding/json"
 	"net/http"
-	"time"
 
 	customizedNFTFacade "github.com/dileepaj/tracified-nft-backend/businessFacade/customizedNFTFacade"
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
@@ -77,7 +76,7 @@ func SaveUserOTPMapping(email string, otp string, batchID string, shopId string)
 	userAuth.BatchID = batchID // Default number of attempts
 	userAuth.ShopID = shopId
 	userAuth.Validated = "False"
-	userAuth.ExpireDate = primitive.NewDateTimeFromTime(GenerateOTPExpireDate())
+	userAuth.ExpireDate = primitive.NewDateTimeFromTime(customizedNFTFacade.GenerateOTPExpireDate())
 	logs.InfoLogger.Println("NEW exp date created: ", userAuth.ExpireDate)
 	result, error := customizedNFTFacade.SaveOTP(userAuth)
 	if error != nil {
@@ -85,15 +84,6 @@ func SaveUserOTPMapping(email string, otp string, batchID string, shopId string)
 	} else {
 		return result, nil
 	}
-}
-
-func GenerateOTPExpireDate() time.Time {
-	currentDate := time.Now()
-	logs.InfoLogger.Println("OTP Generated on : ", currentDate)
-	duration := time.Hour * 24 * 30
-	expireDate := currentDate.Add(duration)
-	logs.InfoLogger.Println("Expiration Date : ", expireDate)
-	return expireDate
 }
 
 /**
@@ -211,6 +201,7 @@ func UpdateCustomerIndormation(email string, batchID string, otp string) (string
 	userAuth.Email = email
 	userAuth.BatchID = batchID
 	userAuth.Otp = otp
+	userAuth.ExpireDate = primitive.NewDateTimeFromTime(customizedNFTFacade.GenerateOTPExpireDate())
 	rst, err := customizedNFTFacade.ResendOTP(userAuth)
 	if err != nil {
 		return rst, err
