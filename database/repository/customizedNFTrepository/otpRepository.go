@@ -137,7 +137,7 @@ func (r *OtpRepository) ResendOTP(otpDataSet models.UserAuth) (string, error) {
 	} else { //* IF OTP data already exisit it will get updated
 		fmt.Println("data was recorded in DB Updating")
 		update := bson.M{
-			"$set": bson.M{"otp": otpDataSet.Otp},
+			"$set": bson.M{"otp": otpDataSet.Otp, "expDate": otpDataSet.ExpireDate},
 		}
 		session, err := connections.GetMongoSession()
 		if err != nil {

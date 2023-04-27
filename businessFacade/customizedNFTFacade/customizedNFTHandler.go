@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/dileepaj/tracified-nft-backend/configs"
 	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
@@ -259,4 +260,11 @@ func GetNFTStatus(email string, otp string) (string, error) {
 
 func GetNFTStatusbyShopID(shopID string) (string, error) {
 	return otpRepository.ValidateNFTStatusbyShopId(shopID)
+}
+
+func GenerateOTPExpireDate() time.Time {
+	currentDate := time.Now()
+	duration := time.Hour * 24 * 30
+	expireDate := currentDate.Add(duration)
+	return expireDate
 }
