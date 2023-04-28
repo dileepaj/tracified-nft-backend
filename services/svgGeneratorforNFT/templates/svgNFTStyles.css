@@ -1564,7 +1564,7 @@ input:checked + .slider:before {
 
 .modal-window {
   position: fixed;
-  background-color: rgba(0, 0, 0, 0.75) !important;
+  background-color: rgba(0, 0, 0, 0.75);
   top: 0;
   right: 0;
   bottom: 0;
@@ -1577,6 +1577,7 @@ input:checked + .slider:before {
   transition: all 0.3s;
   visibility: hidden;
   opacity: 0;
+  word-break: keep-all !important;
 }
 
 .modal-window > div {
