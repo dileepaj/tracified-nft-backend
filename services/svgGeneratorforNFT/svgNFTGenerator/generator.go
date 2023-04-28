@@ -192,7 +192,7 @@ func GenerateTable(data models.Component) {
 					style = `style="word-break: break-word;"`
 				}
 
-				tableContent += `<tr><td class="tbl-text-normal">` + component.Key + `</td><td class="tbl-text-bold" ` + style + `>` + valueWithProof.Value.(string) + " " + proofTick + `</td>` + proofContentStr + `</tr>`
+				tableContent += `<tr><td class="tbl-text-normal">` + component.Key + `</td><td class="tbl-text-bold" ` + style + `>` + valueWithProof.Value.(string) + " " + proofTick + proofContentStr + `</td></tr>`
 			}
 		}
 	}
