@@ -104,16 +104,16 @@ func ValidateOTP(W http.ResponseWriter, r *http.Request) {
 	if requestValidateOTP.OTPCode != "" || requestValidateOTP.Email != "" {
 		encodedOTP := commonMethods.StringToSHA256(requestValidateOTP.OTPCode)
 		if !validations.ValidateEmailFormat(requestValidateOTP.Email) {
-			errors.BadRequest(W, "Invalid Email address")
+			errors.BadRequest(W, "Invalid email address")
 			return
 		}
 		status, errs := customizedNFTFacade.GetNFTStatus(requestValidateOTP.Email, encodedOTP)
 		if errs != nil {
-			errors.BadRequest(W, "Failed to NFT Status")
+			errors.BadRequest(W, "Failed to get NFT status")
 			return
 		} else {
 			if status == "Minted" {
-				errors.BadRequest(W, "NFT already Minted")
+				errors.BadRequest(W, "NFT already minted")
 				return
 			}
 			rst, shopID, err := customizedNFTFacade.ValidateOTP(requestValidateOTP.Email, encodedOTP)
@@ -127,7 +127,7 @@ func ValidateOTP(W http.ResponseWriter, r *http.Request) {
 			}
 			rstshopid, shopIderr := customizedNFTFacade.GetNFTStatusbyShopID(shopID)
 			if shopIderr != nil || rstshopid == "Minted" {
-				errors.BadRequest(W, "NFT has been minted Item")
+				errors.BadRequest(W, "NFT already claimed")
 				return
 			}
 			tempBatchID := rst
