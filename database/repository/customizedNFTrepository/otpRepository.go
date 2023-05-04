@@ -16,7 +16,7 @@ import (
 )
 
 var UserAuth = "userAuth"
-var RURI = "rurinft"
+var walletnft = "walletnft"
 
 type OtpRepository struct{}
 
@@ -148,11 +148,10 @@ func (r *OtpRepository) ResendOTP(otpDataSet models.UserAuth) (string, error) {
 
 func (r *OtpRepository) ValidateNFTStatus(email string, otp string) (string, error) {
 	var authrst models.WalletNFT
-	rst, err := repository.FindById1AndId2("email", email, "otp", otp, RURI)
+	rst, err := repository.FindById1AndId2("email", email, "otp", otp, walletnft)
 	if err != nil {
 		logs.ErrorLogger.Println("failed to return data from DB: ", err.Error())
 	}
-	logs.InfoLogger.Println("rst : ", rst)
 	for rst.Next(context.TODO()) {
 		err = rst.Decode(&authrst)
 		if err != nil {
