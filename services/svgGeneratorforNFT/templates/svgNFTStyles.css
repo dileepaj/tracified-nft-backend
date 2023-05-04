@@ -65,12 +65,13 @@
 .collapsible-content {
   position: relative;
   max-height: 0px;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   transition: max-height 0.25s ease-in-out;
 }
 
 .toggle:checked + .lbl-toggle + .collapsible-content {
-  max-height: 100vh;
+  max-height: 200vh;
 }
 
 .toggle:checked + .lbl-toggle {
@@ -881,7 +882,7 @@ li {
   opacity: 0.4;
 }
 
-.disabled-carousel::after{
+.disabled-carousel::after {
   opacity: 0.4;
 }
 

@@ -94,6 +94,7 @@ func GenerateSVGTemplateforNFT(data []models.Component, batchID string, productI
 
 	template := svgStart + styleStart + styling + styleEnd + htmlStart + iframeImg + proofToggle + htmlBody + svgEnd
 	htmlBody = ""
+	txnMap = make(map[string][]string)
 	/* template = strings.(template)
 	fmt.Println(template) */
 	/* template = strings.Replace(template, "\r", " ", -1)
