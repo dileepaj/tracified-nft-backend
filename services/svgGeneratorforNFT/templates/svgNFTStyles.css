@@ -65,12 +65,13 @@
 .collapsible-content {
   position: relative;
   max-height: 0px;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   transition: max-height 0.25s ease-in-out;
 }
 
 .toggle:checked + .lbl-toggle + .collapsible-content {
-  max-height: 100vh;
+  max-height: 200vh;
 }
 
 .toggle:checked + .lbl-toggle {
@@ -881,7 +882,7 @@ li {
   opacity: 0.4;
 }
 
-.disabled-carousel::after{
+.disabled-carousel::after {
   opacity: 0.4;
 }
 
@@ -1564,7 +1565,7 @@ input:checked + .slider:before {
 
 .modal-window {
   position: fixed;
-  background-color: rgba(0, 0, 0, 0.75) !important;
+  background-color: rgba(0, 0, 0, 0.75);
   top: 0;
   right: 0;
   bottom: 0;
@@ -1577,6 +1578,7 @@ input:checked + .slider:before {
   transition: all 0.3s;
   visibility: hidden;
   opacity: 0;
+  word-break: keep-all !important;
 }
 
 .modal-window > div {

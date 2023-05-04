@@ -94,6 +94,7 @@ func GenerateSVGTemplateforNFT(data []models.Component, batchID string, productI
 
 	template := svgStart + styleStart + styling + styleEnd + htmlStart + iframeImg + proofToggle + htmlBody + svgEnd
 	htmlBody = ""
+	txnMap = make(map[string][]string)
 	/* template = strings.(template)
 	fmt.Println(template) */
 	/* template = strings.Replace(template, "\r", " ", -1)
@@ -192,7 +193,7 @@ func GenerateTable(data models.Component) {
 					style = `style="word-break: break-word;"`
 				}
 
-				tableContent += `<tr><td class="tbl-text-normal">` + component.Key + `</td><td class="tbl-text-bold" ` + style + `>` + valueWithProof.Value.(string) + " " + proofTick + `</td>` + proofContentStr + `</tr>`
+				tableContent += `<tr><td class="tbl-text-normal">` + component.Key + `</td><td class="tbl-text-bold" ` + style + `>` + valueWithProof.Value.(string) + " " + proofTick + proofContentStr + `</td></tr>`
 			}
 		}
 	}
