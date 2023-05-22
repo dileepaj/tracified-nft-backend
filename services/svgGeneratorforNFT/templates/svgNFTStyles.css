@@ -65,13 +65,12 @@
 .collapsible-content {
   position: relative;
   max-height: 0px;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
   transition: max-height 0.25s ease-in-out;
 }
 
 .toggle:checked + .lbl-toggle + .collapsible-content {
-  max-height: 200vh;
+  max-height: 100vh;
 }
 
 .toggle:checked + .lbl-toggle {
@@ -264,6 +263,7 @@
 
 .nft-logo {
   width: 314px;
+  max-width: 90%;
   height: 67px;
 }
 
@@ -742,7 +742,7 @@ li {
   position: relative;
   flex: 0 0 100%;
   width: 100%;
-  background-size: 60% 80%;
+  background-size: auto 80%;
   background-repeat: no-repeat;
   background-position: center center;
   object-fit: contain;
@@ -879,11 +879,13 @@ li {
 }
 
 .disabled-carousel::before {
-  opacity: 0.4;
+  opacity: 1;
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cGF0aCBkPSJNMTUuNDEgMTYuNTlMMTAuODMgMTJsNC41OC00LjU5TDE0IDZsLTYgNiA2IDYgMS40MS0xLjQxeiIgc3R5bGU9ImZpbGwtb3BhY2l0eTogMC4zOyIvPgogIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMFYweiIgZmlsbD0ibm9uZSIvPgo8L3N2Zz4=);
 }
 
 .disabled-carousel::after {
-  opacity: 0.4;
+  opacity: 1;
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cGF0aCBkPSJNOC41OSAxNi41OUwxMy4xNyAxMiA4LjU5IDcuNDEgMTAgNmw2IDYtNiA2LTEuNDEtMS40MXoiIHN0eWxlPSJmaWxsLW9wYWNpdHk6IDAuMzsiLz4KICA8cGF0aCBkPSJNMCAwaDI0djI0SDBWMHoiIGZpbGw9Im5vbmUiLz4KPC9zdmc+);
 }
 
 .map-link-div {
@@ -1565,7 +1567,7 @@ input:checked + .slider:before {
 
 .modal-window {
   position: fixed;
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: rgba(0, 0, 0, 0.75) !important;
   top: 0;
   right: 0;
   bottom: 0;
@@ -1578,7 +1580,6 @@ input:checked + .slider:before {
   transition: all 0.3s;
   visibility: hidden;
   opacity: 0;
-  word-break: keep-all !important;
 }
 
 .modal-window > div {
@@ -2017,7 +2018,8 @@ input:checked + .slider:before {
   }
 
   .carousel__slide {
-    background-size: 100% 60%;
+    background-size: contain;
+    object-fit: contain;
   }
 
   /*  .carousel__slide .provable-tick-wrapper {
@@ -2048,5 +2050,11 @@ input:checked + .slider:before {
     font-size: 0;
     outline: 0;
     z-index: 20;
+  }
+}
+
+@media only screen and (max-width: 375px) {
+  .tbl-text-normal {
+    word-break: break-all;
   }
 }
