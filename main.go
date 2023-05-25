@@ -25,5 +25,8 @@ func main() {
 	router := routes.NewRouter()
 	http.Handle("/api/", router)
 	logs.InfoLogger.Println("Gateway Started @port " + configs.GetPort() + " with " + configs.EnvName + " environment")
-	http.ListenAndServe(configs.GetPort(), handlers.CORS(originsOk, headersOk, methodsOk)(router))
+	listenErr := http.ListenAndServe(configs.GetPort(), handlers.CORS(originsOk, headersOk, methodsOk)(router))
+	if listenErr != nil {
+		logs.ErrorLogger.Println(listenErr.Error())
+	}
 }

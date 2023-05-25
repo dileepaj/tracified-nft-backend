@@ -17,3 +17,7 @@ local.env
 .env
 
 .idea/
+
+#linter config and linter report file
+.golangci.yaml
+reportGoLint.xml

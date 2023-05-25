@@ -3,6 +3,7 @@ package configs
 import (
 	"os"
 
+	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"github.com/joho/godotenv"
 )
 
@@ -19,7 +20,11 @@ var (
 )
 
 func LoadEnv() {
-	godotenv.Load(".env")
+	loaderr := godotenv.Load(".env")
+	if loaderr != nil {
+		logs.ErrorLogger.Println("Failed to load env file : ", loaderr.Error())
+		return
+	}
 	backendToken = os.Getenv("BACKEND_TOKEN")
 	EnvName = os.Getenv("BRANCH_NAME")
 	port = os.Getenv("BE_PORT")

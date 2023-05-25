@@ -21,9 +21,9 @@ var walletnft = "walletnft"
 type OtpRepository struct{}
 
 /**
- * Description : Save new OTP along with email and batch ID in ruriOtp Collection
- **Params : otpDataSet, OTPData struct containting data to be stored.
- **reutrns : objectID if dat gets stored or an error if it dosnt
+ * Description : Save new OTP along with email and batch ID in UserAuth Collection
+ **Params : otpDataSet, OTPData struct containing data to be stored.
+ **returns : objectID if dat gets stored or an error if it doesn't
  */
 func (r *OtpRepository) SaveOTP(otpDataSet models.UserAuth) (string, error) {
 	var authrst models.UserAuth
@@ -31,7 +31,7 @@ func (r *OtpRepository) SaveOTP(otpDataSet models.UserAuth) (string, error) {
 	for rst.Next(context.TODO()) {
 		err = rst.Decode(&authrst)
 		if err != nil {
-			logs.ErrorLogger.Println("Error occured while retreving data from collection ruriotp in ValidateOTP:OtpRepository.go: ", err.Error())
+			logs.ErrorLogger.Println("Error occurred while retrieving data from collection userAuth in ValidateOTP:OtpRepository.go: ", err.Error())
 			return "", err
 		}
 	}
@@ -47,10 +47,10 @@ func (r *OtpRepository) SaveOTP(otpDataSet models.UserAuth) (string, error) {
 }
 
 /**
- * Descprition : checks if a valid OTP exisit in collcetion ruriOtp
+ * Description : checks if a valid OTP exist in collection ruriOtp
  * *param : email, users email
  * *param : otp, otp entered by user
- * *reutrns : respective batchID if the otp is valid
+ * *returns : respective batchID if the otp is valid
  */
 func (r *OtpRepository) ValidateOTP(email string, otp string) (string, string, error) {
 	var authrst models.UserAuth
@@ -61,7 +61,7 @@ func (r *OtpRepository) ValidateOTP(email string, otp string) (string, string, e
 	for rst.Next(context.TODO()) {
 		err = rst.Decode(&authrst)
 		if err != nil {
-			logs.ErrorLogger.Println("Error occured while retreving data from collection ruriotp in ValidateOTP:OtpRepository.go: ", err.Error())
+			logs.ErrorLogger.Println("Error occurred while retrieving data from collection in ValidateOTP:OtpRepository.go: ", err.Error())
 			return "", "", err
 		}
 	}
@@ -107,7 +107,7 @@ func UpdateOTPStatus(otpID primitive.ObjectID) (bool, error) {
 	if rst != nil {
 		err := rst.Decode(&rst)
 		if err != nil {
-			logs.ErrorLogger.Println("Error occured while retreiving data from DB : ", err.Error())
+			logs.ErrorLogger.Println("Error occurred while retrieving data from DB : ", err.Error())
 			return false, err
 		}
 	}
@@ -123,7 +123,7 @@ func (r *OtpRepository) ResendOTP(otpDataSet models.UserAuth) (string, error) {
 	for rst.Next(context.TODO()) {
 		err = rst.Decode(&authrst)
 		if err != nil {
-			logs.ErrorLogger.Println("Error occured while retreving data from collection ruriotp in ValidateOTP:OtpRepository.go: ", err.Error())
+			logs.ErrorLogger.Println("Error occurred while retrieving data from collection in ValidateOTP:OtpRepository.go: ", err.Error())
 			return "", err
 		}
 	}

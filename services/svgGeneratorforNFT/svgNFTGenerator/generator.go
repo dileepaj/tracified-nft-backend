@@ -179,8 +179,10 @@ func GenerateTable(data models.Component) {
 		for _, component := range tab.Children {
 			if component.Component == "key-value" {
 				var valueWithProof models.ValueWithProof
-				mapstructure.Decode(component.Value, &valueWithProof)
-
+				decodeErr := mapstructure.Decode(component.Value, &valueWithProof)
+				if decodeErr != nil {
+					logs.ErrorLogger.Println("Failed to decode map data : ", decodeErr.Error())
+				}
 				proofContentStr := ""
 				proofTick := ""
 				if valueWithProof.Provable && len(valueWithProof.TdpId) > 0 {
@@ -399,7 +401,10 @@ func GenerateDecoratedKeyValues(data models.Component, index int) string {
 			//img := ""
 			val := "No Records"
 			var decoratedVal models.ValueWithProof
-			mapstructure.Decode(child.Value, &decoratedVal)
+			mapDecodeErr := mapstructure.Decode(child.Value, &decoratedVal)
+			if mapDecodeErr != nil {
+				logs.ErrorLogger.Println("failed to decode map : ", mapDecodeErr.Error())
+			}
 			//keyValIcon := GetDecoratedKeyValueIcon(child.Key)
 
 			/* if child.Icon != "" {
@@ -507,8 +512,10 @@ func GenerateTimeline(data models.Component, index int) (string, string, string,
 
 				val := "No Data Available"
 				var decoratedVal models.ValueWithProof
-				mapstructure.Decode(info.Value, &decoratedVal)
-
+				mapDecodeErr := mapstructure.Decode(info.Value, &decoratedVal)
+				if mapDecodeErr != nil {
+					logs.ErrorLogger.Println("failed to decode map : ", mapDecodeErr.Error())
+				}
 				if decoratedVal.Value != nil && decoratedVal.Value.(string) != "" {
 					val = decoratedVal.Value.(string)
 				}
@@ -527,7 +534,10 @@ func GenerateTimeline(data models.Component, index int) (string, string, string,
 			} else if info.Component == "image-slider" {
 				imgCont := ""
 				var imgs []models.ImageValue
-				mapstructure.Decode(info.Slides.Value, &imgs)
+				mapDecodeErr := mapstructure.Decode(info.Slides.Value, &imgs)
+				if mapDecodeErr != nil {
+					logs.ErrorLogger.Println("failed to decode map : ", mapDecodeErr.Error())
+				}
 
 				proofModalStr := ""
 				proofTickIcon := ""
@@ -1107,7 +1117,11 @@ func GetTxnHash(tdpID string) (string, string, error) {
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
-	json.Unmarshal([]byte(string(body)), &txnResp)
+	jsonUnmarshalErr := json.Unmarshal([]byte(string(body)), &txnResp)
+	if jsonUnmarshalErr != nil {
+		logs.ErrorLogger.Println("Failed to unmarshal JSON: ", jsonUnmarshalErr.Error())
+		return txnHash, stellarUrl, jsonUnmarshalErr
+	}
 
 	if len(txnResp) > 0 {
 		txnHash = txnResp[0].TxnHash
@@ -1153,7 +1167,11 @@ func GetUsers(userID []string) ([]models.Users, error) {
 	}
 
 	body, err3 := ioutil.ReadAll(resp.Body)
-	json.Unmarshal([]byte(string(body)), &users)
+	jsonUnmarshalErr := json.Unmarshal([]byte(string(body)), &users)
+	if jsonUnmarshalErr != nil {
+		logs.ErrorLogger.Println("failed to unmarshal JSON: ", jsonUnmarshalErr.Error())
+		return users, jsonUnmarshalErr
+	}
 
 	return users, nil
 }

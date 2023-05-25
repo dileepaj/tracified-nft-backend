@@ -128,13 +128,13 @@ func (r *CollectionRepository) UpdateSVGBlockchain(id string, update primitive.M
 	}
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		logs.WarningLogger.Println("Error Occured when trying to convert hex string in to Object(ID) in UpdateSVGBlockchain : collectionRepo: ", err.Error())
+		logs.WarningLogger.Println("Error Occurred when trying to convert hex string in to Object(ID) in UpdateSVGBlockchain : collectionRepo: ", err.Error())
 	}
 	rst := connections.GetSessionClient("svg").FindOneAndUpdate(context.TODO(), bson.M{"_id": objectID}, update, &opt)
 	if rst != nil {
 		err := rst.Decode((&svgUpdateResponse))
 		if err != nil {
-			logs.ErrorLogger.Println("Error Occured while retreving data from collection faq in UpdateSVGBlockchain:collectionRepo.go: ", err.Error())
+			logs.ErrorLogger.Println("Error Occurred while retrieving data from collection faq in UpdateSVGBlockchain:collectionRepo.go: ", err.Error())
 			return svgUpdateResponse, err
 		}
 		return svgUpdateResponse, err

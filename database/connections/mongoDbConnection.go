@@ -11,10 +11,9 @@ import (
 )
 
 var mgoSession mongo.Session
-var DbName=commons.GoDotEnvVariable("DATABASE_NAME")
+var DbName = commons.GoDotEnvVariable("DATABASE_NAME")
 
 func GetMongoSession() (mongo.Session, error) {
-
 	connectionString := commons.GoDotEnvVariable("BE_MONGOLAB_URI")
 	if mgoSession == nil {
 		var err error
@@ -31,7 +30,7 @@ func GetMongoSession() (mongo.Session, error) {
 	return mgoSession, nil
 }
 
-func GetSessionClient(collection string) (*mongo.Collection){
+func GetSessionClient(collection string) *mongo.Collection {
 	session, err := GetMongoSession()
 	if err != nil {
 		log.Println("Error while getting session " + err.Error())

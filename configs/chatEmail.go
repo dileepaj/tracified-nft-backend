@@ -22,7 +22,6 @@ func GetChatSenderEmailKey() string {
 }
 
 func GetAcceptedFAQEmail(category string, subject string, desc string, answer string) string {
-
 	var emailTemplate = `<table border="0" cellpadding="0" cellspacing="0" width="100%">
   <!-- LOGO -->
   <tr>

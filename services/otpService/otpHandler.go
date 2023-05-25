@@ -9,6 +9,7 @@ import (
 
 	"github.com/dileepaj/tracified-nft-backend/configs"
 	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
+	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"github.com/sirupsen/logrus"
 )
 
@@ -17,7 +18,7 @@ var baseUrl = configs.GetBackeBaseUrl() + "/traceabilityProfiles/ecommerce/nft/"
 func GetOtpForBatchURL(productId string, batchId string, otpType string, token string) (string, int, error) {
 	if otpType == "Batch" && productId != "" && batchId != "" {
 		url := baseUrl + productId + "/" + batchId
-		logrus.Info("OTP generate url",url)
+		logrus.Info("OTP generate url", url)
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
 			return "", req.Response.StatusCode, err
@@ -25,12 +26,17 @@ func GetOtpForBatchURL(productId string, batchId string, otpType string, token s
 		req.Header.Add("authorization", token)
 		req.Header.Add("cache-control", "no-cache")
 		res, err := http.DefaultClient.Do(req)
-		logrus.Info("OTP generate response",res)
+		logrus.Info("OTP generate response", res)
 		if err != nil {
-			logrus.Error("OTP generate ",err)
+			logrus.Error("OTP generate ", err)
 			return "", 500, err
 		}
-		defer res.Body.Close()
+		defer func() {
+			if bodyErr := res.Body.Close(); bodyErr != nil {
+				logs.ErrorLogger.Println("failed to close response body : ", bodyErr.Error())
+			}
+		}()
+		// defer res.Body.Close()
 		body, _ := ioutil.ReadAll(res.Body)
 		if res.StatusCode == 200 || res.StatusCode == 204 {
 			return string(body), res.StatusCode, nil
@@ -44,7 +50,7 @@ func GetOtpForBatchURL(productId string, batchId string, otpType string, token s
 func GetOtpForArtifactURL(artifactId string, otpType string, token string) (string, int, error) {
 	if otpType == "Artifact" && artifactId != "" {
 		url := baseUrl + "artifact/id/" + artifactId
-		logrus.Info("OTP generate url",url)
+		logrus.Info("OTP generate url", url)
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
 			return "", req.Response.StatusCode, err
@@ -55,14 +61,19 @@ func GetOtpForArtifactURL(artifactId string, otpType string, token string) (stri
 		if err != nil {
 			return "", 500, err
 		}
-		defer res.Body.Close()
+		defer func() {
+			if bodyCloseErr := res.Body.Close(); bodyCloseErr != nil {
+				logs.ErrorLogger.Println("failed to close body: ", bodyCloseErr.Error())
+			}
+		}()
+		// defer res.Body.Close()
 		body, _ := ioutil.ReadAll(res.Body)
 		if res.StatusCode == 200 || res.StatusCode == 204 {
 			return string(body), res.StatusCode, nil
 		}
 		return "", res.StatusCode, errors.New("Backend server connection issue")
 	} else {
-		return "", 400, errors.New("Invalied OTP Type or artifact")
+		return "", 400, errors.New("Invalid OTP Type or artifact")
 	}
 }
 
@@ -77,7 +88,12 @@ func GetOtpJSON(otpUrl string, bearerToken string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer res.Body.Close()
+	defer func() {
+		if bodyErr := res.Body.Close(); bodyErr != nil {
+			logs.ErrorLogger.Println("failed to close body: ", bodyErr.Error())
+		}
+	}()
+	// defer res.Body.Close()
 	req.Header.Add("authorization", bearerToken)
 	req.Header.Add("cache-control", "no-cache")
 	body, _ := ioutil.ReadAll(res.Body)

@@ -21,7 +21,7 @@ var NewsLetterRoutes = models.Routers{
 		Handler: apiHandler.GetAllNewsLetters,
 	},
 	models.Router{
-		Name:    "get NewsLetter by Auther",
+		Name:    "get NewsLetter by Author",
 		Method:  "GET",
 		Path:    "/newsletter/author/{name}/",
 		Handler: apiHandler.GetNewslettersByAuthor,

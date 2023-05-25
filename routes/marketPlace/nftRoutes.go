@@ -5,7 +5,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/models"
 )
 
-// This routes manage the all NFT related rotes in the marketpalce
+// This routes manage the all NFT related rotes in the marketplace
 var NftRoutes = models.Routers{
 
 	models.Router{

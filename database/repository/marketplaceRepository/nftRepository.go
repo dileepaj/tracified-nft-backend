@@ -180,7 +180,7 @@ func (r *NFTRepository) GetSVGByHash(hash string) (models.SVG, error) {
 	for rst.Next(context.TODO()) {
 		err = rst.Decode(&svg)
 		if err != nil {
-			logs.ErrorLogger.Println("Error occured while retreving data from collection svg in GetSVGByHash:NFTRepository.go: ", err.Error())
+			logs.ErrorLogger.Println("Error occurred while retrieving data from collection svg in GetSVGByHash:NFTRepository.go: ", err.Error())
 			return svg, err
 		}
 	}
@@ -191,7 +191,7 @@ func (r *NFTRepository) GetThumbnailbyID(id string) (models.ThumbNail, error) {
 	var thumbnail models.ThumbNail
 	objectID, objerr := primitive.ObjectIDFromHex(id)
 	if objerr != nil {
-		logs.WarningLogger.Println("Error Occured when trying to convert hex string in to Object(ID) in GetThumbnailbyID : nftRepo: ", objerr.Error())
+		logs.WarningLogger.Println("Error Occurred when trying to convert hex string in to Object(ID) in GetThumbnailbyID : nftRepo: ", objerr.Error())
 		return thumbnail, objerr
 	}
 
@@ -202,7 +202,7 @@ func (r *NFTRepository) GetThumbnailbyID(id string) (models.ThumbNail, error) {
 	for rst.Next(context.TODO()) {
 		err = rst.Decode(&thumbnail)
 		if err != nil {
-			logs.ErrorLogger.Println("Failed to retrive NFT thumbnail: ", err.Error())
+			logs.ErrorLogger.Println("Failed to retrieve NFT thumbnail: ", err.Error())
 			return thumbnail, err
 		}
 	}

@@ -60,7 +60,10 @@ func SaveTDPDataByBatchID(W http.ResponseWriter, r *http.Request) {
 	W.Header().Set("Content-Type", "application/json; charset-UTF-8")
 	vars := mux.Vars(r)
 	logs.InfoLogger.Println("URL Param:", vars["batchID"])
-	customizedNFTFacade.GetTDPDataByBatchID(vars["batchID"])
+	_, err := customizedNFTFacade.GetTDPDataByBatchID(vars["batchID"])
+	if err != nil {
+		logs.ErrorLogger.Println("failed to get batch data: ", err.Error())
+	}
 }
 
 func GenerateSVG(W http.ResponseWriter, r *http.Request) {

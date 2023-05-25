@@ -102,7 +102,7 @@ func UpdateBestCreators(creatorlist []models.CreatorsList) ([]models.Endorse, er
 				"$set": bson.M{"isbestcreator": true, "avgrating": item.AvgRating},
 			}
 			res, err1 := EndorsementRepository.UpDateBestCreators(nft[0].CreatorUserId, update)
-			logs.InfoLogger.Println("DB update reponse: ", res)
+			logs.InfoLogger.Println("DB update response: ", res)
 			if err1 != nil {
 				return creator, err
 			}
@@ -135,5 +135,5 @@ func GetPaginatedBestCreators(paginationData requestDtos.CreatorInfoforMatrixVie
 		return response, err
 	}
 	logs.InfoLogger.Println("paginated response: ", response)
-	return models.PaginatedCreatorInfo(response), nil
+	return response, nil
 }

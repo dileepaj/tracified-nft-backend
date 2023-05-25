@@ -23,7 +23,7 @@ func (r *MapRepository) GetMapByID(id string) (string, error) {
 	var mapData models.GeneratedMap
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		logs.WarningLogger.Println("Error Occured when trying to convert hex string in to Object(ID) in GetMapByID : MapRepository: ", err.Error())
+		logs.WarningLogger.Println("Error Occurred when trying to convert hex string in to Object(ID) in GetMapByID : MapRepository: ", err.Error())
 	}
 	rst, sessionerr := connections.GetSessionClient(mapCollection).Find(context.TODO(), bson.M{"_id": objectId})
 	if sessionerr != nil {
@@ -32,7 +32,7 @@ func (r *MapRepository) GetMapByID(id string) (string, error) {
 	for rst.Next(context.TODO()) {
 		err = rst.Decode(&mapData)
 		if err != nil {
-			logs.ErrorLogger.Println("Error occured while retreving data from collection faq in GetMapByID:MapRepository.go: ", err.Error())
+			logs.ErrorLogger.Println("Error occurred while retrieving data from collection faq in GetMapByID:MapRepository.go: ", err.Error())
 			return mapData.MapTemplate, err
 		}
 	}
