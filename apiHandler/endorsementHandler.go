@@ -100,10 +100,10 @@ func UpdateEndorsedStatus(w http.ResponseWriter, r *http.Request) {
 			errors.BadRequest(w, ErrorMessage)
 			return
 		} else {
-			//If endrosment status is updated successfully another DB call is made to retive all the enrosment detials by user
+			//If endorsement status is updated successfully another DB call is made to retrieve all the endorsement details by user
 			endorsmentrst, err1 := marketplaceBusinessFacade.GetEndorsmentByUserPK(updateObj.PublicKey)
 			if err1 != nil {
-				logs.ErrorLogger.Println("Failed to get endorsment data : ", err1.Error())
+				logs.ErrorLogger.Println("Failed to get endorsement data : ", err1.Error())
 			}
 			emailErr := marketplaceBusinessFacade.SendEndorsmentEmail(endorsmentrst)
 			if emailErr != nil {

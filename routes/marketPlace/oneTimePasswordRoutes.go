@@ -7,13 +7,13 @@ import (
 
 var OneTimePassWordRoutes = models.Routers{
 	/**
-	 * ?Description : POST request, when RURI product ID and user email is providied OTP will be generated and sent as a email to customer
-	 * ?relevent batchID for the RURI product ID will be recived and stored in the DB along with email and otp
+	 * ?Description : POST request, when RURI product ID and user email is provided OTP will be generated and sent as a email to customer
+	 * ?relevant batchID for the product ID will be received and stored in the DB along with email and otp
 	 * *Param : {email} --> Users email
-	 * *reutrns : Object code of new OTP that was saved in DB
+	 * *returns : Object code of new OTP that was saved in DB
 	 */
 	models.Router{
-		Name:    "Initialize OTP", //! Initialise NFT
+		Name:    "Initialize OTP", //! Initialize NFT
 		Method:  "POST",
 		Path:    "/otpgen",
 		Handler: apiHandler.InitNFT,
@@ -26,16 +26,16 @@ var OneTimePassWordRoutes = models.Routers{
 	 */
 	models.Router{
 		Name:    "Validate OTP",
-		Method:  "POST",          //! COnvert to post method
+		Method:  "POST",          //! Convert to post method
 		Path:    "/validateOTP/", //? /validateOTP/..
 		Handler: apiHandler.ValidateOTP,
 	},
 
 	/**
 	 * ?Description :PUT Request that will Re generate an OTP and send an email to the customer with the new OTP code
-	 * *URL Param : {productID} --> Shopify RURI product ID
+	 * *URL Param : {productID} --> Shopify product ID
 	 * *URL Param : {email} --> Users email
-	 * *reutrns : Returns the BatchID if the OTP was geneerated Succesfully.
+	 * *returns : Returns the BatchID if the OTP was generated Successfully.
 	 */
 	models.Router{
 		Name:    "Resend OTP",

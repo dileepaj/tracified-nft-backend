@@ -21,7 +21,7 @@ func SaveMap(mapdata []models.MapInfo) (string, error) {
 func GetMapByID(id string) (string, error) {
 	rst, err := mapRepository.GetMapByID(id)
 	if err != nil {
-		logs.ErrorLogger.Println("failed to retrive map : ", err.Error())
+		logs.ErrorLogger.Println("failed to retrieve map : ", err.Error())
 		return rst, err
 	}
 	return rst, nil

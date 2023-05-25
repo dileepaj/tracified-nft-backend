@@ -25,7 +25,7 @@ func (r *EndorsementRepository) UpdateEndorsement(findBy string, id string, find
 		ReturnDocument: &after,
 		Upsert:         &upsert,
 	}
-	rst := connections.GetSessionClient("endorsement").FindOneAndUpdate(context.TODO(), bson.D{{findBy, id}, {findBy2, id2}}, update, &opt)
+	rst := connections.GetSessionClient("endorsement").FindOneAndUpdate(context.TODO(), bson.D{{Key: findBy, Value: id}, {Key: findBy2, Value: id2}}, update, &opt)
 	if rst != nil {
 		err := rst.Decode((&endorseResponse))
 		if err != nil {
@@ -47,7 +47,7 @@ func (r *EndorsementRepository) UpdateExisitngEndorsement(findBy string, id stri
 		ReturnDocument: &after,
 		Upsert:         &upsert,
 	}
-	rst := connections.GetSessionClient("endorsement").FindOneAndUpdate(context.TODO(), bson.D{{findBy, id}}, update, &opt)
+	rst := connections.GetSessionClient("endorsement").FindOneAndUpdate(context.TODO(), bson.D{{Key: findBy, Value: id}}, update, &opt)
 	if rst != nil {
 		err := rst.Decode((&endorseResponse))
 		if err != nil {

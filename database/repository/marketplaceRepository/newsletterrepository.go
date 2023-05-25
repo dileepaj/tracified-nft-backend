@@ -35,13 +35,13 @@ func (r *NewsLetterRepository) GetAllNewsLetters() ([]models.NewsLetter, error) 
 	findOptions := options.Find()
 	result, err := connections.GetSessionClient(NewsLetter).Find(context.TODO(), bson.D{{}}, findOptions)
 	if err != nil {
-		logs.ErrorLogger.Println("Error while retreving data in GetAllNewsLetters : newsletterrepository: ", err.Error())
+		logs.ErrorLogger.Println("Error while retrieving data in GetAllNewsLetters : newsletterrepository: ", err.Error())
 	}
 	for result.Next(context.TODO()) {
 		var newsLetter models.NewsLetter
 		err = result.Decode(&newsLetter)
 		if err != nil {
-			logs.ErrorLogger.Println("Error while decoding news letter data recived from DB in GetAllNewsLetters:newsletterrepository: ", err.Error())
+			logs.ErrorLogger.Println("Error while decoding news letter data received from DB in GetAllNewsLetters:newsletterrepository: ", err.Error())
 			return allNewsLetters, err
 		}
 		allNewsLetters = append(allNewsLetters, newsLetter)
@@ -61,7 +61,7 @@ func (r *NewsLetterRepository) GetNewsLetterByAuthor(authorname string) ([]model
 			var newsletter models.NewsLetter
 			err = result.Decode(&newsletter)
 			if err != nil {
-				logs.ErrorLogger.Println("Error while decoding news letter data recived from DB in GetNewsLetterByAuthor:newsletterrepository: ", err.Error())
+				logs.ErrorLogger.Println("Error while decoding news letter data received from DB in GetNewsLetterByAuthor:newsletterrepository: ", err.Error())
 				return newsLetters, err
 			}
 			newsLetters = append(newsLetters, newsletter)

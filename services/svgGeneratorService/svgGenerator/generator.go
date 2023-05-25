@@ -128,7 +128,7 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 														<div class="proof-section"><label class="proofbot-data-field">Available Proofs : </label>
 														`
 								for _, proofUrl := range data.Urls {
-									if (proofUrl.Urls != "") && (strings.ToLower(proofUrl.Type)!="poc") {
+									if (proofUrl.Urls != "") && (strings.ToLower(proofUrl.Type) != "poc") {
 										var removeAndsymble string = strings.Replace(proofUrl.Urls, "&", "&amp;", -1)
 
 										htmlBotcard += `<a class="proof-anchor1" href="` + removeAndsymble + `" target="_blank" rel="noopener noreferrer">
@@ -167,7 +167,7 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 													  <div class="card p-3 point">`
 								if len(data.Children) > 0 {
 									for _, timelineChild := range data.Children {
-										if timelineChild.NewTDP == true {
+										if timelineChild.NewTDP {
 											htmlTimelineBody += `<span class="tdp-added-date">Added : ` + timelineChild.Timestamp + `</span>`
 										}
 										htmlTimelineBody += `<span class="timeline-key">` + replaceAndSymbol(timelineChild.Key) + `</span><p><span class="timeline-value">` + timelineChild.Value + `</span></p>`

@@ -10,10 +10,15 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+const (
+	NFT_NOT_SAVED = "NFT not saved"
+	HOT_PICKS     = "hotpicks"
+)
+
 func StoreNFT(createNFTObject models.NFT) (string, error) {
 	rst, err1 := nftRepository.SaveNFT(createNFTObject)
 	if err1 != nil {
-		return "NFT not saved", err1
+		return NFT_NOT_SAVED, err1
 	}
 	return rst, nil
 
@@ -26,7 +31,7 @@ func GetImageBase(nftcontent string) (models.NFT, error) {
 func StoreNFTStory(createNFTObject models.NFTStory) (string, error) {
 	rst, err1 := nftRepository.SaveNFTStory(createNFTObject)
 	if err1 != nil {
-		return "NFT not saved", err1
+		return NFT_NOT_SAVED, err1
 	}
 	return rst, nil
 
@@ -74,7 +79,7 @@ func GetNFTByCollection(paginationData requestDtos.NFTsForMatrixView, collection
 		logs.ErrorLogger.Println("Error occurred :", err.Error())
 		return models.Paginateresponse(response), err
 	}
-	return models.Paginateresponse(response), err
+	return response, err
 }
 
 func GetProjectionDataNFTMatrixView() bson.D {
@@ -103,9 +108,9 @@ func GetNFTPagination(paginationData requestDtos.NFTsForMatrixView) (models.Pagi
 	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occurred :", err.Error())
-		return models.Paginateresponse(response), err
+		return response, err
 	}
-	return models.Paginateresponse(response), err
+	return response, err
 }
 
 func GetPaginatedNFTbySellingStatus(paginationData requestDtos.NFTsForMatrixView) (models.Paginateresponse, error) {
@@ -118,17 +123,17 @@ func GetPaginatedNFTbySellingStatus(paginationData requestDtos.NFTsForMatrixView
 	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occurred :", err.Error())
-		return models.Paginateresponse(response), err
+		return response, err
 	}
-	return models.Paginateresponse(response), err
+	return response, err
 }
 
 func GetPaginatedNFTbyStatusFilter(paginationData requestDtos.NFTsForMatrixView) (models.Paginateresponse, error) {
 	var filter = bson.M{}
-	if paginationData.SortbyFeild == "hotpicks" {
+	if paginationData.SortbyFeild == HOT_PICKS {
 		filter = bson.M{
 			"blockchain": paginationData.Blockchain,
-			"hotpicks":   true,
+			HOT_PICKS:    true,
 		}
 	} else if paginationData.SortbyFeild == "trending" {
 		filter = bson.M{
@@ -142,17 +147,17 @@ func GetPaginatedNFTbyStatusFilter(paginationData requestDtos.NFTsForMatrixView)
 	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured :", err.Error())
-		return models.Paginateresponse(response), err
+		return response, err
 	}
-	return models.Paginateresponse(response), err
+	return response, err
 }
 
 func GetPaginatedOnSaleNFTbyStatusFilter(paginationData requestDtos.NFTsForMatrixView) (models.Paginateresponse, error) {
 	var filter = bson.M{}
-	if paginationData.SortbyFeild == "hotpicks" {
+	if paginationData.SortbyFeild == HOT_PICKS {
 		filter = bson.M{
 			"sellingstatus": "ON SALE",
-			"hotpicks":      true,
+			HOT_PICKS:       true,
 		}
 	} else if paginationData.SortbyFeild == "trending" {
 		filter = bson.M{
@@ -165,10 +170,10 @@ func GetPaginatedOnSaleNFTbyStatusFilter(paginationData requestDtos.NFTsForMatri
 	var nfts []models.NFTContentforMatrix
 	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts)
 	if err != nil {
-		logs.ErrorLogger.Println("Error occured :", err.Error())
-		return models.Paginateresponse(response), err
+		logs.ErrorLogger.Println("Error occurred :", err.Error())
+		return response, err
 	}
-	return models.Paginateresponse(response), err
+	return response, err
 }
 
 func GetPaginatedResponseforBestCreations(paginationData requestDtos.NFTsForMatrixView) (models.Paginateresponse, error) {
@@ -182,9 +187,9 @@ func GetPaginatedResponseforBestCreations(paginationData requestDtos.NFTsForMatr
 	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured :", err.Error())
-		return models.Paginateresponse(response), err
+		return response, err
 	}
-	return models.Paginateresponse(response), err
+	return response, err
 }
 
 func GetOneONSaleNFT(id string, identifier string, blockchain string) ([]models.NFT, error) {
@@ -225,9 +230,9 @@ func GEtNFTbyTagsName(paginationData requestDtos.NFTsForMatrixView, tagToSearch 
 	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occurred :", err.Error())
-		return models.Paginateresponse(response), err
+		return response, err
 	}
-	return models.Paginateresponse(response), err
+	return response, err
 }
 
 func GetNFTbyAccount(userId string) ([]models.NFT, error) {

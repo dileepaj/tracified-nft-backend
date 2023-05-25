@@ -44,7 +44,6 @@ func SaveProject(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusUnauthorized)
 	logs.ErrorLogger.Println("Status Unauthorized")
-	return
 }
 
 func SaveChart(w http.ResponseWriter, r *http.Request) {
@@ -72,7 +71,6 @@ func SaveChart(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusUnauthorized)
 	logs.ErrorLogger.Println("Status Unauthorized")
-	return
 }
 
 func SaveTable(w http.ResponseWriter, r *http.Request) {
@@ -100,7 +98,6 @@ func SaveTable(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusUnauthorized)
 	logs.ErrorLogger.Println("Status Unauthorized")
-	return
 }
 
 func SaveStat(w http.ResponseWriter, r *http.Request) {
@@ -128,10 +125,9 @@ func SaveStat(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusUnauthorized)
 	logs.ErrorLogger.Println("Status Unauthorized")
-	return
 }
 
-//save proofbot widget
+// save proofbot widget
 func SaveProofBot(w http.ResponseWriter, r *http.Request) {
 	defer context.Clear(r)
 	w.Header().Set("Content-Type", "application/json;")
@@ -157,7 +153,6 @@ func SaveProofBot(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusUnauthorized)
 	logs.ErrorLogger.Println("Status Unauthorized")
-	return
 }
 
 // save image widget
@@ -186,7 +181,6 @@ func SaveImage(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusUnauthorized)
 	logs.ErrorLogger.Println("Status Unauthorized")
-	return
 }
 
 func SaveTimeline(w http.ResponseWriter, r *http.Request) {
@@ -214,12 +208,12 @@ func SaveTimeline(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusUnauthorized)
 	logs.ErrorLogger.Println("Status Unauthorized")
-	return
 }
+
 // Find project by user ID
 func GetRecentProjects(w http.ResponseWriter, r *http.Request) {
 	defer context.Clear(r)
-	time.Sleep(1 * time.Second) //for fixing jwt token validation server time issue 
+	time.Sleep(1 * time.Second) //for fixing jwt token validation server time issue
 	w.Header().Set("Content-Type", "application/json;")
 	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
 	if ps.Status {
@@ -235,10 +229,9 @@ func GetRecentProjects(w http.ResponseWriter, r *http.Request) {
 			errors.BadRequest(w, "")
 		}
 	}
-	logrus.Info("AUTH ",ps)
+	logrus.Info("AUTH ", ps)
 	w.WriteHeader(http.StatusUnauthorized)
 	logs.ErrorLogger.Println("Status Unauthorized")
-	return
 }
 
 // Find project by user ID
@@ -261,7 +254,6 @@ func GetRecentProjectDetails(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusUnauthorized)
 	logs.ErrorLogger.Println("Status Unauthorized")
-	return
 }
 
 func UpdateProject(w http.ResponseWriter, r *http.Request) {
@@ -284,7 +276,6 @@ func UpdateProject(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusUnauthorized)
 	logs.ErrorLogger.Println("Status Unauthorized")
-	return
 }
 
 func UpdateChart(w http.ResponseWriter, r *http.Request) {
@@ -309,7 +300,6 @@ func UpdateChart(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusUnauthorized)
 	logs.ErrorLogger.Println("Status Unauthorized")
-	return
 }
 
 func UpdateTable(w http.ResponseWriter, r *http.Request) {
@@ -332,7 +322,6 @@ func UpdateTable(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusUnauthorized)
 	logs.ErrorLogger.Println("Status Unauthorized")
-	return
 }
 
 func UpdateProofBot(w http.ResponseWriter, r *http.Request) {
@@ -356,7 +345,6 @@ func UpdateProofBot(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusUnauthorized)
 	logs.ErrorLogger.Println("Status Unauthorized")
-	return
 }
 
 func UpdateImage(w http.ResponseWriter, r *http.Request) {
@@ -379,7 +367,6 @@ func UpdateImage(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusUnauthorized)
 	logs.ErrorLogger.Println("Status Unauthorized")
-	return
 }
 
 func UpdateTimeline(w http.ResponseWriter, r *http.Request) {

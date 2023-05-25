@@ -112,10 +112,10 @@ func UpdateUserFAQStatus(w http.ResponseWriter, r *http.Request) {
 			errors.BadRequest(w, ErrorMessage)
 			return
 		} else {
-			//If userfaq status is updated successfully another DB call is made to retive all the faq detials by id
+			//If userfaq status is updated successfully another DB call is made to retrieve all the faq details by id
 			faqdata, err1 := marketplaceBusinessFacade.GetUserFAQByID(updateObj.UserQuestionID)
 			if err1 != nil {
-				logs.ErrorLogger.Println("Failed to get endorsment data : ", err1.Error())
+				logs.ErrorLogger.Println("Failed to get endorsement data : ", err1.Error())
 			}
 			emailErr := marketplaceBusinessFacade.SendResponseToFAQ(faqdata)
 			if emailErr != nil {

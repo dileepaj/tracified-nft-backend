@@ -9,7 +9,6 @@ var (
 	senderEmailAddress = ""
 	senderEmailAppPwd  = ""
 	emailHost          = ""
-	emailPort          = 0
 	bearerToken        = ""
 )
 

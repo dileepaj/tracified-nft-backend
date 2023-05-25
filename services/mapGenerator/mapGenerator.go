@@ -17,7 +17,11 @@ func GetCityName(lat, lon string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if bodyErr := resp.Body.Close(); bodyErr != nil {
+			logs.ErrorLogger.Println("failed to close body: ", bodyErr.Error())
+		}
+	}()
 	var mapTemplate models.Location
 	err = json.NewDecoder(resp.Body).Decode(&mapTemplate)
 	if err != nil {
@@ -27,13 +31,11 @@ func GetCityName(lat, lon string) (string, error) {
 		return mapTemplate.Address.Country, nil
 	}
 	return mapTemplate.Address.City, nil
-
 }
 
 func GeneratePoints(mapdata []models.MapInfo) string {
 	var geoData string = ""
 	for i, v := range mapdata {
-
 		long := fmt.Sprintf("%f", v.Longitude)
 		lat := fmt.Sprintf("%f", v.Latitude)
 		/* cityname, cityerr := GetCityName(lat, long)

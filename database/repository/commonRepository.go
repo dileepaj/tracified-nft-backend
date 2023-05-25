@@ -22,8 +22,13 @@ func Save[T models.SaveType](model T, collection string) (string, error) {
 		logs.ErrorLogger.Println(err.Error())
 		return "", err
 	}
-	defer client.Disconnect(context.Background())
 
+	defer func() {
+		if clientDisconnectErr := client.Disconnect(context.Background()); clientDisconnectErr != nil {
+			logs.ErrorLogger.Println("Failed to disconnect client : ", clientDisconnectErr.Error())
+		}
+	}()
+	// defer client.Disconnect(context.Background())
 	session, err := client.StartSession()
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
@@ -46,7 +51,12 @@ func InsertMany[T models.InsertManyType](model T, collection string) (string, er
 		logs.ErrorLogger.Println(err.Error())
 		return "", err
 	}
-	defer client.Disconnect(context.Background())
+	defer func() {
+		if clientDisconnectErr := client.Disconnect(context.Background()); clientDisconnectErr != nil {
+			logs.ErrorLogger.Println("Failed to disconnect client : ", clientDisconnectErr.Error())
+		}
+	}()
+	// defer client.Disconnect(context.Background())
 
 	session, err := client.StartSession()
 	if err != nil {
@@ -73,7 +83,12 @@ func FindById(idName string, id string, collection string) (*mongo.Cursor, error
 		logs.ErrorLogger.Println(err.Error())
 		return nil, err
 	}
-	defer client.Disconnect(context.Background())
+	defer func() {
+		if clientDisconnectErr := client.Disconnect(context.Background()); clientDisconnectErr != nil {
+			logs.ErrorLogger.Println("Failed to disconnect client : ", clientDisconnectErr.Error())
+		}
+	}()
+	// defer client.Disconnect(context.Background())
 
 	session, err := client.StartSession()
 	if err != nil {
@@ -83,9 +98,9 @@ func FindById(idName string, id string, collection string) (*mongo.Cursor, error
 	defer session.EndSession(context.Background())
 
 	findOptions := options.Find()
-	findOptions.SetSort(bson.D{{"timestamp", -1}})
+	findOptions.SetSort(bson.D{{Key: "timestamp", Value: -1}})
 	findOptions.SetProjection(bson.M{"otp": 0})
-	rst, err := session.Client().Database(DbName).Collection(collection).Find(context.TODO(), bson.D{{idName, id}}, findOptions)
+	rst, err := session.Client().Database(DbName).Collection(collection).Find(context.TODO(), bson.D{{Key: idName, Value: id}}, findOptions)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 		return rst, err
@@ -100,7 +115,12 @@ func FindOne[T models.FindOneType](idName string, id T, collection string) *mong
 		logs.ErrorLogger.Println(err.Error())
 		return nil
 	}
-	defer client.Disconnect(context.Background())
+	defer func() {
+		if clientDisconnectErr := client.Disconnect(context.Background()); clientDisconnectErr != nil {
+			logs.ErrorLogger.Println("Failed to disconnect client : ", clientDisconnectErr.Error())
+		}
+	}()
+	// defer client.Disconnect(context.Background())
 
 	session, err := client.StartSession()
 	if err != nil {
@@ -108,7 +128,7 @@ func FindOne[T models.FindOneType](idName string, id T, collection string) *mong
 		return nil
 	}
 	defer session.EndSession(context.Background())
-	rst := session.Client().Database(DbName).Collection(collection).FindOne(context.TODO(), bson.D{{idName, id}})
+	rst := session.Client().Database(DbName).Collection(collection).FindOne(context.TODO(), bson.D{{Key: idName, Value: id}})
 	return rst
 }
 

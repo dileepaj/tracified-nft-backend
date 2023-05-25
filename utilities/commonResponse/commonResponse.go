@@ -42,5 +42,8 @@ func RespondWithJSON(response http.ResponseWriter, statusCode int, data interfac
 	result, _ := json.Marshal(data)
 	response.Header().Set("Content-Type", "application/json")
 	response.WriteHeader(statusCode)
-	response.Write(result)
+	_, writeErr := response.Write(result)
+	if writeErr != nil {
+		logs.InfoLogger.Println("failed to write response with JSON : ", writeErr.Error())
+	}
 }

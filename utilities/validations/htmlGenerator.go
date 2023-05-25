@@ -40,7 +40,6 @@ func ValidateUpdateProject(e requestDtos.UpdateProjectRequest) error {
 		return err
 	}
 	return nil
-
 }
 
 func ValidateUpdateTable(e requestDtos.UpdateTableRequest) error {
@@ -50,7 +49,6 @@ func ValidateUpdateTable(e requestDtos.UpdateTableRequest) error {
 		return err
 	}
 	return nil
-
 }
 
 func ValidateUpdateChart(e requestDtos.UpdateChartRequest) error {
@@ -60,7 +58,6 @@ func ValidateUpdateChart(e requestDtos.UpdateChartRequest) error {
 		return err
 	}
 	return nil
-
 }
 
 func ValidateUpdateProofBot(e requestDtos.UpdateProofBotRequest) error {
@@ -70,7 +67,6 @@ func ValidateUpdateProofBot(e requestDtos.UpdateProofBotRequest) error {
 		return err
 	}
 	return nil
-
 }
 
 func ValidateUpdateImage(e requestDtos.UpdateImageRequest) error {

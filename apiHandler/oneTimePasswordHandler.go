@@ -16,7 +16,7 @@ import (
 )
 
 /**
- **Description:function is used to generate and savee a new OTP and send a email to the customer with the otp. The function will also retreive item data such
+ **Description:function is used to generate and save a new OTP and send a email to the customer with the otp. The function will also retrieve item data such
  **as itemID,batchID etc by using the provided productID parameter
  **Returns:Object ID of the new OTP created
  */
@@ -43,13 +43,13 @@ func InitNFT(W http.ResponseWriter, r *http.Request) {
 			errors.BadRequest(W, "Failed to generate OTP")
 			// If the OTP is generated ProductID will be sent to get the batchID
 		} else {
-			// GET batch id when RURI product ID is given
+			// GET batch id when product ID is given
 			batchData, err := customizedNFTFacade.GetBatchIDDatabyItemID(requestGenOTP.ProductID)
-			// If the API is unable to retreive the batch ID response with err msg will be sent
+			// If the API is unable to retrieve the batch ID response with err msg will be sent
 			if err != nil || otp == "" {
-				errors.BadRequest(W, "Failed to retrive BatchID data")
+				errors.BadRequest(W, "Failed to retrieve BatchID data")
 				return
-			} // If batch ID is retreived user email,otp and batch ID will be sent to be saved in the ruriOtp DB
+			} // If batch ID is retrieved user email,otp and batch ID will be sent to be saved in the DB
 			encodedOTP := commonMethods.StringToSHA256(otp)
 			_, error := SaveUserOTPMapping(requestGenOTP.Email, encodedOTP, batchData.BatchID, requestGenOTP.ProductID)
 			if error != nil {
@@ -87,9 +87,9 @@ func SaveUserOTPMapping(email string, otp string, batchID string, shopId string)
 }
 
 /**
- **Description:This function is used to validate a OTP provided by the user. The email and the otp will be sent where the api.Checks if the otp and the email recived
+ **Description:This function is used to validate a OTP provided by the user. The email and the otp will be sent where the api.Checks if the otp and the email received
  **have a matching record in the DB
- **Returns:If There is a matching email and a OTP in the DB the generated SVG will be reutrned as a response. If not error msg is sent as response
+ **Returns:If There is a matching email and a OTP in the DB the generated SVG will be returned as a response. If not error msg is sent as response
  */
 func ValidateOTP(W http.ResponseWriter, r *http.Request) {
 	W.Header().Set("Content-Type", "application/json; charset-UTF-8")
@@ -151,7 +151,7 @@ func ValidateOTP(W http.ResponseWriter, r *http.Request) {
 
 /**
  **Description : Is used to generate a new OTP code and send to the provided email address
- **Returns : If the OTP is succesfully generated the batch ID is returned.
+ **Returns : If the OTP is successfully generated the batch ID is returned.
  */
 func ResentOTP(W http.ResponseWriter, r *http.Request) {
 	W.Header().Set("Content-Type", "application/json; charset-UTF-8")
@@ -169,18 +169,18 @@ func ResentOTP(W http.ResponseWriter, r *http.Request) {
 		}
 		otp, err := customizedNFTFacade.GenerateOTP(requestResendOTP.Email)
 		if err != nil {
-			errors.BadRequest(W, "Failed to retrive BatchID data")
+			errors.BadRequest(W, "Failed to retrieve BatchID data")
 			return
 		} else {
 			batchData, err := customizedNFTFacade.GetBatchIDDatabyItemID(requestResendOTP.ProductID)
 			if err != nil {
-				errors.BadRequest(W, "Failed to retrive BatchID data")
+				errors.BadRequest(W, "Failed to retrieve BatchID data")
 				return
 			}
 			encodedOTP := commonMethods.StringToSHA256(otp)
 			rst, err := UpdateCustomerIndormation(requestResendOTP.Email, batchData.BatchID, encodedOTP)
 			if err != nil {
-				errors.BadRequest(W, "Failed oepration : "+err.Error())
+				errors.BadRequest(W, "Failed operation : "+err.Error())
 				return
 			}
 			err1 := customizedNFTFacade.SendEmail(otp, requestResendOTP.Email)

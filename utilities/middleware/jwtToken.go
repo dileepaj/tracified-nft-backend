@@ -62,7 +62,6 @@ func HasPermissions(reqToken string) PermissionStatus {
 					logs.ErrorLogger.Println("Permissions not found")
 					ps.Status = false
 				}
-
 			}
 		}
 	} else {

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
+	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"github.com/gorilla/context"
 )
 
@@ -19,5 +20,9 @@ func HealthCheck(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(resp)
+	encodeErr := json.NewEncoder(w).Encode(resp)
+	if encodeErr != nil {
+		logs.ErrorLogger.Println("failed to encode JSON: ", encodeErr.Error())
+	}
+
 }

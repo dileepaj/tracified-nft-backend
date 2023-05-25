@@ -23,7 +23,7 @@ import (
 /**
  * Description:Function will be used to generate a new OTP by using a secret of length 2.
  * An otp with 4 alphanumeric characters will be generated and will be sent via email
- * Libary userd : gotp --> github.com/xlzd/gotp
+ * Library used : gotp --> github.com/xlzd/gotp
  * *param: email need to pass the user email
  * *returns: OTP that consoist of 4 alphanumeric characters
  */
@@ -38,28 +38,28 @@ func GenerateOTP(email string) (string, error) {
 
 /**
  *  Description : Will save the generated OTP along with user email and batchID
- * *paramm : models.OTPData which consist of email,otp and batch ID (all string)
- * *returns : object ID of new DB enetry or error message if saving fails
+ * *param : models.OTPData which consist of email,otp and batch ID (all string)
+ * *returns : object ID of new DB entry or error message if saving fails
  */
 func SaveOTP(otpDataSet models.UserAuth) (string, error) {
 	return otpRepository.SaveOTP(otpDataSet)
 }
 
 /**
- * Descprition : checks if a valid OTP exisit
+ * Description : checks if a valid OTP exist
  * *param : email, users email
  * *param : otp, otp entered by user
- * *reutrns : respective batchID if the otp is valid
+ * *returns : respective batchID if the otp is valid
  */
 func ValidateOTP(email string, otp string) (string, string, error) {
 	return otpRepository.ValidateOTP(email, otp)
 }
 
 /**
- * Descprition : Resends a new OTP and update DB
+ * Description : Resend a new OTP and update DB
  * *param : email, users email
  * *param : otp, otp entered by user
- * *reutrns : respective batchID if the otp is valid
+ * *returns : respective batchID if the otp is valid
  */
 func ResendOTP(otpData models.UserAuth) (string, error) {
 	return otpRepository.ResendOTP(otpData)
@@ -68,9 +68,9 @@ func ResendOTP(otpData models.UserAuth) (string, error) {
 /**
  *  Description : this function formats and send the email tha contains the customers OTP to the customer
  *  lib used : gomail ("gopkg.in/gomail.v2")
- * *param : otp, Otp genereted for customer.
- * *paran : email, email of the customer that the mail will be sent to.
- * *returns : an eroor if it fails to sent the mail.
+ * *param : otp, Otp generated for customer.
+ * *param : email, email of the customer that the mail will be sent to.
+ * *returns : an error if it fails to sent the mail.
  */
 func SendEmail(otp string, email string) error {
 	msg := gomail.NewMessage()
@@ -111,7 +111,12 @@ func GetBatchIDDatabyItemID(shopID string) (models.ItemData, error) {
 	}
 
 	body, err := ioutil.ReadAll(rst.Body)
-	defer rst.Body.Close()
+	//anonymous function to handle HTTP body close
+	defer func() {
+		if bodyErr := rst.Body.Close(); bodyErr != nil {
+			logs.ErrorLogger.Println("error closing response body", bodyErr.Error())
+		}
+	}()
 	var data = string(body)
 	itemdata = FormatBatchIDString(data)
 	if err != nil {
@@ -121,9 +126,9 @@ func GetBatchIDDatabyItemID(shopID string) (models.ItemData, error) {
 }
 
 /**
- * Descrition : formats the string which containts the item data and assigns data into struct RuriItemData
- **Param : text : String to be formated
- **reutrns : models.RuriItemData
+ * Description : formats the string which contains the item data and assigns data into struct RuriItemData
+ **Param : text : String to be formatted
+ **returns : models.RuriItemData
  */
 func FormatBatchIDString(text string) models.ItemData {
 	// TODO: Have some error checking
@@ -166,9 +171,9 @@ func GetSVGbyEmailandBatchID(email string, batchID string) (responseDtos.SVGforN
 }
 
 /**
- * Descrition : Retrives the relevent TDP data for a specific batch ID
+ * Description : Retrieves the relevant TDP data for a specific batch ID
  **Param : batchID : batch ID of product
- **reutrns : []models.TDP : Contains a list of the TDP data for the provided batchID
+ **returns : []models.TDP : Contains a list of the TDP data for the provided batchID
  */
 func GetTDPDataByBatchID(batchID string) ([][]models.TDPParent, error) {
 	var tdpData [][]models.TDPParent
@@ -182,16 +187,28 @@ func GetTDPDataByBatchID(batchID string) ([][]models.TDPParent, error) {
 	}
 	req.Header.Add("Authorization", bearer)
 	client := &http.Client{}
-	resp, err := client.Do(req)
-	body, err := ioutil.ReadAll(resp.Body)
-	json.Unmarshal([]byte(string(body)), &tdpData)
+	resp, clientErr := client.Do(req)
+	if clientErr != nil {
+		logs.ErrorLogger.Println("failed to execute client Do request : ", clientErr.Error())
+		return tdpData, clientErr
+	}
+	body, bodyErr := ioutil.ReadAll(resp.Body)
+	if bodyErr != nil {
+		logs.ErrorLogger.Println("failed to read JSON body : ", bodyErr.Error())
+		return tdpData, bodyErr
+	}
+	unMarshalErr := json.Unmarshal([]byte(string(body)), &tdpData)
+	if unMarshalErr != nil {
+		logs.ErrorLogger.Println("failed to unmarshal JSON: ", unMarshalErr.Error())
+		return tdpData, unMarshalErr
+	}
 	return tdpData, nil
 }
 
 /**
- * Descrition : Retrives the relevent digital twin json for a specific batch ID
+ * Description : Retrieves the relevant digital twin json for a specific batch ID
  **Param : batchID : batch ID of product
- **reutrns : []models.Component : Contains a list of the TDP data for the provided batchID
+ **returns : []models.Component : Contains a list of the TDP data for the provided batchID
  */
 func GetDigitalTwinData(batchID string, productID string) ([]models.Component, error) {
 	var digitalTwinData []models.Component
@@ -218,7 +235,11 @@ func GetDigitalTwinData(batchID string, productID string) ([]models.Component, e
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
-	json.Unmarshal([]byte(string(body)), &digitalTwinData)
+	unMarshalErr := json.Unmarshal([]byte(string(body)), &digitalTwinData)
+	if unMarshalErr != nil {
+		logs.ErrorLogger.Println("failed to unmarshal JSON: ", unMarshalErr.Error())
+		return digitalTwinData, unMarshalErr
+	}
 	return digitalTwinData, nil
 }
 

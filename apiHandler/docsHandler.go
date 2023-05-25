@@ -24,7 +24,7 @@ func CreateDocs(W http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&requestCreateDoc)
 	if err != nil {
-		logs.ErrorLogger.Println("Error occured while decoding JSON in CreateFaq:faqHandler: ", err.Error())
+		logs.ErrorLogger.Println("Error occurred while decoding JSON in CreateFaq:faqHandler: ", err.Error())
 	}
 	err = validations.ValidateDocs(requestCreateDoc)
 	if err != nil {
@@ -39,7 +39,7 @@ func CreateDocs(W http.ResponseWriter, r *http.Request) {
 	}
 }
 
-//Trigger the GetAllFaq() method that will return all the FAQs
+// Trigger the GetAllFaq() method that will return all the FAQs
 func GetAllDocs(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
 	results, err := marketplaceBusinessFacade.GetAllDocs()
@@ -51,13 +51,13 @@ func GetAllDocs(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		err := json.NewEncoder(w).Encode(results)
 		if err != nil {
-			logs.ErrorLogger.Println("Error occured while encoding JSON in GetAllFaq(FaqHandler): ", err.Error())
+			logs.ErrorLogger.Println("Error occurred while encoding JSON in GetAllFaq(FaqHandler): ", err.Error())
 		}
 		return
 	}
 }
 
-//Trigger the GetFaqByID() method that will return The specific FAQ with the ID passed via the API
+// Trigger the GetFaqByID() method that will return The specific FAQ with the ID passed via the API
 func GetDocsByID(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
 	vars := mux.Vars(r)
@@ -77,7 +77,7 @@ func UpdateDocsbyID(w http.ResponseWriter, r *http.Request) {
 	decorder := json.NewDecoder(r.Body)
 	err := decorder.Decode((&updateDocs))
 	if err != nil {
-		logs.ErrorLogger.Println("Error occured while decoding JSON in UpdateFaqbyID(FaqHandler):", err.Error())
+		logs.ErrorLogger.Println("Error occurred while decoding JSON in UpdateFaqbyID(FaqHandler):", err.Error())
 	} else {
 		_, err = marketplaceBusinessFacade.UpdateDocsbyID(updateDocs)
 		if err != nil {
@@ -89,7 +89,7 @@ func UpdateDocsbyID(w http.ResponseWriter, r *http.Request) {
 			message := "FAQ Status has been Updated"
 			err := json.NewEncoder(w).Encode(message)
 			if err != nil {
-				logs.ErrorLogger.Println("Error occured while encoding JSON in UpdateFaqbyID(FaqHandler):", err.Error())
+				logs.ErrorLogger.Println("Error occurred while encoding JSON in UpdateFaqbyID(FaqHandler):", err.Error())
 			}
 			return
 		}
