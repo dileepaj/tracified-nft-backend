@@ -17,6 +17,7 @@ import (
 
 var UserAuth = "userAuth"
 var walletnft = "walletnft"
+var walletTenant = "walletnfttenant"
 
 type OtpRepository struct{}
 
@@ -197,4 +198,25 @@ func (r *OtpRepository) ValidateNFTStatusbyShopId(shopid string) (string, error)
 		}
 	}
 	return authrst.NFTStatus, nil
+}
+
+func (r *OtpRepository) GetWalletTenant(name string) (models.WalletNFTTenantUser, error) {
+	var tenant models.WalletNFTTenantUser
+	rst, err := repository.FindById("name", name, walletTenant)
+	if err != nil {
+		logs.ErrorLogger.Println("failed to return data from DB: ", err.Error())
+	}
+	for rst.Next(context.TODO()) {
+		decodeErr := rst.Decode(&tenant)
+		if decodeErr != nil {
+			logs.ErrorLogger.Println("Error occured while retreving data from collection ruriotp in ValidateOTP:OtpRepository.go: ", err.Error())
+			return tenant, err
+		}
+	}
+	if tenant.Name != "" {
+		return tenant, nil
+	} else {
+		err := fmt.Errorf("Tenant not found")
+		return tenant, err
+	}
 }

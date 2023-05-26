@@ -268,3 +268,7 @@ func GenerateOTPExpireDate() time.Time {
 	expireDate := currentDate.Add(duration)
 	return expireDate
 }
+
+func ValidateWalletTenant(tenantName string) (models.WalletNFTTenantUser, error) {
+	return otpRepository.GetWalletTenant(tenantName)
+}
