@@ -43,8 +43,6 @@ var (
 	styleStart      = `<style>`
 	styleEnd        = `</style>`
 	htmlBody        = ""
-	collectionName  = ""
-	ruriRepository  customizedNFTrepository.SvgRepository
 	mapRepository   customizedNFTrepository.MapRepository
 	backendUrl      = configs.GetNftBackendBaseUrl()
 	proofModalCount = 0
@@ -156,18 +154,19 @@ func (r *RURINFT) GenerateSVGTemplateforNFT(data []models.Component) (string, er
 // generate ownership section
 func (r *RURINFT) GenerateOwnership(receiverName string, message string, nftname string) {
 
+	const wordBreakStyle = `style="word-break: break-word;"`
 	receiverStyle := ""
 	nftnameStyle := ""
 	messageStyle := ""
 
 	if len(strings.Split(receiverName, " ")) == 1 {
-		receiverStyle = `style="word-break: break-word;"`
+		receiverStyle = wordBreakStyle
 	}
 	if len(strings.Split(nftname, " ")) == 1 {
-		nftnameStyle = `style="word-break: break-word;"`
+		nftnameStyle = wordBreakStyle
 	}
 	if len(strings.Split(message, " ")) == 1 {
-		messageStyle = `style="word-break: break-word;"`
+		messageStyle = wordBreakStyle
 	}
 
 	htmlBody += `<div class="widget-div cont-wrapper">
@@ -229,7 +228,11 @@ func (r *RURINFT) GenerateTable(data models.Component) {
 		for _, component := range tab.Children {
 			if component.Component == "key-value" {
 				var valueWithProof models.ValueWithProof
-				mapstructure.Decode(component.Value, &valueWithProof)
+
+				decodeErr := mapstructure.Decode(component.Value, &valueWithProof)
+				if decodeErr != nil {
+					logs.ErrorLogger.Println("Failed to decode map data : ", decodeErr.Error())
+				}
 
 				proofContentStr := ""
 				proofTick := ""
@@ -449,7 +452,11 @@ func (r *RURINFT) GenerateDecoratedKeyValues(data models.Component, index int) s
 			//img := ""
 			val := "No Records"
 			var decoratedVal models.ValueWithProof
-			mapstructure.Decode(child.Value, &decoratedVal)
+
+			decodeErr := mapstructure.Decode(child.Value, &decoratedVal)
+			if decodeErr != nil {
+				logs.ErrorLogger.Println("failed to decode map : ", decodeErr.Error())
+			}
 			//keyValIcon := GetDecoratedKeyValueIcon(child.Key)
 
 			/* if child.Icon != "" {
@@ -557,7 +564,10 @@ func (r *RURINFT) GenerateTimeline(data models.Component, index int) (string, st
 
 				val := "No Data Available"
 				var decoratedVal models.ValueWithProof
-				mapstructure.Decode(info.Value, &decoratedVal)
+				decodeErr := mapstructure.Decode(info.Value, &decoratedVal)
+				if decodeErr != nil {
+					logs.ErrorLogger.Println("failed to decode map : ", decodeErr.Error())
+				}
 
 				if decoratedVal.Value != nil && decoratedVal.Value.(string) != "" {
 					val = decoratedVal.Value.(string)
@@ -577,7 +587,10 @@ func (r *RURINFT) GenerateTimeline(data models.Component, index int) (string, st
 			} else if info.Component == "image-slider" {
 				imgCont := ""
 				var imgs []models.ImageValue
-				mapstructure.Decode(info.Slides.Value, &imgs)
+				decodeErr := mapstructure.Decode(info.Slides.Value, &imgs)
+				if decodeErr != nil {
+					logs.ErrorLogger.Println("failed to decode map : ", decodeErr.Error())
+				}
 
 				proofModalStr := ""
 				proofTickIcon := ""
