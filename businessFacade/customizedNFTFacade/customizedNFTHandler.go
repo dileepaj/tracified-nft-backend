@@ -12,7 +12,6 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/configs"
 	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
-	"github.com/dileepaj/tracified-nft-backend/services/svgGeneratorforNFT/svgNFTGenerator"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"github.com/xlzd/gotp"
 	"go.mongodb.org/mongo-driver/bson"
@@ -137,30 +136,6 @@ func FormatBatchIDString(text string) models.ItemData {
 	return itemdata
 }
 
-/**
- * Descrition : Function is responsible for generating the SVG and sending it to the DB for it tp get saved
- **Param : batchID : batch ID of product
- **Param : email : email address of user
- **reutrns : models.UserNFTMapping : Contains the generated SVG
- */
-func GenerateandSaveSVG(batchID, email, reciverName, msg, productID, shopID string, nftname string) (responseDtos.SVGforNFTResponse, error) {
-	var userSVGMapRst responseDtos.SVGforNFTResponse
-	tdpData, _ := GetDigitalTwinData(batchID, productID)
-	var userNftMapping models.UserNFTMapping
-	//Svg will be generated using the template
-	svgrst, _ := GenerateSVG(tdpData, batchID, productID, shopID, reciverName, msg, nftname)
-	userNftMapping.BatchID = batchID
-	userNftMapping.SVG = svgrst
-	userNftMapping.Email = email
-	userNftMapping.NFTName = nftname
-	//Generated SVG data will get added to the DB
-	rst, err := svgRepository.SaveUserMapping(userNftMapping)
-	if err != nil {
-		return userSVGMapRst, err
-	}
-	userSVGMapRst = rst
-	return userSVGMapRst, nil
-}
 func GetSVGbyEmailandBatchID(email string, batchID string) (responseDtos.SVGforNFTResponse, error) {
 	return svgRepository.GetSVGbyEmailandBatchID(email, batchID)
 }
@@ -223,16 +198,6 @@ func GetDigitalTwinData(batchID string, productID string) ([]models.Component, e
 }
 
 /**
- * Descrition : Generates and returns the SVG
- **Param : []models.TDP : Contains a list of the TDP data for the provided batchID
- **Param : batchID string : batchID
- **reutrns : reutrns the generated SVG as a string
- */
-func GenerateSVG(data []models.Component, batchID string, productID string, shopID string, receiverName string, message string, nftname string) (string, error) {
-	return svgNFTGenerator.GenerateSVGTemplateforNFT(data, batchID, productID, shopID, receiverName, message, nftname)
-}
-
-/**
  * Descrition : Update the SVGUserMapping colletion with SVG hash
  **Param :  models.UserNFTMapping : Contains object ID and svg hash
  **reutrns : reutrns SVG as a string
@@ -267,4 +232,8 @@ func GenerateOTPExpireDate() time.Time {
 	duration := time.Hour * 24 * 30
 	expireDate := currentDate.Add(duration)
 	return expireDate
+}
+
+func ValidateWalletTenant(tenantName string) (models.WalletNFTTenantUser, error) {
+	return otpRepository.GetWalletTenant(tenantName)
 }

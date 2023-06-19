@@ -1,8 +1,13 @@
 package models
 
 import (
+	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
+
+type CustomizedNFT interface {
+	GenerateNFT() (responseDtos.SVGforNFTResponse, error)
+}
 
 type TDP struct {
 	TenantID         string             `json:"tenantID" bson:"tenantid,omitempty"`

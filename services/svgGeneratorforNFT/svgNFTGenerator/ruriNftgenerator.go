@@ -12,8 +12,10 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/dileepaj/tracified-nft-backend/businessFacade/customizedNFTFacade"
 	"github.com/dileepaj/tracified-nft-backend/configs"
 	"github.com/dileepaj/tracified-nft-backend/database/repository/customizedNFTrepository"
+	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/services"
 	"github.com/dileepaj/tracified-nft-backend/services/mapGenerator"
@@ -22,6 +24,18 @@ import (
 	//"github.com/mitchellh/mapstructure"
 )
 
+type RURINFT struct {
+	Email        string
+	ShopID       string
+	BatchID      string
+	ProductID    string
+	ReceiverName string
+	CustomMsg    string
+	NFTName      string
+	Logo         string
+	EmailTitle   string
+}
+
 var (
 	svgStart        = services.ReadFromFile("services/svgGeneratorforNFT/templates/svgNFTHeader.txt")
 	svgEnd          = services.ReadFromFile("services/svgGeneratorforNFT/templates/svgNFTFooter.txt")
@@ -29,15 +43,49 @@ var (
 	styleStart      = `<style>`
 	styleEnd        = `</style>`
 	htmlBody        = ""
-	collectionName  = ""
-	ruriRepository  customizedNFTrepository.SvgRepository
 	mapRepository   customizedNFTrepository.MapRepository
 	backendUrl      = configs.GetNftBackendBaseUrl()
 	proofModalCount = 0
 	txnMap          = make(map[string][]string)
+	svgRepository   customizedNFTrepository.SvgRepository
 )
 
-func GenerateSVGTemplateforNFT(data []models.Component, batchID string, productID string, shopID string, receiverName string, message string, nftname string) (string, error) {
+func (r *RURINFT) GenerateNFT() (responseDtos.SVGforNFTResponse, error) {
+	var userSVGMapRst responseDtos.SVGforNFTResponse
+	batchData, err := customizedNFTFacade.GetBatchIDDatabyItemID(r.ShopID)
+
+	if err != nil {
+		return userSVGMapRst, err
+	}
+
+	r.BatchID = batchData.BatchID
+	r.ProductID = batchData.ItemID
+
+	tdpData, _ := customizedNFTFacade.GetDigitalTwinData(r.BatchID, r.ProductID)
+	var userNftMapping models.UserNFTMapping
+	//Svg will be generated using the template
+	svgrst, _ := r.GenerateSVGTemplateforNFT(tdpData)
+	userNftMapping.BatchID = r.BatchID
+	userNftMapping.SVG = svgrst
+	userNftMapping.Email = r.Email
+	userNftMapping.NFTName = r.NFTName
+	//Generated SVG data will get added to the DB
+	rst, err1 := svgRepository.SaveUserMapping(userNftMapping)
+	if err1 != nil {
+		return userSVGMapRst, err1
+	}
+	userSVGMapRst = rst
+	return userSVGMapRst, nil
+}
+
+func (r *RURINFT) GenerateSVGTemplateforNFT(data []models.Component) (string, error) {
+	/* batchID := r.BatchID
+	productID := r.ProductID  */
+	shopID := r.ShopID
+	receiverName := r.ReceiverName
+	message := r.CustomMsg
+	nftname := r.NFTName
+
 	proofModalCount = 0
 	//get gem type from tdp data
 	/* var gemVariety string = ""
@@ -55,7 +103,7 @@ func GenerateSVGTemplateforNFT(data []models.Component, batchID string, productI
 	var htmlStart = `<div class="nft-header default-font">
 						<div class="nft-header-content cont-wrapper">
 							<div class="header-logo-cont">
-								<img src="https://ruri-nft.s3.ap-south-1.amazonaws.com/assets/images/RURI%2B1sa+1.png" class="ruri-logo" />
+								<img src="` + r.Logo + `" class="ruri-logo" />
 								<img src="https://s3.ap-south-1.amazonaws.com/qa.marketplace.nft.tracified.com/Tracified-RT-Logo-White.svg"
 								class="nft-logo" />
 							</div>
@@ -87,10 +135,10 @@ func GenerateSVGTemplateforNFT(data []models.Component, batchID string, productI
 						</div>`
 
 	if receiverName != "" && message != "" {
-		GenerateOwnership(receiverName, message, nftname)
+		r.GenerateOwnership(receiverName, message, nftname)
 	}
 
-	GenerateContent(data)
+	r.GenerateContent(data)
 
 	template := svgStart + styleStart + styling + styleEnd + htmlStart + iframeImg + proofToggle + htmlBody + svgEnd
 	htmlBody = ""
@@ -104,20 +152,21 @@ func GenerateSVGTemplateforNFT(data []models.Component, batchID string, productI
 }
 
 // generate ownership section
-func GenerateOwnership(receiverName string, message string, nftname string) {
+func (r *RURINFT) GenerateOwnership(receiverName string, message string, nftname string) {
 
+	const wordBreakStyle = `style="word-break: break-word;"`
 	receiverStyle := ""
 	nftnameStyle := ""
 	messageStyle := ""
 
 	if len(strings.Split(receiverName, " ")) == 1 {
-		receiverStyle = `style="word-break: break-word;"`
+		receiverStyle = wordBreakStyle
 	}
 	if len(strings.Split(nftname, " ")) == 1 {
-		nftnameStyle = `style="word-break: break-word;"`
+		nftnameStyle = wordBreakStyle
 	}
 	if len(strings.Split(message, " ")) == 1 {
-		messageStyle = `style="word-break: break-word;"`
+		messageStyle = wordBreakStyle
 	}
 
 	htmlBody += `<div class="widget-div cont-wrapper">
@@ -160,18 +209,18 @@ func GenerateOwnership(receiverName string, message string, nftname string) {
 
 // new digital twin related development
 
-func GenerateContent(data []models.Component) {
+func (r *RURINFT) GenerateContent(data []models.Component) {
 
 	for _, data := range data {
 		if data.Component == "expandableTab" && len(data.Tabs) > 0 {
-			GenerateTable(data)
+			r.GenerateTable(data)
 		} else if data.Component == "expandableTab" && len(data.VerticalTab) > 0 {
-			GenerateVerticalTabs(data)
+			r.GenerateVerticalTabs(data)
 		}
 	}
 }
 
-func GenerateTable(data models.Component) {
+func (r *RURINFT) GenerateTable(data models.Component) {
 	tableContent := ""
 	var icon string
 
@@ -179,12 +228,16 @@ func GenerateTable(data models.Component) {
 		for _, component := range tab.Children {
 			if component.Component == "key-value" {
 				var valueWithProof models.ValueWithProof
-				mapstructure.Decode(component.Value, &valueWithProof)
+
+				decodeErr := mapstructure.Decode(component.Value, &valueWithProof)
+				if decodeErr != nil {
+					logs.ErrorLogger.Println("Failed to decode map data : ", decodeErr.Error())
+				}
 
 				proofContentStr := ""
 				proofTick := ""
 				if valueWithProof.Provable && len(valueWithProof.TdpId) > 0 {
-					proofContentStr, proofTick = GenerateProofContentStr(component.Key, valueWithProof)
+					proofContentStr, proofTick = r.GenerateProofContentStr(component.Key, valueWithProof)
 				}
 
 				style := ""
@@ -228,14 +281,14 @@ func GenerateTable(data models.Component) {
 }
 
 // generate vertical tab component
-func GenerateVerticalTabs(data models.Component) {
+func (r *RURINFT) GenerateVerticalTabs(data models.Component) {
 	mainTabs := ""
 	sidebarTabs := ""
 	radioButtons := ""
 	content := ""
 	for _, tab := range data.VerticalTab {
 		if tab.Component == "overview" {
-			cont, mainTbs, sidebarTbs, radioBtns := GenerateOverview(tab)
+			cont, mainTbs, sidebarTbs, radioBtns := r.GenerateOverview(tab)
 			content += cont
 			mainTabs += mainTbs
 			sidebarTabs += sidebarTbs
@@ -292,7 +345,7 @@ func GenerateVerticalTabs(data models.Component) {
 }
 
 // Generate overview tabs
-func GenerateOverview(data models.Component) (string, string, string, string) {
+func (r *RURINFT) GenerateOverview(data models.Component) (string, string, string, string) {
 	mainTabs := ""
 	sidebarTabs := ""
 	radioButtons := ""
@@ -300,19 +353,19 @@ func GenerateOverview(data models.Component) (string, string, string, string) {
 
 	for index, tab := range data.Children {
 		if tab.Component == "vertical-card-container" {
-			cont, mainTbs, sidebarTbs, radioBtns := GenerateVerticalCardContainer(tab, index)
+			cont, mainTbs, sidebarTbs, radioBtns := r.GenerateVerticalCardContainer(tab, index)
 			content += cont
 			mainTabs += mainTbs
 			sidebarTabs += sidebarTbs
 			radioButtons += radioBtns
 		} else if tab.Component == "map" {
-			cont, mainTbs, sidebarTbs, radioBtns := GenerateJourneyMap(tab, index)
+			cont, mainTbs, sidebarTbs, radioBtns := r.GenerateJourneyMap(tab, index)
 			content += cont
 			mainTabs += mainTbs
 			sidebarTabs += sidebarTbs
 			radioButtons += radioBtns
 		} else if tab.Component == "timeline" {
-			cont, mainTbs, sidebarTbs, radioBtns := GenerateTimeline(tab, index)
+			cont, mainTbs, sidebarTbs, radioBtns := r.GenerateTimeline(tab, index)
 			content += cont
 			mainTabs += mainTbs
 			sidebarTabs += sidebarTbs
@@ -326,13 +379,13 @@ func GenerateOverview(data models.Component) (string, string, string, string) {
 }
 
 // Generate vertical card container
-func GenerateVerticalCardContainer(data models.Component, index int) (string, string, string, string) {
+func (r *RURINFT) GenerateVerticalCardContainer(data models.Component, index int) (string, string, string, string) {
 	content := ""
-	mainTab, sidebarTab, radioButton := GenerateTabLabels(data.Title, index)
+	mainTab, sidebarTab, radioButton := r.GenerateTabLabels(data.Title, index)
 
 	for i, childComponent := range data.Children {
 		if childComponent.Component == "image-slider" {
-			res := GenerateImageSlider(childComponent, index)
+			res := r.GenerateImageSlider(childComponent, index)
 			content += `<div class="tab-content">
 							<div class="img-list">
 							` + res + `	
@@ -340,8 +393,8 @@ func GenerateVerticalCardContainer(data models.Component, index int) (string, st
 						</div>`
 		} else if childComponent.Component == "decorated-key-value" {
 			if i == 0 {
-				res1 := GenerateDecoratedKeyValues(data, i)
-				res2 := GenerateDecoratedKeyValuesHeading(data, res1)
+				res1 := r.GenerateDecoratedKeyValues(data, i)
+				res2 := r.GenerateDecoratedKeyValuesHeading(data, res1)
 				content += `<div class="tab-content">
 							` + res2 + `
 						</div>`
@@ -353,7 +406,7 @@ func GenerateVerticalCardContainer(data models.Component, index int) (string, st
 	return content, mainTab, sidebarTab, radioButton
 }
 
-func GenerateDecoratedKeyValuesHeading(data models.Component, cards string) string {
+func (r *RURINFT) GenerateDecoratedKeyValuesHeading(data models.Component, cards string) string {
 	icon := `<span class="tree-icon" style="background-image:url('` + data.Icon + `')"></span>`
 
 	/* if data.Title == "Origin" {
@@ -378,7 +431,7 @@ func GenerateDecoratedKeyValuesHeading(data models.Component, cards string) stri
 }
 
 // Generate decorated key values
-func GenerateDecoratedKeyValues(data models.Component, index int) string {
+func (r *RURINFT) GenerateDecoratedKeyValues(data models.Component, index int) string {
 	cards := ""
 	color := ""
 
@@ -399,7 +452,11 @@ func GenerateDecoratedKeyValues(data models.Component, index int) string {
 			//img := ""
 			val := "No Records"
 			var decoratedVal models.ValueWithProof
-			mapstructure.Decode(child.Value, &decoratedVal)
+
+			decodeErr := mapstructure.Decode(child.Value, &decoratedVal)
+			if decodeErr != nil {
+				logs.ErrorLogger.Println("failed to decode map : ", decodeErr.Error())
+			}
 			//keyValIcon := GetDecoratedKeyValueIcon(child.Key)
 
 			/* if child.Icon != "" {
@@ -412,7 +469,7 @@ func GenerateDecoratedKeyValues(data models.Component, index int) string {
 			proofContentStr := ""
 			proofTick := ""
 			if decoratedVal.Provable && len(decoratedVal.TdpId) > 0 {
-				proofContentStr, proofTick = GenerateProofContentStr(child.Key, decoratedVal)
+				proofContentStr, proofTick = r.GenerateProofContentStr(child.Key, decoratedVal)
 			}
 
 			cards += `<div class="tab-cont-card ` + color + `">
@@ -431,7 +488,7 @@ func GenerateDecoratedKeyValues(data models.Component, index int) string {
 }
 
 // Generate image slider
-func GenerateImageSlider(imageSlider models.Component, parentIndex int) string {
+func (r *RURINFT) GenerateImageSlider(imageSlider models.Component, parentIndex int) string {
 	content := ""
 
 	for i, image := range imageSlider.Images.Value {
@@ -453,7 +510,7 @@ func GenerateImageSlider(imageSlider models.Component, parentIndex int) string {
 }
 
 // Generate Journey Map
-func GenerateJourneyMap(tab models.Component, index int) (string, string, string, string) {
+func (r *RURINFT) GenerateJourneyMap(tab models.Component, index int) (string, string, string, string) {
 
 	var mapInfo []models.MapInfo
 
@@ -487,18 +544,18 @@ func GenerateJourneyMap(tab models.Component, index int) (string, string, string
 						src="` + backendUrl + `/GetMap/` + rst + `"></embed>
 				</div>`
 
-	mainTab, sidebarTab, radioButton := GenerateTabLabels("Journey", index)
+	mainTab, sidebarTab, radioButton := r.GenerateTabLabels("Journey", index)
 
 	return content, mainTab, sidebarTab, radioButton
 }
 
 // Generate Timeline
-func GenerateTimeline(data models.Component, index int) (string, string, string, string) {
+func (r *RURINFT) GenerateTimeline(data models.Component, index int) (string, string, string, string) {
 	content := ``
 	tlCont := ""
 	imgSliderCount := 0
 
-	mainTab, sidebarTab, radioButton := GenerateTabLabels(data.Title, index)
+	mainTab, sidebarTab, radioButton := r.GenerateTabLabels(data.Title, index)
 
 	for i, stage := range data.Children {
 		infoStr := ""
@@ -507,7 +564,10 @@ func GenerateTimeline(data models.Component, index int) (string, string, string,
 
 				val := "No Data Available"
 				var decoratedVal models.ValueWithProof
-				mapstructure.Decode(info.Value, &decoratedVal)
+				decodeErr := mapstructure.Decode(info.Value, &decoratedVal)
+				if decodeErr != nil {
+					logs.ErrorLogger.Println("failed to decode map : ", decodeErr.Error())
+				}
 
 				if decoratedVal.Value != nil && decoratedVal.Value.(string) != "" {
 					val = decoratedVal.Value.(string)
@@ -516,7 +576,7 @@ func GenerateTimeline(data models.Component, index int) (string, string, string,
 				proofContentStr := ""
 				proofTick := ""
 				if decoratedVal.Provable && len(decoratedVal.TdpId) > 0 {
-					proofContentStr, proofTick = GenerateProofContentStr(info.Key, decoratedVal)
+					proofContentStr, proofTick = r.GenerateProofContentStr(info.Key, decoratedVal)
 				}
 
 				infoStr += `<div class="tl-info-container tl-key-value">
@@ -527,7 +587,10 @@ func GenerateTimeline(data models.Component, index int) (string, string, string,
 			} else if info.Component == "image-slider" {
 				imgCont := ""
 				var imgs []models.ImageValue
-				mapstructure.Decode(info.Slides.Value, &imgs)
+				decodeErr := mapstructure.Decode(info.Slides.Value, &imgs)
+				if decodeErr != nil {
+					logs.ErrorLogger.Println("failed to decode map : ", decodeErr.Error())
+				}
 
 				proofModalStr := ""
 				proofTickIcon := ""
@@ -537,7 +600,7 @@ func GenerateTimeline(data models.Component, index int) (string, string, string,
 														check_circle
 													</span>
 									`
-					proofModalStr = GenerateImgProofModalStr(info.Slides, id)
+					proofModalStr = r.GenerateImgProofModalStr(info.Slides, id)
 					imgSliderCount++
 				}
 
@@ -639,7 +702,7 @@ func GenerateTimeline(data models.Component, index int) (string, string, string,
 	return content, mainTab, sidebarTab, radioButton
 }
 
-func GetWordWrap(value string) string {
+func (r *RURINFT) GetWordWrap(value string) string {
 	fmt.Println(len(strings.Split(value, " ")))
 	if len(strings.Split(value, " ")) == 1 {
 		return `style="word-break: break-all;"`
@@ -648,7 +711,7 @@ func GetWordWrap(value string) string {
 	}
 }
 
-func GetDecoratedKeyValueIcon(key string) string {
+func (r *RURINFT) GetDecoratedKeyValueIcon(key string) string {
 	switch key {
 	case "Provenance 原産地":
 		return "hexagon-icon"
@@ -672,7 +735,7 @@ func GetDecoratedKeyValueIcon(key string) string {
 }
 
 // Create labels for vertical tabs
-func GenerateTabLabels(title string, index int) (string, string, string) {
+func (r *RURINFT) GenerateTabLabels(title string, index int) (string, string, string) {
 	sidebarTab := `<li class="tab">
 						<label for="tab` + strconv.Itoa(index+1) + `" onclick="closeSidebar('` + title + `')">
 							` + title + `
@@ -698,10 +761,10 @@ func GenerateTabLabels(title string, index int) (string, string, string) {
 }
 
 // Generate proof modal for key value pairs
-func GenerateProofContentStr(key string, proofInfo models.ValueWithProof) (string, string) {
+func (r *RURINFT) GenerateProofContentStr(key string, proofInfo models.ValueWithProof) (string, string) {
 	id := strings.ReplaceAll(key, " ", "") + "-modal"
 
-	txnHash, url, err := GetTxnHash(proofInfo.TdpId[0])
+	txnHash, url, err := r.GetTxnHash(proofInfo.TdpId[0])
 
 	tab1 := proofModalCount
 	tab2 := proofModalCount + 1
@@ -713,15 +776,15 @@ func GenerateProofContentStr(key string, proofInfo models.ValueWithProof) (strin
 		return "", ""
 	}
 
-	table := GenerateProofTable(txnHash, url, proofInfo)
+	table := r.GenerateProofTable(txnHash, url, proofInfo)
 
-	users, err1 := GetUsers(proofInfo.UserId)
+	users, err1 := r.GetUsers(proofInfo.UserId)
 
 	if err1 != nil {
 		return "", ""
 	}
 
-	table2, cards := GenerateUsersContent(users, tab1, tab2, tab3)
+	table2, cards := r.GenerateUsersContent(users, tab1, tab2, tab3)
 
 	proofTick := `<span class="material-symbols-outlined provable-tick-wrapper provable-val" onclick="openModal('` + id + `')">
 						check_circle
@@ -837,8 +900,8 @@ func GenerateProofContentStr(key string, proofInfo models.ValueWithProof) (strin
 }
 
 // Generate proof modal for image sliders
-func GenerateImgProofModalStr(proofInfo models.ValueWithProof, id string) string {
-	txnHash, url, err := GetTxnHash(proofInfo.TdpId[0])
+func (r *RURINFT) GenerateImgProofModalStr(proofInfo models.ValueWithProof, id string) string {
+	txnHash, url, err := r.GetTxnHash(proofInfo.TdpId[0])
 
 	if err != nil {
 		return ""
@@ -850,15 +913,15 @@ func GenerateImgProofModalStr(proofInfo models.ValueWithProof, id string) string
 
 	proofModalCount += 3
 
-	table := GenerateProofTable(txnHash, url, proofInfo)
+	table := r.GenerateProofTable(txnHash, url, proofInfo)
 
-	users, err1 := GetUsers(proofInfo.UserId)
+	users, err1 := r.GetUsers(proofInfo.UserId)
 
 	if err1 != nil {
 		return ""
 	}
 
-	table2, cards := GenerateUsersContent(users, tab1, tab2, tab3)
+	table2, cards := r.GenerateUsersContent(users, tab1, tab2, tab3)
 
 	proofContentStr := `<!--modal for proof-->
 										<div id="` + id + `" class="modal-window">
@@ -970,7 +1033,7 @@ func GenerateImgProofModalStr(proofInfo models.ValueWithProof, id string) string
 }
 
 // Generate proof table displayed in the modal
-func GenerateProofTable(txnHash string, url string, proofInfo models.ValueWithProof) string {
+func (r *RURINFT) GenerateProofTable(txnHash string, url string, proofInfo models.ValueWithProof) string {
 	table := ""
 
 	for _, proof := range proofInfo.Proofs {
@@ -992,7 +1055,7 @@ func GenerateProofTable(txnHash string, url string, proofInfo models.ValueWithPr
 			descStyle = "; word-break: break-all;"
 		}
 
-		proofName := GetProofName(proof.Name)
+		proofName := r.GetProofName(proof.Name)
 
 		table += `<tr>
 						<td style="width : 15%">` + proofName + `</td>
@@ -1014,7 +1077,7 @@ func GenerateProofTable(txnHash string, url string, proofInfo models.ValueWithPr
 }
 
 // Generate user table and cards
-func GenerateUsersContent(users []models.Users, tab1 int, tab2 int, tab3 int) (string, string) {
+func (r *RURINFT) GenerateUsersContent(users []models.Users, tab1 int, tab2 int, tab3 int) (string, string) {
 	table := ""
 	cards := ""
 
@@ -1061,7 +1124,7 @@ func GenerateUsersContent(users []models.Users, tab1 int, tab2 int, tab3 int) (s
 }
 
 // Get proof name
-func GetProofName(proof string) string {
+func (r *RURINFT) GetProofName(proof string) string {
 	switch strings.ToLower(proof) {
 	case "poe":
 		return "Proof of Existence"
@@ -1077,7 +1140,7 @@ func GetProofName(proof string) string {
 }
 
 // Get transaction hash for tdp
-func GetTxnHash(tdpID string) (string, string, error) {
+func (r *RURINFT) GetTxnHash(tdpID string) (string, string, error) {
 	txnHash := ""
 	stellarUrl := ""
 
@@ -1121,7 +1184,7 @@ func GetTxnHash(tdpID string) (string, string, error) {
 }
 
 // Get user details from admin backend
-func GetUsers(userID []string) ([]models.Users, error) {
+func (r *RURINFT) GetUsers(userID []string) ([]models.Users, error) {
 	adminBackend := configs.GetAdminBackendUrl()
 	url := adminBackend + `/sign/getUsersDetails`
 	var users []models.Users
