@@ -8,6 +8,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
+	"github.com/dileepaj/tracified-nft-backend/services/svgGeneratorforNFT/svgNFTGenerator"
 	"github.com/dileepaj/tracified-nft-backend/utilities/commonResponse"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
@@ -66,32 +67,45 @@ func SaveTDPDataByBatchID(W http.ResponseWriter, r *http.Request) {
 func GenerateSVG(W http.ResponseWriter, r *http.Request) {
 	W.Header().Set("Content-Type", "application/json; charset-UTF-8")
 	var requestCreateSVG requestDtos.GenerateSVGReqeust
+	var customizedNft models.CustomizedNFT
+
+	tenantName, paramerr := r.URL.Query()["tenant"]
+	if !paramerr {
+		errors.BadRequest(W, "invalid Query param")
+		return
+	}
+	tenantRst, getTenantErr := customizedNFTFacade.ValidateWalletTenant(tenantName[0])
+
+	if getTenantErr != nil || tenantRst.Name == "" {
+		errors.BadRequest(W, "Invalid tenant")
+		return
+	}
+
 	decorder := json.NewDecoder(r.Body)
 	err := decorder.Decode(&requestCreateSVG)
 	if err != nil {
 		errors.BadRequest(W, err.Error())
 		return
 	}
-	batchData, err := customizedNFTFacade.GetBatchIDDatabyItemID(requestCreateSVG.ShopID)
-	if err != nil {
-		errors.BadRequest(W, err.Error())
-		return
+
+	if tenantName[0] == "RURI" {
+		customizedNft = &svgNFTGenerator.RURINFT{
+			Email:        requestCreateSVG.Email,
+			ShopID:       requestCreateSVG.ShopID,
+			ReceiverName: requestCreateSVG.ReciverName,
+			CustomMsg:    requestCreateSVG.CustomMessage,
+			NFTName:      requestCreateSVG.NFTName,
+			Logo:         tenantRst.Logo,
+			EmailTitle:   tenantRst.EmailTopic,
+		}
+
 	}
-	rst, err1 := SVGGen(batchData.BatchID, requestCreateSVG.Email, requestCreateSVG.ReciverName, requestCreateSVG.CustomMessage, batchData.ItemID, requestCreateSVG.ShopID, requestCreateSVG.NFTName)
+
+	rst, err1 := customizedNft.GenerateNFT()
+
 	if err1 != nil {
 		errors.BadRequest(W, err1.Error())
 		return
 	}
 	commonResponse.SuccessStatus[responseDtos.SVGforNFTResponse](W, rst)
-}
-
-func SVGGen(batchID, email, reciverName, msg, productID, shopID string, nftname string) (responseDtos.SVGforNFTResponse, error) {
-	// var tempBatchID = "RURI_VSAPPH_013" //? Templary hardcoded
-	// tempBatchID := base64.StdEncoding.EncodeToString([]byte(`{"id":"` + "VSAPPH_013" + `","type":"barcode"}`))
-	// var tempBatchID = "eyJpZCI6IlJVUklfVlNBUFBIXzAxMyIsInR5cGUiOiJiYXJjb2RlIn0=" //identifier is base64 encoded {"id":"RURI_VSAPPH_013","type":"barcode"}
-	svg, err := customizedNFTFacade.GenerateandSaveSVG(batchID, email, reciverName, msg, productID, shopID, nftname)
-	if err != nil {
-		return svg, err
-	}
-	return svg, nil
 }

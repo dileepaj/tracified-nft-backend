@@ -112,3 +112,10 @@ type ResponseWalletNFT struct {
 	ShopID          string `json:"shopid" bson:"shopid"`
 	Thumbnail       string
 }
+
+type WalletNFTTenantUser struct {
+	ID         primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
+	Name       string             `json:"name" bson:"name"`
+	Logo       string             `json:"logo" bson:"logo"`
+	EmailTopic string             `json:"emailTopic" bson:"emailTopic"`
+}
