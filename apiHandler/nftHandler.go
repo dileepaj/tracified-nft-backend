@@ -917,8 +917,8 @@ func GetWalletNFTsbyPK(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		if len(results) > 0 {
-			for i, result := range results {
-				thumbnailUrl := "https://tracified.sirv.com/Spins/RURI%20Gems/" + result.ShopID + "/" + result.ShopID + ".jpg"
+			for i, _ := range results {
+				thumbnailUrl := "http://35.227.222.206/test001.png"
 				results[i].Thumbnail = thumbnailUrl
 			}
 		} else {
