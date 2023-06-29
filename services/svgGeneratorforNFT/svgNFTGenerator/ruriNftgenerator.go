@@ -64,12 +64,12 @@ func (r *RURINFT) GenerateNFT() (responseDtos.SVGforNFTResponse, error) {
 	tdpData, _ := customizedNFTFacade.GetDigitalTwinData(r.BatchID, r.ProductID)
 	var userNftMapping models.UserNFTMapping
 	//Svg will be generated using the template
-	svgrst, _ := r.GenerateSVGTemplateforNFT(tdpData)
+	svgrst, thumbnail, _ := r.GenerateSVGTemplateforNFT(tdpData)
 	userNftMapping.BatchID = r.BatchID
 	userNftMapping.SVG = svgrst
 	userNftMapping.Email = r.Email
 	userNftMapping.NFTName = r.NFTName
-	userNftMapping.Thumbnail = ""
+	userNftMapping.Thumbnail = thumbnail
 	//Generated SVG data will get added to the DB
 	rst, err1 := svgRepository.SaveUserMapping(userNftMapping)
 	if err1 != nil {
@@ -79,7 +79,7 @@ func (r *RURINFT) GenerateNFT() (responseDtos.SVGforNFTResponse, error) {
 	return userSVGMapRst, nil
 }
 
-func (r *RURINFT) GenerateSVGTemplateforNFT(data []models.Component) (string, error) {
+func (r *RURINFT) GenerateSVGTemplateforNFT(data []models.Component) (string, string, error) {
 	/* batchID := r.BatchID
 	productID := r.ProductID  */
 	//shopID := r.ShopID
@@ -116,21 +116,7 @@ func (r *RURINFT) GenerateSVGTemplateforNFT(data []models.Component) (string, er
 					</div>
 					<div class="d-flex justify-content-center align-content-center flex-wrap" id="container">`
 
-	var iframeImg = `<div class="iframe-wrapper cont-wrapper">
-						<video autoplay="true" controls="true" width="500px" height="300px" allow="autoplay" loop="true" muted="muted">
-							<source src="http://35.227.222.206/testmovie_AdobeExpress.mp4"  type="video/mp4" />
-						</video>
-						<div class="gemimages" style="max-width: 100%; display: flex; flex-direction: row; column-gap: 10px; row-gap: 10px; overflow-x: auto;">
-							<div id="gemimg4" style="position: relative; min-width: 150px; height: 125px; background-repeat: no-repeat; background-size: contain; background-image:url('https://s3.ap-south-1.amazonaws.com/qa.marketplace.nft.tracified.com/Tracified-RT-Logo-White.svg');">
-								<span class="material-symbols-outlined provable-tick-wrapper provable-val" style="position: absolute; top: 5px; right: 5px; cursor: pointer;" onclick="openModal('physical-tag-modal')">
-									check_circle
-								</span>
-								<span class="material-symbols-outlined tl-view-image" style="position: absolute; bottom: 5px; right: 5px; cursor: pointer; font-size: 18px" onclick="openFullScreenImg('gemimg4')">
-									web_asset
-								</span>
-							</div>
-						</div>
-					</div>`
+	iframeImg, thumb := r.GenerateTopSection(data)
 
 	var proofToggle = `<div class="proof-toggle-wrapper cont-wrapper">
 							<label>View available blockchain proofs</label>
@@ -164,7 +150,90 @@ func (r *RURINFT) GenerateSVGTemplateforNFT(data []models.Component) (string, er
 	/* template = strings.Replace(template, "\r", " ", -1)
 	template = strings.Replace(template, "\t", " ", -1)
 	template = strings.Replace(template, "\n", " ", -1) */
-	return template, nil
+	return template, thumb, nil
+}
+
+// Generate section with video and physical tag
+func (r *RURINFT) GenerateTopSection(data []models.Component) (string, string) {
+
+	content := ""
+	video := ""
+	physicalTag := ""
+	thumbnail := ""
+
+	for _, data := range data {
+		if data.Component == "expandableTab" && len(data.Tabs) > 0 && data.Title == "NFT Content" {
+			arr := data.Tabs[0].Children
+
+			for _, val := range arr {
+				if val.Component == "key-value" && val.Key == "Video Link" {
+
+					var valueWithProof models.ValueWithProof
+
+					decodeErr := mapstructure.Decode(val.Value, &valueWithProof)
+					if decodeErr != nil {
+						logs.ErrorLogger.Println("Failed to decode map data : ", decodeErr.Error())
+					}
+
+					video += `<video autoplay="true" controls="true" width="500px" height="300px" allow="autoplay" loop="true" muted="muted">
+									<source src="` + valueWithProof.Value.(string) + `"  type="video/mp4" />
+							</video>`
+				} else if val.Component == "key-value" && val.Key == "Thumbnail" {
+					var valueWithProof models.ValueWithProof
+
+					decodeErr := mapstructure.Decode(val.Value, &valueWithProof)
+					if decodeErr != nil {
+						logs.ErrorLogger.Println("Failed to decode map data : ", decodeErr.Error())
+					}
+
+					thumbnail = valueWithProof.Value.(string)
+
+				} else if val.Component == "image-slider" {
+
+					var imgs []models.ImageValue
+
+					decodeErr := mapstructure.Decode(val.Slides.Value, &imgs)
+					if decodeErr != nil {
+						logs.ErrorLogger.Println("failed to decode map : ", decodeErr.Error())
+					}
+
+					imgstr := ""
+
+					for i, img := range imgs {
+						imgstr += `<div id="gemimg` + strconv.Itoa(i) + `" style="position: relative; min-width: 150px; height: 125px; background-position: center center; background-repeat: no-repeat; background-size: contain; background-image:url('` + img.Img + `');">
+										<span class="material-symbols-outlined provable-tick-wrapper provable-val" style="position: absolute; top: 5px; right: 5px; cursor: pointer;" onclick="openModal('PhysicalTag-modal')">
+											check_circle
+										</span>
+										<span class="material-symbols-outlined tl-view-image" style="position: absolute; bottom: 5px; right: 5px; cursor: pointer; font-size: 18px" onclick="openFullScreenImg('gemimg` + strconv.Itoa(i) + `')">
+											web_asset
+										</span>
+									</div>`
+					}
+
+					fmt.Println(len(val.Slides.TdpId))
+
+					proofStr := ""
+
+					if val.Slides.Provable && len(val.Slides.TdpId) > 0 {
+						proofStr, _ = r.GenerateProofContentStr("Physical Tag", val.Slides)
+					}
+
+					physicalTag += `<div class="gemimages" style="margin-top: 10px; max-width: 100%; display: flex; flex-direction: row; column-gap: 10px; row-gap: 10px; overflow-x: auto;">
+											` + imgstr + proofStr + `
+									</div>
+									`
+
+				}
+			}
+
+		}
+	}
+
+	if video != "" || physicalTag != "" {
+		content = `<div class="iframe-wrapper cont-wrapper">` + video + physicalTag + `</div>`
+	}
+
+	return content, thumbnail
 }
 
 // generate ownership section
@@ -228,7 +297,7 @@ func (r *RURINFT) GenerateOwnership(receiverName string, message string, nftname
 func (r *RURINFT) GenerateContent(data []models.Component) {
 
 	for _, data := range data {
-		if data.Component == "expandableTab" && len(data.Tabs) > 0 {
+		if data.Component == "expandableTab" && len(data.Tabs) > 0 && data.Title != "NFT Content" {
 			r.GenerateTable(data)
 		} else if data.Component == "expandableTab" && len(data.VerticalTab) > 0 {
 			r.GenerateVerticalTabs(data)
@@ -780,6 +849,8 @@ func (r *RURINFT) GenerateTabLabels(title string, index int) (string, string, st
 func (r *RURINFT) GenerateProofContentStr(key string, proofInfo models.ValueWithProof) (string, string) {
 	id := strings.ReplaceAll(key, " ", "") + "-modal"
 
+	fmt.Println(proofInfo.TdpId)
+
 	txnHash, url, err := r.GetTxnHash(proofInfo.TdpId[0])
 
 	tab1 := proofModalCount
@@ -831,7 +902,7 @@ func (r *RURINFT) GenerateProofContentStr(key string, proofInfo models.ValueWith
 										</div>
 										<div class="body">
 											<p>Visit TilliT Explorer to view transaction details and blockchain proofs.</p>
-											<a href="https://explorer.tillit.world/txn/` + txnHash + `" target="_blank" >
+											<a href="https://qa.explorer.tillit.world/txn/` + txnHash + `" target="_blank" >
 											Tillit Explorer <span class="material-symbols-outlined">
 											open_in_new
 											</span>
