@@ -918,7 +918,7 @@ func GetWalletNFTsbyPK(w http.ResponseWriter, r *http.Request) {
 	} else {
 		if len(results) > 0 {
 			for i, _ := range results {
-				thumbnailUrl := "http://35.227.222.206/test001.png"
+				thumbnailUrl := "https://storage.googleapis.com/demovids3832/1.JPG"
 				results[i].Thumbnail = thumbnailUrl
 			}
 		} else {
