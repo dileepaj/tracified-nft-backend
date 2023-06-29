@@ -1153,7 +1153,7 @@ func (r *RURINFT) GenerateProofTable(txnHash string, url string, proofInfo model
 							</div>
 						</td>
 						<td style="width : 40%` + descStyle + `">` + proof.Description + `</td>
-						<td><a class="proof-link" href="https://explorer.tillit.world/txn/` + txnHash + `" target="_blank">Proof <span class="material-symbols-outlined">
+						<td><a class="proof-link" href="https://qa.explorer.tillit.world/txn/` + txnHash + `" target="_blank">Proof <span class="material-symbols-outlined">
 							open_in_new
 							</span></a>
 						</td>
