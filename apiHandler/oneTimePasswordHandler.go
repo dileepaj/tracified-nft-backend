@@ -25,16 +25,16 @@ func InitNFT(W http.ResponseWriter, r *http.Request) {
 	var requestGenOTP requestDtos.GenOTP
 	decoder := json.NewDecoder(r.Body)
 
-	tenantName, paramerr := r.URL.Query()["tenant"]
-	if !paramerr {
-		errors.BadRequest(W, "invalid Query param")
-		return
-	}
-	tenantRst, getTenantErr := customizedNFTFacade.ValidateWalletTenant(tenantName[0])
-	if getTenantErr != nil || tenantRst.Name == "" {
-		errors.BadRequest(W, "Invalid tenant")
-		return
-	}
+	// tenantName, paramerr := r.URL.Query()["tenant"]
+	// if !paramerr {
+	// 	errors.BadRequest(W, "invalid Query param")
+	// 	return
+	// }
+	// tenantRst, getTenantErr := customizedNFTFacade.ValidateWalletTenant(tenantName[0])
+	// if getTenantErr != nil || tenantRst.Name == "" {
+	// 	errors.BadRequest(W, "Invalid tenant")
+	// 	return
+	// }
 
 	err := decoder.Decode(&requestGenOTP)
 	if err != nil {
@@ -170,16 +170,16 @@ func ResentOTP(W http.ResponseWriter, r *http.Request) {
 	var requestResendOTP requestDtos.GenOTP
 	decoder := json.NewDecoder(r.Body)
 
-	tenantName, paramerr := r.URL.Query()["tenant"]
-	if !paramerr {
-		errors.BadRequest(W, "invalid Query param")
-		return
-	}
-	tenantRst, getTenantErr := customizedNFTFacade.ValidateWalletTenant(tenantName[0])
-	if getTenantErr != nil || tenantRst.Name == "" {
-		errors.BadRequest(W, "Invalid tenant")
-		return
-	}
+	// tenantName, paramerr := r.URL.Query()["tenant"]
+	// if !paramerr {
+	// 	errors.BadRequest(W, "invalid Query param")
+	// 	return
+	// }
+	// tenantRst, getTenantErr := customizedNFTFacade.ValidateWalletTenant(tenantName[0])
+	// if getTenantErr != nil || tenantRst.Name == "" {
+	// 	errors.BadRequest(W, "Invalid tenant")
+	// 	return
+	// }
 
 	err := decoder.Decode(&requestResendOTP)
 	if err != nil {
