@@ -69,12 +69,12 @@ func GenerateSVG(W http.ResponseWriter, r *http.Request) {
 	var requestCreateSVG requestDtos.GenerateSVGReqeust
 	var customizedNft models.CustomizedNFT
 
-	tenantName, paramerr := r.URL.Query()["tenant"]
+	/* tenantName, paramerr := r.URL.Query()["tenant"]
 	if !paramerr {
 		errors.BadRequest(W, "invalid Query param")
 		return
-	}
-	tenantRst, getTenantErr := customizedNFTFacade.ValidateWalletTenant(tenantName[0])
+	} */
+	tenantRst, getTenantErr := customizedNFTFacade.ValidateWalletTenant("RURI")
 
 	if getTenantErr != nil || tenantRst.Name == "" {
 		errors.BadRequest(W, "Invalid tenant")
@@ -87,18 +87,28 @@ func GenerateSVG(W http.ResponseWriter, r *http.Request) {
 		errors.BadRequest(W, err.Error())
 		return
 	}
+	/*
+		if tenantName[0] == "RURI" {
+			customizedNft = &svgNFTGenerator.RURINFT{
+				Email:        requestCreateSVG.Email,
+				ShopID:       requestCreateSVG.ShopID,
+				ReceiverName: requestCreateSVG.ReciverName,
+				CustomMsg:    requestCreateSVG.CustomMessage,
+				NFTName:      requestCreateSVG.NFTName,
+				Logo:         tenantRst.Logo,
+				EmailTitle:   tenantRst.EmailTopic,
+			}
 
-	if tenantName[0] == "RURI" {
-		customizedNft = &svgNFTGenerator.RURINFT{
-			Email:        requestCreateSVG.Email,
-			ShopID:       requestCreateSVG.ShopID,
-			ReceiverName: requestCreateSVG.ReciverName,
-			CustomMsg:    requestCreateSVG.CustomMessage,
-			NFTName:      requestCreateSVG.NFTName,
-			Logo:         tenantRst.Logo,
-			EmailTitle:   tenantRst.EmailTopic,
-		}
+		} */
 
+	customizedNft = &svgNFTGenerator.RURINFT{
+		Email:        requestCreateSVG.Email,
+		ShopID:       requestCreateSVG.ShopID,
+		ReceiverName: requestCreateSVG.ReciverName,
+		CustomMsg:    requestCreateSVG.CustomMessage,
+		NFTName:      requestCreateSVG.NFTName,
+		Logo:         tenantRst.Logo,
+		EmailTitle:   tenantRst.EmailTopic,
 	}
 
 	rst, err1 := customizedNft.GenerateNFT()

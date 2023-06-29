@@ -69,6 +69,7 @@ func (r *RURINFT) GenerateNFT() (responseDtos.SVGforNFTResponse, error) {
 	userNftMapping.SVG = svgrst
 	userNftMapping.Email = r.Email
 	userNftMapping.NFTName = r.NFTName
+	userNftMapping.Thumbnail = ""
 	//Generated SVG data will get added to the DB
 	rst, err1 := svgRepository.SaveUserMapping(userNftMapping)
 	if err1 != nil {
@@ -81,7 +82,7 @@ func (r *RURINFT) GenerateNFT() (responseDtos.SVGforNFTResponse, error) {
 func (r *RURINFT) GenerateSVGTemplateforNFT(data []models.Component) (string, error) {
 	/* batchID := r.BatchID
 	productID := r.ProductID  */
-	shopID := r.ShopID
+	//shopID := r.ShopID
 	receiverName := r.ReceiverName
 	message := r.CustomMsg
 	nftname := r.NFTName
@@ -115,7 +116,22 @@ func (r *RURINFT) GenerateSVGTemplateforNFT(data []models.Component) (string, er
 					</div>
 					<div class="d-flex justify-content-center align-content-center flex-wrap" id="container">`
 
-	var iframeImg = `<div class="iframe-wrapper cont-wrapper"><iframe   src="https://tracified.sirv.com/Spins/RURI%20Gems/` + shopID + `/` + shopID + `.spin" class="iframe-img" frameborder="0" allowfullscreen="true"></iframe><span class="rotate-icon" style="margin-top : 30px;"></span></div>`
+	var iframeImg = `<div class="iframe-wrapper cont-wrapper">
+						<video autoplay="true" controls="true" width="500px" height="300px" allow="autoplay" loop="true" muted="muted">
+							<source src="http://35.227.222.206/testmovie_AdobeExpress.mp4"  type="video/mp4" />
+						</video>
+						<div class="gemimages" style="max-width: 100%; display: flex; flex-direction: row; column-gap: 10px; row-gap: 10px; overflow-x: auto;">
+							<div id="gemimg4" style="position: relative; min-width: 150px; height: 125px; background-repeat: no-repeat; background-size: contain; background-image:url('https://s3.ap-south-1.amazonaws.com/qa.marketplace.nft.tracified.com/Tracified-RT-Logo-White.svg');">
+								<span class="material-symbols-outlined provable-tick-wrapper provable-val" style="position: absolute; top: 5px; right: 5px; cursor: pointer;" onclick="openModal('physical-tag-modal')">
+									check_circle
+								</span>
+								<span class="material-symbols-outlined tl-view-image" style="position: absolute; bottom: 5px; right: 5px; cursor: pointer; font-size: 18px" onclick="openFullScreenImg('gemimg4')">
+									web_asset
+								</span>
+							</div>
+						</div>
+					</div>`
+
 	var proofToggle = `<div class="proof-toggle-wrapper cont-wrapper">
 							<label>View available blockchain proofs</label>
 							<label class="switch">
