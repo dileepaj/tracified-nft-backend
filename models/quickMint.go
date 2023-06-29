@@ -79,12 +79,13 @@ type UserAuth struct {
 }
 
 type UserNFTMapping struct {
-	SvgID   primitive.ObjectID `json:"svgid" bson:"_id,omitempty"`
-	BatchID string             `json:"batchid" bson:"batchid,omitempty"`
-	Email   string             `json:"email" bson:"email,omitempty"`
-	SVG     string             `json:"svg" bson:"svg,omitempty"`
-	Hash    string             `json:"hash" bson:"hash,omitempty"`
-	NFTName string             `json:"nftname" bson:"nftname,omitempty"`
+	SvgID     primitive.ObjectID `json:"svgid" bson:"_id,omitempty"`
+	BatchID   string             `json:"batchid" bson:"batchid,omitempty"`
+	Email     string             `json:"email" bson:"email,omitempty"`
+	SVG       string             `json:"svg" bson:"svg,omitempty"`
+	Hash      string             `json:"hash" bson:"hash,omitempty"`
+	NFTName   string             `json:"nftname" bson:"nftname,omitempty"`
+	Thumbnail string             `json:"thumbnail" bson:"thumbnail,omitempty"`
 }
 
 type CollectorInfo struct {
