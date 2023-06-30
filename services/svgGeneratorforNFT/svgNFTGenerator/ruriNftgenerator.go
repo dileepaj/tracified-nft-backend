@@ -175,7 +175,7 @@ func (r *RURINFT) GenerateTopSection(data []models.Component) (string, string) {
 						logs.ErrorLogger.Println("Failed to decode map data : ", decodeErr.Error())
 					}
 
-					video += `<video autoplay="true" controls="true" width="500px" height="300px" allow="autoplay" loop="true" muted="muted">
+					video += `<video style="max-width: 90%" autoplay="true" controls="true" width="500px" height="300px" allow="autoplay" loop="true" muted="muted">
 									<source src="` + valueWithProof.Value.(string) + `"  type="video/mp4" />
 							</video>`
 				} else if val.Component == "key-value" && val.Key == "Thumbnail" {
@@ -1153,7 +1153,7 @@ func (r *RURINFT) GenerateProofTable(txnHash string, url string, proofInfo model
 							</div>
 						</td>
 						<td style="width : 40%` + descStyle + `">` + proof.Description + `</td>
-						<td><a class="proof-link" href="https://explorer.tillit.world/txn/` + txnHash + `" target="_blank">Proof <span class="material-symbols-outlined">
+						<td><a class="proof-link" href="https://qa.explorer.tillit.world/txn/` + txnHash + `" target="_blank">Proof <span class="material-symbols-outlined">
 							open_in_new
 							</span></a>
 						</td>
