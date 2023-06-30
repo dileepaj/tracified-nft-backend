@@ -2080,3 +2080,13 @@ input:checked + .slider:before {
     word-break: break-all;
   }
 }
+
+@media only screen and (max-width: 802px) {
+  .nft-header-content {
+    justify-content: center;
+  }
+
+  .nft-header-title {
+    align-items: center;
+  }
+}
