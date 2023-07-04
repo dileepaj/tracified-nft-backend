@@ -64,7 +64,11 @@ func (r *RURINFT) GenerateNFT() (responseDtos.SVGforNFTResponse, error) {
 	tdpData, _ := customizedNFTFacade.GetDigitalTwinData(r.BatchID, r.ProductID)
 	var userNftMapping models.UserNFTMapping
 	//Svg will be generated using the template
-	svgrst, thumbnail, _ := r.GenerateSVGTemplateforNFT(tdpData)
+	svgrst, thumbnail, svgGenErr := r.GenerateSVGTemplateforNFT(tdpData)
+	if svgGenErr != nil {
+		logs.InfoLogger.Println("failed to generate SVG : ", svgGenErr.Error())
+		return userSVGMapRst, svgGenErr
+	}
 	userNftMapping.BatchID = r.BatchID
 	userNftMapping.SVG = svgrst
 	userNftMapping.Email = r.Email
