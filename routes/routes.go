@@ -26,6 +26,7 @@ func init() {
 		marketPlace.OneTimePassWordRoutes,
 		marketPlace.SvgGenerator,
 		marketPlace.MapGenerateRoutes,
+		marketPlace.WalletNFTRoutes,
 	}
 
 	for _, r := range routes {
