@@ -214,8 +214,6 @@ func (r *RURINFT) GenerateTopSection(data []models.Component) (string, string) {
 									</div>`
 					}
 
-					fmt.Println(len(val.Slides.TdpId))
-
 					proofStr := ""
 
 					if val.Slides.Provable && len(val.Slides.TdpId) > 0 {
@@ -852,8 +850,6 @@ func (r *RURINFT) GenerateTabLabels(title string, index int) (string, string, st
 // Generate proof modal for key value pairs
 func (r *RURINFT) GenerateProofContentStr(key string, proofInfo models.ValueWithProof) (string, string) {
 	id := strings.ReplaceAll(key, " ", "") + "-modal"
-
-	fmt.Println(proofInfo.TdpId)
 
 	txnHash, url, err := r.GetTxnHash(proofInfo.TdpId[0])
 
