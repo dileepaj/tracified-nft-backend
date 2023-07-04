@@ -95,6 +95,7 @@ type WalletNFT struct {
 	Timestamp       string `json:"timestamp" bson:"timestamp"`
 	TXNHash         string `json:"txnhash" bson:"txnhash"`
 	ShopID          string `json:"shopid" bson:"shopid"`
+	Thumbnail       string `json:"thumbnail" bson:"thumbnail,omitempty"`
 }
 
 type ResponseWalletNFT struct {
@@ -110,7 +111,7 @@ type ResponseWalletNFT struct {
 	Timestamp       string `json:"timestamp" bson:"timestamp"`
 	TXNHash         string `json:"txnhash" bson:"txnhash"`
 	ShopID          string `json:"shopid" bson:"shopid"`
-	Thumbnail       string
+	Thumbnail       string `json:"thumbnail" bson:"thumbnail,omitempty"`
 }
 
 type WalletNFTTenantUser struct {

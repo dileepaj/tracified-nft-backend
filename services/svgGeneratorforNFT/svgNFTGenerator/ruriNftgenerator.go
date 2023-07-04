@@ -64,7 +64,11 @@ func (r *RURINFT) GenerateNFT() (responseDtos.SVGforNFTResponse, error) {
 	tdpData, _ := customizedNFTFacade.GetDigitalTwinData(r.BatchID, r.ProductID)
 	var userNftMapping models.UserNFTMapping
 	//Svg will be generated using the template
-	svgrst, thumbnail, _ := r.GenerateSVGTemplateforNFT(tdpData)
+	svgrst, thumbnail, svgGenErr := r.GenerateSVGTemplateforNFT(tdpData)
+	if svgGenErr != nil {
+		logs.InfoLogger.Println("failed to generate SVG : ", svgGenErr.Error())
+		return userSVGMapRst, svgGenErr
+	}
 	userNftMapping.BatchID = r.BatchID
 	userNftMapping.SVG = svgrst
 	userNftMapping.Email = r.Email
@@ -209,8 +213,6 @@ func (r *RURINFT) GenerateTopSection(data []models.Component) (string, string) {
 										</span>
 									</div>`
 					}
-
-					fmt.Println(len(val.Slides.TdpId))
 
 					proofStr := ""
 
@@ -848,8 +850,6 @@ func (r *RURINFT) GenerateTabLabels(title string, index int) (string, string, st
 // Generate proof modal for key value pairs
 func (r *RURINFT) GenerateProofContentStr(key string, proofInfo models.ValueWithProof) (string, string) {
 	id := strings.ReplaceAll(key, " ", "") + "-modal"
-
-	fmt.Println(proofInfo.TdpId)
 
 	txnHash, url, err := r.GetTxnHash(proofInfo.TdpId[0])
 
