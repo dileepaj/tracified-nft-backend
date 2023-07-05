@@ -48,3 +48,19 @@ type CreatorInfoforMatrixView struct {
 	PageSize      int32 `json:"pagesize" bson:"pagesize"`
 	RequestedPage int32 `json:"requestedPage" bson:"requestedPage" `
 }
+
+type UpdateNFTState struct {
+	IssuerPublicKey string `json:"issuerpublickey" bson:"issuerpublickey"`
+	NFTStatus       string `json:"nftstatus" bson:"nftstatus"`
+}
+
+type DeleteNFTState struct {
+	IssuerPublicKey string `json:"issuerpublickey" bson:"issuerpublickey"`
+}
+
+type WalletNFTsForMatrixView struct {
+	Blockchain    string `json:"blockchain" bson:"blockchain"`
+	PageSize      int32  `json:"pagesize" bson:"pagesize"`
+	RequestedPage int32  `json:"requestedPage" bson:"requestedPage" `
+	SortbyFeild   string `json:"sortbyfeild" bson:"sortbyfeild" `
+}
