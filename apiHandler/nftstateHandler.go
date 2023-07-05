@@ -2,7 +2,6 @@ package apiHandler
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -18,14 +17,12 @@ import (
 
 func SaveWalletNFTStates(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;charset=UTF-8")
-	fmt.Println("here we are")
 	var nft models.NFTWalletState
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&nft)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 	}
-	fmt.Println("here we are now ---------", nft)
 	err = validations.ValidateInsertNftState(nft)
 	if err != nil {
 		errors.BadRequest(w, err.Error())
@@ -61,7 +58,7 @@ func SaveWalletNFTTXNs(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func UpdateWalletNFTTXN(w http.ResponseWriter, r *http.Request) {
+func UpdateWalletNFTState(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	var updateObj requestDtos.UpdateNFTState
 	decoder := json.NewDecoder(r.Body)
