@@ -61,7 +61,7 @@ func SaveWalletNFTTXNs(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func UpdateWalletNFTTXN(w http.ResponseWriter, r *http.Request) {
+func UpdateWalletNFTState(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	var updateObj requestDtos.UpdateNFTState
 	decoder := json.NewDecoder(r.Body)
