@@ -108,7 +108,7 @@ func (r *RURINFT) GenerateSVGTemplateforNFT(data []models.Component) (string, st
 	var htmlStart = `<div class="nft-header default-font">
 						<div class="nft-header-content cont-wrapper">
 							<div class="header-logo-cont">
-								<img src="` + r.Logo + `" class="ruri-logo" />
+								<img src="https://temporary-cdn.tracified.com/ruri-nft-logo.png" class="ruri-logo" />
 								<img src="https://s3.ap-south-1.amazonaws.com/qa.marketplace.nft.tracified.com/Tracified-RT-Logo-White.svg"
 								class="nft-logo" />
 							</div>

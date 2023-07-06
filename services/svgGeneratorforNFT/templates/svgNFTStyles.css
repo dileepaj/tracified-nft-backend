@@ -268,7 +268,7 @@
 }
 
 .ruri-logo {
-  width: 61px;
+  width: 177px;
   height: 77px;
 }
 
@@ -2081,7 +2081,7 @@ input:checked + .slider:before {
   }
 }
 
-@media only screen and (max-width: 802px) {
+@media only screen and (max-width: 931px) {
   .nft-header-content {
     justify-content: center;
   }
