@@ -64,7 +64,11 @@ func (r *RURINFT) GenerateNFT() (responseDtos.SVGforNFTResponse, error) {
 	tdpData, _ := customizedNFTFacade.GetDigitalTwinData(r.BatchID, r.ProductID)
 	var userNftMapping models.UserNFTMapping
 	//Svg will be generated using the template
-	svgrst, thumbnail, _ := r.GenerateSVGTemplateforNFT(tdpData)
+	svgrst, thumbnail, svgGenErr := r.GenerateSVGTemplateforNFT(tdpData)
+	if svgGenErr != nil {
+		logs.InfoLogger.Println("failed to generate SVG : ", svgGenErr.Error())
+		return userSVGMapRst, svgGenErr
+	}
 	userNftMapping.BatchID = r.BatchID
 	userNftMapping.SVG = svgrst
 	userNftMapping.Email = r.Email
@@ -104,7 +108,7 @@ func (r *RURINFT) GenerateSVGTemplateforNFT(data []models.Component) (string, st
 	var htmlStart = `<div class="nft-header default-font">
 						<div class="nft-header-content cont-wrapper">
 							<div class="header-logo-cont">
-								<img src="` + r.Logo + `" class="ruri-logo" />
+								<img src="https://temporary-cdn.tracified.com/ruri-nft-logo.png" class="ruri-logo" />
 								<img src="https://s3.ap-south-1.amazonaws.com/qa.marketplace.nft.tracified.com/Tracified-RT-Logo-White.svg"
 								class="nft-logo" />
 							</div>
@@ -204,13 +208,11 @@ func (r *RURINFT) GenerateTopSection(data []models.Component) (string, string) {
 										<span class="material-symbols-outlined provable-tick-wrapper provable-val" style="position: absolute; top: 5px; right: 5px; cursor: pointer;" onclick="openModal('PhysicalTag-modal')">
 											check_circle
 										</span>
-										<span class="material-symbols-outlined tl-view-image" style="position: absolute; bottom: 5px; right: 5px; cursor: pointer; font-size: 18px" onclick="openFullScreenImg('gemimg` + strconv.Itoa(i) + `')">
-											web_asset
+										<span class="tl-zoom-icon" style="position: absolute; bottom: 5px; right: 5px; cursor: pointer; font-size: 18px" onclick="openFullScreenImg('gemimg` + strconv.Itoa(i) + `')">
+											
 										</span>
 									</div>`
 					}
-
-					fmt.Println(len(val.Slides.TdpId))
 
 					proofStr := ""
 
@@ -692,7 +694,7 @@ func (r *RURINFT) GenerateTimeline(data models.Component, index int) (string, st
 				if len(imgs) > 0 {
 
 					for j, image := range imgs {
-						var prev = 0
+						/* var prev = 0
 						var next = 0
 
 						if j == 0 {
@@ -705,10 +707,10 @@ func (r *RURINFT) GenerateTimeline(data models.Component, index int) (string, st
 							next = 0
 						} else {
 							next = j + 1
-						}
+						} */
 
-						prevStr := strconv.Itoa(i) + strconv.Itoa(prev)
-						nextStr := strconv.Itoa(i) + strconv.Itoa(next)
+						/* prevStr := strconv.Itoa(i) + strconv.Itoa(prev)
+						nextStr := strconv.Itoa(i) + strconv.Itoa(next) */
 						dateStr := strings.ReplaceAll(strings.Split(image.Time, "T")[0], "-", "/")
 
 						if len(imgs) > 1 {
@@ -716,13 +718,13 @@ func (r *RURINFT) GenerateTimeline(data models.Component, index int) (string, st
 											tabindex="0"
 											class="carousel__slide" style="background-image: url('` + image.Img + `');">
 											<div class="carousel__snapper">
-											<a href="#carousel__slide` + prevStr + `"
+											<a 
 												class="carousel__prev">Go to last slide</a>
-											<a href="#carousel__slide` + nextStr + `"
+											<a 
 												class="carousel__next">Go to next slide</a>
 											</div>
-											<label class="date-text">` + dateStr + `<span class="material-symbols-outlined tl-view-image" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
-												web_asset
+											<label class="date-text">` + dateStr + `<span class="tl-zoom-icon" style="margin-left: 10px" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
+												
 												</span></label>
 											` + proofTickIcon + `
 										</li>`
@@ -736,8 +738,8 @@ func (r *RURINFT) GenerateTimeline(data models.Component, index int) (string, st
 											<a
 												class="carousel__next">Go to next slide</a>
 											</div>
-											<label class="date-text">` + dateStr + `<span class="material-symbols-outlined tl-view-image" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
-												web_asset
+											<label class="date-text">` + dateStr + `<span class="tl-zoom-icon" style="margin-left: 10px" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
+												
 												</span></label>
 											` + proofTickIcon + `
 										</li>`
@@ -848,8 +850,6 @@ func (r *RURINFT) GenerateTabLabels(title string, index int) (string, string, st
 // Generate proof modal for key value pairs
 func (r *RURINFT) GenerateProofContentStr(key string, proofInfo models.ValueWithProof) (string, string) {
 	id := strings.ReplaceAll(key, " ", "") + "-modal"
-
-	fmt.Println(proofInfo.TdpId)
 
 	txnHash, url, err := r.GetTxnHash(proofInfo.TdpId[0])
 

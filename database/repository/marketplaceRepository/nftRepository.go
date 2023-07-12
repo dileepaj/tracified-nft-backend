@@ -5,6 +5,7 @@ import (
 
 	"github.com/dileepaj/tracified-nft-backend/database/connections"
 	"github.com/dileepaj/tracified-nft-backend/database/repository"
+	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"go.mongodb.org/mongo-driver/bson"
@@ -20,6 +21,8 @@ var Owner = "owner"
 var Story = "nftstory"
 var Contract = "contracts"
 var walletnft = "walletnft"
+var NFTState = "nftstate"
+var walletNFTTxns = "nftstatetxns"
 
 func (r *NFTRepository) FindNFTById1AndNotId2(idName1 string, id1 string, idName2 string, id2 string) ([]models.NFT, error) {
 	var nfts []models.NFT
@@ -569,4 +572,82 @@ func (r *NFTRepository) GetNFTByIDAndBC(idName1 string, id1 string, idName2 stri
 		}
 	}
 	return nft, err
+}
+
+func (r *NFTRepository) SaveNFTState(nftstate models.NFTWalletState) (string, error) {
+	return repository.Save[models.NFTWalletState](nftstate, NFTState)
+}
+
+func (r *NFTRepository) SaveNFTStateTXN(nftstate models.NFTWalletStateTXN) (string, error) {
+	return repository.Save[models.NFTWalletStateTXN](nftstate, walletNFTTxns)
+}
+
+func (r *NFTRepository) UpdateNFTState(findBy string, id string, update primitive.M) (models.NFTWalletState, error) {
+	var stateResponse models.NFTWalletState
+	upsert := false
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+	rst := connections.GetSessionClient("nftstate").FindOneAndUpdate(context.TODO(), bson.D{{"issuerpublickey", id}}, update, &opt)
+	if rst != nil {
+		err := rst.Decode((&stateResponse))
+		if err != nil {
+			logs.ErrorLogger.Println("Error occured while retreving data from nft nft in UpdateNFTTXN:nftRepository.go: ", err.Error())
+			return stateResponse, err
+		}
+		return stateResponse, nil
+	} else {
+		return stateResponse, nil
+
+	}
+}
+
+func (r *NFTRepository) DeleteNFTState(nftstate requestDtos.DeleteNFTState) error {
+	result, err := connections.GetSessionClient(NFTState).DeleteOne(context.TODO(), bson.M{"issuerpublickey": nftstate.IssuerPublicKey})
+	if err != nil {
+		logs.ErrorLogger.Println("Error occured when Connecting to DB and executing DeleteOne Query in DeleteNFTState(NFTRepository): ", err.Error())
+	}
+	logs.InfoLogger.Println("collection deleted :", result.DeletedCount)
+	return err
+
+}
+
+func (r *NFTRepository) FindWalletNFTTxns(idName1 string, id1 string) ([]models.NFTWalletStateTXN, error) {
+	var txns []models.NFTWalletStateTXN
+	rst, err := repository.FindById(idName1, id1, walletNFTTxns)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+		return txns, err
+	}
+	for rst.Next(context.TODO()) {
+		var txn models.NFTWalletStateTXN
+		err = rst.Decode(&txn)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return txns, err
+		}
+		txns = append(txns, txn)
+	}
+	return txns, nil
+}
+
+func (r *NFTRepository) GetWalletNFTPaginatedResponse(filterConfig bson.M, projectionData bson.D, pagesize int32, pageNo int32, collectionName string, sortingFeildName string, nfts []models.WalletNFTContentforMatrix) (models.PaginateWalletNFTResponse, error) {
+	contentResponse, paginationResponse, err := repository.PaginateResponse[[]models.WalletNFTContentforMatrix](
+		filterConfig,
+		projectionData,
+		pagesize,
+		pageNo,
+		collectionName,
+		sortingFeildName,
+		nfts,
+	)
+	var response models.PaginateWalletNFTResponse
+	if err != nil {
+		return response, err
+	}
+	response.Content = contentResponse
+	response.PaginationInfo = paginationResponse
+	return response, nil
 }

@@ -259,7 +259,7 @@ func Remove(idName string, id, collection string) (int64, error) {
 }
 
 type paginateResponseType interface {
-	[]models.NFTContentforMatrix | []models.CreatorInfo | []models.ReviewsforPagination
+	[]models.NFTContentforMatrix | []models.CreatorInfo | []models.ReviewsforPagination | []models.WalletNFTContentforMatrix
 }
 
 func PaginateResponse[PaginatedData paginateResponseType](filterConfig bson.M, projectionData bson.D, pagesize int32, pageNo int32, collectionName string, sortingFeildName string, object PaginatedData) (PaginatedData, models.PaginationTemplate, error) {

@@ -25,6 +25,7 @@ func (r *SvgRepository) SaveUserMapping(userNftMapping models.UserNFTMapping) (r
 		return response, err
 	}
 	response.SvgID = rst
+	response.Thumbnail = userNftMapping.Thumbnail
 	return response, nil
 }
 

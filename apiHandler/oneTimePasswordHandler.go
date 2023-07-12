@@ -41,6 +41,11 @@ func InitNFT(W http.ResponseWriter, r *http.Request) {
 		errors.BadRequest(W, "Invalid data")
 		return
 	}
+	rstshopid, shopIderr := customizedNFTFacade.GetNFTStatusbyShopID(requestGenOTP.ProductID)
+	if shopIderr != nil || rstshopid == "Minted" {
+		errors.BadRequest(W, "NFT already minted")
+		return
+	}
 	// Checks if the API has the ncessary params filled
 	if requestGenOTP.ProductID != "" || requestGenOTP.Email != "" {
 		if !validations.ValidateEmailFormat(requestGenOTP.Email) {
@@ -139,7 +144,7 @@ func ValidateOTP(W http.ResponseWriter, r *http.Request) {
 			}
 			rstshopid, shopIderr := customizedNFTFacade.GetNFTStatusbyShopID(shopID)
 			if shopIderr != nil || rstshopid == "Minted" {
-				errors.BadRequest(W, "NFT already claimed")
+				errors.BadRequest(W, "NFT already minted")
 				return
 			}
 			tempBatchID := rst

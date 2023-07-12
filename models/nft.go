@@ -95,6 +95,7 @@ type WalletNFT struct {
 	Timestamp       string `json:"timestamp" bson:"timestamp"`
 	TXNHash         string `json:"txnhash" bson:"txnhash"`
 	ShopID          string `json:"shopid" bson:"shopid"`
+	Thumbnail       string `json:"thumbnail" bson:"thumbnail,omitempty"`
 }
 
 type ResponseWalletNFT struct {
@@ -110,7 +111,7 @@ type ResponseWalletNFT struct {
 	Timestamp       string `json:"timestamp" bson:"timestamp"`
 	TXNHash         string `json:"txnhash" bson:"txnhash"`
 	ShopID          string `json:"shopid" bson:"shopid"`
-	Thumbnail       string
+	Thumbnail       string `json:"thumbnail" bson:"thumbnail,omitempty"`
 }
 
 type WalletNFTTenantUser struct {
@@ -118,4 +119,51 @@ type WalletNFTTenantUser struct {
 	Name       string             `json:"name" bson:"name"`
 	Logo       string             `json:"logo" bson:"logo"`
 	EmailTopic string             `json:"emailTopic" bson:"emailTopic"`
+}
+
+type NFTWalletState struct {
+	Id              primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	IssuerPublicKey string             `json:"issuerpublickey" bson:"issuerpublickey"`
+	Blockchain      string             `json:"blockchain" bson:"blockchain"`
+	NFTCreator      string             `json:"nftcreator" bson:"nftcreator"`
+	NFTName         string             `json:"nftname" bson:"nftname"`
+	NFTRequested    string             `json:"nftrequested" bson:"nftrequested"`
+	CurrentOwner    string             `json:"currentowner" bson:"currentowner"`
+	NFTStatus       string             `json:"nftstatus" bson:"nftstatus"`
+	Timestamp       string             `json:"timestamp" bson:"timestamp"`
+	ShopID          string             `json:"shopid" bson:"shopid"`
+	Thumbnail       string             `json:"thumbnail" bson:"thumbnail"`
+}
+
+type NFTWalletStateTXN struct {
+	Id              primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
+	IssuerPublicKey string             `json:"issuerpublickey" bson:"issuerpublickey"`
+	Blockchain      string             `json:"blockchain" bson:"blockchain"`
+	NFTCreator      string             `json:"nftcreator" bson:"nftcreator"`
+	NFTName         string             `json:"nftname" bson:"nftname"`
+	CurrentOwner    string             `json:"currentowner" bson:"currentowner"`
+	NFTStatus       string             `json:"nftstatus" bson:"nftstatus"`
+	Timestamp       string             `json:"timestamp" bson:"timestamp"`
+	ShopID          string             `json:"shopid" bson:"shopid"`
+	Thumbnail       string             `json:"thumbnail" bson:"thumbnail"`
+	TXNHash         string             `json:"txnhash" bson:"txnhash"`
+}
+
+type WalletNFTContentforMatrix struct {
+	Id              primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
+	IssuerPublicKey string             `json:"issuerpublickey" bson:"issuerpublickey"`
+	Blockchain      string             `json:"blockchain" bson:"blockchain"`
+	NFTCreator      string             `json:"nftcreator" bson:"nftcreator"`
+	NFTName         string             `json:"nftname" bson:"nftname"`
+	NFTRequested    string             `json:"nftrequested" bson:"nftrequested"`
+	CurrentOwner    string             `json:"currentowner" bson:"currentowner"`
+	NFTStatus       string             `json:"nftstatus" bson:"nftstatus"`
+	Timestamp       string             `json:"timestamp" bson:"timestamp"`
+	ShopID          string             `json:"shopid" bson:"shopid"`
+	Thumbnail       string             `json:"thumbnail" bson:"thumbnail"`
+}
+
+type PaginateWalletNFTResponse struct {
+	Content        []WalletNFTContentforMatrix `json:"walletcontent" bson:"walletcontent" validate:"required"`
+	PaginationInfo PaginationTemplate
 }
