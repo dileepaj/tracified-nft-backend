@@ -208,8 +208,8 @@ func (r *RURINFT) GenerateTopSection(data []models.Component) (string, string) {
 										<span class="material-symbols-outlined provable-tick-wrapper provable-val" style="position: absolute; top: 5px; right: 5px; cursor: pointer;" onclick="openModal('PhysicalTag-modal')">
 											check_circle
 										</span>
-										<span class="material-symbols-outlined tl-view-image" style="position: absolute; bottom: 5px; right: 5px; cursor: pointer; font-size: 18px" onclick="openFullScreenImg('gemimg` + strconv.Itoa(i) + `')">
-											web_asset
+										<span class="tl-zoom-icon" style="position: absolute; bottom: 5px; right: 5px; cursor: pointer; font-size: 18px" onclick="openFullScreenImg('gemimg` + strconv.Itoa(i) + `')">
+											
 										</span>
 									</div>`
 					}
@@ -723,8 +723,8 @@ func (r *RURINFT) GenerateTimeline(data models.Component, index int) (string, st
 											<a 
 												class="carousel__next">Go to next slide</a>
 											</div>
-											<label class="date-text">` + dateStr + `<span class="material-symbols-outlined tl-view-image" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
-												web_asset
+											<label class="date-text">` + dateStr + `<span class="tl-zoom-icon" style="margin-left: 10px" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
+												
 												</span></label>
 											` + proofTickIcon + `
 										</li>`
@@ -738,8 +738,8 @@ func (r *RURINFT) GenerateTimeline(data models.Component, index int) (string, st
 											<a
 												class="carousel__next">Go to next slide</a>
 											</div>
-											<label class="date-text">` + dateStr + `<span class="material-symbols-outlined tl-view-image" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
-												web_asset
+											<label class="date-text">` + dateStr + `<span class="tl-zoom-icon" style="margin-left: 10px" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
+												
 												</span></label>
 											` + proofTickIcon + `
 										</li>`
