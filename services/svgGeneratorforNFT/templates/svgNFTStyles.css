@@ -268,6 +268,7 @@
 }
 
 .ruri-logo {
+  margin-bottom: 7px;
   width: 177px;
   height: 77px;
 }
@@ -2105,5 +2106,11 @@ input:checked + .slider:before {
 
   .nft-header-title {
     align-items: center;
+  }
+}
+
+@media only screen and (max-width: 579px) {
+  .ruri-logo {
+    margin-bottom: 0px;
   }
 }

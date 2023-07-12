@@ -113,7 +113,6 @@ func (r *RURINFT) GenerateSVGTemplateforNFT(data []models.Component) (string, st
 								class="nft-logo" />
 							</div>
 							<div class="nft-header-title">
-								<label id="topTitle">NFT</label>
 								<label id="nftName">` + data[0].Item + `</label>
 							</div>
 						</div>
