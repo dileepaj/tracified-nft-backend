@@ -1042,6 +1042,7 @@ li {
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
+  overflow: visible !important;
 }
 
 .img-list {
