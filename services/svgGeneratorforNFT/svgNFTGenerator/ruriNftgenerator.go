@@ -901,7 +901,7 @@ func (r *RURINFT) GenerateProofContentStr(key string, proofInfo models.ValueWith
 										</div>
 										<div class="body">
 											<p>Visit TilliT Explorer to view transaction details and blockchain proofs.</p>
-											<a href="https://qa.explorer.tillit.world/txn/` + txnHash + `" target="_blank" >
+											<a href="` + configs.GetTillitUrl() + `/txn/` + txnHash + `" target="_blank" >
 											Tillit Explorer <span class="material-symbols-outlined">
 											open_in_new
 											</span>
