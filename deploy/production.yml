@@ -74,3 +74,4 @@
             NFT_BACKEND_BASEURL: "{{lookup('env','NFT_BACKEND_BASEURL')}}"
             ADMIN_BACKEND: "{{lookup('env','ADMIN_BACKEND')}}"
             GATEWAY: "{{lookup('env','GATEWAY')}}"
+            TILLIT: "{{lookup('env','TILLIT')}}"
