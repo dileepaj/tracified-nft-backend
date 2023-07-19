@@ -108,12 +108,11 @@ func (r *RURINFT) GenerateSVGTemplateforNFT(data []models.Component) (string, st
 	var htmlStart = `<div class="nft-header default-font">
 						<div class="nft-header-content cont-wrapper">
 							<div class="header-logo-cont">
-								<img src="` + r.Logo + `" class="ruri-logo" />
+								<img src="https://temporary-cdn.tracified.com/ruri-nft-logo.png" class="ruri-logo" />
 								<img src="https://s3.ap-south-1.amazonaws.com/qa.marketplace.nft.tracified.com/Tracified-RT-Logo-White.svg"
 								class="nft-logo" />
 							</div>
 							<div class="nft-header-title">
-								<label id="topTitle">NFT</label>
 								<label id="nftName">` + data[0].Item + `</label>
 							</div>
 						</div>
@@ -208,8 +207,8 @@ func (r *RURINFT) GenerateTopSection(data []models.Component) (string, string) {
 										<span class="material-symbols-outlined provable-tick-wrapper provable-val" style="position: absolute; top: 5px; right: 5px; cursor: pointer;" onclick="openModal('PhysicalTag-modal')">
 											check_circle
 										</span>
-										<span class="material-symbols-outlined tl-view-image" style="position: absolute; bottom: 5px; right: 5px; cursor: pointer; font-size: 18px" onclick="openFullScreenImg('gemimg` + strconv.Itoa(i) + `')">
-											web_asset
+										<span class="tl-zoom-icon" style="position: absolute; bottom: 5px; right: 5px; cursor: pointer; font-size: 18px" onclick="openFullScreenImg('gemimg` + strconv.Itoa(i) + `')">
+											
 										</span>
 									</div>`
 					}
@@ -694,7 +693,7 @@ func (r *RURINFT) GenerateTimeline(data models.Component, index int) (string, st
 				if len(imgs) > 0 {
 
 					for j, image := range imgs {
-						var prev = 0
+						/* var prev = 0
 						var next = 0
 
 						if j == 0 {
@@ -707,10 +706,10 @@ func (r *RURINFT) GenerateTimeline(data models.Component, index int) (string, st
 							next = 0
 						} else {
 							next = j + 1
-						}
+						} */
 
-						prevStr := strconv.Itoa(i) + strconv.Itoa(prev)
-						nextStr := strconv.Itoa(i) + strconv.Itoa(next)
+						/* prevStr := strconv.Itoa(i) + strconv.Itoa(prev)
+						nextStr := strconv.Itoa(i) + strconv.Itoa(next) */
 						dateStr := strings.ReplaceAll(strings.Split(image.Time, "T")[0], "-", "/")
 
 						if len(imgs) > 1 {
@@ -718,13 +717,13 @@ func (r *RURINFT) GenerateTimeline(data models.Component, index int) (string, st
 											tabindex="0"
 											class="carousel__slide" style="background-image: url('` + image.Img + `');">
 											<div class="carousel__snapper">
-											<a href="#carousel__slide` + prevStr + `"
+											<a 
 												class="carousel__prev">Go to last slide</a>
-											<a href="#carousel__slide` + nextStr + `"
+											<a 
 												class="carousel__next">Go to next slide</a>
 											</div>
-											<label class="date-text">` + dateStr + `<span class="material-symbols-outlined tl-view-image" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
-												web_asset
+											<label class="date-text">` + dateStr + `<span class="tl-zoom-icon" style="margin-left: 10px" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
+												
 												</span></label>
 											` + proofTickIcon + `
 										</li>`
@@ -738,8 +737,8 @@ func (r *RURINFT) GenerateTimeline(data models.Component, index int) (string, st
 											<a
 												class="carousel__next">Go to next slide</a>
 											</div>
-											<label class="date-text">` + dateStr + `<span class="material-symbols-outlined tl-view-image" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
-												web_asset
+											<label class="date-text">` + dateStr + `<span class="tl-zoom-icon" style="margin-left: 10px" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
+												
 												</span></label>
 											` + proofTickIcon + `
 										</li>`
@@ -902,7 +901,7 @@ func (r *RURINFT) GenerateProofContentStr(key string, proofInfo models.ValueWith
 										</div>
 										<div class="body">
 											<p>Visit TilliT Explorer to view transaction details and blockchain proofs.</p>
-											<a href="https://qa.explorer.tillit.world/txn/` + txnHash + `" target="_blank" >
+											<a href="` + configs.GetTillitUrl() + `/txn/` + txnHash + `" target="_blank" >
 											Tillit Explorer <span class="material-symbols-outlined">
 											open_in_new
 											</span>

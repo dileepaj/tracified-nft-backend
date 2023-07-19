@@ -370,3 +370,84 @@ func GetAllWalletNFTsbyPK(publickey string) ([]models.ResponseWalletNFT, error) 
 func GetNFTByBlockchainAndIdentifier(id string, blockchain string) (models.NFT, error) {
 	return nftRepository.GetNFTByIDAndBC("nftidentifier", id, "blockchain", blockchain)
 }
+
+func StoreNFTState(createNFTStateObject models.NFTWalletState) (string, error) {
+	rst, err1 := nftRepository.SaveNFTState(createNFTStateObject)
+	if err1 != nil {
+		return "NFT not saved", err1
+	}
+	return rst, nil
+
+}
+
+func StoreNFTStateTXN(createNFTStateTxnObject models.NFTWalletStateTXN) (string, error) {
+	rst, err1 := nftRepository.SaveNFTStateTXN(createNFTStateTxnObject)
+	if err1 != nil {
+		return "NFT not saved", err1
+	}
+	return rst, nil
+
+}
+
+func UpdateNFTState(state requestDtos.UpdateNFTState) (models.NFTWalletState, error) {
+	update := bson.M{
+		"$set": bson.M{"nftstatus": state.NFTStatus},
+	}
+	return nftRepository.UpdateNFTState("issuerpublickey", state.IssuerPublicKey, update)
+}
+
+func DeleteNFTStateByIssuer(nftstate requestDtos.DeleteNFTState) error {
+	return nftRepository.DeleteNFTState(nftstate)
+}
+
+func GetWalletNFTTxnsByIssuer(issuer string) ([]models.NFTWalletStateTXN, error) {
+	return nftRepository.FindWalletNFTTxns("issuerpublickey", issuer)
+}
+
+func GetWalletNFTByState(paginationData requestDtos.WalletNFTsForMatrixView, StatetoSearch string, pubkey string) (models.PaginateWalletNFTResponse, error) {
+	filter := bson.M{
+		"blockchain":   paginationData.Blockchain,
+		"nftstatus":    StatetoSearch,
+		"currentowner": pubkey,
+	}
+	projection := GetProjectionDataWalletNFTMatrixView()
+	var nfts []models.WalletNFTContentforMatrix
+	response, err := nftRepository.GetWalletNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nftstate", "_id", nfts)
+	if err != nil {
+		logs.ErrorLogger.Println("Error occurred :", err.Error())
+		return models.PaginateWalletNFTResponse(response), err
+	}
+	return models.PaginateWalletNFTResponse(response), err
+}
+
+func GetProjectionDataWalletNFTMatrixView() bson.D {
+	projection := bson.D{
+		{Key: "issuerpublickey", Value: 1},
+		{Key: "nftcreator", Value: 1},
+		{Key: "blockchain", Value: 1},
+		{Key: "nftname", Value: 1},
+		{Key: "nftrequested", Value: 1},
+		{Key: "currentowner", Value: 1},
+		{Key: "nftstatus", Value: 1},
+		{Key: "timestamp", Value: 1},
+		{Key: "shopid", Value: 1},
+		{Key: "thumbnail", Value: 1},
+	}
+	return projection
+}
+
+func GetWalletNFTByStateForRequested(paginationData requestDtos.WalletNFTsForMatrixView, StatetoSearch string, pubkey string) (models.PaginateWalletNFTResponse, error) {
+	filter := bson.M{
+		"blockchain":   paginationData.Blockchain,
+		"nftstatus":    StatetoSearch,
+		"nftrequested": pubkey,
+	}
+	projection := GetProjectionDataWalletNFTMatrixView()
+	var nfts []models.WalletNFTContentforMatrix
+	response, err := nftRepository.GetWalletNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nftstate", "_id", nfts)
+	if err != nil {
+		logs.ErrorLogger.Println("Error occurred :", err.Error())
+		return models.PaginateWalletNFTResponse(response), err
+	}
+	return models.PaginateWalletNFTResponse(response), err
+}

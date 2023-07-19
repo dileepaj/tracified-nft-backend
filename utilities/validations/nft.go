@@ -88,3 +88,21 @@ func ValidateWalletNft(e models.WalletNFT) error {
 	}
 	return nil
 }
+
+func ValidateInsertNftState(e models.NFTWalletState) error {
+	validate = validator.New()
+	err := validate.Struct(e)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func ValidateInsertNftStateTXN(e models.NFTWalletStateTXN) error {
+	validate = validator.New()
+	err := validate.Struct(e)
+	if err != nil {
+		return err
+	}
+	return nil
+}

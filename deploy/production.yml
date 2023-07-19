@@ -47,7 +47,7 @@
       debugger: on_failed
       docker_container:
         name: tracified-nft-backend
-        image: 453230908534.dkr.ecr.ap-south-1.amazonaws.com/tracified/nft-backend-production
+        image: registry.tracified.com/tracified/nft-backend-production
         published_ports: "6081:6081"
         restart: yes
         restart_policy: on-failure
@@ -74,3 +74,4 @@
             NFT_BACKEND_BASEURL: "{{lookup('env','NFT_BACKEND_BASEURL')}}"
             ADMIN_BACKEND: "{{lookup('env','ADMIN_BACKEND')}}"
             GATEWAY: "{{lookup('env','GATEWAY')}}"
+            TILLIT: "{{lookup('env','TILLIT')}}"
