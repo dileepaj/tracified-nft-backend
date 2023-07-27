@@ -916,12 +916,7 @@ func GetWalletNFTsbyPK(w http.ResponseWriter, r *http.Request) {
 		errors.BadRequest(w, ErrorMessage)
 		return
 	} else {
-		if len(results) > 0 {
-			for i, result := range results {
-				thumbnailUrl := "https://tracified.sirv.com/Spins/RURI%20Gems/" + result.ShopID + "/" + result.ShopID + ".jpg"
-				results[i].Thumbnail = thumbnailUrl
-			}
-		} else {
+		if len(results) == 0 {
 			ErrorMessage := "No NFTs for public key"
 			errors.BadRequest(w, ErrorMessage)
 			return

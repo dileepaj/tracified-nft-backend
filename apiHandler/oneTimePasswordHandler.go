@@ -25,20 +25,25 @@ func InitNFT(W http.ResponseWriter, r *http.Request) {
 	var requestGenOTP requestDtos.GenOTP
 	decoder := json.NewDecoder(r.Body)
 
-	tenantName, paramerr := r.URL.Query()["tenant"]
-	if !paramerr {
-		errors.BadRequest(W, "invalid Query param")
-		return
-	}
-	tenantRst, getTenantErr := customizedNFTFacade.ValidateWalletTenant(tenantName[0])
-	if getTenantErr != nil || tenantRst.Name == "" {
-		errors.BadRequest(W, "Invalid tenant")
-		return
-	}
+	// tenantName, paramerr := r.URL.Query()["tenant"]
+	// if !paramerr {
+	// 	errors.BadRequest(W, "invalid Query param")
+	// 	return
+	// }
+	// tenantRst, getTenantErr := customizedNFTFacade.ValidateWalletTenant(tenantName[0])
+	// if getTenantErr != nil || tenantRst.Name == "" {
+	// 	errors.BadRequest(W, "Invalid tenant")
+	// 	return
+	// }
 
 	err := decoder.Decode(&requestGenOTP)
 	if err != nil {
 		errors.BadRequest(W, "Invalid data")
+		return
+	}
+	rstshopid, shopIderr := customizedNFTFacade.GetNFTStatusbyShopID(requestGenOTP.ProductID)
+	if shopIderr != nil || rstshopid == "Minted" {
+		errors.BadRequest(W, "NFT already minted")
 		return
 	}
 	// Checks if the API has the ncessary params filled
@@ -139,7 +144,7 @@ func ValidateOTP(W http.ResponseWriter, r *http.Request) {
 			}
 			rstshopid, shopIderr := customizedNFTFacade.GetNFTStatusbyShopID(shopID)
 			if shopIderr != nil || rstshopid == "Minted" {
-				errors.BadRequest(W, "NFT already claimed")
+				errors.BadRequest(W, "NFT already minted")
 				return
 			}
 			tempBatchID := rst
@@ -170,16 +175,16 @@ func ResentOTP(W http.ResponseWriter, r *http.Request) {
 	var requestResendOTP requestDtos.GenOTP
 	decoder := json.NewDecoder(r.Body)
 
-	tenantName, paramerr := r.URL.Query()["tenant"]
-	if !paramerr {
-		errors.BadRequest(W, "invalid Query param")
-		return
-	}
-	tenantRst, getTenantErr := customizedNFTFacade.ValidateWalletTenant(tenantName[0])
-	if getTenantErr != nil || tenantRst.Name == "" {
-		errors.BadRequest(W, "Invalid tenant")
-		return
-	}
+	// tenantName, paramerr := r.URL.Query()["tenant"]
+	// if !paramerr {
+	// 	errors.BadRequest(W, "invalid Query param")
+	// 	return
+	// }
+	// tenantRst, getTenantErr := customizedNFTFacade.ValidateWalletTenant(tenantName[0])
+	// if getTenantErr != nil || tenantRst.Name == "" {
+	// 	errors.BadRequest(W, "Invalid tenant")
+	// 	return
+	// }
 
 	err := decoder.Decode(&requestResendOTP)
 	if err != nil {

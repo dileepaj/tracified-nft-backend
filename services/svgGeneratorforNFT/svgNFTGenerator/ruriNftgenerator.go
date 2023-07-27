@@ -64,11 +64,16 @@ func (r *RURINFT) GenerateNFT() (responseDtos.SVGforNFTResponse, error) {
 	tdpData, _ := customizedNFTFacade.GetDigitalTwinData(r.BatchID, r.ProductID)
 	var userNftMapping models.UserNFTMapping
 	//Svg will be generated using the template
-	svgrst, _ := r.GenerateSVGTemplateforNFT(tdpData)
+	svgrst, thumbnail, svgGenErr := r.GenerateSVGTemplateforNFT(tdpData)
+	if svgGenErr != nil {
+		logs.InfoLogger.Println("failed to generate SVG : ", svgGenErr.Error())
+		return userSVGMapRst, svgGenErr
+	}
 	userNftMapping.BatchID = r.BatchID
 	userNftMapping.SVG = svgrst
 	userNftMapping.Email = r.Email
 	userNftMapping.NFTName = r.NFTName
+	userNftMapping.Thumbnail = thumbnail
 	//Generated SVG data will get added to the DB
 	rst, err1 := svgRepository.SaveUserMapping(userNftMapping)
 	if err1 != nil {
@@ -78,10 +83,10 @@ func (r *RURINFT) GenerateNFT() (responseDtos.SVGforNFTResponse, error) {
 	return userSVGMapRst, nil
 }
 
-func (r *RURINFT) GenerateSVGTemplateforNFT(data []models.Component) (string, error) {
+func (r *RURINFT) GenerateSVGTemplateforNFT(data []models.Component) (string, string, error) {
 	/* batchID := r.BatchID
 	productID := r.ProductID  */
-	shopID := r.ShopID
+	//shopID := r.ShopID
 	receiverName := r.ReceiverName
 	message := r.CustomMsg
 	nftname := r.NFTName
@@ -103,19 +108,19 @@ func (r *RURINFT) GenerateSVGTemplateforNFT(data []models.Component) (string, er
 	var htmlStart = `<div class="nft-header default-font">
 						<div class="nft-header-content cont-wrapper">
 							<div class="header-logo-cont">
-								<img src="` + r.Logo + `" class="ruri-logo" />
+								<img src="https://temporary-cdn.tracified.com/ruri-nft-logo.png" class="ruri-logo" />
 								<img src="https://s3.ap-south-1.amazonaws.com/qa.marketplace.nft.tracified.com/Tracified-RT-Logo-White.svg"
 								class="nft-logo" />
 							</div>
 							<div class="nft-header-title">
-								<label id="topTitle">NFT</label>
 								<label id="nftName">` + data[0].Item + `</label>
 							</div>
 						</div>
 					</div>
 					<div class="d-flex justify-content-center align-content-center flex-wrap" id="container">`
 
-	var iframeImg = `<div class="iframe-wrapper cont-wrapper"><iframe   src="https://tracified.sirv.com/Spins/RURI%20Gems/` + shopID + `/` + shopID + `.spin" class="iframe-img" frameborder="0" allowfullscreen="true"></iframe><span class="rotate-icon" style="margin-top : 30px;"></span></div>`
+	iframeImg, thumb := r.GenerateTopSection(data)
+
 	var proofToggle = `<div class="proof-toggle-wrapper cont-wrapper">
 							<label>View available blockchain proofs</label>
 							<label class="switch">
@@ -148,7 +153,88 @@ func (r *RURINFT) GenerateSVGTemplateforNFT(data []models.Component) (string, er
 	/* template = strings.Replace(template, "\r", " ", -1)
 	template = strings.Replace(template, "\t", " ", -1)
 	template = strings.Replace(template, "\n", " ", -1) */
-	return template, nil
+	return template, thumb, nil
+}
+
+// Generate section with video and physical tag
+func (r *RURINFT) GenerateTopSection(data []models.Component) (string, string) {
+
+	content := ""
+	video := ""
+	physicalTag := ""
+	thumbnail := ""
+
+	for _, data := range data {
+		if data.Component == "expandableTab" && len(data.Tabs) > 0 && data.Title == "NFT Content" {
+			arr := data.Tabs[0].Children
+
+			for _, val := range arr {
+				if val.Component == "key-value" && val.Key == "Video Link" {
+
+					var valueWithProof models.ValueWithProof
+
+					decodeErr := mapstructure.Decode(val.Value, &valueWithProof)
+					if decodeErr != nil {
+						logs.ErrorLogger.Println("Failed to decode map data : ", decodeErr.Error())
+					}
+
+					video += `<video style="max-width: 90%" autoplay="true" playsinline="true" controls="true" width="500px" height="300px" allow="autoplay" loop="true" muted="muted">
+									<source src="` + valueWithProof.Value.(string) + `"  type="video/mp4" />
+							</video>`
+				} else if val.Component == "key-value" && val.Key == "Thumbnail" {
+					var valueWithProof models.ValueWithProof
+
+					decodeErr := mapstructure.Decode(val.Value, &valueWithProof)
+					if decodeErr != nil {
+						logs.ErrorLogger.Println("Failed to decode map data : ", decodeErr.Error())
+					}
+
+					thumbnail = valueWithProof.Value.(string)
+
+				} else if val.Component == "image-slider" {
+
+					var imgs []models.ImageValue
+
+					decodeErr := mapstructure.Decode(val.Slides.Value, &imgs)
+					if decodeErr != nil {
+						logs.ErrorLogger.Println("failed to decode map : ", decodeErr.Error())
+					}
+
+					imgstr := ""
+
+					for i, img := range imgs {
+						imgstr += `<div id="gemimg` + strconv.Itoa(i) + `" style="position: relative; min-width: 150px; height: 125px; background-position: center center; background-repeat: no-repeat; background-size: contain; background-image:url('` + img.Img + `');">
+										<span class="material-symbols-outlined provable-tick-wrapper provable-val" style="position: absolute; top: 5px; right: 5px; cursor: pointer;" onclick="openModal('PhysicalTag-modal')">
+											check_circle
+										</span>
+										<span class="tl-zoom-icon" style="position: absolute; bottom: 5px; right: 5px; cursor: pointer; font-size: 18px" onclick="openFullScreenImg('gemimg` + strconv.Itoa(i) + `')">
+											
+										</span>
+									</div>`
+					}
+
+					proofStr := ""
+
+					if val.Slides.Provable && len(val.Slides.TdpId) > 0 {
+						proofStr, _ = r.GenerateProofContentStr("Physical Tag", val.Slides)
+					}
+
+					physicalTag += `<div class="gemimages" style="margin-top: 10px; max-width: 100%; display: flex; flex-direction: row; column-gap: 10px; row-gap: 10px; overflow-x: auto;">
+											` + imgstr + proofStr + `
+									</div>
+									`
+
+				}
+			}
+
+		}
+	}
+
+	if video != "" || physicalTag != "" {
+		content = `<div class="iframe-wrapper cont-wrapper">` + video + physicalTag + `</div>`
+	}
+
+	return content, thumbnail
 }
 
 // generate ownership section
@@ -212,7 +298,7 @@ func (r *RURINFT) GenerateOwnership(receiverName string, message string, nftname
 func (r *RURINFT) GenerateContent(data []models.Component) {
 
 	for _, data := range data {
-		if data.Component == "expandableTab" && len(data.Tabs) > 0 {
+		if data.Component == "expandableTab" && len(data.Tabs) > 0 && data.Title != "NFT Content" {
 			r.GenerateTable(data)
 		} else if data.Component == "expandableTab" && len(data.VerticalTab) > 0 {
 			r.GenerateVerticalTabs(data)
@@ -607,7 +693,7 @@ func (r *RURINFT) GenerateTimeline(data models.Component, index int) (string, st
 				if len(imgs) > 0 {
 
 					for j, image := range imgs {
-						var prev = 0
+						/* var prev = 0
 						var next = 0
 
 						if j == 0 {
@@ -620,10 +706,10 @@ func (r *RURINFT) GenerateTimeline(data models.Component, index int) (string, st
 							next = 0
 						} else {
 							next = j + 1
-						}
+						} */
 
-						prevStr := strconv.Itoa(i) + strconv.Itoa(prev)
-						nextStr := strconv.Itoa(i) + strconv.Itoa(next)
+						/* prevStr := strconv.Itoa(i) + strconv.Itoa(prev)
+						nextStr := strconv.Itoa(i) + strconv.Itoa(next) */
 						dateStr := strings.ReplaceAll(strings.Split(image.Time, "T")[0], "-", "/")
 
 						if len(imgs) > 1 {
@@ -631,13 +717,13 @@ func (r *RURINFT) GenerateTimeline(data models.Component, index int) (string, st
 											tabindex="0"
 											class="carousel__slide" style="background-image: url('` + image.Img + `');">
 											<div class="carousel__snapper">
-											<a href="#carousel__slide` + prevStr + `"
+											<a 
 												class="carousel__prev">Go to last slide</a>
-											<a href="#carousel__slide` + nextStr + `"
+											<a 
 												class="carousel__next">Go to next slide</a>
 											</div>
-											<label class="date-text">` + dateStr + `<span class="material-symbols-outlined tl-view-image" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
-												web_asset
+											<label class="date-text">` + dateStr + `<span class="tl-zoom-icon" style="margin-left: 10px" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
+												
 												</span></label>
 											` + proofTickIcon + `
 										</li>`
@@ -651,8 +737,8 @@ func (r *RURINFT) GenerateTimeline(data models.Component, index int) (string, st
 											<a
 												class="carousel__next">Go to next slide</a>
 											</div>
-											<label class="date-text">` + dateStr + `<span class="material-symbols-outlined tl-view-image" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
-												web_asset
+											<label class="date-text">` + dateStr + `<span class="tl-zoom-icon" style="margin-left: 10px" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
+												
 												</span></label>
 											` + proofTickIcon + `
 										</li>`
@@ -815,7 +901,7 @@ func (r *RURINFT) GenerateProofContentStr(key string, proofInfo models.ValueWith
 										</div>
 										<div class="body">
 											<p>Visit TilliT Explorer to view transaction details and blockchain proofs.</p>
-											<a href="https://explorer.tillit.world/txn/` + txnHash + `" target="_blank" >
+											<a href="` + configs.GetTillitUrl() + `/txn/` + txnHash + `" target="_blank" >
 											Tillit Explorer <span class="material-symbols-outlined">
 											open_in_new
 											</span>
@@ -948,7 +1034,7 @@ func (r *RURINFT) GenerateImgProofModalStr(proofInfo models.ValueWithProof, id s
 															</div>
 															<div class="body">
 																<p>Visit TilliT Explorer to view transaction details and blockchain proofs.</p>
-																<a href="https://explorer.tillit.world/txn/` + txnHash + `" target="_blank" >
+																<a href="` + configs.GetTillitUrl() + `/txn/` + txnHash + `" target="_blank" >
 																Tillit Explorer <span class="material-symbols-outlined">
 																open_in_new
 																</span>
@@ -1066,7 +1152,7 @@ func (r *RURINFT) GenerateProofTable(txnHash string, url string, proofInfo model
 							</div>
 						</td>
 						<td style="width : 40%` + descStyle + `">` + proof.Description + `</td>
-						<td><a class="proof-link" href="https://explorer.tillit.world/txn/` + txnHash + `" target="_blank">Proof <span class="material-symbols-outlined">
+						<td><a class="proof-link" href="` + configs.GetTillitUrl() + `/txn/` + txnHash + `" target="_blank">Proof <span class="material-symbols-outlined">
 							open_in_new
 							</span></a>
 						</td>

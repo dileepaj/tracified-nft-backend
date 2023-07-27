@@ -71,7 +71,7 @@ func GetEmail(otp string) string {
         <td bgcolor="#021d28" align="center" style="padding: 0px 10px 0px 10px;">
             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
                 <tr>
-                   <td style="padding: 40px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: Lato, Helvetica, Arial, sans-serif; font-size: 40px; font-weight: 400; letter-spacing: 4px; line-height: 48px; height: 31px;" align="center" valign="top" bgcolor="#ffffff"><img style="width: 3em;" src="https://tracified-profile-images.s3.ap-south-1.amazonaws.com/RURI+1.png"></td>
+                   <td style="padding: 40px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: Lato, Helvetica, Arial, sans-serif; font-size: 40px; font-weight: 400; letter-spacing: 4px; line-height: 48px; height: 31px;" align="center" valign="top" bgcolor="#ffffff"><img style="width: 4em;" src="https://temporary-cdn.tracified.com/ruri-email-logo.png"></td>
                 </tr>
             </table>
         </td>

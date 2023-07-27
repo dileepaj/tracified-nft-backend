@@ -191,7 +191,7 @@ func (r *OtpRepository) ValidateNFTStatusbyShopId(shopid string) (string, error)
 	for rst.Next(context.TODO()) {
 		err = rst.Decode(&authrst)
 		if err != nil {
-			logs.ErrorLogger.Println("Error occured while retreving data from collection ruriotp in ValidateOTP:OtpRepository.go: ", err.Error())
+			logs.ErrorLogger.Println("Error occured while retrieving data from collection walletnft in ValidateOTP:OtpRepository.go: ", err.Error())
 			return authrst.NFTStatus, err
 		}
 	}

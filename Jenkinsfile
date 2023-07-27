@@ -3,43 +3,17 @@ node {
         currentBuild.result = "SUCCESS"
         env.AWS_ECR_LOGIN = true
         checkout scm
-        
-        docker.image('golang:1.18').inside('-u root') {
-            stage('Setup') {
-                echo 'Setting up environment'
-                echo env.BRANCH_NAME
-                
-                if (env.BRANCH_NAME == 'staging') {
-                    echo './staging.properties going to load.'
-                    configFileProvider([configFile(fileId: 'staging-env-file', targetLocation: './')]) {
-                        load './staging.properties'                        
-                    }
-                    echo 'load properties done.'
-                }
-                
-                if (env.BRANCH_NAME == 'qa') {
-                    echo './qa.properties going to load.'
-                    configFileProvider([configFile(fileId: 'qa-env-file', targetLocation: './')]) {
-                        load './qa.properties'
-                    }
-                    echo 'load properties done.'
-                }
-                
-                if (env.BRANCH_NAME == 'production') {
-                    echo './production.properties going to load.'
-                    configFileProvider([configFile(fileId: 'production-env-file', targetLocation: './')]) {
-                        load './production.properties'
-                    }
-                    echo 'load properties done.'
-                }
-            }
-        }
-        
+
         stage('Deploy to qa') {
             echo env.BRANCH_NAME
-            if (env.BRANCH_NAME == 'qa') {
+            if (env.BRANCH_NAME == 'master') {
+                echo './qa.properties going to load.'
+                configFileProvider([configFile(fileId: 'qa-env-file', targetLocation: './')]) {
+                    load './qa.properties'
+                }
+                echo 'load properties done.'
                 echo 'Building and pushing image'
-                docker.withRegistry('https://453230908534.dkr.ecr.ap-south-1.amazonaws.com/tracified/nft-backend', 'ecr:ap-south-1:aws-ecr-credentials') {
+                docker.withRegistry('https://registry.tracified.com/tracified/nft-backend', 'container-registry') {
                     echo 'Building image'
                     echo "${env.BUILD_ID}"
                     def releaseImage = docker.build("tracified/nft-backend:${env.BUILD_ID}")
@@ -57,12 +31,17 @@ node {
                 }
             }
         }
-        
+
         stage('Deploy to Staging') {
             echo env.BRANCH_NAME
-            if (env.BRANCH_NAME == 'staging') {
+            if (env.BRANCH_NAME == 'master') {
+                echo './staging.properties going to load.'
+                configFileProvider([configFile(fileId: 'staging-env-file', targetLocation: './')]) {
+                    load './staging.properties'
+                }
+                echo 'load properties done.'
                 echo 'Building and pushing image'
-                docker.withRegistry('https://453230908534.dkr.ecr.ap-south-1.amazonaws.com/tracified/nft-backend-staging', 'ecr:ap-south-1:aws-ecr-credentials') {
+                docker.withRegistry('https://registry.tracified.com/tracified/nft-backend-staging', 'container-registry') {
                     echo 'Building image'
                     echo "${env.BUILD_ID}"
                     def releaseImage = docker.build("tracified/nft-backend-staging:${env.BUILD_ID}")
@@ -81,19 +60,6 @@ node {
             }
         }
 
-        stage('Deploy to Production') {
-            echo env.BRANCH_NAME
-            if (env.BRANCH_NAME == 'master') {
-                echo 'Building and pushing image'
-                docker.withRegistry('https://453230908534.dkr.ecr.ap-south-1.amazonaws.com/tracified/nft-backend-production', 'ecr:ap-south-1:aws-ecr-credentials') {
-                    echo 'Building image'
-                    echo "${env.BUILD_ID}"                  
-                    def releaseImage = docker.build("tracified/nft-backend-production:${env.BUILD_ID}")
-                    releaseImage.push()
-                    releaseImage.push('latest')
-                }
-            }
-        }
     }
     catch (exc) {
         currentBuild.result = "FAILURE"
@@ -103,6 +69,14 @@ node {
     finally {
         echo 'All done. Cleaning up docker'
         sh 'docker system prune -af'
+        discordSend(
+            description: "NFT Backend - ${currentBuild.currentResult}",
+            footer: "#${env.BUILD_ID} ${currentBuild.getBuildCauses()[0].shortDescription}",
+            link: env.BUILD_URL,
+            result: currentBuild.currentResult,
+            title: JOB_NAME,
+            webhookURL: env.DISCORD_BUILD
+          )
         echo "Completed pipeline: ${currentBuild.fullDisplayName} with status of ${currentBuild.result}"
     }
 }
