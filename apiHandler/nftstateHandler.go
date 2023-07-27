@@ -65,6 +65,8 @@ func UpdateWalletNFTState(w http.ResponseWriter, r *http.Request) {
 	err := decoder.Decode(&updateObj)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
+		ErrorMessage := err.Error()
+		errors.BadRequest(w, ErrorMessage)
 	} else {
 		_, err1 := marketplaceBusinessFacade.UpdateNFTState(updateObj)
 		if err1 != nil {
@@ -91,12 +93,19 @@ func DeleteWalletNFTByIssuer(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 	} else {
-		err1 := marketplaceBusinessFacade.DeleteNFTStateByIssuer(deleteNftStateObj)
+		deletedCount, err1 := marketplaceBusinessFacade.DeleteNFTStateByIssuer(deleteNftStateObj)
 		if err1 != nil {
 			ErrorMessage := err1.Error()
 			errors.BadRequest(w, ErrorMessage)
 			return
 		} else {
+			if deletedCount == 0 {
+				w.WriteHeader(http.StatusNoContent)
+				if err != nil {
+					logs.ErrorLogger.Println(err)
+				}
+				return
+			}
 			w.WriteHeader(http.StatusOK)
 			message := "NFT State have been deleted"
 			err = json.NewEncoder(w).Encode(message)
@@ -129,18 +138,21 @@ func GetWalletTxnsByIssuer(w http.ResponseWriter, r *http.Request) {
 
 func GetWalletNFTByStateAndCurrentOwner(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
-	vars := mux.Vars(r)
 	var pagination requestDtos.WalletNFTsForMatrixView
-	pagination.Blockchain = vars["blockchain"]
-	var StateToSearch = vars["nftstatus"]
-	var pubKey = vars["currentowner"]
-	pgsize, err1 := strconv.Atoi(vars["pagesize"])
+	pagination.Blockchain = r.URL.Query().Get("blockchain")
+	var StateToSearch, stateErr = strconv.Atoi(r.URL.Query().Get("nftstatus"))
+	if stateErr != nil {
+		errors.BadRequest(w, "Invalid NFT state")
+		return
+	}
+	var pubKey = r.URL.Query().Get("currentowner")
+	pgsize, err1 := strconv.Atoi(r.URL.Query().Get("pagesize"))
 	if err1 != nil {
 		errors.BadRequest(w, "Requested invalid page size.")
 		return
 	}
 	pagination.PageSize = int32(pgsize)
-	requestedPage, err2 := strconv.Atoi(vars["requestedPage"])
+	requestedPage, err2 := strconv.Atoi(r.URL.Query().Get("requestedPage"))
 	if err2 != nil {
 		errors.BadRequest(w, "Requested page error")
 		return
@@ -174,18 +186,21 @@ func GetWalletNFTByStateAndCurrentOwner(w http.ResponseWriter, r *http.Request) 
 
 func GetWalletNFTByStatusAndRequested(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
-	vars := mux.Vars(r)
 	var pagination requestDtos.WalletNFTsForMatrixView
-	pagination.Blockchain = vars["blockchain"]
-	var CollectionToSearch = vars["nftstatus"]
-	var pubKey = vars["nftrequested"]
-	pgsize, err1 := strconv.Atoi(vars["pagesize"])
+	pagination.Blockchain = r.URL.Query().Get("blockchain")
+	CollectionToSearch, stateErr := strconv.Atoi(r.URL.Query().Get("nftstatus"))
+	if stateErr != nil {
+		errors.BadRequest(w, "Invalid State.")
+		return
+	}
+	var pubKey = r.URL.Query().Get("nftrequested")
+	pgsize, err1 := strconv.Atoi(r.URL.Query().Get("pagesize"))
 	if err1 != nil {
 		errors.BadRequest(w, "Requested invalid page size.")
 		return
 	}
 	pagination.PageSize = int32(pgsize)
-	requestedPage, err2 := strconv.Atoi(vars["requestedPage"])
+	requestedPage, err2 := strconv.Atoi(r.URL.Query().Get("requestedPage"))
 	if err2 != nil {
 		errors.BadRequest(w, "Requested page error")
 		return

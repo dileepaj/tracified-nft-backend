@@ -129,7 +129,7 @@ type NFTWalletState struct {
 	NFTName         string             `json:"nftname" bson:"nftname"`
 	NFTRequested    string             `json:"nftrequested" bson:"nftrequested"`
 	CurrentOwner    string             `json:"currentowner" bson:"currentowner"`
-	NFTStatus       string             `json:"nftstatus" bson:"nftstatus"`
+	NFTStatus       uint8              `json:"nftstatus" bson:"nftstatus"`
 	Timestamp       string             `json:"timestamp" bson:"timestamp"`
 	ShopID          string             `json:"shopid" bson:"shopid"`
 	Thumbnail       string             `json:"thumbnail" bson:"thumbnail"`
@@ -142,7 +142,7 @@ type NFTWalletStateTXN struct {
 	NFTCreator      string             `json:"nftcreator" bson:"nftcreator"`
 	NFTName         string             `json:"nftname" bson:"nftname"`
 	CurrentOwner    string             `json:"currentowner" bson:"currentowner"`
-	NFTStatus       string             `json:"nftstatus" bson:"nftstatus"`
+	NFTStatus       uint8              `json:"nftstatus" bson:"nftstatus"`
 	Timestamp       string             `json:"timestamp" bson:"timestamp"`
 	ShopID          string             `json:"shopid" bson:"shopid"`
 	Thumbnail       string             `json:"thumbnail" bson:"thumbnail"`
@@ -157,7 +157,7 @@ type WalletNFTContentforMatrix struct {
 	NFTName         string             `json:"nftname" bson:"nftname"`
 	NFTRequested    string             `json:"nftrequested" bson:"nftrequested"`
 	CurrentOwner    string             `json:"currentowner" bson:"currentowner"`
-	NFTStatus       string             `json:"nftstatus" bson:"nftstatus"`
+	NFTStatus       int8               `json:"nftstatus" bson:"nftstatus"`
 	Timestamp       string             `json:"timestamp" bson:"timestamp"`
 	ShopID          string             `json:"shopid" bson:"shopid"`
 	Thumbnail       string             `json:"thumbnail" bson:"thumbnail"`

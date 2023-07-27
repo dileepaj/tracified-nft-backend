@@ -604,13 +604,12 @@ func (r *NFTRepository) UpdateNFTState(findBy string, id string, update primitiv
 	}
 }
 
-func (r *NFTRepository) DeleteNFTState(nftstate requestDtos.DeleteNFTState) error {
+func (r *NFTRepository) DeleteNFTState(nftstate requestDtos.DeleteNFTState) (int64, error) {
 	result, err := connections.GetSessionClient(NFTState).DeleteOne(context.TODO(), bson.M{"issuerpublickey": nftstate.IssuerPublicKey})
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured when Connecting to DB and executing DeleteOne Query in DeleteNFTState(NFTRepository): ", err.Error())
 	}
-	logs.InfoLogger.Println("collection deleted :", result.DeletedCount)
-	return err
+	return result.DeletedCount, err
 
 }
 

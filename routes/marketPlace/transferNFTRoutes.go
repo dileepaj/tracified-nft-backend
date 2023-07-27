@@ -9,31 +9,35 @@ var WalletNFTRoutes = models.Routers{
 	models.Router{
 		Name:    "Update wallet nft state",
 		Method:  "PUT",
-		Path:    "/walletnft/state/update",
+		Path:    "/walletnft/state",
 		Handler: apiHandler.UpdateWalletNFTState,
 	},
 	models.Router{
 		Name:    "Save wallet nft state txns",
 		Method:  "POST",
-		Path:    "/walletnft/txns/save",
+		Path:    "/walletnft/txns",
 		Handler: apiHandler.SaveWalletNFTTXNs,
 	},
 	models.Router{
 		Name:    "Save Wallet NFT State",
 		Method:  "POST",
-		Path:    "/walletnft/state/save",
+		Path:    "/walletnft/state",
 		Handler: apiHandler.SaveWalletNFTStates,
 	},
+	// ?blockchain=stellar&nftstatus=1&currentowner=abc&pagesize=1&requestedPage=1
 	models.Router{
-		Name:    "Get Wallet Users NFT By State",
-		Method:  "Get",
-		Path:    "/walletnft/{blockchain}/{nftstatus}/{currentowner}/{pagesize}/{requestedPage}",
+		Name:   "Get Wallet Users NFT By State",
+		Method: "Get",
+		Path:   "/walletnft",
+		// Path:    "/walletnft/{blockchain}/{nftstatus}/{currentowner}/{pagesize}/{requestedPage}",
 		Handler: apiHandler.GetWalletNFTByStateAndCurrentOwner,
 	},
+	// ?blockchain=stellar&nftstatus=1&nftrequested=abc&pagesize=1&requestedPage=1
 	models.Router{
-		Name:    "Get Wallet Users NFT Requestee By State",
-		Method:  "Get",
-		Path:    "/walletnft/requested/{blockchain}/{nftstatus}/{nftrequested}/{pagesize}/{requestedPage}",
+		Name:   "Get Wallet Users NFT Requestee By State",
+		Method: "Get",
+		Path:   "/walletnft/requested",
+		// Path:    "/walletnft/requested/{blockchain}/{nftstatus}/{nftrequested}/{pagesize}/{requestedPage}",
 		Handler: apiHandler.GetWalletNFTByStatusAndRequested,
 	},
 	models.Router{
