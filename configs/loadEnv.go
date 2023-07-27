@@ -17,6 +17,7 @@ var (
 	adminBackend   = ""
 	gateway        = ""
 	tillit         = ""
+	nftMarketplace = ""
 )
 
 func LoadEnv() {
@@ -31,6 +32,7 @@ func LoadEnv() {
 	adminBackend = os.Getenv("ADMIN_BACKEND")
 	gateway = os.Getenv("GATEWAY")
 	tillit = os.Getenv("TILLIT")
+	nftMarketplace = os.Getenv("NFT_MARKETPLACE")
 }
 
 func GetBackenToken() string {
@@ -79,4 +81,9 @@ func GetGatewayUrl() string {
 func GetTillitUrl() string {
 	LoadEnv()
 	return tillit
+}
+
+func GetMarketplaceUrl() string {
+	LoadEnv()
+	return nftMarketplace
 }
