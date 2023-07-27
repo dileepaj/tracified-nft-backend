@@ -75,3 +75,4 @@
             ADMIN_BACKEND: "{{lookup('env','ADMIN_BACKEND')}}"
             GATEWAY: "{{lookup('env','GATEWAY')}}"
             TILLIT: "{{lookup('env','TILLIT')}}"
+            NFT_MARKETPLACE: "{{lookup('env','NFT_MARKETPLACE')}}"

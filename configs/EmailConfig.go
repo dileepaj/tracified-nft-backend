@@ -114,7 +114,7 @@ func GetEmail(otp string) string {
                         <p style="margin: 0;">Cheers,<br>Team RURI</p>
                         <hr style="background-color: #D9D9D9; ">
                         <p style="color: #878787;"><center>Powered by</center></p>
-                        <center><img src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/Tracified-NFT-v2.png" style="width:20em"></center>
+                        <center><img src="` + GetMarketplaceUrl() + `/assets/rt-logo-black.svg" style="width:20em"></center>
                     </td>
                 </tr>
             </table>
