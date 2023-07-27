@@ -133,10 +133,8 @@ func (r *OtpRepository) ResendOTP(otpDataSet models.UserAuth) (string, error) {
 		return "", err
 	}
 	if authrst.BatchID == "" { //*IF OTP was not stored in DB new entry will be made
-		fmt.Println("data not recorded in DB")
 		return repository.Save(otpDataSet, UserAuth)
 	} else { //* IF OTP data already exisit it will get updated
-		fmt.Println("data was recorded in DB Updating")
 		update := bson.M{
 			"$set": bson.M{"otp": otpDataSet.Otp, "expDate": otpDataSet.ExpireDate},
 		}

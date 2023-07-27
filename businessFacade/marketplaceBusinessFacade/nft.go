@@ -396,7 +396,7 @@ func UpdateNFTState(state requestDtos.UpdateNFTState) (models.NFTWalletState, er
 	return nftRepository.UpdateNFTState("issuerpublickey", state.IssuerPublicKey, update)
 }
 
-func DeleteNFTStateByIssuer(nftstate requestDtos.DeleteNFTState) error {
+func DeleteNFTStateByIssuer(nftstate requestDtos.DeleteNFTState) (int64, error) {
 	return nftRepository.DeleteNFTState(nftstate)
 }
 
@@ -404,7 +404,7 @@ func GetWalletNFTTxnsByIssuer(issuer string) ([]models.NFTWalletStateTXN, error)
 	return nftRepository.FindWalletNFTTxns("issuerpublickey", issuer)
 }
 
-func GetWalletNFTByState(paginationData requestDtos.WalletNFTsForMatrixView, StatetoSearch string, pubkey string) (models.PaginateWalletNFTResponse, error) {
+func GetWalletNFTByState(paginationData requestDtos.WalletNFTsForMatrixView, StatetoSearch int, pubkey string) (models.PaginateWalletNFTResponse, error) {
 	filter := bson.M{
 		"blockchain":   paginationData.Blockchain,
 		"nftstatus":    StatetoSearch,
@@ -436,7 +436,7 @@ func GetProjectionDataWalletNFTMatrixView() bson.D {
 	return projection
 }
 
-func GetWalletNFTByStateForRequested(paginationData requestDtos.WalletNFTsForMatrixView, StatetoSearch string, pubkey string) (models.PaginateWalletNFTResponse, error) {
+func GetWalletNFTByStateForRequested(paginationData requestDtos.WalletNFTsForMatrixView, StatetoSearch int, pubkey string) (models.PaginateWalletNFTResponse, error) {
 	filter := bson.M{
 		"blockchain":   paginationData.Blockchain,
 		"nftstatus":    StatetoSearch,
