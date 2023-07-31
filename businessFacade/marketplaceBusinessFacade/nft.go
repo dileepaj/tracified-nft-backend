@@ -404,23 +404,50 @@ func GetWalletNFTTxnsByIssuer(issuer string) ([]models.NFTWalletStateTXN, error)
 	return nftRepository.FindWalletNFTTxns("issuerpublickey", issuer)
 }
 
+// GetWalletNFTByState retrieves wallet NFTs based on the provided state, blockchain, and current owner public key.
+// It takes paginationData, which contains information about the blockchain, requested page, and page size.
+// The StatetoSearch parameter represents the state of the NFTs to filter (0 for all states).
+// The pubkey parameter is the current owner's public key used for filtering.
+// It returns a PaginateWalletNFTResponse containing the paginated NFTs and an error, if any.
 func GetWalletNFTByState(paginationData requestDtos.WalletNFTsForMatrixView, StatetoSearch int, pubkey string) (models.PaginateWalletNFTResponse, error) {
-	filter := bson.M{
-		"blockchain":   paginationData.Blockchain,
-		"nftstatus":    StatetoSearch,
-		"currentowner": pubkey,
+	// Define the filter based on the provided state and current owner's public key.
+	var filter bson.M
+	if StatetoSearch == 0 {
+		filter = bson.M{
+			"blockchain":   paginationData.Blockchain,
+			"currentowner": pubkey,
+		}
+	} else {
+		filter = bson.M{
+			"blockchain":   paginationData.Blockchain,
+			"nftstatus":    StatetoSearch,
+			"currentowner": pubkey,
+		}
 	}
-	projection := GetProjectionDataWalletNFTMatrixView()
+
+	// Define the projection to retrieve the desired fields for NFTs.
+	projection := getProjectionDataWalletNFTMatrixView()
+
+	// Initialize a slice to store the retrieved NFTs.
 	var nfts []models.WalletNFTContentforMatrix
+
+	// Call the nftRepository to get the paginated response based on the provided filter and projection.
 	response, err := nftRepository.GetWalletNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nftstate", "_id", nfts)
 	if err != nil {
-		logs.ErrorLogger.Println("Error occurred :", err.Error())
+		// Log the error and return the response along with the error.
+		logs.ErrorLogger.Println("Error occurred:", err.Error())
 		return models.PaginateWalletNFTResponse(response), err
 	}
+
+	// Return the paginated response and any potential error.
 	return models.PaginateWalletNFTResponse(response), err
 }
 
-func GetProjectionDataWalletNFTMatrixView() bson.D {
+// getProjectionDataWalletNFTMatrixView returns the projection document to specify which fields to include in the query result.
+// This private function defines the fields that will be selected when querying wallet NFTs for the matrix view.
+// The returned projection is a bson.D document containing field specifications.
+func getProjectionDataWalletNFTMatrixView() bson.D {
+	// Define the projection document to include specific fields in the query result.
 	projection := bson.D{
 		{Key: "issuerpublickey", Value: 1},
 		{Key: "nftcreator", Value: 1},
@@ -433,21 +460,46 @@ func GetProjectionDataWalletNFTMatrixView() bson.D {
 		{Key: "shopid", Value: 1},
 		{Key: "thumbnail", Value: 1},
 	}
+
+	// Return the projection document.
 	return projection
 }
 
+// GetWalletNFTByStateForRequested retrieves wallet NFTs based on the provided state, blockchain, and requested public key.
+// It takes paginationData, which contains information about the blockchain, requested page, and page size.
+// The StatetoSearch parameter represents the state of the NFTs to filter (0 for all states).
+// The pubkey parameter is the requested public key used for filtering.
+// It returns a PaginateWalletNFTResponse containing the paginated NFTs and an error, if any.
 func GetWalletNFTByStateForRequested(paginationData requestDtos.WalletNFTsForMatrixView, StatetoSearch int, pubkey string) (models.PaginateWalletNFTResponse, error) {
-	filter := bson.M{
-		"blockchain":   paginationData.Blockchain,
-		"nftstatus":    StatetoSearch,
-		"nftrequested": pubkey,
+	// Define the filter based on the provided state and requested public key.
+	var filter bson.M
+	if StatetoSearch == 0 {
+		filter = bson.M{
+			"blockchain":   paginationData.Blockchain,
+			"nftrequested": pubkey,
+		}
+	} else {
+		filter = bson.M{
+			"blockchain":   paginationData.Blockchain,
+			"nftstatus":    StatetoSearch,
+			"nftrequested": pubkey,
+		}
 	}
-	projection := GetProjectionDataWalletNFTMatrixView()
+
+	// Define the projection to retrieve the desired fields for NFTs.
+	projection := getProjectionDataWalletNFTMatrixView()
+
+	// Initialize a slice to store the retrieved NFTs.
 	var nfts []models.WalletNFTContentforMatrix
+
+	// Call the nftRepository to get the paginated response based on the provided filter and projection.
 	response, err := nftRepository.GetWalletNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nftstate", "_id", nfts)
 	if err != nil {
-		logs.ErrorLogger.Println("Error occurred :", err.Error())
+		// Log the error and return the response along with the error.
+		logs.ErrorLogger.Println("Error occurred:", err.Error())
 		return models.PaginateWalletNFTResponse(response), err
 	}
+
+	// Return the paginated response and any potential error.
 	return models.PaginateWalletNFTResponse(response), err
 }
