@@ -21,13 +21,14 @@ node {
                     releaseImage.push('latest')
                 }
                 echo 'Deploying image in server'
-                withCredentials([[
-                    $class: 'AmazonWebServicesCredentialsBinding',
-                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                    credentialsId: 'aws-ecr-credentials',
-                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-                ]]) {
-                    ansiblePlaybook inventory: 'deploy/hosts', playbook: 'deploy/qa.yml', extras: '-u ubuntu -e GATEWAY_PORT=$GATEWAY_PORT'
+                withCredentials([
+                    usernamePassword(credentialsId: 'container-registry', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')
+                ]) {
+                    ansiblePlaybook(
+                        inventory: 'deploy/hosts',
+                        playbook: 'deploy/qa.yml',
+                        extras: '-u ubuntu -e DOCKER_USER=${DOCKER_USER} -e DOCKER_PASS=${DOCKER_PASS}'
+                    )
                 }
             }
         }
@@ -49,13 +50,14 @@ node {
                     releaseImage.push('latest')
                 }
                 echo 'Deploying image in server'
-                withCredentials([[
-                    $class: 'AmazonWebServicesCredentialsBinding',
-                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                    credentialsId: 'aws-ecr-credentials',
-                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-                ]]) {
-                    ansiblePlaybook inventory: 'deploy/hosts', playbook: 'deploy/staging.yml', extras: '-u ubuntu -e GATEWAY_PORT=$GATEWAY_PORT'
+                withCredentials([
+                    usernamePassword(credentialsId: 'container-registry', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')
+                ]) {
+                    ansiblePlaybook(
+                        inventory: 'deploy/hosts',
+                        playbook: 'deploy/staging.yml',
+                        extras: '-u ubuntu -e DOCKER_USER=${DOCKER_USER} -e DOCKER_PASS=${DOCKER_PASS}'
+                    )
                 }
             }
         }
