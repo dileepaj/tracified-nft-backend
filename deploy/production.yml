@@ -32,12 +32,13 @@
     - name: Install AWS CLI
       pip:
         name: awscli
-    - name: Get ECR login credentials and login with Docker
+    - name: Log into docker registry and force re-authorization
       become: true
-      shell: "$(/home/{{ ansible_user }}/.local/bin/aws ecr get-login --no-include-email --region ap-south-1)"
-      environment:
-        AWS_ACCESS_KEY_ID: "{{ lookup('env','AWS_ACCESS_KEY_ID') }}"
-        AWS_SECRET_ACCESS_KEY : "{{ lookup('env','AWS_SECRET_ACCESS_KEY') }}"
+      docker_login:
+        registry: registry.tracified.com
+        username: "{{ lookup('env', 'DOCKER_USER') }}"
+        password: "{{ lookup('env', 'DOCKER_PASS') }}"
+        reauthorize: yes
     - name: Create volume for docker
       become: true
       docker_volume:
