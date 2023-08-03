@@ -256,6 +256,12 @@ var NftRoutes = models.Routers{
 		Handler: apiHandler.GetWalletNFTsbyPK,
 	},
 	models.Router{
+		Name:    "Update walletNFT owner",
+		Method:  "PUT",
+		Path:    "/walletnfts/owner",
+		Handler: apiHandler.UpdateWalletNFTOwner,
+	},
+	models.Router{
 		Name:    "Get NFT By Blockchain And NftIdentifier",
 		Method:  "Get",
 		Path:    "/nftstats/{nftidentifier}/{blockchain}",
