@@ -136,6 +136,7 @@ type NFTWalletState struct {
 	Timestamp       string             `json:"timestamp" bson:"timestamp"`
 	ShopID          string             `json:"shopid" bson:"shopid"`
 	Thumbnail       string             `json:"thumbnail" bson:"thumbnail"`
+	NFTID           string             `json:"nftid" bson:"nftid"`
 }
 
 type NFTWalletStateTXN struct {
@@ -164,6 +165,7 @@ type WalletNFTContentforMatrix struct {
 	Timestamp       string             `json:"timestamp" bson:"timestamp"`
 	ShopID          string             `json:"shopid" bson:"shopid"`
 	Thumbnail       string             `json:"thumbnail" bson:"thumbnail"`
+	NFTID           string             `json:"nftid" bson:"nftid"`
 }
 
 type PaginateWalletNFTResponse struct {

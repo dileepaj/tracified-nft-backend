@@ -459,6 +459,7 @@ func getProjectionDataWalletNFTMatrixView() bson.D {
 		{Key: "timestamp", Value: 1},
 		{Key: "shopid", Value: 1},
 		{Key: "thumbnail", Value: 1},
+		{Key: "nftid", Value: 1},
 	}
 
 	// Return the projection document.

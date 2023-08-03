@@ -13,6 +13,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"github.com/dileepaj/tracified-nft-backend/utilities/validations"
 	"github.com/gorilla/mux"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func SaveWalletNFTStates(w http.ResponseWriter, r *http.Request) {
@@ -27,6 +28,11 @@ func SaveWalletNFTStates(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		errors.BadRequest(w, err.Error())
 	} else {
+		_, objIDerr := primitive.ObjectIDFromHex(nft.NFTID)
+		if objIDerr != nil {
+			errors.BadRequest(w, "Invalid NFT ID : "+objIDerr.Error())
+			return
+		}
 		result, err := marketplaceBusinessFacade.StoreNFTState(nft)
 		if err != nil {
 			errors.BadRequest(w, err.Error())
