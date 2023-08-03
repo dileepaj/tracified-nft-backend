@@ -868,6 +868,8 @@ func SaveNFTFromWallet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 	}
+	//Creator is initial owner of NFT
+	wnft.NFTOwner = wnft.NFTCreator
 	OTPencode := commonMethods.StringToSHA256(wnft.OTP)
 	wnft.OTP = OTPencode
 	err = validations.ValidateWalletNft(wnft)
@@ -977,4 +979,25 @@ func GetContractByUserAndBC(w http.ResponseWriter, r *http.Request) {
 	} else {
 		errors.BadRequest(w, "")
 	}
+}
+
+func UpdateWalletNFTOwner(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;")
+	var updaterequest requestDtos.WalletNFTUpdateOwner
+	decoder := json.NewDecoder(r.Body)
+	decodeErr := decoder.Decode(&updaterequest)
+	if decodeErr != nil {
+		errors.BadRequest(w, decodeErr.Error())
+		return
+	}
+	rst, err := marketplaceBusinessFacade.UpdateWalletNFTOwner(updaterequest)
+	if err != nil {
+		errors.BadRequest(w, decodeErr.Error())
+		return
+	}
+	if rst.ID.String() == "" {
+		errors.BadRequest(w, "Record does not exist")
+		return
+	}
+	commonResponse.SuccessStatus[string](w, rst.ID.Hex())
 }

@@ -2,6 +2,7 @@ package requestDtos
 
 import (
 	"github.com/dileepaj/tracified-nft-backend/models"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type CreateNFTRequest struct {
@@ -63,4 +64,9 @@ type WalletNFTsForMatrixView struct {
 	PageSize      int32  `json:"pagesize" bson:"pagesize"`
 	RequestedPage int32  `json:"requestedPage" bson:"requestedPage" `
 	SortbyFeild   string `json:"sortbyfeild" bson:"sortbyfeild" `
+}
+
+type WalletNFTUpdateOwner struct {
+	ID       primitive.ObjectID `json:"Id" bson:"_id"`
+	NFTOwner string             `json:"nftowner" bson:"nftowner"`
 }

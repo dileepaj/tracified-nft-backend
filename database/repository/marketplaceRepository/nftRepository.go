@@ -541,7 +541,7 @@ func (r *NFTRepository) GetWalletNFTsbyPK(publickey string) ([]models.ResponseWa
 	var nft []models.ResponseWalletNFT
 	findOptions := options.Find().SetProjection(bson.M{"otp": 0})
 
-	result, err := connections.GetSessionClient(walletnft).Find(context.TODO(), bson.D{{"nftcreator", publickey}}, findOptions)
+	result, err := connections.GetSessionClient(walletnft).Find(context.TODO(), bson.D{{"nftowner", publickey}}, findOptions)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured when trying to connect to DB and excute Find query in GetWalletNFTsbyPK:NFTRepository.go: ", err.Error())
 		return nft, err
@@ -649,4 +649,26 @@ func (r *NFTRepository) GetWalletNFTPaginatedResponse(filterConfig bson.M, proje
 	response.Content = contentResponse
 	response.PaginationInfo = paginationResponse
 	return response, nil
+}
+
+func (r *NFTRepository) UpdateWalletNFTOwner(findBy1 string, id1 primitive.ObjectID, update primitive.M) (requestDtos.WalletNFTUpdateOwner, error) {
+	var nftResponse requestDtos.WalletNFTUpdateOwner
+	upsert := false
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+	rst := connections.GetSessionClient("walletnft").FindOneAndUpdate(context.TODO(), bson.D{{Key: findBy1, Value: id1}}, update, &opt)
+	if rst != nil {
+		err := rst.Decode((&nftResponse))
+		if err != nil {
+			logs.ErrorLogger.Println("Error occured while retreving data from nft nft in UpdateNFTSALE:nftRepository.go: ", err.Error())
+			return nftResponse, err
+		}
+		return nftResponse, nil
+	} else {
+		return nftResponse, nil
+
+	}
 }

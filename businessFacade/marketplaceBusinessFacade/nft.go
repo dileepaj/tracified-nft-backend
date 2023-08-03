@@ -503,3 +503,10 @@ func GetWalletNFTByStateForRequested(paginationData requestDtos.WalletNFTsForMat
 	// Return the paginated response and any potential error.
 	return models.PaginateWalletNFTResponse(response), err
 }
+
+func UpdateWalletNFTOwner(nft requestDtos.WalletNFTUpdateOwner) (requestDtos.WalletNFTUpdateOwner, error) {
+	update := bson.M{
+		"$set": bson.M{"nftowner": nft.NFTOwner},
+	}
+	return nftRepository.UpdateWalletNFTOwner("_id", nft.ID, update)
+}
