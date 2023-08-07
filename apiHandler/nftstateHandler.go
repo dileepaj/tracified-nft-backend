@@ -64,9 +64,20 @@ func SaveWalletNFTTXNs(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// UpdateWalletNFTState updates the state of a wallet NFT.
+// This function handles HTTP requests and responses, updating the NFT state based on the provided data.
+// It expects a JSON payload containing the necessary data for updating the state.
+// The function first decodes the JSON payload and retrieves the current state of the NFT for validation.
+// If there are any errors during the process, appropriate error responses are sent.
+// After validation, the function proceeds to update the NFT state and sends a success response if successful.
 func UpdateWalletNFTState(w http.ResponseWriter, r *http.Request) {
+	// Set the response header to indicate JSON content.
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+
+	// Structure to hold the update data for NFT state.
 	var updateObj requestDtos.UpdateNFTState
+
+	// Decode the JSON payload from the request body into the updateObj structure.
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&updateObj)
 	if err != nil {
@@ -74,12 +85,42 @@ func UpdateWalletNFTState(w http.ResponseWriter, r *http.Request) {
 		ErrorMessage := err.Error()
 		errors.BadRequest(w, ErrorMessage)
 	} else {
+		// Get the current state of the NFT for validation.
+		currentState, currentStateError := marketplaceBusinessFacade.GetCurrentNFTState(updateObj.IssuerPublicKey)
+		if currentStateError != nil {
+			errors.BadRequest(w, "failed to retrieve state : "+currentStateError.Error())
+			return
+		}
+
+		// Define error messages for specific state transitions.
+		errorMessages := map[string]string{
+			"1_4": "User has not accepted or rejected transfer",
+			"3_4": "Unable to transfer rejected NFT",
+			"3_2": "Invalid state transition! cannot accept a rejected NFT",
+			"4_3": "Invalid state transition! Cannot reject already transferred NFT",
+			"4_2": "Invalid state transition! Cannot accept already transferred NFT",
+		}
+
+		// Check if there's an error message for the current state and NFTStatus.
+		if msg, ok := errorMessages[strconv.Itoa(int(currentState))+"_"+strconv.Itoa(int(updateObj.NFTStatus))]; ok {
+			errors.BadRequest(w, msg)
+			return
+		}
+
+		// Check if the provided NFTStatus is within the valid range (1 to 4).
+		if updateObj.NFTStatus <= 0 || updateObj.NFTStatus >= 5 {
+			errors.BadRequest(w, "Invalid state")
+			return
+		}
+
+		// Proceed to update the NFT state using marketplaceBusinessFacade.
 		_, err1 := marketplaceBusinessFacade.UpdateNFTState(updateObj)
 		if err1 != nil {
 			ErrorMessage := err1.Error()
 			errors.BadRequest(w, ErrorMessage)
 			return
 		} else {
+			// Send a success response if the update is successful.
 			w.WriteHeader(http.StatusOK)
 			message := "NFT State updated successfully."
 			err = json.NewEncoder(w).Encode(message)

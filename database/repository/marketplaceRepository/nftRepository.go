@@ -604,6 +604,20 @@ func (r *NFTRepository) UpdateNFTState(findBy string, id string, update primitiv
 	}
 }
 
+func (r *NFTRepository) GetCurrentNFTStatus(issuerpublickey string) (uint8, error) {
+	var nftState models.NFTWalletState
+	nftState.NFTStatus = 0
+	rst := repository.FindOne("issuerpublickey", issuerpublickey, "nftstate")
+	if rst != nil {
+		err := rst.Decode(&nftState)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return nftState.NFTStatus, err
+		}
+	}
+	return nftState.NFTStatus, nil
+}
+
 func (r *NFTRepository) DeleteNFTState(nftstate requestDtos.DeleteNFTState) (int64, error) {
 	result, err := connections.GetSessionClient(NFTState).DeleteOne(context.TODO(), bson.M{"issuerpublickey": nftstate.IssuerPublicKey})
 	if err != nil {
