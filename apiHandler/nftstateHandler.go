@@ -234,12 +234,6 @@ func GetWalletNFTByStateAndCurrentOwner(w http.ResponseWriter, r *http.Request) 
 			return
 		}
 
-		if results.Content == nil {
-			// Handle the case when there are no NFTs in the collection.
-			errors.BadRequest(w, "Collection does not have any NFTs")
-			return
-		}
-
 		// If everything is valid, send a successful response with the NFTs.
 		commonResponse.SuccessStatus[models.PaginateWalletNFTResponse](w, results)
 	}
@@ -334,12 +328,6 @@ func GetWalletNFTByStatusAndRequested(w http.ResponseWriter, r *http.Request) {
 		if results.PaginationInfo.TotalPages < pagination.RequestedPage {
 			// Handle non-existing requested page.
 			errors.BadRequest(w, "requested page does not exist")
-			return
-		}
-
-		if results.Content == nil {
-			// Handle the case when there are no NFTs in the collection.
-			errors.BadRequest(w, "Collection does not have any NFTs")
 			return
 		}
 
