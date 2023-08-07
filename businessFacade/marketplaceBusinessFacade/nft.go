@@ -396,6 +396,10 @@ func UpdateNFTState(state requestDtos.UpdateNFTState) (models.NFTWalletState, er
 	return nftRepository.UpdateNFTState("issuerpublickey", state.IssuerPublicKey, update)
 }
 
+func GetCurrentNFTState(issuerpublickey string) (uint8, error) {
+	return nftRepository.GetCurrentNFTStatus(issuerpublickey)
+}
+
 func DeleteNFTStateByIssuer(nftstate requestDtos.DeleteNFTState) (int64, error) {
 	return nftRepository.DeleteNFTState(nftstate)
 }
