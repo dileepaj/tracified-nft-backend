@@ -918,11 +918,7 @@ func GetWalletNFTsbyPK(w http.ResponseWriter, r *http.Request) {
 		errors.BadRequest(w, ErrorMessage)
 		return
 	} else {
-		if len(results) == 0 {
-			ErrorMessage := "No NFTs for public key"
-			errors.BadRequest(w, ErrorMessage)
-			return
-		}
+
 		commonResponse.SuccessStatus(w, results)
 		return
 	}
