@@ -71,15 +71,28 @@ func UploadFile(pathToFile string, keyName string, bucketName string, folderName
 		return "", "", errWhenUploadingTheFile
 	}
 
-	resp, errWhenGettingHeadObject := s3Client.HeadObject(&s3.HeadObjectInput{
-		Bucket: aws.String(bucketName),
-		Key:    aws.String(keyName),
-	})
-	if errWhenGettingHeadObject != nil {
-		logs.ErrorLogger.Println("Error when getting the header object : ", errWhenGettingHeadObject)
-		return "", "", errWhenGettingHeadObject
+	var resp *s3.HeadObjectOutput
+	var errWhenGettingHeadObject error
+	if folderName == "" {
+		resp, errWhenGettingHeadObject = s3Client.HeadObject(&s3.HeadObjectInput{
+			Bucket: aws.String(bucketName),
+			Key:    aws.String(keyName),
+		})
+		if errWhenGettingHeadObject != nil {
+			logs.ErrorLogger.Println("Error when getting the header object : ", errWhenGettingHeadObject)
+			return "", "", errWhenGettingHeadObject
+		}
+	} else {
+		keyNameWithFolder := folderName + `/` + keyName
+		resp, errWhenGettingHeadObject = s3Client.HeadObject(&s3.HeadObjectInput{
+			Bucket: aws.String(bucketName),
+			Key:    aws.String(keyNameWithFolder),
+		})
+		if errWhenGettingHeadObject != nil {
+			logs.ErrorLogger.Println("Error when getting the header object : ", errWhenGettingHeadObject)
+			return "", "", errWhenGettingHeadObject
+		}
 	}
-
 	cid := ""
 	if resp.Metadata != nil {
 		cidValue, ok := resp.Metadata["Cid"]
