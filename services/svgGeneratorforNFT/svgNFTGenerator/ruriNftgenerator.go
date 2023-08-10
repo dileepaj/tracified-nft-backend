@@ -12,12 +12,18 @@ import (
 	"strconv"
 	"strings"
 
+	"encoding/base64"
+	"os"
+
+	"path/filepath"
+
 	"github.com/dileepaj/tracified-nft-backend/businessFacade/customizedNFTFacade"
 	"github.com/dileepaj/tracified-nft-backend/configs"
 	"github.com/dileepaj/tracified-nft-backend/database/repository/customizedNFTrepository"
 	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/services"
+	"github.com/dileepaj/tracified-nft-backend/services/ipfsservice"
 	"github.com/dileepaj/tracified-nft-backend/services/mapGenerator"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"github.com/mitchellh/mapstructure"
@@ -29,6 +35,7 @@ type RURINFT struct {
 	ShopID       string
 	BatchID      string
 	ProductID    string
+	GemName      string
 	ReceiverName string
 	CustomMsg    string
 	NFTName      string
@@ -48,6 +55,7 @@ var (
 	proofModalCount = 0
 	txnMap          = make(map[string][]string)
 	svgRepository   customizedNFTrepository.SvgRepository
+	filebaseBucket  = os.Getenv("FILEBASE_BUCKET")
 )
 
 func (r *RURINFT) GenerateNFT() (responseDtos.SVGforNFTResponse, error) {
@@ -63,6 +71,8 @@ func (r *RURINFT) GenerateNFT() (responseDtos.SVGforNFTResponse, error) {
 
 	tdpData, _ := customizedNFTFacade.GetDigitalTwinData(r.BatchID, r.ProductID)
 	var userNftMapping models.UserNFTMapping
+
+	r.GemName = tdpData[0].Item
 	//Svg will be generated using the template
 	svgrst, thumbnail, svgGenErr := r.GenerateSVGTemplateforNFT(tdpData)
 	if svgGenErr != nil {
@@ -471,7 +481,7 @@ func (r *RURINFT) GenerateVerticalCardContainer(data models.Component, index int
 
 	for i, childComponent := range data.Children {
 		if childComponent.Component == "image-slider" {
-			res := r.GenerateImageSlider(childComponent, index)
+			res := r.GenerateImageSlider(childComponent, index, data.Title)
 			content += `<div class="tab-content">
 							<div class="img-list">
 							` + res + `	
@@ -574,16 +584,20 @@ func (r *RURINFT) GenerateDecoratedKeyValues(data models.Component, index int) s
 }
 
 // Generate image slider
-func (r *RURINFT) GenerateImageSlider(imageSlider models.Component, parentIndex int) string {
+func (r *RURINFT) GenerateImageSlider(imageSlider models.Component, parentIndex int, title string) string {
 	content := ""
 
 	for i, image := range imageSlider.Images.Value {
 		if image.Img == "" {
 			content += `<p>No Records</p>`
 		} else {
+			imgKey := title + "_" + strconv.Itoa(i) //create image key
+
+			imgUrl := r.uploadNftImage(image.Img, imgKey) //upload image to ipfs and get the url
+
 			content += `<div class="img-wrapper">
 			<div id="cert` + strconv.Itoa(parentIndex) + strconv.Itoa(i+1) + `" class="img-div"
-				style="background-image: url('` + image.Img + `');">
+				style="background-image: url('` + imgUrl + `');">
 			</div>
 			<label onclick="openFullScreenImg('cert` + strconv.Itoa(parentIndex) + strconv.Itoa(i+1) + `')" title="View Image">
 				<span class="zoom-icon"></span>
@@ -693,7 +707,7 @@ func (r *RURINFT) GenerateTimeline(data models.Component, index int) (string, st
 				if len(imgs) > 0 {
 
 					for j, image := range imgs {
-						/* var prev = 0
+						var prev = 0
 						var next = 0
 
 						if j == 0 {
@@ -706,21 +720,27 @@ func (r *RURINFT) GenerateTimeline(data models.Component, index int) (string, st
 							next = 0
 						} else {
 							next = j + 1
-						} */
+						}
 
-						/* prevStr := strconv.Itoa(i) + strconv.Itoa(prev)
-						nextStr := strconv.Itoa(i) + strconv.Itoa(next) */
+						prevStr := "carousel__slide" + strconv.Itoa(i) + strconv.Itoa(prev)
+						nextStr := "carousel__slide" + strconv.Itoa(i) + strconv.Itoa(next)
 						dateStr := strings.ReplaceAll(strings.Split(image.Time, "T")[0], "-", "/")
+
+						imgKey := "timeline_" + strconv.Itoa(i) + "_" + strconv.Itoa(j) //create image key
+
+						imgUrl := r.uploadNftImage(image.Img, imgKey) //upload image to ipfs and get the url
+
+						//fmt.Println(imgUrl)
 
 						if len(imgs) > 1 {
 							imgCont += `<li id="carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `"
 											tabindex="0"
-											class="carousel__slide" style="background-image: url('` + image.Img + `');">
+											class="carousel__slide" style="background-image: url('` + imgUrl + `');">
 											<div class="carousel__snapper">
-											<a 
-												class="carousel__prev">Go to last slide</a>
-											<a 
-												class="carousel__next">Go to next slide</a>
+											<a onclick="moveSlide('` + prevStr + `')"
+												class="carousel__prev" style="cursor:pointer">Go to last slide</a>
+											<a onclick="moveSlide('` + nextStr + `')"
+												class="carousel__next" style="cursor:pointer">Go to next slide</a>
 											</div>
 											<label class="date-text">` + dateStr + `<span class="tl-zoom-icon" style="margin-left: 10px" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
 												
@@ -730,7 +750,7 @@ func (r *RURINFT) GenerateTimeline(data models.Component, index int) (string, st
 						} else {
 							imgCont += `<li id="carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `"
 											tabindex="0"
-											class="carousel__slide" style="background-image: url('` + image.Img + `');">
+											class="carousel__slide" style="background-image: url('` + imgUrl + `');">
 											<div class="carousel__snapper">
 											<a
 												class="carousel__prev">Go to last slide</a>
@@ -1305,4 +1325,78 @@ func (r *RURINFT) GetUsers(userID []string) ([]models.Users, error) {
 	json.Unmarshal([]byte(string(body)), &users)
 
 	return users, nil
+}
+
+func (r *RURINFT) uploadNftImage(b64 string, imgKey string) string {
+
+	var strArr = strings.Split(b64, ";base64,")
+
+	dec, err := base64.StdEncoding.DecodeString(strArr[1]) //get image string
+	fType := strings.Split(strArr[0], "data:image/")[1]    //get file type from base64 string
+
+	if err != nil {
+		logs.ErrorLogger.Println("unable to decode data :", err.Error())
+		return b64
+	}
+
+	// create file name using gem name and image key
+	fileName := r.GemName + "_" + imgKey + "." + fType
+	fileName = strings.ToLower(fileName)
+
+	// get current working directory
+	wd, err := os.Getwd()
+	if err != nil {
+		logs.ErrorLogger.Println("unable to get working directory :", err.Error())
+		return b64
+	}
+
+	// create file path
+	filePath := filepath.Join(wd, fileName)
+
+	// create file
+	f, err := os.Create(filePath)
+
+	if err != nil {
+		logs.ErrorLogger.Println("unable to create file :", err.Error())
+		return b64
+	}
+	defer f.Close()
+
+	//write to created file
+	if _, err := f.Write(dec); err != nil {
+		logs.ErrorLogger.Println("unable to write data to file :", err.Error())
+		return b64
+	}
+
+	if err := f.Sync(); err != nil {
+		logs.ErrorLogger.Println("unable to sync :", err.Error())
+		defer f.Close()
+		r.deleteImg(f)
+		return b64
+	}
+	defer f.Close()
+
+	folderName := strings.ToLower(r.GemName)
+
+	// upload to ipfs
+	_, link, err := ipfsservice.UploadFile(filePath, fileName, filebaseBucket, folderName)
+
+	if err != nil {
+		logs.ErrorLogger.Println("unable to get ipfs link :", err.Error())
+		r.deleteImg(f)
+		return b64
+	}
+
+	r.deleteImg(f)
+
+	return link
+}
+
+func (r *RURINFT) deleteImg(f *os.File) {
+	name := f.Name()
+	f.Close()
+	err := os.Remove(name) //remove the file
+	if err != nil {
+		logs.ErrorLogger.Println("unable to delete file :", err.Error())
+	}
 }

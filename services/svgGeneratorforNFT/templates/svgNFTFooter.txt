@@ -156,6 +156,10 @@
 
 
 			}
+
+			 function moveSlide(id) {
+				document.getElementById(id).scrollIntoView();
+			}
         ]]>
     </script>
 </svg>
