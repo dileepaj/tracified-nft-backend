@@ -11,6 +11,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/utilities/commonResponse"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
+	"github.com/dileepaj/tracified-nft-backend/utilities/middleware"
 	"github.com/dileepaj/tracified-nft-backend/utilities/validations"
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -76,6 +77,14 @@ func UpdateWalletNFTState(w http.ResponseWriter, r *http.Request) {
 
 	// Structure to hold the update data for NFT state.
 	var updateObj requestDtos.UpdateNFTState
+
+	//check if JWT token is valid
+	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
+	if !ps.Status {
+		w.WriteHeader(http.StatusUnauthorized)
+		logs.ErrorLogger.Println("Status Unauthorized")
+		return
+	}
 
 	// Decode the JSON payload from the request body into the updateObj structure.
 	decoder := json.NewDecoder(r.Body)
