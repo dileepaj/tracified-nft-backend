@@ -6,6 +6,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/database/connections"
 	"github.com/dileepaj/tracified-nft-backend/database/repository"
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
+	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"go.mongodb.org/mongo-driver/bson"
@@ -685,4 +686,17 @@ func (r *NFTRepository) UpdateWalletNFTOwner(findBy1 string, id1 primitive.Objec
 		return nftResponse, nil
 
 	}
+}
+
+func (r *NFTRepository) GetWalletNFTStateInformation(id primitive.ObjectID) (responseDtos.WalletNFTStateInfo, error) {
+	var nftInfo responseDtos.WalletNFTStateInfo
+	rst := repository.FindOne("_id", id, "nftstate")
+	if rst != nil {
+		err := rst.Decode(&nftInfo)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return nftInfo, err
+		}
+	}
+	return nftInfo, nil
 }

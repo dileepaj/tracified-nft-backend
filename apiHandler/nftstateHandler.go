@@ -7,6 +7,7 @@ import (
 
 	"github.com/dileepaj/tracified-nft-backend/businessFacade/marketplaceBusinessFacade"
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
+	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/commonResponse"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
@@ -181,6 +182,22 @@ func GetWalletTxnsByIssuer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+}
+
+func GetWalletNFTStateInformation(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
+	vars := mux.Vars(r)
+	Id, objIDerr := primitive.ObjectIDFromHex(vars["nftid"])
+	if objIDerr != nil {
+		errors.BadRequest(w, "Invalid NFT ID : "+objIDerr.Error())
+		return
+	}
+	rst, err := marketplaceBusinessFacade.GetWalletNFTStateInformation(Id)
+	if err != nil {
+		errors.BadRequest(w, err.Error())
+		return
+	}
+	commonResponse.SuccessStatus[responseDtos.WalletNFTStateInfo](w, rst)
 }
 
 // GetWalletNFTByStateAndCurrentOwner retrieves wallet NFTs based on their state and current owner.

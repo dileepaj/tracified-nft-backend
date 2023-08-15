@@ -52,4 +52,10 @@ var WalletNFTRoutes = models.Routers{
 		Path:    "/nftstate/txns/{issuerpublickey}",
 		Handler: apiHandler.GetWalletTxnsByIssuer,
 	},
+	models.Router{
+		Name:    "GET NFT owner and state infomation",
+		Method:  "Get",
+		Path:    "/nftstate/info/{nftid}",
+		Handler: apiHandler.GetWalletNFTStateInformation,
+	},
 }

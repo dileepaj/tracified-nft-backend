@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
+	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"go.mongodb.org/mongo-driver/bson"
@@ -514,4 +515,8 @@ func UpdateWalletNFTOwner(nft requestDtos.WalletNFTUpdateOwner) (requestDtos.Wal
 		"$set": bson.M{"nftowner": nft.NFTOwner},
 	}
 	return nftRepository.UpdateWalletNFTOwner("_id", nft.ID, update)
+}
+
+func GetWalletNFTStateInformation(id primitive.ObjectID) (responseDtos.WalletNFTStateInfo, error) {
+	return nftRepository.GetWalletNFTStateInformation(id)
 }
