@@ -767,7 +767,8 @@ li {
   overflow-x: scroll;
   counter-reset: item;
   scroll-behavior: smooth;
-  scroll-snap-type: x mandatory;
+  scroll-snap-type: both mandatory;
+  overscroll-behavior-x: contain;
 }
 
 .carousel__slide {
@@ -778,6 +779,7 @@ li {
   background-repeat: no-repeat;
   background-position: center center;
   object-fit: contain;
+  scroll-snap-align: center;
 }
 
 .carousel__slide:before {

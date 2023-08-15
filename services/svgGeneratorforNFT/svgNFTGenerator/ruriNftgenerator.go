@@ -659,7 +659,7 @@ func (r *RURINFT) GenerateTimeline(data models.Component, index int) (string, st
 
 	for i, stage := range data.Children {
 		infoStr := ""
-		for _, info := range stage.Children {
+		for j, info := range stage.Children {
 			if info.Component == "key-value" {
 
 				val := "No Data Available"
@@ -685,6 +685,7 @@ func (r *RURINFT) GenerateTimeline(data models.Component, index int) (string, st
 							</div>` + proofContentStr
 
 			} else if info.Component == "image-slider" {
+				imgSliderId := "slider_" + strconv.Itoa(i) + "_" + strconv.Itoa(j)
 				imgCont := ""
 				var imgs []models.ImageValue
 				decodeErr := mapstructure.Decode(info.Slides.Value, &imgs)
@@ -707,7 +708,7 @@ func (r *RURINFT) GenerateTimeline(data models.Component, index int) (string, st
 				if len(imgs) > 0 {
 
 					for j, image := range imgs {
-						var prev = 0
+						/* var prev = 0
 						var next = 0
 
 						if j == 0 {
@@ -723,7 +724,7 @@ func (r *RURINFT) GenerateTimeline(data models.Component, index int) (string, st
 						}
 
 						prevStr := "carousel__slide" + strconv.Itoa(i) + strconv.Itoa(prev)
-						nextStr := "carousel__slide" + strconv.Itoa(i) + strconv.Itoa(next)
+						nextStr := "carousel__slide" + strconv.Itoa(i) + strconv.Itoa(next) */
 						dateStr := strings.ReplaceAll(strings.Split(image.Time, "T")[0], "-", "/")
 
 						imgKey := "timeline_" + strconv.Itoa(i) + "_" + strconv.Itoa(j) //create image key
@@ -736,14 +737,7 @@ func (r *RURINFT) GenerateTimeline(data models.Component, index int) (string, st
 							imgCont += `<li id="carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `"
 											tabindex="0"
 											class="carousel__slide" style="background-image: url('` + imgUrl + `');">
-											<div class="carousel__snapper">
-											<a onclick="moveSlide('` + prevStr + `')"
-												class="carousel__prev" style="cursor:pointer">Go to last slide</a>
-											<a onclick="moveSlide('` + nextStr + `')"
-												class="carousel__next" style="cursor:pointer">Go to next slide</a>
-											</div>
 											<label class="date-text">` + dateStr + `<span class="tl-zoom-icon" style="margin-left: 10px" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
-												
 												</span></label>
 											` + proofTickIcon + `
 										</li>`
@@ -775,7 +769,13 @@ func (r *RURINFT) GenerateTimeline(data models.Component, index int) (string, st
 					if imgCont != "" {
 						infoStr += `<div class="tl-info-container">
 						<section class="carousel ` + disabledClass + `" aria-label="Gallery">
-							<ol class="carousel__viewport">
+							<div class="carousel__snapper">
+								<a onclick="moveRight('` + imgSliderId + `')"
+									class="carousel__prev" style="cursor:pointer">Go to last slide</a>
+								<a onclick="moveLeft('` + imgSliderId + `')"
+									class="carousel__next" style="cursor:pointer">Go to next slide</a>
+							</div>
+							<ol id="` + imgSliderId + `" class="carousel__viewport">
 							` + imgCont + `
 							</ol>
 						</section>
