@@ -70,7 +70,7 @@
 }
 
 .toggle:checked + .lbl-toggle + .collapsible-content {
-  max-height: 100vh;
+  max-height: 200vh;
 }
 
 .toggle:checked + .lbl-toggle {
