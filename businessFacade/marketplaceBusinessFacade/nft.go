@@ -517,6 +517,6 @@ func UpdateWalletNFTOwner(nft requestDtos.WalletNFTUpdateOwner) (requestDtos.Wal
 	return nftRepository.UpdateWalletNFTOwner("_id", nft.ID, update)
 }
 
-func GetWalletNFTStateInformation(id primitive.ObjectID) (responseDtos.WalletNFTStateInfo, error) {
+func GetWalletNFTStateInformation(id string) (responseDtos.WalletNFTStateInfo, error) {
 	return nftRepository.GetWalletNFTStateInformation(id)
 }
