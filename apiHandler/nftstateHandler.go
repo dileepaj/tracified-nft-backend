@@ -87,7 +87,7 @@ func UpdateWalletNFTState(w http.ResponseWriter, r *http.Request) {
 		errors.BadRequest(w, ErrorMessage)
 	} else {
 		// Get the current state of the NFT for validation.
-		currentState, currentStateError := marketplaceBusinessFacade.GetCurrentNFTState(updateObj.IssuerPublicKey)
+		currentState, currentStateError := marketplaceBusinessFacade.GetCurrentNFTState(updateObj)
 		if currentStateError != nil {
 			errors.BadRequest(w, "failed to retrieve state : "+currentStateError.Error())
 			return
