@@ -688,9 +688,9 @@ func (r *NFTRepository) UpdateWalletNFTOwner(findBy1 string, id1 primitive.Objec
 	}
 }
 
-func (r *NFTRepository) GetWalletNFTStateInformation(id primitive.ObjectID) (responseDtos.WalletNFTStateInfo, error) {
+func (r *NFTRepository) GetWalletNFTStateInformation(id string) (responseDtos.WalletNFTStateInfo, error) {
 	var nftInfo responseDtos.WalletNFTStateInfo
-	rst := repository.FindOne("_id", id, "nftstate")
+	rst := repository.FindOne("nftid", id, "nftstate")
 	if rst != nil {
 		err := rst.Decode(&nftInfo)
 		if err != nil {

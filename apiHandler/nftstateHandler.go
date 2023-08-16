@@ -187,12 +187,12 @@ func GetWalletTxnsByIssuer(w http.ResponseWriter, r *http.Request) {
 func GetWalletNFTStateInformation(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
 	vars := mux.Vars(r)
-	Id, objIDerr := primitive.ObjectIDFromHex(vars["nftid"])
+	_, objIDerr := primitive.ObjectIDFromHex(vars["nftid"])
 	if objIDerr != nil {
 		errors.BadRequest(w, "Invalid NFT ID : "+objIDerr.Error())
 		return
 	}
-	rst, err := marketplaceBusinessFacade.GetWalletNFTStateInformation(Id)
+	rst, err := marketplaceBusinessFacade.GetWalletNFTStateInformation(vars["nftid"])
 	if err != nil {
 		errors.BadRequest(w, err.Error())
 		return
