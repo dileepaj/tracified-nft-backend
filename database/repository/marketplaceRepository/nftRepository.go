@@ -583,7 +583,7 @@ func (r *NFTRepository) SaveNFTStateTXN(nftstate models.NFTWalletStateTXN) (stri
 	return repository.Save[models.NFTWalletStateTXN](nftstate, walletNFTTxns)
 }
 
-func (r *NFTRepository) UpdateNFTState(findBy string, id string, update primitive.M) (models.NFTWalletState, error) {
+func (r *NFTRepository) UpdateNFTState(updateObject requestDtos.UpdateNFTState, update primitive.M) (models.NFTWalletState, error) {
 	var stateResponse models.NFTWalletState
 	upsert := false
 	after := options.After
@@ -591,7 +591,7 @@ func (r *NFTRepository) UpdateNFTState(findBy string, id string, update primitiv
 		ReturnDocument: &after,
 		Upsert:         &upsert,
 	}
-	rst := connections.GetSessionClient("nftstate").FindOneAndUpdate(context.TODO(), bson.D{{"issuerpublickey", id}}, update, &opt)
+	rst := connections.GetSessionClient("nftstate").FindOneAndUpdate(context.TODO(), bson.D{{Key: "_id", Value: updateObject.ID}, {Key: "issuerpublickey", Value: updateObject.IssuerPublicKey}}, update, &opt)
 	if rst != nil {
 		err := rst.Decode((&stateResponse))
 		if err != nil {
@@ -605,10 +605,10 @@ func (r *NFTRepository) UpdateNFTState(findBy string, id string, update primitiv
 	}
 }
 
-func (r *NFTRepository) GetCurrentNFTStatus(issuerpublickey string) (uint8, error) {
+func (r *NFTRepository) GetCurrentNFTStatus(updateObject requestDtos.UpdateNFTState) (uint8, error) {
 	var nftState models.NFTWalletState
 	nftState.NFTStatus = 0
-	rst := repository.FindOne("issuerpublickey", issuerpublickey, "nftstate")
+	rst := connections.GetSessionClient("nftstate").FindOne(context.TODO(), bson.D{{Key: "_id", Value: updateObject.ID}, {Key: "issuerpublickey", Value: updateObject.IssuerPublicKey}})
 	if rst != nil {
 		err := rst.Decode(&nftState)
 		if err != nil {

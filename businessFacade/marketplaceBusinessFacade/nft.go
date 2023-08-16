@@ -390,15 +390,15 @@ func StoreNFTStateTXN(createNFTStateTxnObject models.NFTWalletStateTXN) (string,
 
 }
 
-func UpdateNFTState(state requestDtos.UpdateNFTState) (models.NFTWalletState, error) {
+func UpdateNFTState(updateObject requestDtos.UpdateNFTState) (models.NFTWalletState, error) {
 	update := bson.M{
-		"$set": bson.M{"nftstatus": state.NFTStatus},
+		"$set": bson.M{"nftstatus": updateObject.NFTStatus},
 	}
-	return nftRepository.UpdateNFTState("issuerpublickey", state.IssuerPublicKey, update)
+	return nftRepository.UpdateNFTState(updateObject, update)
 }
 
-func GetCurrentNFTState(issuerpublickey string) (uint8, error) {
-	return nftRepository.GetCurrentNFTStatus(issuerpublickey)
+func GetCurrentNFTState(updateObject requestDtos.UpdateNFTState) (uint8, error) {
+	return nftRepository.GetCurrentNFTStatus(updateObject)
 }
 
 func DeleteNFTStateByIssuer(nftstate requestDtos.DeleteNFTState) (int64, error) {
