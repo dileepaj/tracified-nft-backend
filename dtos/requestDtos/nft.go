@@ -51,8 +51,9 @@ type CreatorInfoforMatrixView struct {
 }
 
 type UpdateNFTState struct {
-	IssuerPublicKey string `json:"issuerpublickey" bson:"issuerpublickey"`
-	NFTStatus       int8   `json:"nftstatus" bson:"nftstatus"`
+	ID              primitive.ObjectID `json:"id",bson:"_id"`
+	IssuerPublicKey string             `json:"issuerpublickey" bson:"issuerpublickey"`
+	NFTStatus       int8               `json:"nftstatus" bson:"nftstatus"`
 }
 
 type DeleteNFTState struct {

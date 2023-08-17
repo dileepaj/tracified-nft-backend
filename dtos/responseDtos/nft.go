@@ -1,5 +1,7 @@
 package responseDtos
 
+import "go.mongodb.org/mongo-driver/bson/primitive"
+
 type ResponseNFTMakeSale struct {
 	NFTIdentifier  string   `json:"nftidentifier" bson:"nftidentifier" validate:"required"`
 	Blockchain     string   `json:"blockchain" bson:"blockchain" validate:"required"`
@@ -40,4 +42,10 @@ type ResponseNFTMintTXN struct {
 	NftContentURL string `json:"nftcontenturl" bson:"nftcontenturl"`
 	NFTTxnHash    string `json:"nfttxnhash" bson:"nfttxnhash" `
 	Thumbnail     string `json:"thumbnail" bson:"thumbnail"`
+}
+
+type WalletNFTStateInfo struct {
+	ID           primitive.ObjectID `json:"_id" bson:"_id"`
+	CurrentOwner string             `json:"currentowner" bson:"currentowner"`
+	NFTStatus    int8               `json:"nftstatus" bson:"nftstatus"`
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
+	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"go.mongodb.org/mongo-driver/bson"
@@ -389,15 +390,15 @@ func StoreNFTStateTXN(createNFTStateTxnObject models.NFTWalletStateTXN) (string,
 
 }
 
-func UpdateNFTState(state requestDtos.UpdateNFTState) (models.NFTWalletState, error) {
+func UpdateNFTState(updateObject requestDtos.UpdateNFTState) (models.NFTWalletState, error) {
 	update := bson.M{
-		"$set": bson.M{"nftstatus": state.NFTStatus},
+		"$set": bson.M{"nftstatus": updateObject.NFTStatus},
 	}
-	return nftRepository.UpdateNFTState("issuerpublickey", state.IssuerPublicKey, update)
+	return nftRepository.UpdateNFTState(updateObject, update)
 }
 
-func GetCurrentNFTState(issuerpublickey string) (uint8, error) {
-	return nftRepository.GetCurrentNFTStatus(issuerpublickey)
+func GetCurrentNFTState(updateObject requestDtos.UpdateNFTState) (uint8, error) {
+	return nftRepository.GetCurrentNFTStatus(updateObject)
 }
 
 func DeleteNFTStateByIssuer(nftstate requestDtos.DeleteNFTState) (int64, error) {
@@ -514,4 +515,8 @@ func UpdateWalletNFTOwner(nft requestDtos.WalletNFTUpdateOwner) (requestDtos.Wal
 		"$set": bson.M{"nftowner": nft.NFTOwner},
 	}
 	return nftRepository.UpdateWalletNFTOwner("_id", nft.ID, update)
+}
+
+func GetWalletNFTStateInformation(id string) (responseDtos.WalletNFTStateInfo, error) {
+	return nftRepository.GetWalletNFTStateInformation(id)
 }
