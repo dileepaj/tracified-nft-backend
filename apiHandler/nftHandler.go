@@ -12,6 +12,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/utilities/commonResponse"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
+	"github.com/dileepaj/tracified-nft-backend/utilities/middleware"
 	"github.com/dileepaj/tracified-nft-backend/utilities/validations"
 	"github.com/gorilla/mux"
 )
@@ -863,6 +864,12 @@ func GetProfileContent(w http.ResponseWriter, r *http.Request) {
 func SaveNFTFromWallet(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;charset=UTF-8")
 	var wnft models.WalletNFT
+	ps := middleware.WalletUserHasPermissionToMint(r.Header.Get("Authorization"))
+	if !ps.Status {
+		w.WriteHeader(http.StatusUnauthorized)
+		logs.ErrorLogger.Println("Status Unauthorized")
+		return
+	}
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&wnft)
 	if err != nil {
