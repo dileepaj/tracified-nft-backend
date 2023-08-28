@@ -1376,7 +1376,7 @@ func (r *RURINFT) uploadNftImage(b64 string, imgKey string) string {
 	}
 	defer f.Close()
 
-	folderName := strings.ToLower(r.GemName)
+	folderName := "NFT/" + strings.ToLower(r.GemName)
 
 	// upload to ipfs
 	_, link, err := ipfsservice.UploadFile(filePath, fileName, filebaseBucket, folderName)
