@@ -241,6 +241,7 @@ func UpdateCustomerIndormation(email string, batchID string, otp string) (string
 }
 
 func GetOTPStatus(W http.ResponseWriter, r *http.Request) {
+	W.Header().Set("Content-Type", "application/json; charset-UTF-8")
 	var StateCheckObject requestDtos.GenOTP
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&StateCheckObject)
