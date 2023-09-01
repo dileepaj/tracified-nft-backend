@@ -237,3 +237,7 @@ func GenerateOTPExpireDate() time.Time {
 func ValidateWalletTenant(tenantName string) (models.WalletNFTTenantUser, error) {
 	return otpRepository.GetWalletTenant(tenantName)
 }
+
+func GetOTPStatus(email string, id string) (responseDtos.OTPStatus, error) {
+	return otpRepository.CheckOTPValidatedStatus(email, id)
+}

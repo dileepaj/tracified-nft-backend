@@ -6,6 +6,7 @@ import (
 
 	customizedNFTFacade "github.com/dileepaj/tracified-nft-backend/businessFacade/customizedNFTFacade"
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
+	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/commonMethods"
 	"github.com/dileepaj/tracified-nft-backend/utilities/commonResponse"
@@ -92,7 +93,7 @@ func SaveUserOTPMapping(email string, otp string, batchID string, shopId string)
 	userAuth.Otp = otp
 	userAuth.BatchID = batchID // Default number of attempts
 	userAuth.ShopID = shopId
-	userAuth.Validated = "False"
+	userAuth.Validated = false
 	userAuth.ExpireDate = primitive.NewDateTimeFromTime(customizedNFTFacade.GenerateOTPExpireDate())
 	logs.InfoLogger.Println("NEW exp date created: ", userAuth.ExpireDate)
 	result, error := customizedNFTFacade.SaveOTP(userAuth)
@@ -230,10 +231,37 @@ func UpdateCustomerIndormation(email string, batchID string, otp string) (string
 	userAuth.Email = email
 	userAuth.BatchID = batchID
 	userAuth.Otp = otp
+	userAuth.Validated = false
 	userAuth.ExpireDate = primitive.NewDateTimeFromTime(customizedNFTFacade.GenerateOTPExpireDate())
 	rst, err := customizedNFTFacade.ResendOTP(userAuth)
 	if err != nil {
 		return rst, err
 	}
 	return rst, nil
+}
+
+func GetOTPStatus(W http.ResponseWriter, r *http.Request) {
+	var StateCheckObject requestDtos.GenOTP
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&StateCheckObject)
+	if err != nil {
+		errors.BadRequest(W, "Invalid data")
+		return
+	}
+	if StateCheckObject.Email == "" && StateCheckObject.ProductID == "" {
+		errors.BadRequest(W, "email or ID is empty")
+		return
+	}
+	rstshopid, shopIderr := customizedNFTFacade.GetNFTStatusbyShopID(StateCheckObject.ProductID)
+	if shopIderr != nil || rstshopid == "Minted" {
+		errors.BadRequest(W, "NFT already minted")
+		return
+	}
+
+	otpStatus, statusErr := customizedNFTFacade.GetOTPStatus(StateCheckObject.Email, StateCheckObject.ProductID)
+	if statusErr != nil {
+		commonResponse.NoContent(W, statusErr.Error())
+		return
+	}
+	commonResponse.SuccessStatus[responseDtos.OTPStatus](W, otpStatus)
 }

@@ -74,7 +74,7 @@ type UserAuth struct {
 	Otp        string             `json:"otp" bson:"otp,omitempty"`
 	BatchID    string             `json:"batchid" bson:"batchid,omitempty"`
 	ShopID     string             `json:"shopid" bson:"shopid,omitempty"`
-	Validated  string             `json:"validated" bson:"validated,omitempty"`
+	Validated  bool               `json:"validated" bson:"validated,omitempty"`
 	ExpireDate primitive.DateTime `json:"expDate" bson:"expDate,omitempty"`
 }
 

@@ -43,4 +43,10 @@ var OneTimePassWordRoutes = models.Routers{
 		Path:    "/resendOTP",
 		Handler: apiHandler.ResentOTP,
 	},
+	models.Router{
+		Name:    "Check OTP State",
+		Method:  "POST",
+		Path:    "/otp-state",
+		Handler: apiHandler.GetOTPStatus,
+	},
 }
