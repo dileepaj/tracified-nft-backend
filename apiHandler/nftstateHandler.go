@@ -80,7 +80,7 @@ func UpdateWalletNFTState(w http.ResponseWriter, r *http.Request) {
 	var updateObj requestDtos.UpdateNFTState
 
 	//check if JWT token is valid
-	ps := middleware.HasPermissions(r.Header.Get("Authorization"))
+	ps := middleware.WalletUserHasPermissionToTransfer(r.Header.Get("Authorization"))
 	if !ps.Status {
 		w.WriteHeader(http.StatusUnauthorized)
 		logs.ErrorLogger.Println("Status Unauthorized")
