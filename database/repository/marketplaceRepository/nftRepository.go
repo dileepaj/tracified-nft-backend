@@ -700,3 +700,30 @@ func (r *NFTRepository) GetWalletNFTStateInformation(id string) (responseDtos.Wa
 	}
 	return nftInfo, nil
 }
+
+// GetMintedWalletNFTIdentifiers retrieves identifiers of minted wallet NFTs from the database.
+// It queries the database using the GetAllWalletNFTs method, filters the results to include
+// only minted NFTs, and returns the minted identifiers as a slice of strings.
+func (r *NFTRepository) GetMintedWalletNFTIdentifiers() ([]string, error) {
+	var mintedIdentifiers []string
+
+	// Call the GetAllWalletNFTs method to retrieve all wallet NFT records from the database
+	rst, err := r.GetAllWalletNFTs()
+	if err != nil {
+		// Handle the case where there's a failure to retrieve data from the database
+		logs.ErrorLogger.Println("Failed to retrieve data from DB :", err.Error())
+		return mintedIdentifiers, err
+	}
+
+	// Iterate through the retrieved records
+	for _, item := range rst {
+		// Check if the NFTStatus field of the record is "Minted"
+		if item.NFTStatus == "Minted" {
+			// If the NFT is minted, add its ShopID to the mintedIdentifiers slice
+			mintedIdentifiers = append(mintedIdentifiers, item.ShopID)
+		}
+	}
+
+	// Return the list of minted identifiers and nil error if successful
+	return mintedIdentifiers, nil
+}

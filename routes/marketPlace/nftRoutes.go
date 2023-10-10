@@ -267,4 +267,10 @@ var NftRoutes = models.Routers{
 		Path:    "/nftstats/{nftidentifier}/{blockchain}",
 		Handler: apiHandler.GetNFTByBlockchainAndIdentifier,
 	},
+	models.Router{
+		Name:    "Get Minted NFTs IDs by tenant ID for Wallet",
+		Method:  "Get",
+		Path:    "/walletNFT/minted-info/{tenantID}",
+		Handler: apiHandler.GetMintedNFTInfoTenant,
+	},
 }

@@ -4,8 +4,11 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"strings"
 
+	"github.com/dileepaj/tracified-nft-backend/businessFacade/customizedNFTFacade"
 	"github.com/dileepaj/tracified-nft-backend/businessFacade/marketplaceBusinessFacade"
+	"github.com/dileepaj/tracified-nft-backend/commons"
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/commonMethods"
@@ -1003,4 +1006,57 @@ func UpdateWalletNFTOwner(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	commonResponse.SuccessStatus[string](w, rst.ID.Hex())
+}
+
+// GetMintedNFTInfoTenant handles HTTP requests to retrieve minted NFT information
+// for a specific tenantID and sends a JSON response.
+func GetMintedNFTInfoTenant(w http.ResponseWriter, r *http.Request) {
+	// Set the Content-Type header to indicate JSON response
+	w.Header().Set("Content-Type", "application/json;")
+
+	// Get the tenantID from request parameters
+	vars := mux.Vars(r)
+	tenantID := vars["tenantID"]
+
+	// Check if the tenantID is valid using the validatetenant function
+	if _validatetenant(tenantID) {
+		// Call a function to get minted NFT identifier for the given tenantID
+		rst, err := customizedNFTFacade.GetMintedNFTIdentifierForWallet(vars["tenantID"])
+		if err != nil {
+			// Handle error and send a bad request response if there's an issue with fetching data
+			logs.InfoLogger.Printf("Error fetching data for tenantID %s: %v", vars["tenantID"], err)
+			errors.InternalError(w, "failed to get data please try again.")
+			return
+		}
+		if len(rst) == 0 {
+			commonResponse.SuccessStatus[string](w, "no minted NFTs")
+			return
+		}
+		// Send a successful response with the result using the commonResponse.SuccessStatus function
+		commonResponse.SuccessStatus[[]string](w, rst)
+	} else {
+		// Send a bad request response for an invalid tenantID
+		errors.BadRequest(w, "Invalid TenantID")
+	}
+}
+
+// validatetenant checks if the provided tenantID is valid by comparing it
+// against a list of valid tenantIDs obtained from an environment variable.
+func _validatetenant(tenantID string) bool {
+	// Get the list of valid tenant IDs from an environment variable
+	list := commons.GoDotEnvVariable("MINTED_WALLETNFT_TENANTS")
+
+	// Split the comma-separated list into individual tenantIDs
+	tenantIDs := strings.Split(list, ",")
+
+	// Check if the provided tenantID exists in the list
+	for _, i := range tenantIDs {
+		if tenantID == i {
+			// TenantID is valid
+			return true
+		}
+	}
+
+	// TenantID is not valid
+	return false
 }
