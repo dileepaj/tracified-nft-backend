@@ -12,27 +12,27 @@ type GeneratedMap struct {
 	MapTemplate string             `json:"template" bson:"template"`
 }
 type Location struct {
-	PlaceID     int     `json:"place_id"`
-	Licence     string  `json:"licence"`
-	OSMType     string  `json:"osm_type"`
-	OSMID       int     `json:"osm_id"`
-	Latitude    string  `json:"lat"`
-	Longitude   string  `json:"lon"`
-	PlaceRank   int     `json:"place_rank"`
-	Category    string  `json:"category"`
-	Type        string  `json:"type"`
-	Importance  float64 `json:"importance"`
-	AddressType string  `json:"addresstype"`
-	Name        string  `json:"name"`
-	DisplayName string  `json:"display_name"`
+	PlaceID     int     `json:"place_id,omitempty"`
+	Licence     string  `json:"licence,omitempty"`
+	OSMType     string  `json:"osm_type,omitempty"`
+	OSMID       int     `json:"osm_id,omitempty"`
+	Latitude    string  `json:"lat,omitempty"`
+	Longitude   string  `json:"lon,omitempty"`
+	PlaceRank   int     `json:"place_rank,omitempty"`
+	Category    string  `json:"category,omitempty"`
+	Type        string  `json:"type,omitempty"`
+	Importance  float64 `json:"importance,omitempty"`
+	AddressType string  `json:"addresstype,omitempty"`
+	Name        string  `json:"name,omitempty"`
+	DisplayName string  `json:"display_name,omitempty"`
 	Address     struct {
-		Leisure       string `json:"leisure"`
-		Road          string `json:"road"`
-		Neighbourhood string `json:"neighbourhood"`
-		City          string `json:"city"`
-		Postcode      string `json:"postcode"`
-		Country       string `json:"country"`
-		CountryCode   string `json:"country_code"`
-	} `json:"address"`
-	BoundingBox []string `json:"boundingbox"`
+		Leisure       string `json:"leisure,omitempty"`
+		Road          string `json:"road,omitempty"`
+		Neighbourhood string `json:"neighbourhood,omitempty"`
+		Town          string `json:"town,omitempty"`
+		Postcode      string `json:"postcode,omitempty"`
+		Country       string `json:"country,omitempty"`
+		CountryCode   string `json:"country_code,omitempty"`
+	} `json:"address,omitempty"`
+	BoundingBox []string `json:"boundingbox,omitempty"`
 }
