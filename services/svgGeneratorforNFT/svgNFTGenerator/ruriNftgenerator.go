@@ -609,20 +609,213 @@ func (r *RURINFT) GenerateImageSlider(imageSlider models.Component, parentIndex 
 	return content
 }
 
+// Generate proof modal for journey map
+func (r *RURINFT) GenerateMapProofContentStr(key string, proofInfo models.ValueWithProof) (string, string) {
+	id := strings.ReplaceAll(key, " ", "") + "-map-modal"
+
+	var valueWithProof models.ValueWithProof
+
+	valueWithProof.Proofs = proofInfo.Proofs
+	valueWithProof.Provable = proofInfo.Provable
+
+	var coordinates []models.CoordinateValue
+	decodeErr := mapstructure.Decode(proofInfo.Value, &coordinates)
+	if decodeErr != nil {
+		logs.ErrorLogger.Println("failed to decode map : ", decodeErr.Error())
+	}
+
+	valueWithProof.TdpId = append(valueWithProof.TdpId, coordinates[0].TdpId[0])
+	valueWithProof.UserId = append(valueWithProof.UserId, coordinates[0].UserId[0])
+
+	txnHash, url, err := r.GetTxnHash(valueWithProof.TdpId[0])
+
+	tab1 := proofModalCount
+	tab2 := proofModalCount + 1
+	tab3 := proofModalCount + 2
+
+	proofModalCount += 3
+
+	if err != nil {
+		return "", ""
+	}
+
+	table := r.GenerateProofTable(txnHash, url, valueWithProof)
+
+	users, err1 := r.GetUsers(valueWithProof.UserId)
+
+	if err1 != nil {
+		return "", ""
+	}
+
+	table2, cards := r.GenerateUsersContent(users, tab1, tab2, tab3)
+
+	proofTick := `<span class="material-symbols-outlined provable-tick-wrapper provable-val" onclick="openModal('` + id + `')">
+						check_circle
+					</span>`
+
+	proofContentStr := `<!--modal for proof-->
+					<div id="` + id + `" class="modal-window">
+						<div>
+							<div class="modal-header">
+								<h4 class="modal-heading">Proof Details Of: ` + key + `</h4>
+								<span class="material-symbols-outlined modal-close" onclick="closeModal('` + id + `')">
+									close
+								</span>
+							</div>
+							<div class="modal-cont">
+								<div class="modal-tab">	
+									<label id="modal-tab-lbl-` + strconv.Itoa(tab1) + `" class="modal-tab-label modal-tab-label-active" onclick="openTab('modal-tab-` + strconv.Itoa(tab1) + `', 'modal-tab-` + strconv.Itoa(tab2) + `', 'modal-tab-` + strconv.Itoa(tab3) + `', 'modal-tab-lbl-` + strconv.Itoa(tab1) + `', 'modal-tab-lbl-` + strconv.Itoa(tab2) + `', 'modal-tab-lbl-` + strconv.Itoa(tab3) + `')">Overview</label>
+									<label id="modal-tab-lbl-` + strconv.Itoa(tab2) + `" class="modal-tab-label" onclick="openTab('modal-tab-` + strconv.Itoa(tab2) + `', 'modal-tab-` + strconv.Itoa(tab1) + `', 'modal-tab-` + strconv.Itoa(tab3) + `', 'modal-tab-lbl-` + strconv.Itoa(tab2) + `', 'modal-tab-lbl-` + strconv.Itoa(tab1) + `', 'modal-tab-lbl-` + strconv.Itoa(tab3) + `')">Blockchain Proofs</label>
+									<label  id="modal-tab-lbl-` + strconv.Itoa(tab3) + `" class="modal-tab-label" onclick="openTab('modal-tab-` + strconv.Itoa(tab3) + `', 'modal-tab-` + strconv.Itoa(tab2) + `', 'modal-tab-` + strconv.Itoa(tab1) + `', 'modal-tab-lbl-` + strconv.Itoa(tab3) + `', 'modal-tab-lbl-` + strconv.Itoa(tab2) + `', 'modal-tab-lbl-` + strconv.Itoa(tab1) + `')">People &amp; Technologies</label>
+								</div>
+								<div id="modal-tab-` + strconv.Itoa(tab1) + `" class="modal-tab-cont modal-tab-overview" style="display: flex">
+									<div class="overview-card">
+										<div class="header">
+											<span class="material-symbols-outlined">
+												visibility
+											</span>
+											<label>Blockchain Proofs</label>
+										</div>
+										<div class="body">
+											<p>Visit TilliT Explorer to view transaction details and blockchain proofs.</p>
+											<a href="` + configs.GetTillitUrl() + `/txn/` + txnHash + `" target="_blank" >
+											Tillit Explorer <span class="material-symbols-outlined">
+											open_in_new
+											</span>
+											</a>
+										</div>
+									</div>
+									<div class="overview-card">
+										<div class="header">
+											<span class="material-symbols-outlined">
+												account_circle
+											</span>
+											<label>People</label>
+										</div>
+										<div class="body people-content">
+											` + cards + `
+										</div>
+									</div>
+									<div class="overview-card">
+										<div class="header">
+											<span class="material-symbols-outlined">
+												phone_android
+											</span>
+											<label>Technology</label>
+										</div>
+										<div class="body">
+											<button class="overview-btn tech-btn" onclick="openTab('modal-tab-` + strconv.Itoa(tab3) + `', 'modal-tab-` + strconv.Itoa(tab2) + `', 'modal-tab-` + strconv.Itoa(tab1) + `', 'modal-tab-lbl-` + strconv.Itoa(tab3) + `', 'modal-tab-lbl-` + strconv.Itoa(tab2) + `', 'modal-tab-lbl-` + strconv.Itoa(tab1) + `')">
+												<img class="btn-img" src="data:image/png;base64,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" ></img>
+											</button>
+										</div>
+									</div>
+									<div class="overview-card">
+										<div class="header">
+											<span class="blockchain-icon">
+											</span>
+											<label>Blockchain Network</label>
+										</div>
+										<div class="body">
+											<div class="bc-net-card">
+												<span class="stellar-icon"></span>
+												<label>Stellar</label>
+											</div>
+											
+										</div>
+									</div>
+								</div>
+								<div id="modal-tab-` + strconv.Itoa(tab2) + `" class="modal-tab-cont">
+									<table class="table proof-table">
+										<thead>
+											<tr>
+												<th scope="col">Proof Type</th>
+												<th scope="col">Transaction ID</th>
+												<th scope="col">Description</th>
+												<th scope="col">Proofs</th>
+											</tr>
+										</thead>
+										<tbody>
+											` + table + `
+										</tbody>
+									</table>
+								</div>
+								<div id="modal-tab-` + strconv.Itoa(tab3) + `" class="modal-tab-cont">
+									<table class="table people-and-tech-table">
+										<thead>
+											<tr>
+												<th scope="col">Data Added By</th>
+												<th scope="col">Data Source</th>
+												<th scope="col">Trace Power</th>
+												<th scope="col">Endorsement</th>
+												<th scope="col">Badges</th>
+											</tr>
+										</thead>
+										<tbody>
+											` + table2 + `
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>`
+
+	return proofContentStr, proofTick
+}
+
 // Generate Journey Map
 func (r *RURINFT) GenerateJourneyMap(tab models.Component, index int) (string, string, string, string) {
 
 	var mapInfo []models.MapInfo
+	proofCards := `<div class="map-proof-cont">`
 
-	for _, c := range tab.Coordinates {
-		for _, c1 := range c.Values {
+	for index, c := range tab.Coordinates {
+		var coordinates []models.CoordinateValue
+		decodeErr := mapstructure.Decode(c.Values.Value, &coordinates)
+		if decodeErr != nil {
+			logs.ErrorLogger.Println("failed to decode map : ", decodeErr.Error())
+		}
+
+		if c.Values.Provable {
+			key := c.Title
+
+			proofContentStr, proofTick := r.GenerateMapProofContentStr(key, c.Values)
+
+			lat := strconv.FormatFloat(coordinates[0].Lat, 'g', 7, 64)
+			long := strconv.FormatFloat(coordinates[0].Lng, 'g', 7, 64)
+
+			cityName, err := mapGenerator.GetCityName(lat, long)
+			if err != nil {
+				logs.ErrorLogger.Println("failed to get city name : ", err.Error())
+			}
+
+			proofCards += `	<div class="map-proof-card">
+									<div class="map-proof-title-cont">
+										<span class="marker-icon"></span>
+										<label class="map-proof-title">` + strconv.Itoa(index+1) + ` - ` + c.Title + `</label>
+									</div>
+									<label class="map-proof-text">` + cityName + `</label>
+									<div class="map-proof-title-cont">
+										<label class="map-proof-text">` + lat + `, ` + long + `</label>
+										` + proofTick + `
+									</div>
+									` + proofContentStr + `
+								</div>`
+		}
+
+		var cmap models.MapInfo
+		cmap.Title = coordinates[0].Name
+		cmap.Latitude = coordinates[0].Lat
+		cmap.Longitude = coordinates[0].Lng
+		mapInfo = append(mapInfo, cmap)
+
+		/* for _, c1 := range coordinates {
 			coordinate := c1
 			var cmap models.MapInfo
-			cmap.Title = c.Title
+			cmap.Title = coordinate.Name
 			cmap.Latitude = coordinate.Lat
 			cmap.Longitude = coordinate.Long
 			mapInfo = append(mapInfo, cmap)
-		}
+		} */
 
 	}
 
@@ -634,6 +827,8 @@ func (r *RURINFT) GenerateJourneyMap(tab models.Component, index int) (string, s
 	newMap.MapTemplate = generatedMap
 	rst, mapSaveErr := mapRepository.SaveMap(newMap)
 
+	proofCards += `</div>`
+
 	if mapSaveErr != nil {
 		logs.ErrorLogger.Println("Failed to save map : ", mapSaveErr.Error())
 	}
@@ -642,6 +837,8 @@ func (r *RURINFT) GenerateJourneyMap(tab models.Component, index int) (string, s
 					<embed class="map" frameborder="0" scrolling="no" marginheight="0"
 						marginwidth="0"
 						src="` + backendUrl + `/GetMap/` + rst + `"></embed>
+						` + proofCards + `
+						
 				</div>`
 
 	mainTab, sidebarTab, radioButton := r.GenerateTabLabels("Journey", index)

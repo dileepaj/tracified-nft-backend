@@ -632,6 +632,15 @@
   background-image: url("data:image/svg+xml,%3Csvg _ngcontent-c28='' height='28' viewBox='0 0 236.36 200' width='28' xmlns='http://www.w3.org/2000/svg'%3E%3Cg _ngcontent-c28='' data-name='Layer 2' id='Layer_2'%3E%3Cg _ngcontent-c28='' data-name='Layer 1' id='Layer_1-2'%3E%3Cpath _ngcontent-c28='' d='M203 26.16l-28.46 14.5-137.43 70a82.49 82.49 0 0 1-.7-10.69A81.87 81.87 0 0 1 158.2 28.6l16.29-8.3 2.43-1.24A100 100 0 0 0 18.18 100q0 3.82.29 7.61a18.19 18.19 0 0 1-9.88 17.58L0 129.57V150l25.29-12.89 0 0 8.19-4.18 8.07-4.11v0L186.43 55l16.28-8.29 33.65-17.15V9.14Z'%3E%3C/path%3E%3Cpath _ngcontent-c28='' d='M236.36 50 49.78 145 33.5 153.31 0 170.38v20.41l33.27-16.95 28.46-14.5L199.3 89.24A83.45 83.45 0 0 1 200 100 81.87 81.87 0 0 1 78.09 171.36l-1 .53-17.66 9A100 100 0 0 0 218.18 100c0-2.57-.1-5.14-.29-7.68a18.2 18.2 0 0 1 9.87-17.58l8.6-4.38Z'%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 
+.marker-icon {
+  width: 15px;
+  height: 24px;
+  background-size: 15px 24px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-image: url("data:image/svg+xml,%3Csvg width='19' height='28' viewBox='0 0 19 28' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9.5 0C4.26194 0 0 4.29079 0 9.56286C0 12.0736 1.08716 15.4124 3.23119 19.487C4.95306 22.7583 6.94509 25.7166 7.98119 27.1885C8.15626 27.44 8.38517 27.6446 8.64936 27.7855C8.91355 27.9265 9.20558 28 9.50178 28C9.79798 28 10.09 27.9265 10.3542 27.7855C10.6184 27.6446 10.8473 27.44 11.0224 27.1885C12.0567 25.7166 14.0505 22.7583 15.7724 19.487C17.9128 15.4137 19 12.0748 19 9.56286C19 4.29079 14.7381 0 9.5 0ZM9.5 14.0005C8.74843 14.0005 8.01374 13.7659 7.38883 13.3264C6.76393 12.8868 6.27687 12.2621 5.98926 11.5312C5.70164 10.8002 5.62639 9.99594 5.77302 9.21998C5.91964 8.44403 6.28155 7.73127 6.81299 7.17184C7.34443 6.61241 8.02153 6.23143 8.75866 6.07709C9.49578 5.92274 10.2598 6.00196 10.9542 6.30472C11.6486 6.60748 12.242 7.12019 12.6596 7.77801C13.0771 8.43583 13.3 9.20922 13.3 10.0004C13.2989 11.0609 12.8982 12.0777 12.1858 12.8276C11.4734 13.5775 10.5075 13.9994 9.5 14.0005Z' fill='%23313131'/%3E%3C/svg%3E%0A");
+}
+
 .gemimages::-webkit-scrollbar {
   width: 9px;
   height: 5px;
@@ -1218,6 +1227,78 @@ li {
 .map {
   width: 100%;
   height: 100%;
+}
+
+/* width */
+.map-proof-cont::-webkit-scrollbar {
+  width: 9px;
+  height: 10px;
+}
+
+/* Track */
+.map-proof-cont::-webkit-scrollbar-track {
+  background: transparent;
+  margin-bottom: 20px;
+  border-bottom-right-radius: 10px;
+}
+
+/* Handle */
+.map-proof-cont::-webkit-scrollbar-thumb {
+  background: #d9d9d9;
+}
+
+/* Handle on hover */
+.map-proof-cont::-webkit-scrollbar-thumb:hover {
+  background: #d9d9d9;
+}
+
+.map-proof-cont {
+  padding: 15px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  column-gap: 10px;
+  overflow-x: auto;
+  width: 100%;
+  min-height: 150px;
+  border-bottom-right-radius: 20px;
+}
+
+.map-proof-title-cont {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  column-gap: 5px;
+}
+
+.map-proof-card {
+  display: flex;
+  flex-direction: column;
+  background: #efefef;
+  border-radius: 10px;
+  overflow: hidden;
+  height: fit-content;
+  padding: 10px;
+  min-width: fit-content;
+}
+
+.map-proof-title {
+  font-family: Inter;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0em;
+  text-align: left;
+}
+
+.map-proof-text {
+  font-family: Inter;
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0em;
+  text-align: left;
+  padding-left: 20px;
 }
 
 .tab-cont-heading {
