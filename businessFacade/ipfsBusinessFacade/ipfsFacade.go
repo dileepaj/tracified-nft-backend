@@ -169,7 +169,7 @@ func UploadFilesToIpfs(fileObj models.IpfsObject) (string, error) {
 		return "", errWhenSavingDetails
 	}
 
-	logs.InfoLogger.Println("File uploaded to IPFS at : https://ipfs.filebase.io/ipfs/" + cidHash)
+	logs.InfoLogger.Println("CID Hash : " + cidHash)
 
 	return cidHash, nil
 }

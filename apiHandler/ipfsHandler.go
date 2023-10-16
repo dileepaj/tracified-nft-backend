@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	ipfsbusinessfacade "github.com/dileepaj/tracified-nft-backend/businessFacade/ipfsBusinessFacade"
+	"github.com/dileepaj/tracified-nft-backend/commons"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
@@ -33,9 +34,10 @@ func UploadFilesToIpfs(w http.ResponseWriter, r *http.Request) {
 			errors.BadRequest(w, ErrorMessage)
 			return
 		} else {
+			url := commons.GoDotEnvVariable("IPFSURL")
 			response := models.IpfsResponse{
 				Message: "File uploaded to IPFS",
-				Url:     "https://ipfs.filebase.io/ipfs/" + cid,
+				Url:     url + cid,
 			}
 			w.WriteHeader(http.StatusOK)
 			errWhenEncodingMsg := json.NewEncoder(w).Encode(response)
