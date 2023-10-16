@@ -775,20 +775,25 @@ func (r *RURINFT) GenerateJourneyMap(tab models.Component, index int) (string, s
 			logs.ErrorLogger.Println("failed to decode map : ", decodeErr.Error())
 		}
 
+		proofContentStr := ""
+		proofTick := ""
+
 		if c.Values.Provable {
 			key := c.Title
 
-			proofContentStr, proofTick := r.GenerateMapProofContentStr(key, c.Values)
+			proofContentStr, proofTick = r.GenerateMapProofContentStr(key, c.Values)
 
-			lat := strconv.FormatFloat(coordinates[0].Lat, 'g', 7, 64)
-			long := strconv.FormatFloat(coordinates[0].Lng, 'g', 7, 64)
+		}
 
-			cityName, err := mapGenerator.GetCityName(lat, long)
-			if err != nil {
-				logs.ErrorLogger.Println("failed to get city name : ", err.Error())
-			}
+		lat := strconv.FormatFloat(coordinates[0].Lat, 'g', 7, 64)
+		long := strconv.FormatFloat(coordinates[0].Lng, 'g', 7, 64)
 
-			proofCards += `	<div class="map-proof-card">
+		cityName, err := mapGenerator.GetCityName(lat, long)
+		if err != nil {
+			logs.ErrorLogger.Println("failed to get city name : ", err.Error())
+		}
+
+		proofCards += `	<div class="map-proof-card">
 									<div class="map-proof-title-cont">
 										<span class="marker-icon"></span>
 										<label class="map-proof-title">` + strconv.Itoa(index+1) + ` - ` + c.Title + `</label>
@@ -800,7 +805,6 @@ func (r *RURINFT) GenerateJourneyMap(tab models.Component, index int) (string, s
 									</div>
 									` + proofContentStr + `
 								</div>`
-		}
 
 		var cmap models.MapInfo
 		cmap.Title = coordinates[0].Name
