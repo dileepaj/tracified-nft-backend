@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/dileepaj/tracified-nft-backend/models"
+	"github.com/dileepaj/tracified-nft-backend/routes/ipfsroute"
 	"github.com/dileepaj/tracified-nft-backend/routes/marketPlace"
 	"github.com/dileepaj/tracified-nft-backend/routes/nftComposer"
 )
@@ -27,6 +28,7 @@ func init() {
 		marketPlace.SvgGenerator,
 		marketPlace.MapGenerateRoutes,
 		marketPlace.WalletNFTRoutes,
+		ipfsroute.IpfsRoutes,
 	}
 
 	for _, r := range routes {
