@@ -4,11 +4,13 @@ import (
 	b64 "encoding/base64"
 	"encoding/json"
 	"errors"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"strings"
 	"time"
 
+	"github.com/dileepaj/tracified-nft-backend/commons"
 	"github.com/dileepaj/tracified-nft-backend/configs"
 	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
@@ -236,4 +238,98 @@ func GenerateOTPExpireDate() time.Time {
 
 func ValidateWalletTenant(tenantName string) (models.WalletNFTTenantUser, error) {
 	return otpRepository.GetWalletTenant(tenantName)
+}
+
+func GetOTPStatus(email string, id string) (responseDtos.OTPStatus, error) {
+	return otpRepository.CheckOTPValidatedStatus(email, id)
+}
+
+// GetNFTIdentifiersByTenantName fetches a list of NFT identifiers for a given tenantID
+// by making an HTTP request to a specified URL and returns the list as a slice of strings.
+func GetNFTIdentifersByTenantName(tenantID string) ([]string, error) {
+	var identifierList []string
+
+	// Define the URL for the HTTP request
+	url := commons.GoDotEnvVariable("BACKEND_BASEURL")
+
+	// Make an HTTP GET request to the URL
+	rst, err := http.Get(url + "/tenant/productID/" + tenantID)
+
+	if err != nil {
+		// Handle API call error and log it
+		logs.ErrorLogger.Println("API call err : ", err.Error())
+		return identifierList, err
+	} else if rst.StatusCode == 404 {
+		// Handle the case where the API returns a 404 status code
+		err1 := errors.New("data not found")
+		logs.ErrorLogger.Println("API call err : ", err1.Error())
+		return identifierList, err1
+	}
+
+	// Read and parse the response body
+	body, err := io.ReadAll(rst.Body)
+	defer rst.Body.Close()
+	var data = string(body)
+	err1 := json.Unmarshal([]byte(data), &identifierList)
+	if err1 != nil {
+		// Handle JSON unmarshaling error and log it
+		logs.ErrorLogger.Println("Failed to convert api response : ", err1.Error())
+		return identifierList, err1
+	}
+
+	// Handle any remaining errors and return the identifierList
+	if err != nil {
+		logs.ErrorLogger.Println("err: ", err)
+	}
+
+	return identifierList, nil
+}
+
+// GetMintedNFTIdentifierForWallet fetches minted NFT identifiers for a given tenantID
+// by calling GetNFTIdentifiersByTenantName to retrieve API data and then matching it
+// against database results. It returns a list of common identifiers as a slice of strings.
+func GetMintedNFTIdentifierForWallet(tenantID string) ([]string, error) {
+	var matchedList []string
+	var commonIDs []string
+
+	// Call GetNFTIdentifiersByTenantName to retrieve API data
+	apirst, err := GetNFTIdentifersByTenantName(tenantID)
+	if err != nil {
+		// Handle the case where there is no data from the API and log it
+		logs.ErrorLogger.Println("No data from api")
+		return matchedList, err
+	}
+
+	// Call nftRepository.GetMintedWalletNFTIdentifiers to retrieve database results
+	dbrst, err := nftRepository.GetMintedWalletNFTIdentifiers()
+	if err != nil {
+		// Handle the case where there is a failure to get DB data and log it
+		logs.ErrorLogger.Println("failed to get DB data: ", err.Error())
+		return matchedList, err
+	}
+
+	// Match the identifiers from the API and the database
+	commonIDs = _matchStoreIdentifiers(apirst, dbrst)
+	return commonIDs, nil
+}
+
+// matchStoreIdentifiers finds common values between two string slices (apiResult and databaseResult)
+// by using a map to efficiently identify matches. It returns a list of common values as a slice of strings.
+func _matchStoreIdentifiers(apiResult []string, databaseResult []string) []string {
+	var commonValues []string
+
+	// Create a map to store the unique values from apiResult
+	list1map := make(map[string]bool)
+	for _, item := range apiResult {
+		list1map[item] = true
+	}
+
+	// Iterate through databaseResult and check if each item exists in list1map
+	for _, item2 := range databaseResult {
+		if list1map[item2] {
+			commonValues = append(commonValues, item2)
+		}
+	}
+
+	return commonValues
 }

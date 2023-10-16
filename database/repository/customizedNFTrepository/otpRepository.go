@@ -8,6 +8,7 @@ import (
 
 	"github.com/dileepaj/tracified-nft-backend/database/connections"
 	"github.com/dileepaj/tracified-nft-backend/database/repository"
+	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"go.mongodb.org/mongo-driver/bson"
@@ -37,7 +38,7 @@ func (r *OtpRepository) SaveOTP(otpDataSet models.UserAuth) (string, error) {
 		}
 	}
 	if authrst.Email != "" {
-		if authrst.Validated == "True" {
+		if authrst.Validated {
 			err := fmt.Errorf("OTP already validated")
 			return "", err
 		}
@@ -91,7 +92,7 @@ func (r *OtpRepository) ValidateOTP(email string, otp string) (string, string, e
 }
 func UpdateOTPStatus(otpID primitive.ObjectID) (bool, error) {
 	update := bson.M{
-		"$set": bson.M{"validated": "True"},
+		"$set": bson.M{"validated": true},
 	}
 	session, err := connections.GetMongoSession()
 	if err != nil {
@@ -128,7 +129,7 @@ func (r *OtpRepository) ResendOTP(otpDataSet models.UserAuth) (string, error) {
 			return "", err
 		}
 	}
-	if authrst.Validated == "True" {
+	if authrst.Validated {
 		err := fmt.Errorf("OTP already validated")
 		return "", err
 	}
@@ -217,4 +218,30 @@ func (r *OtpRepository) GetWalletTenant(name string) (models.WalletNFTTenantUser
 		err := fmt.Errorf("Tenant not found")
 		return tenant, err
 	}
+}
+func (r *OtpRepository) CheckOTPValidatedStatus(email string, id string) (responseDtos.OTPStatus, error) {
+	var authrst models.UserAuth
+	var response responseDtos.OTPStatus
+	rst, err := repository.FindById1AndId2("email", email, "shopid", id, UserAuth)
+	for rst.Next(context.TODO()) {
+		err = rst.Decode(&authrst)
+		if err != nil {
+			logs.ErrorLogger.Println("Error occured while retreving data from collection in ValidateOTP:OtpRepository.go: ", err.Error())
+			return response, err
+		}
+	}
+	if authrst.Email != "" {
+		if authrst.Validated {
+			err := fmt.Errorf("OTP already validated")
+			response.Message = err.Error()
+			response.IsOTPValidated = true
+			return response, nil
+		}
+		err := fmt.Errorf("OTP Sent but not validated")
+		response.Message = err.Error()
+		response.IsOTPValidated = false
+		return response, nil
+	}
+	noOTPError := fmt.Errorf("OTP does not exist for this email")
+	return response, noOTPError
 }

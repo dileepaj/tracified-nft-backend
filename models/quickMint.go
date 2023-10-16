@@ -74,7 +74,7 @@ type UserAuth struct {
 	Otp        string             `json:"otp" bson:"otp,omitempty"`
 	BatchID    string             `json:"batchid" bson:"batchid,omitempty"`
 	ShopID     string             `json:"shopid" bson:"shopid,omitempty"`
-	Validated  string             `json:"validated" bson:"validated,omitempty"`
+	Validated  bool               `json:"validated" bson:"validated,omitempty"`
 	ExpireDate primitive.DateTime `json:"expDate" bson:"expDate,omitempty"`
 }
 
@@ -144,15 +144,17 @@ type Component struct {
 }
 
 type Coordinate struct {
-	Title       string            `json:"title" bson:"title,omitempty"`
-	Description string            `json:"description" bson:"description,omitempty"`
-	Values      []CoordinateValue `json:"values" bson:"values,omitempty"`
+	Title       string         `json:"title" bson:"title,omitempty"`
+	Description string         `json:"description" bson:"description,omitempty"`
+	Values      ValueWithProof `json:"values" bson:"values,omitempty"`
 }
 
 type CoordinateValue struct {
-	Title string  `json:"title" bson:"title,omitempty"`
-	Lat   float64 `json:"lat" bson:"lat,omitempty"`
-	Long  float64 `json:"long" bson:"long,omitempty"`
+	Name   string   `json:"name" bson:"name,omitempty"`
+	Lat    float64  `json:"lat" bson:"lat,omitempty"`
+	Lng    float64  `json:"lng" bson:"lng,omitempty"`
+	UserId []string `json:"userid" bson:"userid,omitempty"`
+	TdpId  []string `json:"tdpid" bson:"tdpid,omitempty"`
 }
 
 type ValueWithProof struct {

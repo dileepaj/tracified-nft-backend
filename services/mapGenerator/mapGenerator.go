@@ -11,7 +11,9 @@ import (
 )
 
 func GetCityName(lat, lon string) (string, error) {
-	url := "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" + lon + "&lon=" + lat
+	//url := "https://nominatim.openstreetmap.org/reverse.php?lat=" + lat + "&lon=" + lon + "&zoom=12&format=jsonv2"
+	url := "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" + lat + "&lon=" + lon
+
 	logs.InfoLogger.Println("URL: ", url)
 	resp, err := http.Get(url)
 	if err != nil {
@@ -23,10 +25,12 @@ func GetCityName(lat, lon string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	if mapTemplate.Address.City == "" {
+	if mapTemplate.Address.Town == "" {
 		return mapTemplate.Address.Country, nil
+
 	}
-	return mapTemplate.Address.City, nil
+
+	return mapTemplate.Address.Town + ", " + mapTemplate.Address.Country, nil
 
 }
 
