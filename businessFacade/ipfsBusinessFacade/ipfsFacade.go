@@ -15,13 +15,15 @@ var (
 	fileBaseBucket = os.Getenv("FILEBASE_BUCKET")
 )
 
-func UploadFilesToIpfs(fileObj models.IpfsObject) (string, error) {
+// 1- TDP_Image, 2 - TDP
+func UploadFilesToIpfs(fileObj models.IpfsObjectForTDP) (string, error) {
+	//TODO - Check if the TDP details are already entered
+
 	//check the file type
-	//1 - Image, 2 - TDP_Image, 3 - TDP
 	cidHash := ""
-	if fileObj.FileType == 1 || fileObj.FileType == 2 {
+	if fileObj.FileDetails.FileType == 2 {
 		//write image to a file
-		var imageStrAarray = strings.Split(fileObj.FileContent, ";base64,")
+		var imageStrAarray = strings.Split(fileObj.FileDetails.FileContent, ";base64,")
 		dec, errWhenDecodingString := base64.StdEncoding.DecodeString(imageStrAarray[1])
 		extentionType := strings.Split(imageStrAarray[0], "data:image/")[1]
 		if errWhenDecodingString != nil {
@@ -29,7 +31,7 @@ func UploadFilesToIpfs(fileObj models.IpfsObject) (string, error) {
 			return "", errWhenDecodingString
 		}
 
-		imgName := fileObj.FileName + "." + extentionType
+		imgName := fileObj.FileDetails.FileName + "." + extentionType
 		imgName = strings.ToLower(imgName)
 
 		//get current working directory
@@ -57,18 +59,9 @@ func UploadFilesToIpfs(fileObj models.IpfsObject) (string, error) {
 			logs.ErrorLogger.Println("Error when syncing and clearing memory : ", errWhenSyncing.Error())
 			return "", errWhenSyncing
 		}
+		folderName := "TDP/Image"
 
-		folderName := ""
-		//folder name based on type
-		if fileObj.FileType == 1 {
-			//upload image to image bucket
-			folderName = "Image"
-		} else {
-			//upload image to TDP image bucket
-			folderName = "TDP/Image"
-		}
-
-		cid, _, errWhenUploadingToIpfs := ipfsservice.UploadFile(filePath, fileObj.FileName, fileBaseBucket, folderName)
+		cid, _, errWhenUploadingToIpfs := ipfsservice.UploadFile(filePath, fileObj.FileDetails.FileName, fileBaseBucket, folderName)
 		if errWhenUploadingToIpfs != nil {
 			logs.ErrorLogger.Println("Error when uploading to IPFS")
 			//delete image
@@ -94,10 +87,10 @@ func UploadFilesToIpfs(fileObj models.IpfsObject) (string, error) {
 			return "", errWhenRemovingImage
 		}
 
-	} else if fileObj.FileType == 3 {
+	} else if fileObj.FileDetails.FileType == 2 {
 		//write into json file
-		jsonContent := []byte(fileObj.FileContent)
-		jsonFileName := fileObj.FileName + ".json"
+		jsonContent := []byte(fileObj.FileDetails.FileContent)
+		jsonFileName := fileObj.FileDetails.FileName + ".json"
 		jsonFileName = strings.ToLower(jsonFileName)
 
 		// Get the current working directory
@@ -129,7 +122,7 @@ func UploadFilesToIpfs(fileObj models.IpfsObject) (string, error) {
 
 		folderName := "TDP"
 
-		cid, _, errWhenUploadingToIpfs := ipfsservice.UploadFile(jsonFilePath, fileObj.FileName, fileBaseBucket, folderName)
+		cid, _, errWhenUploadingToIpfs := ipfsservice.UploadFile(jsonFilePath, fileObj.FileDetails.FileName, fileBaseBucket, folderName)
 		if errWhenUploadingToIpfs != nil {
 			logs.ErrorLogger.Println("Error when uploading to IPFS")
 			//delete image
@@ -157,9 +150,9 @@ func UploadFilesToIpfs(fileObj models.IpfsObject) (string, error) {
 
 	//Add the content details to DB
 	insertObj := models.IpfsInsertObject{
-		FileType: fileObj.FileType,
-		FileName: fileObj.FileName,
-		TdpId:    fileObj.TdpId,
+		FileType: fileObj.FileDetails.FileType,
+		FileName: fileObj.FileDetails.FileName,
+		TdpId:    fileObj.TDPDetails.TdpID,
 		Cid:      cidHash,
 	}
 

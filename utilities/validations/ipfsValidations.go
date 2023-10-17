@@ -5,7 +5,7 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-func ValidateUploadIpfsFile(e models.IpfsObject) error {
+func ValidateUploadIpfsFile(e models.IpfsObjectForTDP) error {
 	validate = validator.New()
 	errWhenValiating := validate.Struct(e)
 	if errWhenValiating != nil {

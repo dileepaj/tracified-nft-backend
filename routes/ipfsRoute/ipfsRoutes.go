@@ -9,7 +9,7 @@ var IpfsRoutes = models.Routers{
 	models.Router{
 		Name:    "Upload File to IPFS",
 		Method:  "POST",
-		Path:    "/api/ipfs/uploadfiletoipfs",
+		Path:    "/api/ipfs/uploadTdp",
 		Handler: apiHandler.UploadFilesToIpfs,
 	},
 }
