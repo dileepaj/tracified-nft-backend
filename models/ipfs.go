@@ -17,11 +17,30 @@ type FileDetails struct {
 	FileName    string `json:"filename" bson:"filename"`
 }
 
-type IpfsInsertObject struct {
-	FileType int    `json:"filetype" bson:"filetype"`
-	FileName string `json:"filename" bson:"filename"`
-	TdpId    string `json:"tdpid" bson:"tdpid"`
-	Cid      string `json:"cid" bson:"cid"`
+type InsertTdpDetails struct {
+	TenetId string
+	Items   []ItemDetails
+}
+
+type ItemDetails struct {
+	ItemId  string
+	Batches []BatchDetails
+}
+
+type BatchDetails struct {
+	BatchId string
+	Tdps    []TDPObject
+}
+
+type TDPObject struct {
+	TdpId  string
+	TdpCid string
+	Images []ImageObject
+}
+
+type ImageObject struct {
+	ImageName string
+	ImageCid  string
 }
 
 type IpfsResponse struct {

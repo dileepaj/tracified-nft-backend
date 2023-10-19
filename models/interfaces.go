@@ -5,7 +5,7 @@ import (
 )
 
 type SaveType interface {
-	WatchList | User | NFT | Ownership | Offer | Widget | NFTComposerProject | Chart | Table | StataArray | ProofBotData | ImageData | Timeline | Review | NewsLetter | Faq | NFTCollection | Tags | SVG | TXN | Favourite | Endorse | Partner | Document | []TXN | UserAuth | TDP | UserNFTMapping | NFTStory | UserQuestions | Subscription | GeneratedMap | WalletNFT | ContractInfo | NFTWalletState | NFTWalletStateTXN | IpfsInsertObject
+	WatchList | User | NFT | Ownership | Offer | Widget | NFTComposerProject | Chart | Table | StataArray | ProofBotData | ImageData | Timeline | Review | NewsLetter | Faq | NFTCollection | Tags | SVG | TXN | Favourite | Endorse | Partner | Document | []TXN | UserAuth | TDP | UserNFTMapping | NFTStory | UserQuestions | Subscription | GeneratedMap | WalletNFT | ContractInfo | NFTWalletState | NFTWalletStateTXN | InsertTdpDetails
 }
 
 type InsertManyType interface {

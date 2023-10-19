@@ -19,6 +19,29 @@ var (
 func UploadFilesToIpfs(fileObj models.IpfsObjectForTDP) (string, error) {
 	//TODO - Check if the TDP details are already entered
 
+	//get the DB object for tenetID
+	//If if is there check for ItemID
+	//if it is there check for Batch ID
+	//if it is there check the TDP id
+	//for TDP upload this will not upload the TDP
+	//for image reupload the file
+	resultTdpDetails, errWhenGettingTdpDetails := IpfsRepository.GetTdpDetails(fileObj.TDPDetails.TenetID)
+	if errWhenGettingTdpDetails != nil {
+		return "", errWhenGettingTdpDetails
+	} else if resultTdpDetails.TenetId == "" {
+		//Insert new object
+	} else {
+		//Check the Item ID in the item loop
+		for i := 0; i < len(resultTdpDetails.Items); i++ {
+			if resultTdpDetails.Items[i].ItemId == fileObj.TDPDetails.ItemID {
+				//check if the batch id is in use
+			} else {
+				//enter new item with respective batch
+			}
+		}
+
+	}
+
 	//check the file type
 	cidHash := ""
 	if fileObj.FileDetails.FileType == 2 {
@@ -149,12 +172,7 @@ func UploadFilesToIpfs(fileObj models.IpfsObjectForTDP) (string, error) {
 	}
 
 	//Add the content details to DB
-	insertObj := models.IpfsInsertObject{
-		FileType: fileObj.FileDetails.FileType,
-		FileName: fileObj.FileDetails.FileName,
-		TdpId:    fileObj.TDPDetails.TdpID,
-		Cid:      cidHash,
-	}
+	insertObj := models.InsertTdpDetails{}
 
 	_, errWhenSavingDetails := IpfsRepository.SaveFileDetails(insertObj)
 	if errWhenSavingDetails != nil {
