@@ -1,4 +1,4 @@
-package ipfsRoutes
+package ipfsRoute
 
 import (
 	"github.com/dileepaj/tracified-nft-backend/apiHandler"
