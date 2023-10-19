@@ -1,6 +1,7 @@
 package logs
 
 import (
+	"io"
 	"log"
 	"os"
 )
@@ -17,7 +18,10 @@ func init() {
 		log.Fatal(err)
 	}
 
-	InfoLogger = log.New(file, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
-	WarningLogger = log.New(file, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
-	ErrorLogger = log.New(file, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
+	// Create a multi-writer for both file and terminal
+	logWriter := io.MultiWriter(file, os.Stdout)
+
+	InfoLogger = log.New(logWriter, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
+	WarningLogger = log.New(logWriter, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
+	ErrorLogger = log.New(logWriter, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
 }
