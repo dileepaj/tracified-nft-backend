@@ -250,7 +250,7 @@ func GetNFTIdentifersByTenantName(tenantID string) ([]string, error) {
 	var identifierList []string
 
 	// Define the URL for the HTTP request
-	url := commons.GoDotEnvVariable("BACKEND_BASEURL")
+	url := commons.GoDotEnvVariable("ECOM_BASEURL")
 
 	// Make an HTTP GET request to the URL
 	rst, err := http.Get(url + "/tenant/productID/" + tenantID)
