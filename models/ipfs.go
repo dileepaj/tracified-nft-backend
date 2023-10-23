@@ -17,25 +17,13 @@ type FileDetails struct {
 	FileName    string `json:"filename" bson:"filename"`
 }
 
-type InsertTdpDetails struct {
+type TracifiedDataPacket struct {
 	TenetId string
-	Items   []ItemDetails
-}
-
-type ItemDetails struct {
 	ItemId  string
-	Batches []BatchDetails
-}
-
-type BatchDetails struct {
 	BatchId string
-	Tdps    []TDPObject
-}
-
-type TDPObject struct {
-	TdpId  string
-	TdpCid string
-	Images []ImageObject
+	TdpId   string
+	TdpCid  string
+	Images  []ImageObject
 }
 
 type ImageObject struct {

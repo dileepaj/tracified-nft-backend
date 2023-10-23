@@ -10,12 +10,12 @@ type IpfsRepository struct{}
 
 var Collection = "ipfsfiles"
 
-func (r *IpfsRepository) SaveFileDetails(ipfsObj models.InsertTdpDetails) (string, error) {
-	return repository.Save[models.InsertTdpDetails](ipfsObj, Collection)
+func (r *IpfsRepository) SaveFileDetails(ipfsObj models.TracifiedDataPacket) (string, error) {
+	return repository.Save[models.TracifiedDataPacket](ipfsObj, Collection)
 }
 
-func (r *IpfsRepository) GetTdpDetails(tenetId string) (models.InsertTdpDetails, error) {
-	var currentTdpDetails models.InsertTdpDetails
+func (r *IpfsRepository) GetTdpDetails(tenetId string) (models.TracifiedDataPacket, error) {
+	var currentTdpDetails models.TracifiedDataPacket
 	rst := repository.FindOne(tenetId, "", Collection)
 	if rst != nil {
 		err := rst.Decode(&currentTdpDetails)
