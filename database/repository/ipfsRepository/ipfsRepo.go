@@ -14,17 +14,17 @@ func (r *IpfsRepository) SaveFileDetails(ipfsObj models.TracifiedDataPacket) (st
 	return repository.Save[models.TracifiedDataPacket](ipfsObj, Collection)
 }
 
-func (r *IpfsRepository) GetTdpDetails(tenetId string) (models.TracifiedDataPacket, error) {
-	var currentTdpDetails models.TracifiedDataPacket
-	rst := repository.FindOne(tenetId, "", Collection)
+func (r *IpfsRepository) GetTdpDetails(key string, id string) (models.TracifiedDataPacket, error) {
+	var tdpDetailsArray models.TracifiedDataPacket
+	rst := repository.FindOne(key, id, Collection)
 	if rst != nil {
-		err := rst.Decode(&currentTdpDetails)
+		err := rst.Decode(&tdpDetailsArray)
 		if err != nil {
 			logs.ErrorLogger.Println(err.Error())
-			return currentTdpDetails, err
+			return tdpDetailsArray, err
 		}
-		return currentTdpDetails, nil
+		return tdpDetailsArray, nil
 	} else {
-		return currentTdpDetails, nil
+		return tdpDetailsArray, nil
 	}
 }

@@ -17,32 +17,50 @@ var (
 
 // 1- TDP_Image, 2 - TDP
 func UploadFilesToIpfs(fileObj models.IpfsObjectForTDP) (string, error) {
-	//TODO - Check if the TDP details are already entered
+	tenetTdpDetails, errWhenGettingTdpDetails := IpfsRepository.GetTdpDetails("tenetid", fileObj.TDPDetails.TenetID)
+	if errWhenGettingTdpDetails != nil {
+		return "", errWhenGettingTdpDetails
+	} else if tenetTdpDetails.TenetId == "" {
+		//New record should be added with the relevant tenet details
+		//Create new folder for tenet
+		//Create new folder for item
+		//Create new folder for batch
+		//Create new folder for TDP id
+	} else {
+		//check if the item is already recoded
+		itemTdpDetails, errWhenGettingItemDetails := IpfsRepository.GetTdpDetails("itemid", fileObj.TDPDetails.ItemID)
+		if errWhenGettingItemDetails != nil {
+			return "", errWhenGettingItemDetails
+		} else if itemTdpDetails.ItemId == "" {
+			//New record should be added with the relevant item details
+			//Create new folder for item
+			//Create new folder for batch
+			//Create new folder for TDP id
+		} else {
+			//check if the batch is already added
+			batchDetails, errWhenGettingBatchDetails := IpfsRepository.GetTdpDetails("batchid", fileObj.TDPDetails.BatchID)
+			if errWhenGettingBatchDetails != nil {
+				return "", errWhenGettingBatchDetails
+			} else if batchDetails.BatchId == "" {
+				//New record should be added with the relevant batch details
+				//Create new folder for TDP id
+			} else {
+				//check if the TDP id exists
+				tdpDetails, errWhenGettingTdpDetails := IpfsRepository.GetTdpDetails("tdpid", fileObj.TDPDetails.TdpID)
+				if errWhenGettingTdpDetails != nil {
+					return "", errWhenGettingTdpDetails
+				} else if tdpDetails.TdpId == "" {
+					//New record should be added with the relevant tdp details
 
-	//get the DB object for tenetID
-	//If if is there check for ItemID
-	//if it is there check for Batch ID
-	//if it is there check the TDP id
-	//for TDP upload this will not upload the TDP
-	//for image reupload the file
-
-	// var itemIndex int
-	// resultTdpDetails, errWhenGettingTdpDetails := IpfsRepository.GetTdpDetails(fileObj.TDPDetails.TenetID)
-	// if errWhenGettingTdpDetails != nil {
-	// 	return "", errWhenGettingTdpDetails
-	// } else if resultTdpDetails.TenetId == "" {
-	// 	//Insert new object
-	// } else {
-	// 	//Check the Item ID in the item loop
-	// 	for i := 0; i < len(resultTdpDetails.Items); i++ {
-	// 		if resultTdpDetails.Items[i].ItemId == fileObj.TDPDetails.ItemID {
-	// 			//get the index of the item ID
-	// 			itemIndex = i
-	// 		}
-	// 	}
-	// 	//TODO add the item details to the DB
-
-	// }
+					//check if the TDP image is available if so upload image
+					//upload the tdo
+				} else {
+					//check if there is an image if so upload the image
+					//if not upload the TDP itself
+				}
+			}
+		}
+	}
 
 	//check the file type
 	cidHash := ""
