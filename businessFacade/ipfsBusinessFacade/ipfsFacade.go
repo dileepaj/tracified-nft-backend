@@ -2,6 +2,7 @@ package ipfsbusinessfacade
 
 import (
 	"encoding/base64"
+	"errors"
 	"os"
 	"path/filepath"
 	"strings"
@@ -12,195 +13,174 @@ import (
 )
 
 var (
-	fileBaseBucket = os.Getenv("FILEBASE_BUCKET")
+	fileBaseBucket = os.Getenv("FILEBASE_BUCKET_FOR_TDP")
 )
 
-// 1- TDP_Image, 2 - TDP
+// Request type 1 -> TDP, 2 -> Image
 func UploadFilesToIpfs(fileObj models.IpfsObjectForTDP) (string, error) {
-	tenetTdpDetails, errWhenGettingTdpDetails := IpfsRepository.GetTdpDetails("tenetid", fileObj.TDPDetails.TenetID)
+	var requestType int
+	var folderPath string
+
+	//set up the folder path
+	if fileObj.FileType == 1 {
+		folderPath = fileObj.TDPDetails.TenetID + "/" + fileObj.TDPDetails.ItemID + "/" + fileObj.TDPDetails.BatchID + "/" + fileObj.TDPDetails.TdpID
+	} else if fileObj.FileType == 2 {
+		folderPath = fileObj.TDPDetails.TenetID + "/" + fileObj.TDPDetails.ItemID + "/" + fileObj.TDPDetails.BatchID + "/" + fileObj.TDPDetails.TdpID + "/Images"
+	}
+	errWhenCreatingFolder := ipfsservice.CreateFolder(fileBaseBucket, folderPath)
+	if errWhenCreatingFolder != nil {
+		return "", errWhenCreatingFolder
+	}
+	//Check the request type
+	if fileObj.FileType == 1 {
+		requestType = 1
+	} else if fileObj.FileType == 2 {
+		requestType = 2
+	} else {
+		return "", errors.New("Invalid request type")
+	}
+	cid, errWhenUploadingFileToIpfs := InitiateUpload(requestType, fileObj.FileDetails.FileContent, fileObj.FileDetails.FileName, folderPath)
+	if errWhenUploadingFileToIpfs != nil {
+		return "", errWhenUploadingFileToIpfs
+	}
+
+	//check if the TDP is already added
+	tdpDetails, errWhenGettingTdpDetails := IpfsRepository.GetTdpDetails("tdpid", fileObj.TDPDetails.TdpID)
 	if errWhenGettingTdpDetails != nil {
 		return "", errWhenGettingTdpDetails
-	} else if tenetTdpDetails.TenetId == "" {
-		//New record should be added with the relevant tenet details
-		//Create new folder for tenet
-		//Create new folder for item
-		//Create new folder for batch
-		//Create new folder for TDP id
-	} else {
-		//check if the item is already recoded
-		itemTdpDetails, errWhenGettingItemDetails := IpfsRepository.GetTdpDetails("itemid", fileObj.TDPDetails.ItemID)
-		if errWhenGettingItemDetails != nil {
-			return "", errWhenGettingItemDetails
-		} else if itemTdpDetails.ItemId == "" {
-			//New record should be added with the relevant item details
-			//Create new folder for item
-			//Create new folder for batch
-			//Create new folder for TDP id
-		} else {
-			//check if the batch is already added
-			batchDetails, errWhenGettingBatchDetails := IpfsRepository.GetTdpDetails("batchid", fileObj.TDPDetails.BatchID)
-			if errWhenGettingBatchDetails != nil {
-				return "", errWhenGettingBatchDetails
-			} else if batchDetails.BatchId == "" {
-				//New record should be added with the relevant batch details
-				//Create new folder for TDP id
-			} else {
-				//check if the TDP id exists
-				tdpDetails, errWhenGettingTdpDetails := IpfsRepository.GetTdpDetails("tdpid", fileObj.TDPDetails.TdpID)
-				if errWhenGettingTdpDetails != nil {
-					return "", errWhenGettingTdpDetails
-				} else if tdpDetails.TdpId == "" {
-					//New record should be added with the relevant tdp details
-
-					//check if the TDP image is available if so upload image
-					//upload the tdo
-				} else {
-					//check if there is an image if so upload the image
-					//if not upload the TDP itself
-				}
-			}
+	} else if tdpDetails.TdpId == "" {
+		//enter new record
+		insertObj := models.TracifiedDataPacket{
+			TenetId: fileObj.TDPDetails.TenetID,
+			ItemId:  fileObj.TDPDetails.ItemID,
+			BatchId: fileObj.TDPDetails.BatchID,
+			TdpId:   fileObj.TDPDetails.TdpID,
 		}
+
+		if requestType == 1 {
+			insertObj.TdpCid = cid
+			insertObj.Images = nil
+		} else if requestType == 2 {
+			img := models.ImageObject{
+				ImageName: fileObj.FileDetails.FileName,
+				ImageCid:  cid,
+			}
+			insertObj.TdpCid = ""
+			insertObj.Images = append(insertObj.Images, img)
+		}
+
+		_, errWhenSavingDetails := IpfsRepository.SaveFileDetails(insertObj)
+		if errWhenSavingDetails != nil {
+			logs.ErrorLogger.Println("Error when saving file details on collection : ", errWhenSavingDetails)
+			return "", errWhenSavingDetails
+		}
+	} else {
+		//update the current record
+		updateObj := models.TracifiedDataPacket{
+			TenetId: fileObj.TDPDetails.TenetID,
+			ItemId:  fileObj.TDPDetails.ItemID,
+			BatchId: fileObj.TDPDetails.BatchID,
+			TdpId:   fileObj.TDPDetails.TdpID,
+		}
+		if requestType == 1 {
+			updateObj.TdpCid = cid
+			updateObj.Images = tdpDetails.Images
+		} else if requestType == 2 {
+			img := models.ImageObject{
+				ImageName: fileObj.FileDetails.FileName,
+				ImageCid:  cid,
+			}
+			updateObj.TdpCid = tdpDetails.TdpCid
+			updateObj.Images = append(updateObj.Images, img)
+		}
+		_, errWhenUpdatingDetails := IpfsRepository.UpdateFileDetails(fileObj.TDPDetails.TdpID, updateObj)
+		if errWhenUpdatingDetails != nil {
+			logs.ErrorLogger.Println("Error when updating the collection : ", errWhenUpdatingDetails)
+			return "", errWhenUpdatingDetails
+		}
+
 	}
 
-	//check the file type
-	cidHash := ""
-	if fileObj.FileDetails.FileType == 2 {
-		//write image to a file
-		var imageStrAarray = strings.Split(fileObj.FileDetails.FileContent, ";base64,")
-		dec, errWhenDecodingString := base64.StdEncoding.DecodeString(imageStrAarray[1])
-		extentionType := strings.Split(imageStrAarray[0], "data:image/")[1]
+	logs.InfoLogger.Println("CID Hash : " + cid)
+
+	return cid, nil
+}
+
+// 1- TDP, 2 - Image
+func InitiateUpload(fileType int, fileContent string, fileName string, folderName string) (string, error) {
+	var fileNameInLocation string
+	var dec []byte
+
+	if fileType == 1 {
+		//upload TDP
+		jsonContent := []byte(fileContent)
+		fileNameInLocation = fileName + ".txt"
+		fileNameInLocation = strings.ToLower(fileNameInLocation)
+		dec = jsonContent
+	} else if fileType == 2 {
+		//upload image
+		imageStrArray := strings.Split(fileContent, ";base64,")
+		decoded, errWhenDecodingString := base64.StdEncoding.DecodeString(imageStrArray[1])
+		extentionType := strings.Split(imageStrArray[0], "data:image/")[1]
 		if errWhenDecodingString != nil {
-			logs.ErrorLogger.Println("Error when decoding image data : ", errWhenDecodingString.Error())
+			logs.ErrorLogger.Println("Error when decoding image data : ", errWhenDecodingString)
 			return "", errWhenDecodingString
 		}
+		dec = decoded
+		fileNameInLocation = fileName + "." + extentionType
+		fileNameInLocation = strings.ToLower(fileNameInLocation)
 
-		imgName := fileObj.FileDetails.FileName + "." + extentionType
-		imgName = strings.ToLower(imgName)
+	} else {
+		return "", errors.New("Invalid file type")
+	}
+	//get current working directory
+	workingDirectory, errWhenGettingTheDirectory := os.Getwd()
+	if errWhenGettingTheDirectory != nil {
+		logs.ErrorLogger.Println("Error when getting the working directory : ", errWhenGettingTheDirectory.Error())
+		return "", errWhenGettingTheDirectory
+	}
 
-		//get current working directory
-		workingDirectory, errWhenGettingTheDirectory := os.Getwd()
-		if errWhenGettingTheDirectory != nil {
-			logs.ErrorLogger.Println("Error when getting the working directory : ", errWhenGettingTheDirectory.Error())
-			return "", errWhenGettingTheDirectory
-		}
+	//create file
+	filePath := filepath.Join(workingDirectory, fileNameInLocation)
+	file, errWhenCreatingFile := os.Create(filePath)
+	if errWhenCreatingFile != nil {
+		logs.ErrorLogger.Println("Error when creating")
+		return "", errWhenCreatingFile
+	}
+	defer file.Close()
 
-		//create file
-		filePath := filepath.Join(workingDirectory, imgName)
-		file, errWhenCreatingFile := os.Create(filePath)
-		if errWhenCreatingFile != nil {
-			logs.ErrorLogger.Println("Error when creating file : ", errWhenCreatingFile.Error())
-			return "", errWhenCreatingFile
-		}
-		defer file.Close()
+	//write into the created file
+	if _, errWhenWritingToFile := file.Write(dec); errWhenWritingToFile != nil {
+		logs.ErrorLogger.Println("Error when writing data into the file : ", errWhenWritingToFile.Error())
+		return "", errWhenWritingToFile
+	}
+	if errWhenSyncing := file.Sync(); errWhenSyncing != nil {
+		logs.ErrorLogger.Println("Error when and clearing memory : ", errWhenSyncing.Error())
+		return "", errWhenSyncing
+	}
 
-		//write into created file
-		if _, errWhenWritingToFile := file.Write(dec); errWhenWritingToFile != nil {
-			logs.ErrorLogger.Println("Error when writing data into file : ", errWhenWritingToFile.Error())
-			return "", errWhenWritingToFile
-		}
-		if errWhenSyncing := file.Sync(); errWhenSyncing != nil {
-			logs.ErrorLogger.Println("Error when syncing and clearing memory : ", errWhenSyncing.Error())
-			return "", errWhenSyncing
-		}
-		folderName := "TDP/Image"
-
-		cid, _, errWhenUploadingToIpfs := ipfsservice.UploadFile(filePath, fileObj.FileDetails.FileName, fileBaseBucket, folderName)
-		if errWhenUploadingToIpfs != nil {
-			logs.ErrorLogger.Println("Error when uploading to IPFS")
-			//delete image
-			errWhenRemovingImage := os.Remove(filePath)
-			if errWhenRemovingImage != nil {
-				logs.ErrorLogger.Println("Error when removing the file : ", errWhenRemovingImage)
-				return "", errWhenRemovingImage
-			}
-			return "", errWhenUploadingToIpfs
-		}
-
-		errWhenClosingFile := file.Close()
-		if errWhenClosingFile != nil {
-			logs.ErrorLogger.Println("Error when closing the file : ", errWhenClosingFile)
-			return "", errWhenClosingFile
-		}
-		cidHash = cid
-
+	cid, _, errWhenUploadingToIpfs := ipfsservice.UploadFile(filePath, fileNameInLocation, fileBaseBucket, folderName)
+	if errWhenUploadingToIpfs != nil {
+		logs.ErrorLogger.Println("Error when uploading to IPFS : ", errWhenUploadingToIpfs)
 		//delete the image
-		errWhenRemovingImage := os.Remove(filePath)
-		if errWhenRemovingImage != nil {
-			logs.ErrorLogger.Println("Error when removing the image file : ", errWhenRemovingImage)
-			return "", errWhenRemovingImage
+		errWhenRemovingFile := os.Remove(filePath)
+		if errWhenRemovingFile != nil {
+			logs.ErrorLogger.Println("Error when removing the file : ", errWhenRemovingFile)
+			return "", errWhenRemovingFile
 		}
-
-	} else if fileObj.FileDetails.FileType == 2 {
-		//write into json file
-		jsonContent := []byte(fileObj.FileDetails.FileContent)
-		jsonFileName := fileObj.FileDetails.FileName + ".json"
-		jsonFileName = strings.ToLower(jsonFileName)
-
-		// Get the current working directory
-		workingDirectory, errWhenGettingTheDirectory := os.Getwd()
-		if errWhenGettingTheDirectory != nil {
-			logs.ErrorLogger.Println("Error when getting the working directory: ", errWhenGettingTheDirectory.Error())
-			return "", errWhenGettingTheDirectory
-		}
-
-		// Create the JSON file
-		jsonFilePath := filepath.Join(workingDirectory, jsonFileName)
-		jsonFile, errWhenCreatingJSONFile := os.Create(jsonFilePath)
-		if errWhenCreatingJSONFile != nil {
-			logs.ErrorLogger.Println("Error when creating JSON file: ", errWhenCreatingJSONFile.Error())
-			return "", errWhenCreatingJSONFile
-		}
-		defer jsonFile.Close()
-
-		// Write JSON content to the file
-		_, errWhenWritingJSONToFile := jsonFile.Write(jsonContent)
-		if errWhenWritingJSONToFile != nil {
-			logs.ErrorLogger.Println("Error when writing JSON data to file: ", errWhenWritingJSONToFile.Error())
-			return "", errWhenWritingJSONToFile
-		}
-		if errWhenSyncing := jsonFile.Sync(); errWhenSyncing != nil {
-			logs.ErrorLogger.Println("Error when syncing and clearing memory: ", errWhenSyncing.Error())
-			return "", errWhenSyncing
-		}
-
-		folderName := "TDP"
-
-		cid, _, errWhenUploadingToIpfs := ipfsservice.UploadFile(jsonFilePath, fileObj.FileDetails.FileName, fileBaseBucket, folderName)
-		if errWhenUploadingToIpfs != nil {
-			logs.ErrorLogger.Println("Error when uploading to IPFS")
-			//delete image
-			errWhenRemovingJsonFile := os.Remove(jsonFilePath)
-			if errWhenRemovingJsonFile != nil {
-				logs.ErrorLogger.Println("Error when removing the file : ", errWhenRemovingJsonFile)
-				return "", errWhenRemovingJsonFile
-			}
-			return "", errWhenUploadingToIpfs
-		}
-
-		errWhenClosingFile := jsonFile.Close()
-		if errWhenClosingFile != nil {
-			logs.ErrorLogger.Println("Error when closing the file : ", errWhenClosingFile)
-			return "", errWhenClosingFile
-		}
-		cidHash = cid
-
-		errWhenRemovingJson := os.Remove(jsonFilePath)
-		if errWhenRemovingJson != nil {
-			logs.ErrorLogger.Println("Error when removing the Json file : ", errWhenRemovingJson)
-			return "", errWhenRemovingJson
-		}
+		return "", errWhenUploadingToIpfs
 	}
 
-	//Add the content details to DB
-	insertObj := models.TracifiedDataPacket{}
-
-	_, errWhenSavingDetails := IpfsRepository.SaveFileDetails(insertObj)
-	if errWhenSavingDetails != nil {
-		logs.ErrorLogger.Println("Error when saving file details on collection ; ", errWhenSavingDetails)
-		return "", errWhenSavingDetails
+	errWhenClosingTheFile := file.Close()
+	if errWhenClosingTheFile != nil {
+		logs.ErrorLogger.Println("Error when closing the file : ", errWhenClosingTheFile)
+		return "", errWhenClosingTheFile
 	}
 
-	logs.InfoLogger.Println("CID Hash : " + cidHash)
-
-	return cidHash, nil
+	errWhenRemovingTheFile := os.Remove(filePath)
+	if errWhenRemovingTheFile != nil {
+		logs.ErrorLogger.Println("Error when removing the file : ", errWhenRemovingTheFile)
+		return "", errWhenRemovingTheFile
+	}
+	return cid, nil
 }

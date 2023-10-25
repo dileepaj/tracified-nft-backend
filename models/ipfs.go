@@ -1,8 +1,9 @@
 package models
 
 type IpfsObjectForTDP struct {
-	TDPDetails  TDPDetails
-	FileDetails FileDetails
+	TDPDetails  TDPDetails  `json:"tdpdetails" bson:"tdpdetails"`
+	FileDetails FileDetails `json:"filedetails" bson:"filedetails"`
+	FileType    int         `json:"filetype" bson:"filetype"`
 }
 
 type TDPDetails struct {
@@ -12,7 +13,6 @@ type TDPDetails struct {
 	TdpID   string `json:"tdpid" bson:"tdpid"`
 }
 type FileDetails struct {
-	FileType    int    `json:"filetype" bson:"filetype"`
 	FileContent string `json:"filecontent" bson:"filecontent"`
 	FileName    string `json:"filename" bson:"filename"`
 }
