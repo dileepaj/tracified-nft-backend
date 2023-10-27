@@ -1,6 +1,7 @@
 package svgGenerator
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/dileepaj/tracified-nft-backend/models"
@@ -32,6 +33,8 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 	var images []models.ImageData = svgData.NftContent.Images
 	var Timelines []models.Timeline = svgData.NftContent.TimeLine
 	var contentOrderData []models.ContentOrderData = svgData.ContentOrderData
+	const stageIcon = "https://s3.ap-south-1.amazonaws.com/tracified-image-storage/mobile/stage-icons/Harvesting+stage.png"
+
 	htmlStart := `	<div class="cont-div">
 					<div class="nft-header default-font">
 					<img src="https://s3.ap-south-1.amazonaws.com/qa.marketplace.nft.tracified.com/Tracified-RT-Logo-White.svg"
@@ -160,27 +163,54 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 														<label class="timeline-product"><span class="bold-text">Product Name : </span>` + timelineData.ProductName + `</label>
 														<label class="timeline-batch"><span class="bold-text">Batch ID : </span>` + timelineData.BatchId + `</label>
 													  </div>`
-							for _, data := range timelineData.TimelineData {
+							for _, dataPackets := range timelineData.TimeLineTDPData{
 								htmlTimelineBody += ` <li class="timeline-header">
-                                						<img class="timeline-icon" src="` + data.Icon + `" /><span class="timeline-stage">` + replaceAndSymbol(data.Title) + `</span>
+                                						<img class="timeline-icon" src="` + stageIcon + `" /><span class="timeline-stage">` + replaceAndSymbol(dataPackets.Title) + `</span>
 													  </li>
 													  <div class="card p-3 point">`
-								if len(data.Children) > 0 {
-									for _, timelineChild := range data.Children {
-										if timelineChild.NewTDP == true {
-											htmlTimelineBody += `<span class="tdp-added-date">Added : ` + timelineChild.Timestamp + `</span>`
+								if len(dataPackets.TraceabilityDataPackets) > 0 {
+									for _, traceabilityData := range dataPackets.TraceabilityDataPackets {
+										for _, tdp := range traceabilityData.TraceabilityData {
+	
+										// if (tdp.Type == 3||tdp.Type == 5){
+										// 	str:=""
+										// 	for index, item := range tdp.Val {
+										// 		str, _ := item.(string)
+										// 		fmt.Printf("String at index %d: %s\n\n", index, str)
+										// 	}
+										// 	htmlTimelineBody += `<span class="timeline-key">` + replaceAndSymbol(tdp.Key) + `</span><p><span class="timeline-value">` + str + `</span></p>`
+										
+										// }else if tdp.Type == 1 {
+										// 	fmt.Println("--------------------",tdp.Val)
+										// 	num := 0
+										// 	for index, item := range tdp.Val {
+										// 		fmt.Println("---------------",item.(int))
+										// 		num, _ := item.(int)
+										// 		fmt.Printf("Int at index %d: %d\n\n", index, num)
+										// 	}
+										// 	htmlTimelineBody += `<span class="timeline-key">` + replaceAndSymbol(tdp.Key) + `</span><p><span class="timeline-value">` + strconv.Itoa(num) + `</span></p>`
+										// }else 
+										if tdp.Type== 4 {
+											for index, item := range tdp.Val {
+														// Handle map
+													dataMap := item.(map[string]interface{})
+													description, _ := dataMap["description"].(string)
+													image, _ := dataMap["image"].(string)
+													fmt.Printf("Map at index %d:\n", index)
+													fmt.Printf("Description: %s\n", description)
+													timestamp, _ := dataMap["timestamp"].(string)
+													//fmt.Printf("Image: %s\n", image)
+													fmt.Printf("Timestamp: %s\n\n")
+													htmlTimelineBody += `<span class="timeline-key">` + timestamp + `</span>`
+													htmlTimelineBody += `<span class="timeline-key">` + replaceAndSymbol(description) + `</span>`
+												htmlTimelineBody += `
+																	<div class="img-timeline-image" style="background-image: url(` + image + `);">
+																	 </div>
+																	`
+											}				
 										}
-										htmlTimelineBody += `<span class="timeline-key">` + replaceAndSymbol(timelineChild.Key) + `</span><p><span class="timeline-value">` + timelineChild.Value + `</span></p>`
+									}		
 									}
-								} else {
-									htmlTimelineBody += `<span class="timeline-key">දිනය/தேதி</span><p><span class="timeline-value">No date available</span></p>`
-								}
-
-								for _, image := range data.Images {
-									htmlTimelineBody += `
-														<div class="img-timeline-image" style="background-image: url(` + image + `);">
-								 						</div>
-														`
 								}
 								htmlTimelineBody += `</div>`
 							}

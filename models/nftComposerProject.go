@@ -179,6 +179,7 @@ type Timeline struct {
 	Title        string             `json:"Title" bson:"title"`
 	TimelineData []TimelineData
 	WidgetType   string `json:"WidgetType" bson:"widgettype"`
+	TimeLineTDPData []TimeLineTDPData `json:"TimeLineTDPData" bson:"timelinetdpdata"`
 }
 
 type TimelineData struct {
@@ -199,4 +200,43 @@ type Children struct {
 type SVGforNFTResponse struct {
 	SvgID string `json:"svgid" bson:"_id,omitempty"`
 	SVG   string `json:"svg" bson:"svg,omitempty"`
+}
+// TimeLineTDPData Model
+type GeoCodeData struct {
+    Lat  float64 `json:"lat"`
+    Long float64 `json:"long"`
+}
+
+type TraceabilityDataValue struct {
+    Description string  `json:"description"`
+    GeoCode     GeoCodeData `json:"geoCodeData"`
+    Image       string  `json:"image"`
+    Timestamp   string  `json:"timestamp"`
+}
+
+type TraceabilityDataItem struct {
+    Type int                    `json:"type"`
+    Val  []interface{}           `json:"val"`
+    Key  string                 `json:"key"`
+}
+
+type ImageValuesData struct {
+	Timestamp string    `json:"timestamp"`
+	Description string    `json:"description"`
+	Image string   `json:"image"`
+}
+
+type TraceabilityDataPackets struct {
+    Timestamp        string             `json:"timestamp"`
+	Title string `json:"title"`
+	StageID  string `json:"stageID"`
+    TraceabilityData []TraceabilityDataItem `json:"traceabilityData"`
+}
+
+type TimeLineTDPData struct {
+	TenantID string `json:"tenantID"`
+    StageID  string `json:"stageID"`
+	Title string `json:"title"`
+	TraceabilityDataPackets []TraceabilityDataPackets `json:"traceabilityDataPackets"`
+
 }
