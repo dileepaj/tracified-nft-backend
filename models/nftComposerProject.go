@@ -186,9 +186,16 @@ type TimelineData struct {
 	Icon        string   `json:"Icon" bson:"icon" `
 	SubTitle    string   `json:"SubTitle" bson:"subtitle" `
 	Description string   `json:"Description" bson:"description"`
-	Images      []string `json:"Images" bson:"images"`
+	Images      []Img `json:"Images" bson:"images"`
 	Children    []Children
 }
+
+type Img struct{
+	Image string   `json:"Image" bson:"image"`
+	Description string   `json:"Description" bson:"description"`
+	Timestamp string   `json:"Timestamp" bson:"timestamp"`
+}
+
 type Children struct {
 	NewTDP    bool   `json:"NewTDP" bson:"newtdp"`
 	Timestamp string `json:"Timestamp" bson:"timestamp"`

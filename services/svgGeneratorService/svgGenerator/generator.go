@@ -172,13 +172,13 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 										}
 										htmlTimelineBody += `<span class="timeline-key">` + replaceAndSymbol(timelineChild.Key) + `</span><p><span class="timeline-value">` + timelineChild.Value + `</span></p>`
 									}
-								} else {
-									htmlTimelineBody += `<span class="timeline-key">දිනය/தேதி</span><p><span class="timeline-value">No date available</span></p>`
 								}
 
 								for _, image := range data.Images {
+									htmlTimelineBody += `<p><span class="timeline-value">` + image.Timestamp + `</span></p>`
+									htmlTimelineBody += `<p><span class="timeline-key">` + image.Description + `</span><p>`
 									htmlTimelineBody += `
-														<div class="img-timeline-image" style="background-image: url(` + image + `);">
+														<div class="img-timeline-image" style="background-image: url(` + image.Image + `);">
 								 						</div>
 														`
 								}
