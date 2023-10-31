@@ -8,6 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/dileepaj/tracified-nft-backend/commons"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 )
 
@@ -106,8 +107,8 @@ func UploadFile(pathToFile string, keyName string, bucketName string, folderName
 		return "", "", errors.New("No CID is created")
 	}
 
-	link := "https://ipfs.filebase.io/ipfs/" + cid
+	link := commons.GoDotEnvVariable("IPFSURL") + cid
 
-	logs.InfoLogger.Println("Content uploaded to IPFS at : https://ipfs.filebase.io/ipfs/" + cid)
+	logs.InfoLogger.Println("Content uploaded to IPFS at : " + link)
 	return cid, link, nil
 }
