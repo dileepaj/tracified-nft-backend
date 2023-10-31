@@ -14,7 +14,7 @@ import (
 
 func UploadFilesToIpfs(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	var ipfsObject models.IpfsObject
+	var ipfsObject models.IpfsObjectForTDP
 	decoder := json.NewDecoder(r.Body)
 
 	errWhenDecodingBody := decoder.Decode(&ipfsObject)
