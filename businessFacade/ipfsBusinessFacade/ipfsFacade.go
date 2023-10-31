@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/dileepaj/tracified-nft-backend/constants"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/services/ipfsservice"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
@@ -22,9 +23,9 @@ func UploadFilesToIpfs(fileObj models.IpfsObjectForTDP) (string, error) {
 	var folderPath string
 
 	//set up the folder path
-	if fileObj.FileType == 1 {
+	if fileObj.FileType == constants.TdpFile {
 		folderPath = fileObj.TDPDetails.TenetID + "/" + fileObj.TDPDetails.ItemID + "/" + fileObj.TDPDetails.BatchID + "/" + fileObj.TDPDetails.TdpID
-	} else if fileObj.FileType == 2 {
+	} else if fileObj.FileType == constants.ImageFile {
 		folderPath = fileObj.TDPDetails.TenetID + "/" + fileObj.TDPDetails.ItemID + "/" + fileObj.TDPDetails.BatchID + "/" + fileObj.TDPDetails.TdpID + "/Images"
 	}
 	errWhenCreatingFolder := ipfsservice.CreateFolder(fileBaseBucket, folderPath)
@@ -32,9 +33,9 @@ func UploadFilesToIpfs(fileObj models.IpfsObjectForTDP) (string, error) {
 		return "", errWhenCreatingFolder
 	}
 	//Check the request type
-	if fileObj.FileType == 1 {
+	if fileObj.FileType == constants.TdpFile {
 		requestType = 1
-	} else if fileObj.FileType == 2 {
+	} else if fileObj.FileType == constants.ImageFile {
 		requestType = 2
 	} else {
 		return "", errors.New("Invalid request type")
@@ -57,10 +58,10 @@ func UploadFilesToIpfs(fileObj models.IpfsObjectForTDP) (string, error) {
 			TdpId:   fileObj.TDPDetails.TdpID,
 		}
 
-		if requestType == 1 {
+		if fileObj.FileType == 1 {
 			insertObj.TdpCid = cid
 			insertObj.Images = nil
-		} else if requestType == 2 {
+		} else if fileObj.FileType == 2 {
 			img := models.ImageObject{
 				ImageName: fileObj.FileDetails.FileName,
 				ImageCid:  cid,
@@ -82,10 +83,10 @@ func UploadFilesToIpfs(fileObj models.IpfsObjectForTDP) (string, error) {
 			BatchId: fileObj.TDPDetails.BatchID,
 			TdpId:   fileObj.TDPDetails.TdpID,
 		}
-		if requestType == 1 {
+		if fileObj.FileType == 1 {
 			updateObj.TdpCid = cid
 			updateObj.Images = tdpDetails.Images
-		} else if requestType == 2 {
+		} else if fileObj.FileType == 2 {
 			img := models.ImageObject{
 				ImageName: fileObj.FileDetails.FileName,
 				ImageCid:  cid,
@@ -111,13 +112,13 @@ func InitiateUpload(fileType int, fileContent string, fileName string, folderNam
 	var fileNameInLocation string
 	var dec []byte
 
-	if fileType == 1 {
+	if fileType == constants.TdpFile {
 		//upload TDP
 		jsonContent := []byte(fileContent)
 		fileNameInLocation = fileName + ".txt"
 		fileNameInLocation = strings.ToLower(fileNameInLocation)
 		dec = jsonContent
-	} else if fileType == 2 {
+	} else if fileType == constants.ImageFile {
 		//upload image
 		imageStrArray := strings.Split(fileContent, ";base64,")
 		decoded, errWhenDecodingString := base64.StdEncoding.DecodeString(imageStrArray[1])
