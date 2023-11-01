@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	fileBaseBucket = os.Getenv("FILEBASE_BUCKET_FOR_TDP")
+	fileBaseBucket = os.Getenv("FILEBASE_BUCKET")
 )
 
 // Request type 1 -> TDP, 2 -> Image
@@ -23,10 +23,13 @@ func UploadFilesToIpfs(fileObj models.IpfsObjectForTDP) (string, error) {
 	var folderPath string
 
 	//set up the folder path
-	if fileObj.FileType == constants.TdpFile {
-		folderPath = fileObj.TDPDetails.TenetID + "/" + fileObj.TDPDetails.ItemID + "/" + fileObj.TDPDetails.BatchID + "/" + fileObj.TDPDetails.TdpID
-	} else if fileObj.FileType == constants.ImageFile {
-		folderPath = fileObj.TDPDetails.TenetID + "/" + fileObj.TDPDetails.ItemID + "/" + fileObj.TDPDetails.BatchID + "/" + fileObj.TDPDetails.TdpID + "/Images"
+	switch fileObj.FileType {
+	case constants.TdpFile:
+		folderPath = "tracabilitydatapackets/" + fileObj.TDPDetails.TenetID + "/" + fileObj.TDPDetails.ItemID + "/" + fileObj.TDPDetails.BatchID + "/" + fileObj.TDPDetails.TdpID
+	case constants.ImageFile:
+		folderPath = "tracabilitydatapackets/" + fileObj.TDPDetails.TenetID + "/" + fileObj.TDPDetails.ItemID + "/" + fileObj.TDPDetails.BatchID + "/" + fileObj.TDPDetails.TdpID + "/Images"
+	default:
+		return "", errors.New("Invalid file type")
 	}
 	errWhenCreatingFolder := ipfsservice.CreateFolder(fileBaseBucket, folderPath)
 	if errWhenCreatingFolder != nil {
