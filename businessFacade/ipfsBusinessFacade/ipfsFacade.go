@@ -23,10 +23,13 @@ func UploadFilesToIpfs(fileObj models.IpfsObjectForTDP) (string, error) {
 	var folderPath string
 
 	//set up the folder path
-	if fileObj.FileType == constants.TdpFile {
+	switch fileObj.FileType {
+	case constants.TdpFile:
 		folderPath = "tracabilitydatapackets/" + fileObj.TDPDetails.TenetID + "/" + fileObj.TDPDetails.ItemID + "/" + fileObj.TDPDetails.BatchID + "/" + fileObj.TDPDetails.TdpID
-	} else if fileObj.FileType == constants.ImageFile {
+	case constants.ImageFile:
 		folderPath = "tracabilitydatapackets/" + fileObj.TDPDetails.TenetID + "/" + fileObj.TDPDetails.ItemID + "/" + fileObj.TDPDetails.BatchID + "/" + fileObj.TDPDetails.TdpID + "/Images"
+	default:
+		return "", errors.New("Invalid file type")
 	}
 	errWhenCreatingFolder := ipfsservice.CreateFolder(fileBaseBucket, folderPath)
 	if errWhenCreatingFolder != nil {
