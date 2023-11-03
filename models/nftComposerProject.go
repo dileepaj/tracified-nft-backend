@@ -1,6 +1,10 @@
 package models
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"encoding/json"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 type Chart struct {
 	WidgetId   string      `json:"WidgetId" bson:"widgetid" validate:"required"`
@@ -216,7 +220,7 @@ type TraceabilityDataValue struct {
 
 type TraceabilityDataItem struct {
     Type int                    `json:"type"`
-    Val  []interface{}           `json:"val"`
+    Val  json.RawMessage           `json:"val"`
     Key  string                 `json:"key"`
 }
 

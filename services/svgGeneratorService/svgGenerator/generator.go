@@ -1,11 +1,13 @@
 package svgGenerator
 
 import (
-	"fmt"
+	"encoding/json"
+	"strconv"
 	"strings"
 
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/services"
+	"github.com/sirupsen/logrus"
 )
 
 var (
@@ -131,7 +133,7 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 														<div class="proof-section"><label class="proofbot-data-field">Available Proofs : </label>
 														`
 								for _, proofUrl := range data.Urls {
-									if (proofUrl.Urls != "") && (strings.ToLower(proofUrl.Type)!="poc") {
+									if (proofUrl.Urls != "") && (strings.ToLower(proofUrl.Type) != "poc") {
 										var removeAndsymble string = strings.Replace(proofUrl.Urls, "&", "&amp;", -1)
 
 										htmlBotcard += `<a class="proof-anchor1" href="` + removeAndsymble + `" target="_blank" rel="noopener noreferrer">
@@ -163,7 +165,7 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 														<label class="timeline-product"><span class="bold-text">Product Name : </span>` + timelineData.ProductName + `</label>
 														<label class="timeline-batch"><span class="bold-text">Batch ID : </span>` + timelineData.BatchId + `</label>
 													  </div>`
-							for _, dataPackets := range timelineData.TimeLineTDPData{
+							for _, dataPackets := range timelineData.TimeLineTDPData {
 								htmlTimelineBody += ` <li class="timeline-header">
                                 						<img class="timeline-icon" src="` + stageIcon + `" /><span class="timeline-stage">` + replaceAndSymbol(dataPackets.Title) + `</span>
 													  </li>
@@ -171,45 +173,37 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 								if len(dataPackets.TraceabilityDataPackets) > 0 {
 									for _, traceabilityData := range dataPackets.TraceabilityDataPackets {
 										for _, tdp := range traceabilityData.TraceabilityData {
-	
-										// if (tdp.Type == 3||tdp.Type == 5){
-										// 	str:=""
-										// 	for index, item := range tdp.Val {
-										// 		str, _ := item.(string)
-										// 		fmt.Printf("String at index %d: %s\n\n", index, str)
-										// 	}
-										// 	htmlTimelineBody += `<span class="timeline-key">` + replaceAndSymbol(tdp.Key) + `</span><p><span class="timeline-value">` + str + `</span></p>`
-										
-										// }else if tdp.Type == 1 {
-										// 	fmt.Println("--------------------",tdp.Val)
-										// 	num := 0
-										// 	for index, item := range tdp.Val {
-										// 		fmt.Println("---------------",item.(int))
-										// 		num, _ := item.(int)
-										// 		fmt.Printf("Int at index %d: %d\n\n", index, num)
-										// 	}
-										// 	htmlTimelineBody += `<span class="timeline-key">` + replaceAndSymbol(tdp.Key) + `</span><p><span class="timeline-value">` + strconv.Itoa(num) + `</span></p>`
-										// }else 
-										if tdp.Type== 4 {
-											for index, item := range tdp.Val {
-														// Handle map
-													dataMap := item.(map[string]interface{})
-													description, _ := dataMap["description"].(string)
-													image, _ := dataMap["image"].(string)
-													fmt.Printf("Map at index %d:\n", index)
-													fmt.Printf("Description: %s\n", description)
-													timestamp, _ := dataMap["timestamp"].(string)
-													//fmt.Printf("Image: %s\n", image)
-													fmt.Printf("Timestamp: %s\n\n")
-													htmlTimelineBody += `<span class="timeline-key">` + timestamp + `</span>`
-													htmlTimelineBody += `<span class="timeline-key">` + replaceAndSymbol(description) + `</span>`
-												htmlTimelineBody += `
-																	<div class="img-timeline-image" style="background-image: url(` + image + `);">
+											if tdp.Type == 1 {
+												floatValue := 0.0 // Replace SomeStruct with the expected data structure
+												if err := json.Unmarshal(tdp.Val, &floatValue); err != nil {
+													logrus.Error("Error unmarshaling TraceabilityData: %v\n", err)
+												} else {
+													htmlTimelineBody += `<p><span class="timeline-key">` + replaceAndSymbol(tdp.Key) + ` : </span><span class="timeline-value">` + strconv.FormatFloat(floatValue, 'f', -1, 64) + `</span></p>`
+												}
+											} else if tdp.Type == 5 || tdp.Type == 3 {
+												strData := ""
+												if err := json.Unmarshal(tdp.Val, &strData); err != nil {
+													logrus.Error("Error unmarshaling TraceabilityData: %v\n", err)
+												} else {
+													htmlTimelineBody += `<p><span class="timeline-key">` + replaceAndSymbol(tdp.Key) + ` : </span><span class="timeline-value">` + strData + `</span></p>`
+												}
+											} else if tdp.Type == 4 {
+												var images []models.ImageValuesData
+												if err := json.Unmarshal(tdp.Val, &images); err != nil {
+													logrus.Error("Error unmarshaling TraceabilityData: %v\n", err)
+												} else {
+													htmlTimelineBody += `<p><span class="timeline-value">` + replaceAndSymbol(tdp.Key) + `</span></p>`
+													for _, img := range images {
+														htmlTimelineBody += `<span class="timeline-key">` + img.Timestamp + `</span>`
+														htmlTimelineBody += `<span class="timeline-key">` + replaceAndSymbol(img.Description) + `</span>`
+														htmlTimelineBody += `
+																	<div class="img-timeline-image" style="background-image: url(` + img.Image + `);">
 																	 </div>
-																	`
-											}				
+															`
+													}
+												}
+											}
 										}
-									}		
 									}
 								}
 								htmlTimelineBody += `</div>`
