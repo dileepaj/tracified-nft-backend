@@ -24,6 +24,8 @@ func GenerateMap(w http.ResponseWriter, r *http.Request) {
 	err := decorder.Decode(&mapData)
 	if err != nil {
 		logs.ErrorLogger.Println("Error While Decoding JSON in GenerateMap:mapHandler : ", err.Error())
+		errors.BadRequest(w, "Failed to save map")
+		return
 	}
 
 	rst, saveerr := customizedNFTFacade.SaveMap(mapData)
@@ -43,4 +45,22 @@ func GetMapByID(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "<h1>Error</h1>")
 	}
 	fmt.Fprint(w, mapRst)
+}
+
+func UpdateMap(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	var mapData models.UpdateMap
+	decorder := json.NewDecoder(r.Body)
+	err := decorder.Decode(&mapData)
+	if err != nil {
+		logs.ErrorLogger.Println("Error While Decoding JSON in UpdateMap:mapHandler : ", err.Error())
+		errors.BadRequest(w, "Inavlid payload")
+		return
+	}
+	rst, updateError := customizedNFTFacade.UpdateMap(mapData)
+	if updateError != nil {
+		errors.BadRequest(w, "failed to update map")
+		return
+	}
+	commonResponse.SuccessStatus[string](w, rst)
 }
