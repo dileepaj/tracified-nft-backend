@@ -7,6 +7,10 @@ type MapInfo struct {
 	Longitude float64 `json:"longitude"`
 	Latitude  float64 `jsonL:"latitude"`
 }
+type UpdateMap struct {
+	Id      primitive.ObjectID `json:"id" bson:"_id"`
+	MapData []MapInfo          `json:"mapdata" bson:"mapdata"`
+}
 type GeneratedMap struct {
 	Id          primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	MapTemplate string             `json:"template" bson:"template"`

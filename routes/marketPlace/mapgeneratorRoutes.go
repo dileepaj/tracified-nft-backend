@@ -18,4 +18,10 @@ var MapGenerateRoutes = models.Routers{
 		Path:    "/GetMap/{mapid}",
 		Handler: apiHandler.GetMapByID,
 	},
+	models.Router{
+		Name:    "Update Map",
+		Method:  "PUT",
+		Path:    "/journey-map",
+		Handler: apiHandler.UpdateMap,
+	},
 }

@@ -2,6 +2,7 @@ package customizedNFTrepository
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/dileepaj/tracified-nft-backend/database/connections"
 	"github.com/dileepaj/tracified-nft-backend/database/repository"
@@ -9,6 +10,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type MapRepository struct{}
@@ -37,4 +39,26 @@ func (r *MapRepository) GetMapByID(id string) (string, error) {
 		}
 	}
 	return mapData.MapTemplate, nil
+}
+
+func (r *MapRepository) UpdateMap(Id primitive.ObjectID, update primitive.M) (models.GeneratedMap, error) {
+	var mapResult models.GeneratedMap
+	upsert := false
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+	rst := connections.GetSessionClient(mapCollection).FindOneAndUpdate(context.TODO(), bson.M{"_id": Id}, update, &opt)
+	if rst != nil {
+		err := rst.Decode(&mapResult)
+		if err != nil {
+			logs.ErrorLogger.Println("Error occur while updatirng map in database", err.Error())
+			return mapResult, err
+		}
+		return mapResult, nil
+	}
+	UpdateError := fmt.Errorf("failed to get result from database")
+	logs.ErrorLogger.Println("Failed to get data from data base.")
+	return mapResult, UpdateError
 }

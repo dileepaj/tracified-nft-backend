@@ -4,6 +4,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/services/mapGenerator"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 func SaveMap(mapdata []models.MapInfo) (string, error) {
@@ -25,4 +26,21 @@ func GetMapByID(id string) (string, error) {
 		return rst, err
 	}
 	return rst, nil
+}
+
+func UpdateMap(mapdata models.UpdateMap) (string, error) {
+	generateMap := mapGenerator.GenerateMap(mapdata.MapData)
+	var newMap models.GeneratedMap
+	newMap.MapTemplate = generateMap
+
+	update := bson.M{
+		"$set": bson.M{"template": newMap.MapTemplate},
+	}
+
+	rst, updateError := mapRepository.UpdateMap(mapdata.Id, update)
+	if updateError != nil {
+		logs.ErrorLogger.Println("Failed to update Map: " + updateError.Error())
+		return "failed", updateError
+	}
+	return string(rst.Id.Hex()), nil
 }
