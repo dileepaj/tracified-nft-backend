@@ -1,0 +1,3820 @@
+openapi: 3.0.1
+info:
+  title: NFT Backend
+  description: This is the API documentation for NFT backend.
+  version: 2.0.0
+servers:
+  - url: https://qa.api.nft.tracified.com
+  - url: http://localhost:6080
+
+tags:
+  - name: review
+  - name: collections
+  - name: nft routes
+  - name: user
+  - name: watchlist
+  - name: composer
+    description: composer project
+  - name: faq
+  - name: favourite
+  - name: endorsement
+  - name: docs
+  - name: partner
+  - name: oneTimePassword
+  - name: svgGenarator
+  - name: mapGenerator
+  - name: walletnft
+  - name: ipfs
+
+paths:
+  /health/:
+    get:
+      tags:
+        - Health Check
+      description: Get server health
+      responses:
+        200:
+          description: Server is up and running
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Health"
+
+  /review/:
+    post:
+      tags:
+        - review
+      description: Add a user review to the review collection in NFT backend.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/review"
+      responses:
+        200:
+          description: Review Successfully Added.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while decoding JSON in Create Review
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    get:
+      tags:
+        - review
+      description: Retrieve a all reviews
+      responses:
+        200:
+          description: Retrieve a all reviews in JSON
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/review"
+        400:
+          description: Error occured while encoding JSON in GetAllReviews
+
+    put:
+      tags:
+        - review
+      description: Set the status of a specific user review to accept/reject. Default status is set to pending
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateReviewStatus"
+      responses:
+        200:
+          description: Review Status has been Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while encoding JSON in Update Review Status
+
+    delete:
+      tags:
+        - review
+      description: Set the status of a specific user review to accept/reject. Default status is set to pending
+      responses:
+        200:
+          description: review has been deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while decoding JSON in Delete Review
+
+  /review/{nftidentifier}:
+    get:
+      tags:
+        - review
+      description: Retrieve a Specific review filtering by nftidentifier attribute
+      parameters:
+        - name: nftidentifier
+          in: path
+          description: nft identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Return the specific review if available
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReviewByidentifier"
+        400:
+          description: Review not available.
+
+  /collection/save:
+    post:
+      tags:
+        - collections
+      description: Add a collection.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NFTCollection"
+      responses:
+        200:
+          description: New Collection Added.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while add new collection.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /collection/userpk/{userid}:
+    get:
+      tags:
+        - collections
+      description: Get Collection by UserPK
+      parameters:
+        - name: userid
+          in: path
+          description: user id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Retrieve collections based on UserPK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NFTCollection"
+        400:
+          description: Collection not available.
+
+    delete:
+      tags:
+        - collections
+      description: Delete all collections where user ID is ...
+      parameters:
+        - name: userid
+          in: path
+          description: user id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Collections have been deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error when deleting the Collections
+
+  /collection:
+    get:
+      tags:
+        - collections
+      description: Retrieve all collections
+      responses:
+        200:
+          description: calling func Get All Collections
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NFTCollection"
+        400:
+          description: Error occured while encoding JSON in Get All Collections
+
+    put:
+      tags:
+        - collections
+      description: Update a specific collection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCollection"
+      responses:
+        200:
+          description: Collection Name updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error  occured while encoding JSON in Update Collection
+
+  /marketplace/save:
+    post:
+      tags:
+        - nft routes
+      description: Save into backend nft collection.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/nft"
+      responses:
+        200:
+          description: Save into backend nft collection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while Save into backend nft
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /marketplace:
+    get:
+      tags:
+        - nft routes
+      description: Retreive All NFTs in nft collection
+      responses:
+        200:
+          description: Retreive All NFTs in nft collection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/nft"
+        400:
+          description: Error occured while encoding All NFTs in nft collection
+
+  /selling/{sellingstatus}/{currentownerpk}:
+    get:
+      tags:
+        - nft routes
+      description: Retrive NFT filtered by selling status and userPK
+      parameters:
+        - name: sellingstatus
+          in: path
+          description: selling status
+          required: true
+          schema:
+            type: string
+        - name: currentownerpk
+          in: path
+          description: current ownerpk
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Retrive NFT filtered by selling status and userPK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/nft"
+        400:
+          description: nft not available.
+
+  /tags/{tags}:
+    get:
+      tags:
+        - nft routes
+      description: Retrive NFT filtered by selling status and userPK
+      parameters:
+        - name: tags
+          in: path
+          description: Tag name
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Get NFT filtered by Tag name
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/nft"
+        400:
+          description: nft not available.
+
+  /nft/{sellingstatus}:
+    get:
+      tags:
+        - nft routes
+      description: Retrive NFT filtered by selling status
+      parameters:
+        - name: sellingstatus
+          in: path
+          description: selling status
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Get NFT filtered by selling status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/nft"
+        400:
+          description: nft not available.
+
+  /blockchain/{blockchain}:
+    get:
+      tags:
+        - nft routes
+      description: GET NFT filtered by blockchain type
+      parameters:
+        - name: blockchain
+          in: path
+          description: blockchain
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: GET NFT filtered by blockchain type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/nft"
+        400:
+          description: nft not available.
+
+  /watchlist/{userId}:
+    get:
+      tags:
+        - nft routes
+      description: GET Watch list NFTS By userId
+      parameters:
+        - name: userId
+          in: path
+          description: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: GET Watch list NFTS By userId
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/watchlist"
+        400:
+          description: Watch list not available.
+
+  /userid/{userId}:
+    get:
+      tags:
+        - nft routes
+      description: GET NFTS By userId
+      parameters:
+        - name: userId
+          in: path
+          description: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: GET NFTS By userId
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/nft"
+        400:
+          description: NFTS not available.
+
+  /userid/{creatoruserid}:
+    get:
+      tags:
+        - nft routes
+      description: GET Last NFT By userId
+      parameters:
+        - name: creatoruserid
+          in: path
+          description: creator user id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: GET Last NFT By userId
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/nft"
+        400:
+          description: NFTS not available.
+
+  /svg/{hash}:
+    get:
+      tags:
+        - nft routes
+      description: GET SVG By Hash
+      parameters:
+        - name: hash
+          in: path
+          description: hash
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: GET SVG By Hash
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/svg"
+        400:
+          description: NFTS not available.
+
+  /tenentname/{tenentname}:
+    get:
+      tags:
+        - nft routes
+      description: GET NFTS By tenent Name
+      parameters:
+        - name: tenentname
+          in: path
+          description: tenent name
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: GET NFTS By tenent Name
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/nft"
+        400:
+          description: NFTS not available.
+
+  /tags/nft/{nftidentifier}:
+    get:
+      tags:
+        - nft routes
+      description: GET Tags by NftIdentifier
+      parameters:
+        - name: nftidentifier
+          in: path
+          description: nft identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: GET Tags by NftIdentifier
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/tag"
+        400:
+          description: NFTS not available.
+
+  /tags:
+    get:
+      tags:
+        - nft routes
+      description: GET All Tags
+      responses:
+        200:
+          description: GET All Tags
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/tag"
+        400:
+          description: TagS not available.
+
+  /nft/sale:
+    put:
+      tags:
+        - nft routes
+      description: Update status for nft when on sale
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateSaleStatus"
+      responses:
+        200:
+          description: Update status for nft when on sale
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/nft"
+        400:
+          description: Error  occured while eUpdate status for nft when on sale
+
+  /svg:
+    put:
+      tags:
+        - nft routes
+      description: Update SVG
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/svg"
+      responses:
+        200:
+          description: SVG Block chain has been Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error  occured while eUpdate status for nft when on sale
+
+  /svg/save:
+    post:
+      tags:
+        - nft routes
+      description: Save SVG in database
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/svg"
+      responses:
+        200:
+          description: Save SVG in database
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while Save SVG in database
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /txn/save:
+    post:
+      tags:
+        - nft routes
+      description: Save TXN for each bc transaction in the database
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/txn"
+      responses:
+        200:
+          description: Save TXN for each bc transaction in the database
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while Save TXN for each bc transaction in the database
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /nft/{userpk}/{blockchain}:
+    get:
+      tags:
+        - nft routes
+      description: Get all nfts filtered by blockchain and the userpk
+      parameters:
+        - name: userpk
+          in: path
+          description: user primary key
+          required: true
+          schema:
+            type: string
+        - name: blockchain
+          in: path
+          description: blockchain
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Get all nfts filtered by blockchain and the userpk
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/nft"
+        400:
+          description: NFTS not available.
+
+  /tags/save:
+    post:
+      tags:
+        - nft routes
+      description: Save SVG in database
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/tag"
+      responses:
+        200:
+          description: Save SVG in database
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while Save SVG in database
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /marketplace/nft:
+    put:
+      tags:
+        - nft routes
+      description: Update nft backend minting details
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateMint"
+      responses:
+        200:
+          description: Update nft backend minting details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error  occured while Update nft backend minting details
+
+  /marketplace/txn:
+    put:
+      tags:
+        - nft routes
+      description: Update nft backend with txn details after minting with stellar
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTxn"
+      responses:
+        200:
+          description: Update nft backend with txn details after minting with stellar
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error  occured while UUpdate nft backend with txn details after minting with stellar
+
+  /marketplace/owner:
+    post:
+      tags:
+        - nft routes
+      description: Save into owner collection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/owner"
+      responses:
+        200:
+          description: Save into owner collection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while Save into owner collection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /buying/{sellingstatus}/{nftidentifier}/{blockchain}:
+    get:
+      tags:
+        - nft routes
+      description: Get Nfts filtered by selling status, blockchain and nftidentifier
+      parameters:
+        - name: sellingstatus
+          in: path
+          description: sellingstatus
+          required: true
+          schema:
+            type: string
+        - name: nftidentifier
+          in: path
+          description: nftidentifier
+          required: true
+          schema:
+            type: string
+        - name: blockchain
+          in: path
+          description: blockchain
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Get Nfts filtered by selling status, blockchain and nftidentifier
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/nft"
+        400:
+          description: NFTS not available.
+
+  /marketplaceuser:
+    post:
+      tags:
+        - user
+      description: Get eds by id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/user"
+      responses:
+        200:
+          description: Save SVG in database
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while Save SVG in database
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /watchlists/save:
+    post:
+      tags:
+        - watchlist
+      description: Create WatchList
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/watchlist"
+      responses:
+        200:
+          description: Create WatchList
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while Create WatchList
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /watchlists:
+    get:
+      tags:
+        - watchlist
+      description: Get All Watchlistst
+      responses:
+        200:
+          description: Get All Watchlistst
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/favourite"
+        400:
+          description: Error occured while Get All Watchlistst
+
+  /watchlists/{userpk}:
+    get:
+      tags:
+        - watchlist
+      description: Get WatchList By UserPK
+      parameters:
+        - name: userpk
+          in: path
+          description: user primary key
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Get WatchList By UserPK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/watchlist"
+        400:
+          description: NFTS not available.
+
+  /watchList/{currentownerpk}:
+    get:
+      tags:
+        - watchlist
+      description: Get WatchList By UserPK
+      parameters:
+        - name: currentownerpk
+          in: path
+          description: current owner primary key
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Get WatchList By UserPK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/watchlist"
+        400:
+          description: WatchList not available.
+
+  /watchlists/{blockchain}/{nftidentifier}:
+    get:
+      tags:
+        - watchlist
+      description: GET WatchLists By Blockchain
+      parameters:
+        - name: blockchain
+          in: path
+          description: blockchain
+          required: true
+          schema:
+            type: string
+        - name: nftidentifier
+          in: path
+          description: nft identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: GET WatchLists By Blockchain
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/watchlist"
+        400:
+          description: WatchList not available.
+
+  /generate:
+    post:
+      tags:
+        - composer
+
+      description: Generate Html NFT
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HtmlGenerator"
+      responses:
+        200:
+          description: Generate Html NFT
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while Generate Html NFT
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /generate/svg:
+    post:
+      tags:
+        - composer
+
+      description: Generate SVG of NFT
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HtmlGenerator"
+      responses:
+        200:
+          description: Generate SVG of NFT
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while Generate SVG of NFT
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /project:
+    post:
+      tags:
+        - composer
+
+      description: Save Project
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NFTComposerProject"
+      responses:
+        200:
+          description: Save Project
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while Save Project
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    put:
+      tags:
+        - composer
+      description: Update Project
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProject"
+      responses:
+        200:
+          description: Update Project
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WidgetIdResponse"
+        400:
+          description: Error  occured while Update Project
+
+  /widget:
+    post:
+      tags:
+        - composer
+
+      description: Save the widget with otp and query
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/widget"
+      responses:
+        200:
+          description: Save the widget with otp and query
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while Save the widget with otp and query
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    put:
+      tags:
+        - composer
+      description: Update Widget
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateWidgetRequest"
+      responses:
+        200:
+          description: Update Project
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/widget"
+        400:
+          description: Error  occured while Update Project
+
+  /query/execute:
+    post:
+      tags:
+        - composer
+
+      description: Query get OTP base on id and execute query
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestWidget"
+      responses:
+        200:
+          description: Query get OTP base on id and execute query
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QueryResult"
+        400:
+          description: Invalid tracibility Data type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /widget/{widgetId}:
+    get:
+      tags:
+        - composer
+      description: Get All Project base on widgetId
+      parameters:
+        - name: widgetId
+          in: path
+          description: widgetId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Get All Project base on widgetId
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/widget"
+        400:
+          description: WatchList not available.
+
+  /projects/{userId}:
+    get:
+      tags:
+        - composer
+      description: Get All Project base on user
+      parameters:
+        - name: userId
+          in: path
+          description: user Id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Get All Project base on user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NFTComposerProject"
+        400:
+          description: WatchList not available.
+
+  /project/{projectId}:
+    get:
+      tags:
+        - composer
+      description: Get All Project base on project id
+      parameters:
+        - name: projectId
+          in: path
+          description: project Id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Get All Project base on project id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/projectDetails"
+        400:
+          description: WatchList not available.
+
+  /html/chart:
+    post:
+      tags:
+        - composer
+      description: Save Chart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/chart"
+      responses:
+        200:
+          description: Save the widget with otp and query
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while Save Chart
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    put:
+      tags:
+        - composer
+      description: Update chart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateChartRequest"
+      responses:
+        200:
+          description: Update chart
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error  occured while Update chart
+
+  /html/table:
+    post:
+      tags:
+        - composer
+      description: Save Table
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/table"
+      responses:
+        200:
+          description: Save Table
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while Save Table
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    put:
+      tags:
+        - composer
+      description: Update table
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTableRequest"
+      responses:
+        "200":
+          description: Update table
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        "400":
+          description: Error  occured while Update table
+
+  /html/proofbot:
+    post:
+      tags:
+        - composer
+      description: Save Proofbot
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/proofbot"
+      responses:
+        "200":
+          description: Save Proofbot
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        "400":
+          description: Error occured while Save Proofbot
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    put:
+      tags:
+        - composer
+      description: Update Proofbot
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProofBotRequest"
+      responses:
+        "200":
+          description: Update Proofbot
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        "400":
+          description: Error  occured while Update Proofbot
+
+  /html/stat:
+    post:
+      tags:
+        - composer
+      description: Save Stat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StataArray"
+      responses:
+        "200":
+          description: Save Stat
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        "400":
+          description: Error occured while Save Stat
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    put:
+      tags:
+        - composer
+      description: Update Stats
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateStatsRequest"
+      responses:
+        "200":
+          description: Update Stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        "400":
+          description: Error  occured while Update Stats
+
+  /html/image:
+    post:
+      tags:
+        - composer
+      description: Save Image
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImageData"
+      responses:
+        "200":
+          description: Save Image
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        "400":
+          description: Error occured while Save Image
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    put:
+      tags:
+        - composer
+      description: Update Image
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateImageRequest"
+      responses:
+        "200":
+          description: Update Image
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        "400":
+          description: Error  occured while Update Image
+
+  /html/timeline:
+    post:
+      tags:
+        - composer
+      description: Save TimeLine
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Timeline"
+      responses:
+        "200":
+          description: Save TimeLine
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        "400":
+          description: Error occured while Save TimeLine
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    put:
+      tags:
+        - composer
+      description: Update Image
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTimelineRequest"
+      responses:
+        "200":
+          description: Update Image
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        "400":
+          description: Error  occured while Update Image
+
+  /html/project/{projectId}:
+    delete:
+      tags:
+        - composer
+      description: Delete all collections where user ID is ...
+      parameters:
+        - name: projectId
+          in: path
+          description: project Id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Collections have been deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error when deleting the Collections
+
+  /html/chart/{widgetId}:
+    delete:
+      tags:
+        - composer
+      description: Delete chart by widget id
+      parameters:
+        - name: widgetId
+          in: path
+          description: widget Id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Deleted successfully
+        400:
+          description: Error when deleting chart by widget id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+
+  /html/table/{widgetId}:
+    delete:
+      tags:
+        - composer
+      description: Delete table by widget id
+      parameters:
+        - name: widgetId
+          in: path
+          description: widget Id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Deleted successfully
+        400:
+          description: Error when deleting table by widget id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+
+  /html/proofbot/{widgetId}:
+    delete:
+      tags:
+        - composer
+      description: Delete proofbot by widget id
+      parameters:
+        - name: widgetId
+          in: path
+          description: widget Id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Deleted successfully
+        400:
+          description: Error when deleting proofbot by widget id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+
+  /html/stats/{widgetId}:
+    delete:
+      tags:
+        - composer
+      description: Delete stats by widget id
+      parameters:
+        - name: widgetId
+          in: path
+          description: widget Id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Deleted successfully
+        400:
+          description: Error when deleting stats by widget id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+
+  /html/image/{widgetId}:
+    delete:
+      tags:
+        - composer
+      description: Delete image by widget id
+      parameters:
+        - name: widgetId
+          in: path
+          description: widget Id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Deleted successfully
+        400:
+          description: Error when deleting image by widget id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+
+  /html/timeline/{widgetId}:
+    delete:
+      tags:
+        - composer
+      description: Delete timeline by widget id
+      parameters:
+        - name: widgetId
+          in: path
+          description: widget Id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Deleted successfully
+        400:
+          description: Error when deleting timeline by widget id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+
+  /newsletter/:
+    post:
+      tags:
+        - newsletter
+      description: Add a new news paper
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/newsLetter"
+      responses:
+        200:
+          description: When a new newspaper is added to the news paper collection status 200 response should be received
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while Add a new news paper
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    get:
+      tags:
+        - newsletter
+      description: Retrieve a all news letters
+      responses:
+        200:
+          description: Retrieve a all news letters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/newsLetter"
+        400:
+          description: Error occured while Retrieve a all news letters
+
+  /newsletter/author/{name}/:
+    get:
+      tags:
+        - newsletter
+      description: Retrieve a specific newsletter
+      parameters:
+        - name: name
+          in: path
+          description: name
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Newsletter containing specific ID will be returned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/newsLetter"
+        400:
+          description: newsletter not available.
+
+  /newsletter/{_id}/:
+    get:
+      tags:
+        - newsletter
+      description: Retrieve a specific newsletter by id
+      parameters:
+        - name: _id
+          in: path
+          description: _id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Newsletter containing specific ID will be returned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/newsLetter"
+        400:
+          description: newsletter not available.
+
+  /faq/:
+    post:
+      tags:
+        - faq
+      description: Create FAQ
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/faq"
+      responses:
+        200:
+          description: Create FAQ
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while Create FAQ
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    get:
+      tags:
+        - faq
+      description: Get All FAQ
+      responses:
+        200:
+          description: Get All FAQ
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/newsLetter"
+        400:
+          description: Error occured while RGet All FAQ
+
+    put:
+      tags:
+        - faq
+      description: Update FAQ
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateFaq"
+      responses:
+        200:
+          description: Update FAQ
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while Update FAQ
+
+  /faq/{_id}:
+    get:
+      tags:
+        - faq
+      description: Retrieve a specific faq by id
+      parameters:
+        - name: _id
+          in: path
+          description: _id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: faq containing specific ID will be returned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/faq"
+        400:
+          description: faq not available.
+
+  /favourites/save:
+    post:
+      tags:
+        - favourite
+      description: Create Favourites
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/favourite"
+      responses:
+        200:
+          description: Create Favourites
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while Create Favourites
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /favourites:
+    get:
+      tags:
+        - favourite
+      description: Get All Favourites
+      responses:
+        200:
+          description: Get All Favourites
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/favourite"
+        400:
+          description: Error occured while Get All Favourites
+
+  /favourites/{userpk}:
+    get:
+      tags:
+        - favourite
+      description: Get Favourites By UserPK
+      parameters:
+        - name: userpk
+          in: path
+          description: user primary key
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Get Favourites By UserPK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/favourite"
+        400:
+          description: Favourites not available.
+
+  /favourites/{blockchain}/{nftidentifier}:
+    get:
+      tags:
+        - favourite
+      description: GET Favourites By Blockchian and nft identifier
+      parameters:
+        - name: blockchain
+          in: path
+          description: blockchain
+          required: true
+          schema:
+            type: string
+        - name: nftidentifier
+          in: path
+          description: nft identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: GET Favourites By Blockchian and nft identifier
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/favourite"
+        400:
+          description: Favourites not available.
+
+  /endorser/save:
+    post:
+      tags:
+        - endorsement
+      description: Register Tenants for minting
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/endorse"
+      responses:
+        200:
+          description: Register Tenants for minting
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while Register Tenants for minting
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /endorsement/{publickey}:
+    get:
+      tags:
+        - endorsement
+      description: GET Endorsement Status By PublicKey
+      parameters:
+        - name: publickey
+          in: path
+          description: publickey
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: GET Endorsement Status By PublicKey
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/endorse"
+        400:
+          description: Endorsement Status not available.
+
+    put:
+      tags:
+        - endorsement
+      description: Update Endorsement Status
+      parameters:
+        - name: publickey
+          in: path
+          description: publickey
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEndorsementByPublicKey"
+      responses:
+        200:
+          description: Endorsement updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseEndorsementUpdate"
+        400:
+          description: Error occured while Update Endorsement Status
+
+  /endorsement/{status}:
+    get:
+      tags:
+        - endorsement
+      description: GET Endorsement By Status
+      parameters:
+        - name: status
+          in: path
+          description: status
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: GET Endorsement By Status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/endorse"
+        400:
+          description: Endorsement Status not available.
+
+  /endorsement:
+    put:
+      tags:
+        - endorsement
+      description: Update Endorsement Status
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEndorsement"
+      responses:
+        200:
+          description: Update Endorsement Status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while Update Endorsement Status
+
+  /docs/:
+    post:
+      tags:
+        - docs
+      description: Create Document
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/document"
+      responses:
+        200:
+          description: Create Document
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while Create Document
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    get:
+      tags:
+        - docs
+      description: Get All Docs
+      responses:
+        200:
+          description: Get All Docs
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/document"
+        400:
+          description: Documenmts not available.
+
+    put:
+      tags:
+        - docs
+      description: Update Document
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateDoc"
+      responses:
+        200:
+          description: FAQ Status has been Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while Update Document
+
+  /docs/{_id}:
+    get:
+      tags:
+        - docs
+      description: Get Docs by documentID
+      parameters:
+        - name: _id
+          in: path
+          description: _id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Get Docs by documentID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/document"
+        400:
+          description: Documenmts not available.
+
+  /partner/:
+    post:
+      tags:
+        - partner
+      description: Create Partner
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/partner"
+      responses:
+        200:
+          description: Create Partner
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while Create Partner
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    get:
+      tags:
+        - partner
+      description: Get All Partners
+      responses:
+        200:
+          description: Get All Partners
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/partner"
+        400:
+          description: Partners not available.
+
+    put:
+      tags:
+        - partner
+      description: Update Partner
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePartner"
+      responses:
+        200:
+          description: Update Partner
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while Update Partner
+
+  /partner/{_id}:
+    get:
+      tags:
+        - partner
+      description: Get Partner by partnerID
+      parameters:
+        - name: _id
+          in: path
+          description: _id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Get Partner by partnerID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/endorse"
+        400:
+          description: Partners not available.
+
+  /otpgen:
+    post:
+      tags:
+        - oneTimePassword
+      description: product ID and user email is providied OTP will be generated and sent as a email to customer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenarateOTPRequest"
+      responses:
+        200:
+          description: OTP generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while genarting OTP
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /validateOTP/:
+    post:
+      tags:
+        - oneTimePassword
+      description: validate id the OTP is valid. Will check if the entered OTP and email exisit in the DB
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ValidateOTPRequest"
+      responses:
+        200:
+          description: OTP validate successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while validate OTP
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /resendOTP:
+    put:
+      tags:
+        - oneTimePassword
+      description: Re generate an OTP and send an email to the customer with the new OTP code
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenarateOTPRequest"
+      responses:
+        200:
+          description: Re generate an OTP succeessfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while Re generate an OTP
+
+  /otp-state:
+    post:
+      tags:
+        - oneTimePassword
+      description: check OTP status
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenarateOTPRequest"
+      responses:
+        200:
+          description: check OTP status successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while check OTP status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /svgmap/:
+    post:
+      tags:
+        - svgGenarator
+      description: Generate SVG
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateSVGRequest"
+      responses:
+        200:
+          description: Generate SVG successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while Generate SVG
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags:
+        - svgGenarator
+      description: Update SVG
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserNFTMapping"
+      responses:
+        200:
+          description: Update SVG successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while updating SVG
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /svgmap/{hash}:
+    get:
+      tags:
+        - svgGenarator
+      description: Get SVG
+      parameters:
+        - name: hash
+          in: path
+          description: hash
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Get SVG successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while fetching SVG
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /svgmap/{batchid}:
+    get:
+      tags:
+        - svgGenarator
+      description: Get SVG by batch id
+      parameters:
+        - name: batchid
+          in: path
+          description: batch id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Get SVG successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while fetching SVG
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /generatemap/:
+    post:
+      tags:
+        - mapGenerator
+      description: Generate Map
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MapInfo"
+      responses:
+        200:
+          description: Generate Map successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while Generate Map
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /journey-map/:
+    put:
+      tags:
+        - mapGenerator
+      description: Update Map
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateMap"
+      responses:
+        200:
+          description: Update Map successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while updating map
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /GetMap/{mapid}:
+    get:
+      tags:
+        - mapGenerator
+      description: Get Map
+      parameters:
+        - name: mapid
+          in: path
+          description: Map id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Get Map successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while fetching Map
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /walletnft/state:
+    put:
+      tags:
+        - walletnft
+      description: Update NFT State
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateNFTState"
+      responses:
+        200:
+          description: Update state successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while updating state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    post:
+      tags:
+        - walletnft
+      description: Save NFT State
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NFTWalletState"
+      responses:
+        200:
+          description: Save state successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while saving state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /walletnft/txns:
+    post:
+      tags:
+        - walletnft
+      description: Save NFT State TXN
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NFTWalletStateTXN"
+      responses:
+        200:
+          description: Save state successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while saving state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /walletnft:
+    get:
+      tags:
+        - walletnft
+      description: Get Wallet Users NFT By State
+      parameters:
+        - name: blockchain
+          in: query
+          description: Blockchain
+          required: true
+          schema:
+            type: string
+        - name: nftstate
+          in: query
+          description: NFT state
+          required: true
+          schema:
+            type: string
+        - name: currentowner
+          in: query
+          description: Current owner
+          required: true
+          schema:
+            type: string
+        - name: pagesize
+          in: query
+          description: Page size
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Fetching state success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginateWalletNFTResponse"
+        400:
+          description: Error occured while fetching
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /walletnft/requested:
+    get:
+      tags:
+        - walletnft
+      description: Get Wallet Users NFT Requestee By State
+      parameters:
+        - name: blockchain
+          in: query
+          description: Blockchain
+          required: true
+          schema:
+            type: string
+        - name: nftstate
+          in: query
+          description: NFT state
+          required: true
+          schema:
+            type: string
+        - name: nftrequested
+          in: query
+          description: NFT requestee
+          required: true
+          schema:
+            type: string
+        - name: pagesize
+          in: query
+          description: Page size
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Fetching state success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginateWalletNFTResponse"
+        400:
+          description: Error occured while fetching
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /walletnft/state/{issuerpublickey}:
+    delete:
+      tags:
+        - walletnft
+      description: Delete NFT State by userPK
+      parameters:
+        - name: issuerpublickey
+          in: path
+          description: Issuer public key
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        400:
+          description: Error occured while deleting
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /nftstate/txns/{issuerpublickey}:
+    get:
+      tags:
+        - walletnft
+      description: GET NFT State TXN by Issuer
+      parameters:
+        - name: issuerpublickey
+          in: path
+          description: Issuer public key
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Fetching state txn success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NFTStateTXNArray"
+        400:
+          description: Error occured while fetching
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /nftstate/info/{nftid}:
+    get:
+      tags:
+        - walletnft
+      description: GET NFT owner and state infomation
+      parameters:
+        - name: nftid
+          in: path
+          description: NFT ID
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Fetching state and owner information success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NFTStateTXNArray"
+        400:
+          description: Error occured while fetching
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/ipfs:
+    post:
+      tags:
+        - ipfs
+      description: Upload File to IPFS
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IpfsObjectForTDP"
+      responses:
+        200:
+          description: Uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IpfsResponse"
+        400:
+          description: Error occured while uploading
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  schemas:
+    Health:
+      type: object
+      properties:
+        Note:
+          type: string
+        Time:
+          type: string
+        Version:
+          type: string
+
+    review:
+      type: object
+      properties:
+        ID:
+          type: string
+        NFTIdentifier:
+          type: string
+        UserID:
+          type: string
+        Status:
+          type: string
+        Rating:
+          type: number
+        Description:
+          type: string
+
+    Error:
+      type: object
+      properties:
+        Message:
+          type: string
+        Status:
+          type: integer
+        Error:
+          type: string
+
+    Success:
+      type: object
+      properties:
+        Status:
+          type: integer
+        Response:
+          type: string
+
+    UpdateReviewStatus:
+      type: object
+      properties:
+        Id:
+          type: string
+        Status:
+          type: string
+
+    DeleteReview:
+      type: object
+      properties:
+        ID:
+          type: string
+
+    ReviewByidentifier:
+      type: object
+      properties:
+        id:
+          type: string
+        nftidentifier:
+          type: string
+        userid:
+          type: string
+        status:
+          type: string
+        rating:
+          type: number
+        description:
+          type: string
+
+    NFTCollection:
+      type: object
+      properties:
+        ID:
+          type: string
+        UserId:
+          type: string
+        Timestamp:
+          type: string
+        CollectionName:
+          type: string
+        OrganizationName:
+          type: string
+
+    UpdateCollection:
+      type: object
+      properties:
+        UserId:
+          type: string
+        CollectionName:
+          type: string
+
+    nft:
+      type: object
+      properties:
+        NFTIdentifier:
+          type: string
+        CreatorUserId:
+          type: string
+        Blockchain:
+          type: string
+        NFTName:
+          type: string
+        NftContentURL:
+          type: string
+        Description:
+          type: string
+        Timestamp:
+          type: string
+        Collection:
+          type: string
+        Category:
+          type: string
+        Tags:
+          type: array
+          items:
+            type: string
+        Imagebase64:
+          type: string
+        TenentName:
+          type: string
+        CurrentPrice:
+          type: string
+        CurrentOwnerPK:
+          type: string
+        IssuerPK:
+          type: string
+        ArtistName:
+          type: string
+        ArtistProfileLink:
+          type: string
+        SellingStatus:
+          type: string
+        SellingType:
+          type: string
+        DistributorPK:
+          type: string
+        Smartcontract:
+          type: string
+        MintedContract:
+          type: string
+        TokenType:
+          type: string
+        Status:
+          type: string
+        NFTTxnHash:
+          type: string
+        Trending:
+          type: boolean
+        HotPicks:
+          type: boolean
+
+    watchlist:
+      type: object
+      properties:
+        id:
+          type: string
+        nftidentifier:
+          type: string
+        blockchain:
+          type: string
+        User:
+          type: string
+
+    svg:
+      type: object
+      properties:
+        Id:
+          type: string
+        Base64ImageSVG:
+          type: string
+        Timestamp:
+          type: string
+        Hash:
+          type: string
+
+    tag:
+      type: object
+      properties:
+        id:
+          type: string
+        userid:
+          type: string
+        timestamp:
+          type: string
+        nftName:
+          type: string
+        tags:
+          type: string
+
+    UpdateSaleStatus:
+      type: object
+      properties:
+        nftidentifier:
+          type: string
+        timestamp:
+          type: string
+        currentprice:
+          type: string
+        sellingstatus:
+          type: string
+        sellingtype:
+          type: string
+        marketcontract:
+          type: string
+        currentownerpk:
+          type: string
+
+    txn:
+      type: object
+      properties:
+        Id:
+          type: string
+        Blockchain:
+          type: string
+        Timestamp:
+          type: string
+        NFTIdentifier:
+          type: string
+        Status:
+          type: string
+        NFTName:
+          type: string
+        ImageURL:
+          type: string
+        NFTTxnHash:
+          type: string
+
+    UpdateMint:
+      type: object
+      properties:
+        imagebase64:
+          type: string
+        nftissuerpk:
+          type: string
+        nftidentifier:
+          type: string
+        nfttxnhash:
+          type: string
+        blockchain:
+          type: string
+
+    UpdateTxn:
+      type: object
+      properties:
+        imagebase64:
+          type: string
+        nfttxnhash:
+          type: string
+        blockchain:
+          type: string
+
+    owner:
+      type: object
+      properties:
+        _id:
+          type: string
+        nftidentifier:
+          type: string
+        timestamp:
+          type: string
+        currentownerpk:
+          type: string
+        previousownerpk:
+          type: string
+        status:
+          type: string
+        ownerrevisionid:
+          type: integer
+          format: int64
+
+    user:
+      type: object
+      properties:
+        userId:
+          type: string
+        email:
+          type: string
+        TenentName:
+          type: string
+        BCAccounts:
+          type: array
+          items:
+            $ref: "#/components/schemas/account"
+        Timestamp:
+          type: string
+
+    account:
+      type: object
+      properties:
+        timestamp:
+          type: string
+        blockchain:
+          type: string
+        address:
+          type: string
+
+    favourite:
+      type: object
+      properties:
+        id:
+          type: string
+        nftidentifier:
+          type: string
+        blockchain:
+          type: string
+        User:
+          type: string
+
+    HtmlGenerator:
+      type: object
+      properties:
+        id:
+          type: string
+        ProjectId:
+          type: string
+        ProjectName:
+          type: string
+        NFTName:
+          type: string
+        UserId:
+          type: string
+        TenentId:
+          type: string
+        TenentName:
+          type: string
+        Timestamp:
+          type: string
+        CreatorName:
+          type: string
+        ContentOrderData:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContentOrderData"
+        NftContent:
+          type: object
+          items:
+            $ref: "#/components/schemas/NFTContent"
+
+    NFTContent:
+      type: object
+      properties:
+        BarCharts:
+          type: array
+          items:
+            $ref: "#/components/schemas/chart"
+        PieCharts:
+          type: array
+          items:
+            $ref: "#/components/schemas/chart"
+        BubbleCharts:
+          type: array
+          items:
+            $ref: "#/components/schemas/chart"
+        Stats:
+          type: array
+          items:
+            $ref: "#/components/schemas/StataArray"
+        Tables:
+          type: array
+          items:
+            $ref: "#/components/schemas/table"
+        Images:
+          type: array
+          items:
+            $ref: "#/components/schemas/ImageData"
+        ProofBot:
+          type: array
+          items:
+            $ref: "#/components/schemas/proofbot"
+        TimeLine:
+          type: array
+          items:
+            $ref: "#/components/schemas/Timeline"
+
+    ContentOrderData:
+      type: object
+      properties:
+        widgetID:
+          type: string
+        Type:
+          type: string
+
+    NFTComposerProject:
+      type: object
+      properties:
+        id:
+          type: string
+        ProjectId:
+          type: string
+        ProjectName:
+          type: string
+        NFTName:
+          type: string
+        UserId:
+          type: string
+        TenentId:
+          type: string
+        TenentName:
+          type: string
+        Timestamp:
+          type: string
+        CreatorName:
+          type: string
+        ContentOrderData:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContentOrderData"
+
+    UpdateProject:
+      type: object
+      properties:
+        ProjectId:
+          type: string
+        ProjectName:
+          type: string
+        NFTName:
+          type: string
+        TenentId:
+          type: string
+        TenentName:
+          type: string
+        Timestamp:
+          type: integer
+          format: init64
+        CreatorName:
+          type: string
+        ContentOrderData:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContentOrderData"
+
+    widget:
+      type: object
+      properties:
+        Id:
+          type: string
+        ProjectId:
+          type: string
+        WidgetId:
+          type: string
+        ArtifactId:
+          type: string
+        imestamp:
+          type: string
+        BatchId:
+          type: string
+        ProductId:
+          type: string
+        ProductName:
+          type: string
+        TenentId:
+          type: string
+        UserId:
+          type: string
+        OTP:
+          type: string
+        OTPType:
+          type: string
+        Query:
+          type: string
+        WidgetType:
+          type: string
+
+    queryResult:
+      type: object
+      properties:
+        result:
+          type: string
+        OTPType:
+          type: string
+        WidgetId:
+          type: string
+
+    projectDetails:
+      type: object
+      properties:
+        Project:
+          type: string
+        BarCharts:
+          type: string
+        PieCharts:
+          type: string
+        BubbleCharts:
+          type: string
+        Stats:
+          type: string
+        Tables:
+          type: string
+        Images:
+          type: string
+        ProofBot:
+          type: string
+        Timeline:
+          type: string
+
+    chart:
+      type: object
+      properties:
+        WidgetId:
+          type: string
+        ProjectId:
+          type: string
+        ChartTitle:
+          type: string
+        ChartData:
+          type: string
+        Color:
+          type: string
+        XAxis:
+          type: string
+        YAxis:
+          type: string
+        FontColor:
+          type: string
+        FontSize:
+          type: string
+        Width:
+          type: string
+        Height:
+          type: string
+        Type:
+          type: string
+        Domain:
+          type: string
+        ChartImage:
+          type: string
+
+    proofbot:
+      type: object
+      properties:
+        WidgetId:
+          type: string
+        ProjectId:
+          type: string
+        Timestamp:
+          type: string
+        ArtifactId:
+          type: string
+        ProductId:
+          type: string
+        ProductName:
+          type: string
+        TenentId:
+          type: string
+        OTPType:
+          type: string
+        WidgetType:
+          type: string
+        Title:
+          type: string
+        Data:
+          type: array
+          items:
+            $ref: "#/components/schemas/proofbot"
+
+    StataArray:
+      type: object
+      properties:
+        WidgetId:
+          type: string
+        ProjectId:
+          type: string
+        Title:
+          type: string
+        StatData:
+          type: array
+          items:
+            $ref: "#/components/schemas/StatData"
+
+    StatData:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+        color:
+          type: string
+
+    ImageData:
+      type: object
+      properties:
+        WidgetId:
+          type: string
+        ProjectId:
+          type: string
+        Title:
+          type: string
+        Type:
+          type: string
+        Base64Image:
+          type: string
+
+    Timeline:
+      type: object
+      properties:
+        Id:
+          type: string
+        WidgetId:
+          type: string
+        ProjectId:
+          type: string
+        Timestamp:
+          type: string
+        ArtifactId:
+          type: string
+        ProductId:
+          type: string
+        ProductName:
+          type: string
+        WidgetType:
+          type: string
+        Title:
+          type: string
+        TimelineData:
+          type: array
+          items:
+            $ref: "#/components/schemas/TimelineData"
+
+    TimelineData:
+      type: object
+      properties:
+        title:
+          type: string
+        icon:
+          type: string
+        subtitle:
+          type: string
+        description:
+          type: string
+        images:
+          type: string
+        children:
+          type: array
+          items:
+            $ref: "#/components/schemas/children"
+
+    children:
+      type: object
+      properties:
+        newTDP:
+          type: boolean
+        timestamp:
+          type: string
+        key:
+          type: string
+        value:
+          type: string
+
+    table:
+      type: object
+      properties:
+        WidgetId:
+          type: string
+        ProjectId:
+          type: string
+        TableTitle:
+          type: string
+        TableContent:
+          type: string
+
+    newsLetter:
+      type: object
+      properties:
+        newsID:
+          type: string
+        topic:
+          type: string
+        author:
+          type: string
+        date:
+          type: string
+        publisher:
+          type: string
+        webLink:
+          type: string
+        description:
+          type: string
+        image:
+          type: string
+
+    faq:
+      type: object
+      properties:
+        QuestionID:
+          type: string
+        Question:
+          type: string
+        Answers:
+          type: array
+          items:
+            type: string
+
+    UpdateFaq:
+      type: object
+      properties:
+        QuestionID:
+          type: string
+        Question:
+          type: string
+        Answers:
+          type: array
+          items:
+            type: string
+
+    endorse:
+      type: object
+      properties:
+        name:
+          type: string
+        publickey:
+          type: string
+        email:
+          type: string
+        contact:
+          type: string
+        description:
+          type: string
+        blockchain:
+          type: string
+        status:
+          type: string
+
+    UpdateEndorsement:
+      type: object
+      properties:
+        name:
+          type: string
+        publickey:
+          type: string
+        email:
+          type: string
+        contact:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+
+    UpdateEndorsementByPublicKey:
+      type: object
+      properties:
+        publicKey:
+          type: string
+        status:
+          type: string
+
+    ResponseEndorsementUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        publicKey:
+          type: string
+        status:
+          type: string
+
+    document:
+      type: object
+      properties:
+        topicID:
+          type: string
+        topic:
+          type: string
+        answers:
+          type: array
+          items:
+            type: string
+
+    UpdateDoc:
+      type: object
+      properties:
+        topicID:
+          type: string
+        topic:
+          type: string
+        answers:
+          type: array
+          items:
+            type: string
+
+    partner:
+      type: object
+      properties:
+        id:
+          type: string
+        topic:
+          type: string
+        webLink:
+          type: string
+        companyName:
+          type: string
+        image:
+          type: string
+        description:
+          type: string
+
+    UpdatePartner:
+      type: object
+      properties:
+        id:
+          type: string
+        topic:
+          type: string
+        webLink:
+          type: string
+        companyName:
+          type: string
+        image:
+          type: string
+        description:
+          type: string
+
+    WidgetIdResponse:
+      type: object
+      properties:
+        WidgetID:
+          type: string
+
+    RequestWidget:
+      type: object
+      properties:
+        widgetID:
+          type: string
+        query:
+          type: string
+
+    QueryResult:
+      type: object
+      properties:
+        result:
+          type: string
+        OTPType:
+          type: string
+        widgetId:
+          type: string
+
+    UpdateWidgetRequest:
+      type: object
+      properties:
+        WidgetId:
+          type: string
+        Timestamp:
+          type: string
+        BatchId:
+          type: string
+        ProductId:
+          type: string
+        ProductName:
+          type: string
+        TenentId:
+          type: string
+        OTPType:
+          type: string
+        ArtifactId:
+          type: string
+
+    UpdateChartRequest:
+      type: object
+      properties:
+        WidgetId:
+          type: string
+        ChartTitle:
+          type: string
+        Color:
+          type: array
+          items:
+            type: string
+        ChartData:
+          type: object
+          items:
+            $ref: "#/components/schemas/ChartData"
+        XAxis:
+          type: string
+        YAxis:
+          type: string
+        FontColor:
+          type: string
+        FontSize:
+          type: number
+          format: float
+        Width:
+          type: number
+          format: float
+        Height:
+          type: number
+          format: float
+        ChartImage:
+          type: string
+
+    ChartData:
+      type: object
+      properties:
+        Name:
+          type: string
+        X:
+          type: number
+          format: float
+        Value:
+          type: number
+          format: float
+        Y:
+          type: number
+          format: float
+
+    UpdateTableRequest:
+      type: object
+      properties:
+        WidgetId:
+          type: string
+        TableTitle:
+          type: string
+        TableContent:
+          type: string
+
+    UpdateProofBotRequest:
+      type: object
+      properties:
+        WidgetId:
+          type: string
+        ProjectId:
+          type: string
+        Timestamp:
+          type: string
+        ArtifactId:
+          type: string
+        ProductId:
+          type: string
+        ProductName:
+          type: string
+        TenentId:
+          type: string
+        OTPType:
+          type: string
+        WidgetType:
+          type: string
+        Title:
+          type: string
+        Data:
+          type: array
+          items:
+            $ref: "#/components/schemas/proofbot"
+
+    UpdateStatsRequest:
+      type: object
+      properties:
+        WidgetId:
+          type: string
+        Title:
+          type: string
+        StatData:
+          type: array
+          items:
+            $ref: "#/components/schemas/StatData"
+
+    UpdateImageRequest:
+      type: object
+      properties:
+        WidgetId:
+          type: string
+        Title:
+          type: string
+        Type:
+          type: string
+        Base64Image:
+          type: string
+
+    UpdateTimelineRequest:
+      type: object
+      properties:
+        WidgetId:
+          type: string
+        Timestamp:
+          type: string
+        ArtifactId:
+          type: string
+        ProductId:
+          type: string
+        ProductName:
+          type: string
+        Title:
+          type: string
+        TimelineData:
+          type: array
+          items:
+            $ref: "#/components/schemas/TimelineData"
+
+    GenarateOTPRequest:
+      type: object
+      properties:
+        Email:
+          type: string
+        ProductId:
+          type: string
+
+    ValidateOTPRequest:
+      type: object
+      properties:
+        Email:
+          type: string
+        OTPCode:
+          type: string
+
+    GenerateSVGRequest:
+      type: object
+      properties:
+        BatchID:
+          type: string
+        ShopID:
+          type: string
+        Email:
+          type: string
+        ReciverName:
+          type: string
+        CustomMessage:
+          type: string
+        NFTName:
+          type: string
+        Thumbnail:
+          type: string
+
+    UserNFTMapping:
+      type: object
+      properties:
+        SvgID:
+          type: string
+        BatchID:
+          type: string
+        Email:
+          type: string
+        SVG:
+          type: string
+        Hash:
+          type: string
+        NFTName:
+          type: string
+        Thumbnail:
+          type: string
+
+    MapInfo:
+      type: object
+      properties:
+        Title:
+          type: string
+        Longitude:
+          type: string
+        Latitue:
+          type: string
+
+    UpdateMap:
+      type: object
+      properties:
+        Id:
+          type: string
+        MapData:
+          type: array
+          items:
+            $ref: "#/components/schemas/MapInfo"
+
+    UpdateNFTState:
+      type: object
+      properties:
+        ID:
+          type: string
+        IssuerPublicKey:
+          type: string
+        NFTStatus:
+          type: number
+          format: integer
+
+    NFTWalletStateTXN:
+      type: object
+      properties:
+        Id:
+          type: string
+        IssuerPublicKey:
+          type: string
+        Blockchain:
+          type: string
+        NFTCreator:
+          type: string
+        NFTName:
+          type: string
+        CurrentOwner:
+          type: string
+        NFTStatus:
+          type: number
+          format: integer
+        Timestamp:
+          type: string
+        ShopID:
+          type: string
+        Thumbnail:
+          type: string
+        TXNHash:
+          type: string
+
+    NFTStateTXNArray:
+      type: array
+      items:
+        $ref: "#/components/schemas/NFTWalletStateTXN"
+
+    NFTWalletState:
+      type: object
+      properties:
+        Id:
+          type: string
+        IssuerPublicKey:
+          type: string
+        Blockchain:
+          type: string
+        NFTCreator:
+          type: string
+        NFTName:
+          type: string
+        NFTRequested:
+          type: string
+        CurrentOwner:
+          type: string
+        NFTStatus:
+          type: number
+          format: integer
+        Timestamp:
+          type: string
+        ShopID:
+          type: string
+        Thumbnail:
+          type: string
+        NFTID:
+          type: string
+
+    WalletNFTContentforMatrix:
+      type: object
+      properties:
+        Id:
+          type: string
+        IssuerPublicKey:
+          type: string
+        Blockchain:
+          type: string
+        NFTCreator:
+          type: string
+        NFTName:
+          type: string
+        NFTRequested:
+          type: string
+        CurrentOwner:
+          type: string
+        NFTStatus:
+          type: number
+          format: integer
+        Timestamp:
+          type: string
+        ShopID:
+          type: string
+        Thumbnail:
+          type: string
+        NFTID:
+          type: string
+
+    PaginationTemplate:
+      type: object
+      properties:
+        TotalElements:
+          type: number
+          format: integer
+        TotalPages:
+          type: number
+          format: integer
+        PageSize:
+          type: number
+          format: integer
+        Previouspage:
+          type: number
+          format: integer
+        Currentpage:
+          type: number
+          format: integer
+        NextPage:
+          type: number
+          format: integer
+
+    PaginateWalletNFTResponse:
+      type: object
+      properties:
+        Content:
+          type: array
+          items:
+            $ref: "#/components/schemas/WalletNFTContentforMatrix"
+        PaginationInfo:
+          type: object
+          items:
+            $ref: "#/components/schemas/PaginationTemplate"
+
+    TDPDetails:
+      type: object
+      properties:
+        TenetID:
+          type: string
+        ItemID:
+          type: string
+        BatchID:
+          type: string
+        TdpID:
+          type: string
+
+    FileDetails:
+      type: object
+      properties:
+        FileContent:
+          type: string
+        FileName:
+          type: string
+
+    IpfsObjectForTDP:
+      type: object
+      properties:
+        TDPDetails:
+          type: object
+          items:
+            $ref: "#/components/schemas/TDPDetails"
+        FileDetails:
+          type: object
+          items:
+            $ref: "#/components/schemas/FileDetails"
+        FileType:
+          type: number
+          format: integer
+
+    IpfsResponse:
+      type: object
+      properties:
+        Message:
+          type: string
+        URL:
+          type: string
