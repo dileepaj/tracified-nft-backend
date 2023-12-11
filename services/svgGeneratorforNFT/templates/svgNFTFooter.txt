@@ -163,21 +163,14 @@
                 const pos = carousel.scrollLeft;
                 const scrollX = Math.ceil(pos + width);
                 
-                if(scrollX >= carousel.scrollWidth) {
+                if(scrollX < carousel.scrollWidth) {
                    
                     carousel.scroll({
-                            top: 0,
-                            left: pos - carousel.scrollWidth,
-                            behavior: "smooth",
-                    });
-                } else {
-                    carousel.scroll({
-                    top: 0,
-                    left: scrollX,
-                    behavior: "smooth",
-                });
-                }
-				
+						top: 0,
+						left: scrollX,
+						behavior: "smooth",
+					});
+                } 
 			}
 
 			function moveRight(id) {
@@ -186,20 +179,13 @@
                 const pos = carousel.scrollLeft;
                 const scrollX = Math.ceil(pos - width);
                 
-                if(pos <= 0) {
-                    
-                    carousel.scroll({
-                            top: 0,
-                            left: carousel.scrollWidth,
-                            behavior: "smooth",
-                    });
-                } else {
-                    carousel.scroll({
-                    top: 0,
-                    left: scrollX,
-                    behavior: "smooth",
-                });
-                }
+                if(pos > 0) {
+                     carousel.scroll({
+						top: 0,
+						left: scrollX,
+						behavior: "smooth",
+                	});
+                } 
 			}
         ]]>
     </script>
