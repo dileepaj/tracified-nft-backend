@@ -92,6 +92,15 @@ type ImageData struct {
 	Title       string `json:"Title" bson:"title"`
 	Type        string `json:"Type" bson:"type" validate:"required"`
 	Base64Image string `json:"Base64Image" bson:"base64image" validate:"required"`
+	TenetId     string `json:"TenetId" bson:"tenetid" validate:"required"`
+}
+
+type SaveImageData struct {
+	WidgetId    string `json:"WidgetId" bson:"widgetid" validate:"required"`
+	ProjectId   string `json:"ProjectId" bson:"projectid" validate:"required"`
+	Title       string `json:"Title" bson:"title"`
+	Base64Image string `json:"Base64Image" bson:"base64image" validate:"required"`
+	Cid         string `json:"Cid" bson:"cid" validate:"required"`
 }
 
 type ContentOrderData struct {
@@ -182,18 +191,18 @@ type Timeline struct {
 }
 
 type TimelineData struct {
-	Title       string   `json:"Title" bson:"title"`
-	Icon        string   `json:"Icon" bson:"icon" `
-	SubTitle    string   `json:"SubTitle" bson:"subtitle" `
-	Description string   `json:"Description" bson:"description"`
-	Images      []Img `json:"Images" bson:"images"`
+	Title       string `json:"Title" bson:"title"`
+	Icon        string `json:"Icon" bson:"icon" `
+	SubTitle    string `json:"SubTitle" bson:"subtitle" `
+	Description string `json:"Description" bson:"description"`
+	Images      []Img  `json:"Images" bson:"images"`
 	Children    []Children
 }
 
-type Img struct{
-	Image string   `json:"Image" bson:"image"`
-	Description string   `json:"Description" bson:"description"`
-	Timestamp string   `json:"Timestamp" bson:"timestamp"`
+type Img struct {
+	Image       string `json:"Image" bson:"image"`
+	Description string `json:"Description" bson:"description"`
+	Timestamp   string `json:"Timestamp" bson:"timestamp"`
 }
 
 type Children struct {
