@@ -3,10 +3,12 @@ package nftComposerRepository
 import (
 	"context"
 
+	"github.com/dileepaj/tracified-nft-backend/constants"
 	"github.com/dileepaj/tracified-nft-backend/database/connections"
 	"github.com/dileepaj/tracified-nft-backend/database/repository"
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
+	"github.com/dileepaj/tracified-nft-backend/services/composerimgservice"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -37,7 +39,23 @@ func (r *NFTComposerProjectRepository) SaveProofBot(proofbot models.ProofBotData
 }
 
 func (r *NFTComposerProjectRepository) SaveImage(image models.ImageData) (string, error) {
-	return repository.Save[models.ImageData](image, "images")
+	//Call method to upload image to IPFS
+	cidHash, errWhenUploadingImageToIpfs := composerimgservice.UploadImageToIpfsWithFolder(constants.ImageWidget, image.Base64Image, image.ProjectId, image.WidgetId, image.TenetId, image.Title)
+	if errWhenUploadingImageToIpfs != nil {
+		logs.ErrorLogger.Println(errWhenUploadingImageToIpfs.Error())
+		return "", errWhenUploadingImageToIpfs
+	}
+
+	//Populate the saving object with the IPFS hash
+	saveData := models.SaveImageData{
+		WidgetId:    image.WidgetId,
+		ProjectId:   image.ProjectId,
+		Title:       image.Title,
+		Base64Image: image.Base64Image,
+		Cid:         cidHash,
+	}
+
+	return repository.Save[models.SaveImageData](saveData, "images")
 }
 
 func (r *NFTComposerProjectRepository) SaveTimeline(timeline models.Timeline) (string, error) {
