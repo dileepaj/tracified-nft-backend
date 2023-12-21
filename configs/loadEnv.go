@@ -18,6 +18,7 @@ var (
 	gateway        = ""
 	tillit         = ""
 	nftMarketplace = ""
+	streamingAPI   = ""
 )
 
 func LoadEnv() {
@@ -33,6 +34,7 @@ func LoadEnv() {
 	gateway = os.Getenv("GATEWAY")
 	tillit = os.Getenv("TILLIT")
 	nftMarketplace = os.Getenv("NFT_MARKETPLACE")
+	streamingAPI = os.Getenv("STREAMING_API")
 }
 
 func GetBackenToken() string {
@@ -86,4 +88,9 @@ func GetTillitUrl() string {
 func GetMarketplaceUrl() string {
 	LoadEnv()
 	return nftMarketplace
+}
+
+func GetStreamingAPIUrl() string {
+	LoadEnv()
+	return streamingAPI
 }

@@ -97,3 +97,4 @@
             MINTED_WALLETNFT_TENANTS: "{{lookup('env','MINTED_WALLETNFT_TENANTS')}}"
             ECOM_BASEURL: "{{lookup('env','ECOM_BASEURL')}}"
             IPFSURL: "{{lookup('env','IPFSURL')}}"
+            STREAMING_API: "{{lookup('env','STREAMING_API')}}"
