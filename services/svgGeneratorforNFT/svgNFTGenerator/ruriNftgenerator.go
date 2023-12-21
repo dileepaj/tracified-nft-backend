@@ -778,15 +778,20 @@ func (r *RURINFT) GenerateJourneyMap(tab models.Component, index int) (string, s
 		proofContentStr := ""
 		proofTick := ""
 
-		if c.Values.Provable {
+		if c.Values.Provable && len(coordinates) > 0 {
 			key := c.Title
 
 			proofContentStr, proofTick = r.GenerateMapProofContentStr(key, c.Values)
 
 		}
 
-		lat := strconv.FormatFloat(coordinates[0].Lat, 'g', 7, 64)
-		long := strconv.FormatFloat(coordinates[0].Lng, 'g', 7, 64)
+		lat := "0"
+		long := "0"
+
+		if len(coordinates) > 0 {
+			lat = strconv.FormatFloat(coordinates[0].Lat, 'g', 7, 64)
+			long = strconv.FormatFloat(coordinates[0].Lng, 'g', 7, 64)
+		}
 
 		cityName, err := mapGenerator.GetCityName(lat, long)
 		if err != nil {
@@ -807,9 +812,15 @@ func (r *RURINFT) GenerateJourneyMap(tab models.Component, index int) (string, s
 								</div>`
 
 		var cmap models.MapInfo
-		cmap.Title = coordinates[0].Name
-		cmap.Latitude = coordinates[0].Lat
-		cmap.Longitude = coordinates[0].Lng
+		cmap.Title = ""
+		cmap.Latitude = 0
+		cmap.Longitude = 0
+
+		if len(coordinates) > 0 {
+			cmap.Title = coordinates[0].Name
+			cmap.Latitude = coordinates[0].Lat
+			cmap.Longitude = coordinates[0].Lng
+		}
 		mapInfo = append(mapInfo, cmap)
 
 		/* for _, c1 := range coordinates {
@@ -1532,14 +1543,32 @@ func (r *RURINFT) uploadNftImage(b64 string, imgKey string) string {
 
 	var strArr = strings.Split(b64, ";base64,")
 
-	dec, err := base64.StdEncoding.DecodeString(strArr[1]) //get image string
-	fType := strings.Split(strArr[0], "data:image/")[1]    //get file type from base64 string
+	if len(strArr) > 1 {
 
-	if err != nil {
-		logs.ErrorLogger.Println("unable to decode data :", err.Error())
+		dec, err := base64.StdEncoding.DecodeString(strArr[1]) //get image string
+		fType := strings.Split(strArr[0], "data:image/")[1]    //get file type from base64 string
+
+		if err != nil {
+			logs.ErrorLogger.Println("unable to decode data :", err.Error())
+			return b64
+		}
+
+		link := r.uploadToIPFS(b64, imgKey, fType, dec)
+
+		return link
+
+	} else if len(strings.Split(b64, "#")) > 1 {
+		dec, fType := r.fetchImg(b64)
+
+		link := r.uploadToIPFS(b64, imgKey, fType, dec)
+
+		return link
+	} else {
 		return b64
 	}
+}
 
+func (r *RURINFT) uploadToIPFS(b64 string, imgKey string, fType string, dec []byte) string {
 	// create file name using gem name and image key
 	fileName := r.GemName + "_" + imgKey + "." + fType
 	fileName = strings.ToLower(fileName)
@@ -1600,4 +1629,33 @@ func (r *RURINFT) deleteImg(f *os.File) {
 	if err != nil {
 		logs.ErrorLogger.Println("unable to delete file :", err.Error())
 	}
+}
+
+func (r *RURINFT) fetchImg(img string) ([]byte, string) {
+	streamingAPIUrl := configs.GetStreamingAPIUrl()
+
+	b64 := base64.StdEncoding.EncodeToString([]byte(img))
+	url := streamingAPIUrl + b64
+
+	fmt.Println("In fetch img: %v", url)
+
+	res, err := http.Get(url)
+
+	if err != nil {
+		logs.ErrorLogger.Println("unable to get data :", err.Error())
+
+	}
+
+	fType := strings.Split(res.Header.Get("Content-Type"), "/")[1]
+
+	data, err := ioutil.ReadAll(res.Body)
+
+	if err != nil {
+		logs.ErrorLogger.Println("ioutil.ReadAll :", err)
+	}
+
+	res.Body.Close()
+
+	return data, fType
+
 }
