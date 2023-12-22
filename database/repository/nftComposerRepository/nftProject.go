@@ -294,7 +294,7 @@ func (r *NFTComposerProjectRepository) UpdateTable(table requestDtos.UpdateTable
 	}
 }
 
-func (r *NFTComposerProjectRepository) UpdateImage(image requestDtos.UpdateImageRequest) (models.ImageData, error) {
+func (r *NFTComposerProjectRepository) UpdateImage(image requestDtos.SaveUpdatedImage) (models.ImageData, error) {
 	var imageData models.ImageData
 	pByte, err := bson.Marshal(image)
 	if err != nil {
