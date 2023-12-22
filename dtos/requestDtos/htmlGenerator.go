@@ -32,7 +32,7 @@ type UpdateChartRequest struct {
 	FontSize   float32            `json:"Fontsize" bson:"fontsize"`
 	Width      float32            `json:"Width" bson:"width"`
 	Height     float32            `json:"Height" bson:"height"`
-	ChartImage	string	`json:"ChartImage" bson:"chartimage" validate:"required"`
+	ChartImage string             `json:"ChartImage" bson:"chartimage" validate:"required"`
 }
 type UpdateTableRequest struct {
 	WidgetId     string `json:"WidgetId" bson:"widgetid" validate:"required"`
@@ -49,7 +49,19 @@ type UpdateImageRequest struct {
 	Title       string `json:"Title" bson:"title"`
 	Type        string `json:"Type" bson:"type" validate:"required"`
 	Base64Image string `json:"Base64Image" bson:"base64image" validate:"required"`
+	ProjectId   string `json:"ProjectId" bson:"projectid" validate:"required"`
+	TenetId     string `json:"TenetId" bson:"tenetid" validate:"required"`
 }
+
+type SaveUpdatedImage struct {
+	WidgetId    string `json:"WidgetId" bson:"widgetid" validate:"required"`
+	Title       string `json:"Title" bson:"title"`
+	Type        string `json:"Type" bson:"type" validate:"required"`
+	Base64Image string `json:"Base64Image" bson:"base64image" validate:"required"`
+	ProjectId   string `json:"ProjectId" bson:"projectid" validate:"required"`
+	Cid         string `json:"Cid" bson:"cid" validate:"required"`
+}
+
 type UpdateProofBotRequest struct {
 	WidgetId    string             `json:"WidgetId" bson:"widgetid" validate:"required"`
 	Timestamp   primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
@@ -70,6 +82,6 @@ type UpdateTimelineRequest struct {
 	Timestamp    primitive.DateTime `json:"Timestamp" bson:"timestamp" validate:"required"`
 	ProductId    string             `json:"productId" bson:"productid"` // item id
 	ProductName  string             `json:"productName" bson:"productname"`
-	Title       string             `json:"Title" bson:"title"`
+	Title        string             `json:"Title" bson:"title"`
 	TimelineData []models.TimelineData
 }
