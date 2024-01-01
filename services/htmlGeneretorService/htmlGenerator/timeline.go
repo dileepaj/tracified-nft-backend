@@ -16,6 +16,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/database/repository/customizedNFTrepository"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/services"
+	"github.com/dileepaj/tracified-nft-backend/services/mapGenerator"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"github.com/mitchellh/mapstructure"
 )
@@ -74,7 +75,17 @@ func (r *JMACNFT) GenerateSVGTemplateforNFT(data []models.Component) (string, st
 		}
 	} */
 
-	htmlStart := `<body><div class="d-flex justify-content-center align-content-center flex-wrap" id="container">`
+	htmlStart := `<body><div class="nft-header default-font">
+						<div class="nft-header-content cont-wrapper">
+							<div class="nft-header-title">
+								<label id="nftName">` + r.ItemName + `</label>
+							</div>
+							<div class="nft-header-title">
+							<label id="nftName">` + r.BatchID + `</label>
+							</div>
+						</div>
+					</div>
+					<div class="d-flex justify-content-center align-content-center flex-wrap" id="container">`
 
 	// iframeImg, thumb := r.GenerateTopSection(data)
 
@@ -225,11 +236,22 @@ func (r *JMACNFT) GenerateVerticalTabs(data models.Component) {
 						<input id="collapsible3" class="toggle" type="radio" name="toggle" checked></input>
 						<label for="collapsible3" class="lbl-toggle" tabindex="0">
 							` + icon + `
-							<label>` + data.Title + `</label>
+							<label> Timeline and Journey </label>
 							<span class="arrow-down-icon"></span>
 						</label>
 
 						<div class="collapsible-content">
+							<div class="toggle-div">
+								<input id="sidebar-toggle" type="checkbox" checked></input>
+								<label class="tab-header" for="sidebar-toggle"><span class="open-menu-icon"></span> <label id="tab-name"></label></label>
+								<div id="sidebar">
+									<div id="sidebar-inner">
+										<ul class="sidebar-tabs">
+											` + sidebarTabs + `
+										</ul>
+									</div>
+								</div>
+							</div>
 							<div class="content-inner">
 								<div class="tabbed">
 									<div style="display: flex; flex-direction : row">
@@ -262,14 +284,14 @@ func (r *JMACNFT) GenerateOverview(data models.Component) (string, string, strin
 		// 	mainTabs += mainTbs
 		// 	sidebarTabs += sidebarTbs
 		// 	radioButtons += radioBtns
-		// } else if tab.Component == "map" {
-		// 	cont, mainTbs, sidebarTbs, radioBtns := r.GenerateJourneyMap(tab, index)
-		// 	content += cont
-		// 	mainTabs += mainTbs
-		// 	sidebarTabs += sidebarTbs
-		// 	radioButtons += radioBtns
-		// } else
-		if tab.Component == "timeline" {
+		// // } else
+		if tab.Component == "map" {
+			cont, mainTbs, sidebarTbs, radioBtns := r.GenerateJourneyMap(tab, index)
+			content += cont
+			mainTabs += mainTbs
+			sidebarTabs += sidebarTbs
+			radioButtons += radioBtns
+		} else if tab.Component == "timeline" {
 			cont, mainTbs, sidebarTbs, radioBtns := r.GenerateTimeline(tab, index)
 			content += cont
 			mainTabs += mainTbs
@@ -569,102 +591,102 @@ func (r *JMACNFT) GenerateImageSlider(imageSlider models.Component, parentIndex 
 // }
 
 // Generate Journey Map
-// func (r *JMACNFT) GenerateJourneyMap(tab models.Component, index int) (string, string, string, string) {
-// 	var mapInfo []models.MapInfo
-// 	proofCards := `<div class="map-proof-cont">`
+func (r *JMACNFT) GenerateJourneyMap(tab models.Component, index int) (string, string, string, string) {
+	var mapInfo []models.MapInfo
+	proofCards := `<div class="map-proof-cont">`
 
-// 	for index, c := range tab.Coordinates {
-// 		var coordinates []models.CoordinateValue
-// 		decodeErr := mapstructure.Decode(c.Values.Value, &coordinates)
-// 		if decodeErr != nil {
-// 			logs.ErrorLogger.Println("failed to decode map : ", decodeErr.Error())
-// 		}
+	for index, c := range tab.Coordinates {
+		var coordinates []models.CoordinateValue
+		decodeErr := mapstructure.Decode(c.Values.Value, &coordinates)
+		if decodeErr != nil {
+			logs.ErrorLogger.Println("failed to decode map : ", decodeErr.Error())
+		}
 
-// 		proofContentStr := ""
-// 		proofTick := ""
+		proofContentStr := ""
+		proofTick := ""
 
-// 		if c.Values.Provable && len(coordinates) > 0 {
-// 			key := c.Title
+		if c.Values.Provable && len(coordinates) > 0 {
+			// key := c.Title
 
-// 			proofContentStr, proofTick = r.GenerateMapProofContentStr(key, c.Values)
+			// proofContentStr, proofTick = r.GenerateMapProofContentStr(key, c.Values)
 
-// 		}
+		}
 
-// 		lat := "0"
-// 		long := "0"
+		lat := "0"
+		long := "0"
 
-// 		if len(coordinates) > 0 {
-// 			lat = strconv.FormatFloat(coordinates[0].Lat, 'g', 7, 64)
-// 			long = strconv.FormatFloat(coordinates[0].Lng, 'g', 7, 64)
-// 		}
+		if len(coordinates) > 0 {
+			lat = strconv.FormatFloat(coordinates[0].Lat, 'g', 7, 64)
+			long = strconv.FormatFloat(coordinates[0].Lng, 'g', 7, 64)
+		}
+		cityName:=""
+		// cityName, err := mapGenerator.GetCityName(lat, long)
+		// if err != nil {
+		// 	logs.ErrorLogger.Println("failed to get city name : ", err.Error())
+		// }
 
-// 		cityName, err := mapGenerator.GetCityName(lat, long)
-// 		if err != nil {
-// 			logs.ErrorLogger.Println("failed to get city name : ", err.Error())
-// 		}
+		proofCards += `	<div class="map-proof-card">
+									<div class="map-proof-title-cont">
+										<span class="marker-icon"></span>
+										<label class="map-proof-title">` + strconv.Itoa(index+1) + ` - ` + c.Title + `</label>
+									</div>
+									<label class="map-proof-text">` + cityName + `</label>
+									<div class="map-proof-title-cont">
+										<label class="map-proof-text">` + lat + `, ` + long + `</label>
+										` + proofTick + `
+									</div>
+									` + proofContentStr + `
+								</div>`
 
-// 		proofCards += `	<div class="map-proof-card">
-// 									<div class="map-proof-title-cont">
-// 										<span class="marker-icon"></span>
-// 										<label class="map-proof-title">` + strconv.Itoa(index+1) + ` - ` + c.Title + `</label>
-// 									</div>
-// 									<label class="map-proof-text">` + cityName + `</label>
-// 									<div class="map-proof-title-cont">
-// 										<label class="map-proof-text">` + lat + `, ` + long + `</label>
-// 										` + proofTick + `
-// 									</div>
-// 									` + proofContentStr + `
-// 								</div>`
+		var cmap models.MapInfo
+		cmap.Title = ""
+		cmap.Latitude = 0
+		cmap.Longitude = 0
 
-// 		var cmap models.MapInfo
-// 		cmap.Title = ""
-// 		cmap.Latitude = 0
-// 		cmap.Longitude = 0
+		if len(coordinates) > 0 {
+			cmap.Title = coordinates[0].Name
+			cmap.Latitude = coordinates[0].Lat
+			cmap.Longitude = coordinates[0].Lng
+		}
+		mapInfo = append(mapInfo, cmap)
 
-// 		if len(coordinates) > 0 {
-// 			cmap.Title = coordinates[0].Name
-// 			cmap.Latitude = coordinates[0].Lat
-// 			cmap.Longitude = coordinates[0].Lng
-// 		}
-// 		mapInfo = append(mapInfo, cmap)
+		/* for _, c1 := range coordinates {
+			coordinate := c1
+			var cmap models.MapInfo
+			cmap.Title = coordinate.Name
+			cmap.Latitude = coordinate.Lat
+			cmap.Longitude = coordinate.Long
+			mapInfo = append(mapInfo, cmap)
+		} */
 
-// 		/* for _, c1 := range coordinates {
-// 			coordinate := c1
-// 			var cmap models.MapInfo
-// 			cmap.Title = coordinate.Name
-// 			cmap.Latitude = coordinate.Lat
-// 			cmap.Longitude = coordinate.Long
-// 			mapInfo = append(mapInfo, cmap)
-// 		} */
+	}
 
-// 	}
+	/* mapInfo = append(mapInfo, models.MapInfo{6.927079, 79.861244})
+	mapInfo = append(mapInfo, models.MapInfo{35.652832, 139.839478}) */
 
-// 	/* mapInfo = append(mapInfo, models.MapInfo{6.927079, 79.861244})
-// 	mapInfo = append(mapInfo, models.MapInfo{35.652832, 139.839478}) */
+	generatedMap := mapGenerator.GenerateMap(mapInfo)
+	var newMap models.GeneratedMap
+	newMap.MapTemplate = generatedMap
+	rst, mapSaveErr := mapRepository.SaveMap(newMap)
 
-// 	generatedMap := mapGenerator.GenerateMap(mapInfo)
-// 	var newMap models.GeneratedMap
-// 	newMap.MapTemplate = generatedMap
-// 	rst, mapSaveErr := mapRepository.SaveMap(newMap)
+	proofCards += `</div>`
 
-// 	proofCards += `</div>`
+	if mapSaveErr != nil {
+		logs.ErrorLogger.Println("Failed to save map : ", mapSaveErr.Error())
+	}
 
-// 	if mapSaveErr != nil {
-// 		logs.ErrorLogger.Println("Failed to save map : ", mapSaveErr.Error())
-// 	}
+	content := `<div class="tab-content">
+					<embed class="map" frameborder="0" scrolling="no" marginheight="0"
+						marginwidth="0"
+						src="` + backendUrl + `/GetMap/` + rst + `"></embed>
+						` + proofCards + `
 
-// 	content := `<div class="tab-content">
-// 					<embed class="map" frameborder="0" scrolling="no" marginheight="0"
-// 						marginwidth="0"
-// 						src="` + backendUrl + `/GetMap/` + rst + `"></embed>
-// 						` + proofCards + `
+				</div>`
 
-// 				</div>`
+	mainTab, sidebarTab, radioButton := r.GenerateTabLabels("Journey", index)
 
-// 	mainTab, sidebarTab, radioButton := r.GenerateTabLabels("Journey", index)
-
-// 	return content, mainTab, sidebarTab, radioButton
-// }
+	return content, mainTab, sidebarTab, radioButton
+}
 
 // Generate Timeline
 func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, string, string, string) {
