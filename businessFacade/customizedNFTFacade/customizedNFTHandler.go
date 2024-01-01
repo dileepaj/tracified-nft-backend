@@ -4,6 +4,7 @@ import (
 	b64 "encoding/base64"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -178,7 +179,7 @@ func GetDigitalTwinData(batchID string, productID string) ([]models.Component, e
 	dtUrl := configs.GetDigitalTwinUrl()
 
 	url := dtUrl + bEnc + `?itemId=` + productID
-
+fmt.Println(url)
 	var bearer = configs.GetBearerToken()
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {

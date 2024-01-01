@@ -33,13 +33,16 @@ func HTMLFileGenerator(w http.ResponseWriter, r *http.Request) {
 		err = validations.ValidateHtmlGenerator(generateHTMLRequest)
 		if err != nil {
 			errors.BadRequest(w, err.Error())
+			return
 		} else {
 			// fmt.Println("generateHTMLRequest",generateHTMLRequest)
 			result, err := nftComposerBusinessFacade.GenerateHTMLFile(generateHTMLRequest)
 			if err != nil {
 				errors.BadRequest(w, err.Error())
+				return
 			}
 			commonResponse.SuccessStatus[string](w, result)
+			return
 		}
 	}
 	w.WriteHeader(http.StatusUnauthorized)
@@ -62,12 +65,15 @@ func SVGFileGenerator(w http.ResponseWriter, r *http.Request) {
 		err = validations.ValidateHtmlGenerator(generateSVGRequest)
 		if err != nil {
 			errors.BadRequest(w, err.Error())
+			return
 		} else {
 			result, err := nftComposerBusinessFacade.GenerateSVGFile(generateSVGRequest)
 			if err != nil {
 				errors.BadRequest(w, err.Error())
+				return
 			}
 			commonResponse.SuccessStatus[string](w, result)
+			return
 		}
 	}
 	w.WriteHeader(http.StatusUnauthorized)
