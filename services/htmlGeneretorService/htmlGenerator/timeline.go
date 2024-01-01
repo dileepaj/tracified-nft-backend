@@ -908,7 +908,8 @@ func (r *JMACNFT) GenerateTabLabels(title string, index int) (string, string, st
 func (r *JMACNFT) GenerateProofContentStr(key string, proofInfo models.ValueWithProof) (string, string) {
 	id := strings.ReplaceAll(key, " ", "") + "-modal"
 
-	txnHash, url, err := r.GetTxnHash(proofInfo.TdpId[0])
+	//txnHash, url, err := r.GetTxnHash(proofInfo.TdpId[0])
+	//fmt.Println("proofInfo.TdpId[0]",proofInfo.TdpId[0])
 
 	tab1 := proofModalCount
 	tab2 := proofModalCount + 1
@@ -916,11 +917,11 @@ func (r *JMACNFT) GenerateProofContentStr(key string, proofInfo models.ValueWith
 
 	proofModalCount += 3
 
-	if err != nil {
-		return "", ""
-	}
+	// if err != nil {
+	// 	return "", ""
+	// }
 
-	table := r.GenerateProofTable(txnHash, url, proofInfo)
+	table := r.GenerateProofTable(proofInfo.TdpId[0], "", proofInfo)
 
 	proofTick := `<span class="material-symbols-outlined provable-tick-wrapper provable-val" onclick="openModal('` + id + `')">
 						check_circle
@@ -944,7 +945,7 @@ func (r *JMACNFT) GenerateProofContentStr(key string, proofInfo models.ValueWith
 										<thead>
 											<tr>
 												<th scope="col">Proof Type</th>
-												<th scope="col">Transaction ID</th>
+												
 												<th scope="col">Description</th>
 												<th scope="col">Proofs</th>
 											</tr>
@@ -994,7 +995,7 @@ func (r *JMACNFT) GenerateImgProofModalStr(proofInfo models.ValueWithProof, id s
 															<thead>
 																<tr>
 																	<th scope="col">Proof Type</th>
-																	<th scope="col">Transaction ID</th>
+																
 																	<th scope="col">Description</th>
 																	<th scope="col">Proofs</th>
 																</tr>
@@ -1012,21 +1013,21 @@ func (r *JMACNFT) GenerateImgProofModalStr(proofInfo models.ValueWithProof, id s
 }
 
 // Generate proof table displayed in the modal
-func (r *JMACNFT) GenerateProofTable(txnHash string, url string, proofInfo models.ValueWithProof) string {
+func (r *JMACNFT) GenerateProofTable(tdpid string, url string, proofInfo models.ValueWithProof) string {
 	table := ""
 
 	for _, proof := range proofInfo.Proofs {
-		txnStr := ""
+		// txnStr := ""
 
-		if proof.Name == "" {
-			continue
-		}
+		// if proof.Name == "" {
+		// 	continue
+		// }
 
-		if len(txnHash) > 0 {
-			txnStr = txnHash[0:10] + "..."
-		} else {
-			txnStr = "N/A"
-		}
+		// if len(txnHash) > 0 {
+		// 	txnStr = txnHash[0:10] + "..."
+		// } else {
+		// 	txnStr = "N/A"
+		// }
 
 		descStyle := ""
 
@@ -1038,14 +1039,8 @@ func (r *JMACNFT) GenerateProofTable(txnHash string, url string, proofInfo model
 
 		table += `<tr>
 						<td style="width : 15%">` + proofName + `</td>
-						<td style="max-width : 25%; ">
-							<div class="txn-wrapper">
-								<a href="` + url + `" target="_blank" class="txn-hash-link">` + txnStr + `</a>
-								<span class="copy-icon" onclick="copyToClipboard('` + txnHash + `')"></span>
-							</div>
-						</td>
 						<td style="width : 40%` + descStyle + `">` + proof.Description + `</td>
-						<td><a class="proof-link" href="` + configs.GetTillitUrl() + `/txn/` + txnHash + `" target="_blank">Proof <span class="material-symbols-outlined">
+						<td><a class="proof-link" href="` + configs.GetTillitUrl() + `/search/` + tdpid + `" target="_blank">Proof <span class="material-symbols-outlined">
 							open_in_new
 							</span></a>
 						</td>
