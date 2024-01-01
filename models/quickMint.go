@@ -141,6 +141,7 @@ type Component struct {
 	Coordinates []Coordinate   `json:"coordinates" bson:"coordinates,omitempty"`
 	Children    []Component    `json:"children" bson:"name,omitempty"`
 	Slides      ValueWithProof `json:"slides" bson:"slides,omitempty"`
+	Batch		string
 }
 
 type Coordinate struct {
