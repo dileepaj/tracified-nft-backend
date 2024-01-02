@@ -8,6 +8,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/businessFacade/marketplaceBusinessFacade"
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
+	"github.com/dileepaj/tracified-nft-backend/utilities/commonResponse"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 	"github.com/dileepaj/tracified-nft-backend/utilities/validations"
@@ -21,6 +22,8 @@ func CreateCollection(w http.ResponseWriter, r *http.Request) {
 	err := decoder.Decode(&createCollectionObject)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
+		errors.BadRequest(w, "Invalid visibility setting.")
+		return
 	}
 	err = validations.ValidateInsertCollection(createCollectionObject)
 	if err != nil {
@@ -226,4 +229,24 @@ func GetCollectionByUserPKAndMail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+}
+
+func UpdateCollectionVisibility(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
+	var UpdateObject requestDtos.UpdateCollectionVisibility
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&UpdateObject)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+		errors.BadRequest(w, err.Error())
+		return
+	} else {
+		result, err := marketplaceBusinessFacade.UpdateCollectionVisibility(UpdateObject)
+		if err != nil {
+			logs.WarningLogger.Println("Failed to update visibility of collection : ", err.Error())
+			errors.BadRequest(w, err.Error())
+			return
+		}
+		commonResponse.SuccessStatus[models.NFTCollection](w, result)
+	}
 }

@@ -3,6 +3,7 @@ package marketplaceBusinessFacade
 import (
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 func CreateCollection(collection models.NFTCollection) (string, error) {
@@ -29,4 +30,11 @@ func DeleteCollectionByUserPK(collection requestDtos.DeleteCollectionByUserPK) e
 
 func GetCollectionByUserPKByMail(userid string, publickey string) ([]models.NFTCollection, error) {
 	return CollectionRepository.FindCollectionByKeyAndMail("userid", userid, "publickey", publickey)
+}
+
+func UpdateCollectionVisibility(UpdateObject requestDtos.UpdateCollectionVisibility) (models.NFTCollection, error) {
+	update := bson.M{
+		"$set": bson.M{"isprivate": UpdateObject.IsPrivate},
+	}
+	return CollectionRepository.UpdateCollectionVisibility(UpdateObject, update)
 }

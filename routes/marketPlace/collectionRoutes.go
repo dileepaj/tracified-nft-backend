@@ -48,4 +48,10 @@ var CollectionRoutes = models.Routers{
 		Path:    "/collection/user/{userid}/{publickey}",
 		Handler: apiHandler.GetCollectionByUserPKAndMail,
 	},
+	models.Router{
+		Name:    "Update Collection Visibility",
+		Method:  "PUT",
+		Path:    "/collection-visibility",
+		Handler: apiHandler.UpdateCollectionVisibility,
+	},
 }
