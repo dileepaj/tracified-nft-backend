@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/dileepaj/tracified-nft-backend/commons"
 	"github.com/dileepaj/tracified-nft-backend/configs"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/services"
@@ -131,7 +132,7 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 														<div class="proof-section"><label class="proofbot-data-field">Available Proofs : </label>
 														`
 								for _, proofUrl := range data.Urls {
-									if (proofUrl.Urls != "") && (strings.ToLower(proofUrl.Type)!="poc") {
+									if (proofUrl.Urls != "") && (strings.ToLower(proofUrl.Type) != "poc") {
 										var removeAndsymble string = strings.Replace(proofUrl.Urls, "&", "&amp;", -1)
 
 										htmlBotcard += `<a class="proof-anchor1" href="` + removeAndsymble + `" target="_blank" rel="noopener noreferrer">
@@ -150,7 +151,7 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 			} else if element.Type == "Timeline" {
 				if len(Timelines) > 0 {
 					for _, timelineData := range Timelines {
-						if len(timelineData.TimelineData) != 0 && element.WidgetId != timelineData.WidgetId && configs.GetTenantList()[0] != svgData.TenentId {
+						if (len(timelineData.TimelineData) != 0 && element.WidgetId == timelineData.WidgetId) && !commons.ContainsString(configs.GetTenantList(), svgData.TenentId) {
 							var htmlTimelineHeader string
 							var htmlTimelineBody string
 							var htmlTimelineFooter string
@@ -179,7 +180,7 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 
 								for _, image := range data.Images {
 									htmlTimelineBody += `<p><span class="timeline-value">` + image.Timestamp + `</span></p>`
-									htmlTimelineBody += `<p><span class="timeline-key">` + image.Description + `</span><p>`
+									htmlTimelineBody += `<p><span class="timeline-key">` + image.Description + `</span></p>`
 									htmlTimelineBody += `
 														<div class="img-timeline-image" style="background-image: url(` + image.Image + `);">
 								 						</div>
@@ -189,22 +190,20 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 							}
 							htmlTimelineFooter = `</ul></div></div></div>`
 							htmlBody += htmlTimelineHeader + htmlTimelineBody + htmlTimelineFooter
-						} else if configs.GetTenantList()[0] == svgData.TenentId {
+						} else if commons.ContainsString(configs.GetTenantList(), svgData.TenentId) {
 							base64StringBatch := base64.URLEncoding.EncodeToString([]byte(timelineData.BatchId))
-							updatableTimelineUrl:=configs.GetTimelineANDJourneyMapGeneratorAPI() + timelineData.ProductId +"/"+ base64StringBatch
+							updatableTimelineUrl := configs.GetTimelineANDJourneyMapGeneratorAPI() + timelineData.ProductId + "/" + base64StringBatch
 							var htmlTimelineHeader string
 							var htmlTimelineBody string
 							var htmlTimelineFooter string
 							htmlTimelineHeader += fmt.Sprintf(`<div class="card text-center justify-content-center m-3 default-font round-card" style="max-height: fit-content;">
-							<div class="card-header round-card-header">` + timelineData.Title + `</div>
+							<div class="card-header round-card-header">`+timelineData.Title+`</div>
 																<div class="card-body text-center scroll">
 							<iframe src="%s" width="800" height="600" frameborder="0"></iframe>`, updatableTimelineUrl)
-															  htmlTimelineFooter = `</div></div>`
-															  htmlBody += htmlTimelineHeader + htmlTimelineBody + htmlTimelineFooter
+							htmlTimelineFooter = `</div></div>`
+							htmlBody += htmlTimelineHeader + htmlTimelineBody + htmlTimelineFooter
 						}
 					}
-				} else{
-		
 				}
 			}
 		}

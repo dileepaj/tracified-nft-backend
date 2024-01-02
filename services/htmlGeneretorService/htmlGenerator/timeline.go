@@ -608,7 +608,6 @@ func (r *JMACNFT) GenerateJourneyMap(tab models.Component, index int) (string, s
 			// key := c.Title
 
 			// proofContentStr, proofTick = r.GenerateMapProofContentStr(key, c.Values)
-
 		}
 
 		lat := "0"
@@ -906,8 +905,7 @@ func (r *JMACNFT) GenerateTabLabels(title string, index int) (string, string, st
 func (r *JMACNFT) GenerateProofContentStr(key string, proofInfo models.ValueWithProof) (string, string) {
 	id := strings.ReplaceAll(key, " ", "") + "-modal"
 
-	//txnHash, url, err := r.GetTxnHash(proofInfo.TdpId[0])
-	//fmt.Println("proofInfo.TdpId[0]",proofInfo.TdpId[0])
+	// txnHash, url, err := r.GetTxnHash(proofInfo.TdpId[0])
 
 	tab1 := proofModalCount
 	tab2 := proofModalCount + 1
