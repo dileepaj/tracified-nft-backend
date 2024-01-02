@@ -5,7 +5,6 @@ import (
 
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -76,11 +75,11 @@ func (r *JMACNFT) GenerateSVGTemplateforNFT(data []models.Component) (string, st
 	} */
 
 	htmlStart := `<body><div class="nft-header default-font">
-						<div class="nft-header-content cont-wrapper">
-							<div class="nft-header-title">
+						<div class="nft-header-content cont-wrapper d-flex justify-content-between">
+							<div class="c1">
 								<label id="nftName">` + r.ItemName + `</label>
 							</div>
-							<div class="nft-header-title">
+							<div class="c2">
 							<label id="nftName">` + r.BatchID + `</label>
 							</div>
 						</div>
@@ -619,11 +618,11 @@ func (r *JMACNFT) GenerateJourneyMap(tab models.Component, index int) (string, s
 			lat = strconv.FormatFloat(coordinates[0].Lat, 'g', 7, 64)
 			long = strconv.FormatFloat(coordinates[0].Lng, 'g', 7, 64)
 		}
-		cityName:=""
-		// cityName, err := mapGenerator.GetCityName(lat, long)
-		// if err != nil {
-		// 	logs.ErrorLogger.Println("failed to get city name : ", err.Error())
-		// }
+
+		cityName, err := mapGenerator.GetCityName(lat, long)
+		if err != nil {
+			logs.ErrorLogger.Println("failed to get city name : ", err.Error())
+		}
 
 		proofCards += `	<div class="map-proof-card">
 									<div class="map-proof-title-cont">
@@ -847,7 +846,6 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 }
 
 func (r *JMACNFT) GetWordWrap(value string) string {
-	fmt.Println(len(strings.Split(value, " ")))
 	if len(strings.Split(value, " ")) == 1 {
 		return `style="word-break: break-all;"`
 	} else {
