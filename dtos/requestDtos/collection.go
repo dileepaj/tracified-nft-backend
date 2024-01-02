@@ -16,3 +16,8 @@ type DeleteCollectionById struct {
 type DeleteCollectionByUserPK struct {
 	UserId string `json:"userid" bson:"userid"`
 }
+
+type UpdateCollectionVisibility struct {
+	Id        primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
+	IsPrivate bool               `json:"isprivate" bson:"isprivate"`
+}

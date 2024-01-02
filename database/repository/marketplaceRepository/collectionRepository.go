@@ -62,7 +62,7 @@ func (r *CollectionRepository) FindCollectionbyPublickey(idName string, id strin
 func (r *CollectionRepository) GetAllCollections() ([]models.NFTCollection, error) {
 	var collections []models.NFTCollection
 	findOptions := options.Find()
-	result, err := connections.GetSessionClient(Collection).Find(context.TODO(), bson.D{{}}, findOptions)
+	result, err := connections.GetSessionClient(Collection).Find(context.TODO(), bson.M{"isprivate": true}, findOptions)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured when trying to connect to DB and excute Find query in GetAllCollection:CollectionRepository.go: ", err.Error())
 		return collections, err
@@ -161,4 +161,24 @@ func (r *CollectionRepository) FindCollectionByKeyAndMail(idName1 string, id1 st
 		collection = append(collection, collections)
 	}
 	return collection, nil
+}
+
+func (r *CollectionRepository) UpdateCollectionVisibility(UpdateObject requestDtos.UpdateCollectionVisibility, update primitive.M) (models.NFTCollection, error) {
+	var CollcetionUpdateResponse models.NFTCollection
+	upsert := false
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+	rst := connections.GetSessionClient("collections").FindOneAndUpdate(context.TODO(), bson.M{"_id": UpdateObject.Id}, update, &opt)
+	if rst != nil {
+		err := rst.Decode((&CollcetionUpdateResponse))
+		if err != nil {
+			logs.ErrorLogger.Println("Error Occured while Update Collection visibility", err.Error())
+			return CollcetionUpdateResponse, err
+		}
+		return CollcetionUpdateResponse, err
+	}
+	return CollcetionUpdateResponse, nil
 }
