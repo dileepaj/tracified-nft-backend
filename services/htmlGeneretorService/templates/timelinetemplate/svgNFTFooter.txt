@@ -1,0 +1,187 @@
+        <div id="img-fs-div" class="img-fullscreen">
+            <label onclick="closeFullScreenImg()">
+                <span class="material-symbols-outlined">
+                    close
+                </span>
+            </label>
+            <div id="img-fs-view" class="img-div">
+            </div>
+		</div>
+        </div>
+                    <div class="text-center nft-footer">
+                <div class="nft-footer-content default-font cont-wrapper">
+                    <label>Powered by </label> <img
+                        src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/tracified-white.png"
+                        class="logo" />
+                </div>
+            </div>
+        </div>
+        </body>
+    <script>
+        // Calculate distance between two fingers
+		function distance(event){
+			return Math.hypot(event.touches[0].pageX - event.touches[1].pageX, event.touches[0].pageY - event.touches[1].pageY);
+		};
+		
+		function pinchZoom(imageElement){
+			let imageElementScale = 1;
+
+			let start = {};
+
+			imageElement.addEventListener('touchstart', (event) => {
+				
+				if (event.touches.length === 2) {
+				event.preventDefault(); // Prevent page scroll
+
+				start.x = (event.touches[0].pageX + event.touches[1].pageX) / 2;
+				start.y = (event.touches[0].pageY + event.touches[1].pageY) / 2;
+				start.distance = distance(event);
+				}
+			});
+
+			imageElement.addEventListener('touchmove', (event) => {
+				
+				if (event.touches.length === 2) {
+				event.preventDefault(); 
+				let scale;
+
+				if (event.scale) {
+					scale = event.scale;
+				} else {
+					const deltaDistance = distance(event);
+					scale = deltaDistance / start.distance;
+				}
+
+				imageElementScale = Math.min(Math.max(1, scale), 4);
+
+				// Calculate how much the fingers have moved on the X and Y axis
+				const deltaX = (((event.touches[0].pageX + event.touches[1].pageX) / 2) - start.x) * 2; // x2 for accelarated movement
+				const deltaY = (((event.touches[0].pageY + event.touches[1].pageY) / 2) - start.y) * 2; // x2 for accelarated movement
+
+				// Transform the image to make it grow and move with fingers
+				const transform = `translate3d(${deltaX}px, ${deltaY}px, 0) scale(${imageElementScale})`;
+				imageElement.style.transform = transform;
+				imageElement.style.WebkitTransform = transform;
+				imageElement.style.zIndex = "9999";
+				}
+			});
+
+			imageElement.addEventListener('touchend', (event) => {
+				// Reset image to it's original format
+				imageElement.style.transform = "";
+				imageElement.style.WebkitTransform = "";
+				imageElement.style.zIndex = "";
+			});
+		}
+
+
+		function setTabName(name) {
+			document.getElementById('tab-name').innerText = name;
+		}
+
+        function closeSidebar(tabName) {
+            document.getElementById("sidebar-toggle").checked = false;
+			setTabName(tabName)
+        }
+
+        function openFullScreenImg(id) {
+            var url = document.getElementById(id).style.backgroundImage;
+            var imgFs = document.getElementById('img-fs-div');
+            var img = document.getElementById('img-fs-view');
+
+            img.style.backgroundImage =url;
+            imgFs.style.display = "flex";
+            pinchZoom(img);
+        }
+        function closeFullScreenImg() {
+            var imgFs = document.getElementById('img-fs-div');
+            var img = document.getElementById('img-fs-view');
+
+            img.style.backgroundImage = "";
+            imgFs.style.display = "none"
+        }
+        function onChangeProofToggle () {
+                  var checkbox = document.getElementById('proveToggle');
+                  var provaleAarr = document.getElementsByClassName('provable-val');
+                  var proofWrapper = document.getElementsByClassName('proof-toggle-wrapper');
+                  
+                  if (checkbox.checked == true)
+                  {
+                    for (var i = 0; i < provaleAarr.length; i++) {
+                              provaleAarr[i].classList.add("provable");
+                    }
+                      
+                    proofWrapper[0].style.marginBottom = "20px";
+                  }
+                  else {
+                      for (var i = 0; i < provaleAarr.length; i++) {
+                          provaleAarr[i].classList.remove("provable");
+                      }
+                      proofWrapper[0].style.marginBottom = "40px";
+                  }
+            }
+
+			function openModal(id) {
+				var checkbox = document.getElementById('proveToggle');
+				if (checkbox.checked == true)
+                {
+                    document.getElementById(id).style.visibility = "visible";
+					document.getElementById(id).style.opacity = 1;
+                   
+                }
+				
+			}
+
+			function closeModal(id) {
+				document.getElementById(id).style.visibility = "hidden";
+				document.getElementById(id).style.visibility = 0;
+			}
+
+            function copyToClipboard(val) {
+				navigator.clipboard.writeText(val);
+			}
+
+            function openTab(id1, id2, id3, lbl1, lbl2, lbl3) {
+				document.getElementById(id1).style.display = "flex";
+				document.getElementById(id2).style.display = "none";
+				document.getElementById(id3).style.display = "none";
+
+				document.getElementById(lbl1).classList.add("modal-tab-label-active");
+				document.getElementById(lbl2).classList.remove("modal-tab-label-active");
+				document.getElementById(lbl3).classList.remove("modal-tab-label-active");
+
+
+			}
+
+			function moveLeft(id) {
+                const carousel = document.getElementById(id)
+                const width = carousel.offsetWidth;
+                const pos = carousel.scrollLeft;
+                const scrollX = Math.ceil(pos + width);
+                
+                if(scrollX < carousel.scrollWidth) {
+                   
+                    carousel.scroll({
+						top: 0,
+						left: scrollX,
+						behavior: "smooth",
+					});
+                } 
+			}
+
+			function moveRight(id) {
+                const carousel = document.getElementById(id)
+                const width = carousel.offsetWidth;
+                const pos = carousel.scrollLeft;
+                const scrollX = Math.ceil(pos - width);
+                
+                if(pos > 0) {
+                     carousel.scroll({
+						top: 0,
+						left: scrollX,
+						behavior: "smooth",
+                	});
+                } 
+			}
+    </script>
+</html>

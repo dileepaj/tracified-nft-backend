@@ -2,6 +2,7 @@ package configs
 
 import (
 	"os"
+	"strings"
 
 	"github.com/joho/godotenv"
 )
@@ -19,6 +20,8 @@ var (
 	tillit         = ""
 	nftMarketplace = ""
 	streamingAPI   = ""
+	timelineANDJourneyMapGeneratorAPI = ""
+	tenantList     = ""
 )
 
 func LoadEnv() {
@@ -35,6 +38,8 @@ func LoadEnv() {
 	tillit = os.Getenv("TILLIT")
 	nftMarketplace = os.Getenv("NFT_MARKETPLACE")
 	streamingAPI = os.Getenv("STREAMING_API")
+	timelineANDJourneyMapGeneratorAPI = os.Getenv("TIMELINE_GENERATION_API")
+	tenantList = os.Getenv("TENANT_LIST")
 }
 
 func GetBackenToken() string {
@@ -93,4 +98,14 @@ func GetMarketplaceUrl() string {
 func GetStreamingAPIUrl() string {
 	LoadEnv()
 	return streamingAPI
+}
+
+func GetTimelineANDJourneyMapGeneratorAPI() string {
+	LoadEnv()
+	return timelineANDJourneyMapGeneratorAPI
+}
+
+func GetTenantList() []string {
+	LoadEnv()
+	return strings.Split(tenantList, ",")
 }
