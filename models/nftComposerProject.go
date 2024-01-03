@@ -93,6 +93,7 @@ type ImageData struct {
 	Type        string `json:"Type" bson:"type" validate:"required"`
 	Base64Image string `json:"Base64Image" bson:"base64image" validate:"required"`
 	TenetId     string `json:"TenetId" bson:"tenetid" validate:"required"`
+	Cid         string `json:"Cid" bson:"cid"`
 }
 
 type SaveImageData struct {

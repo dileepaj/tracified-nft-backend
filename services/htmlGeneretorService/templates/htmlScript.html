@@ -134,10 +134,10 @@
     let cardId = "tracified" + data.WidgetId;
     createCard(cardId, data.Title);
     let a = document.createElement("a");
-    a.href = data.Base64Image;
+    a.href = "https://ipfs.io/ipfs/" + data.Cid;
     let image = document.createElement("div");
     image.className = "img-widget-image";
-    image.style = `background-image: url("` + data.Base64Image + `");`;
+    image.style = `background-image: url("https://ipfs.io/ipfs/` + data.Cid + `");`;
     let imageNode = document.getElementById(cardId);
     imageNode.style = "justify-content: center";
     a.appendChild(image);

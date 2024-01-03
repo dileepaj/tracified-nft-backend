@@ -49,6 +49,13 @@ func GenerateHTMLTemplate(htmlData models.HtmlGenerator) (string, error) {
 					</div>
 				</div>
 			  </body>`
+	//empty the base64 image string
+	if len(images) != 0 {
+		for i := range images {
+			images[i].Base64Image = ""
+		}
+	}
+
 	// take json data convert it to string
 	dataString, err := json.Marshal(htmlData)
 	if err != nil {
@@ -99,7 +106,7 @@ func GenerateHTMLTemplate(htmlData models.HtmlGenerator) (string, error) {
 			} else if element.Type == "Image" {
 				if len(images) != 0 {
 					for i, image := range images {
-						if image.Base64Image != "" && element.WidgetId == image.WidgetId {
+						if image.Cid != "" && element.WidgetId == image.WidgetId {
 							jsScripts += `
 		displayImages(data.NftContent.Images[
 		` + strconv.Itoa(i) + `])`
