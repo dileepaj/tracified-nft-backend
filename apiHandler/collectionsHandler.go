@@ -134,6 +134,11 @@ func GetCollectionByPublicKey(w http.ResponseWriter, r *http.Request) {
 		errors.BadRequest(w, ErrorMessage)
 		return
 	} else {
+		if results == nil {
+			errorMessage := "User has no collections"
+			errors.BadRequest(w, errorMessage)
+			return
+		}
 		w.WriteHeader(http.StatusOK)
 		err := json.NewEncoder(w).Encode(results)
 		if err != nil {
@@ -154,6 +159,11 @@ func GetAllCollections(w http.ResponseWriter, r *http.Request) {
 		errors.BadRequest(w, ErrorMessage)
 		return
 	} else {
+		if results == nil {
+			errorMessage := "No collections"
+			errors.BadRequest(w, errorMessage)
+			return
+		}
 		w.WriteHeader(http.StatusOK)
 		err := json.NewEncoder(w).Encode(results)
 		if err != nil {
