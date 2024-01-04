@@ -101,11 +101,11 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 			} else if element.Type == "Image" {
 				if len(images) > 0 {
 					for _, image := range images {
-						if image.Base64Image != "" && element.WidgetId == image.WidgetId {
+						if image.Cid != "" && element.WidgetId == image.WidgetId {
 							htmlBody += `<div class="card text-center justify-content-center m-3 default-font round-card" style="max-height: fit-content;">
 											<div class="card-header round-card-header">` + image.Title + `</div>
 											<div class="card-body justify-content-center scroll">
-											<a href="` + image.Base64Image + `"><div class="img-widget-image" style="background-image: url(` + image.Base64Image + `);"></div>
+											<a href="https://ipfs.io/ipfs/` + image.Cid + `"><div class="img-widget-image" style="background-image: url(https://ipfs.io/ipfs/` + image.Cid + `);"></div>
 											</a></div>
 										</div>`
 						}
@@ -128,7 +128,7 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 														<div class="proof-section"><label class="proofbot-data-field">Available Proofs : </label>
 														`
 								for _, proofUrl := range data.Urls {
-									if (proofUrl.Urls != "") && (strings.ToLower(proofUrl.Type)!="poc") {
+									if (proofUrl.Urls != "") && (strings.ToLower(proofUrl.Type) != "poc") {
 										var removeAndsymble string = strings.Replace(proofUrl.Urls, "&", "&amp;", -1)
 
 										htmlBotcard += `<a class="proof-anchor1" href="` + removeAndsymble + `" target="_blank" rel="noopener noreferrer">
