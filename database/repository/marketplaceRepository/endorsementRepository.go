@@ -143,7 +143,7 @@ func (r *EndorsementRepository) UpDateBestCreators(userID string, update primiti
 
 	}
 }
-func (r *EndorsementRepository) GetPaginatedBestCreators(filterConfig bson.M, projectionData bson.D, pagesize int32, pageNo int32, collectionName string, sortingFeildName string, creators []models.CreatorInfo) (models.PaginatedCreatorInfo, error) {
+func (r *EndorsementRepository) GetPaginatedBestCreators(filterConfig bson.M, projectionData bson.D, pagesize int32, pageNo int32, collectionName string, sortingFeildName string, creators []models.CreatorInfo, sort int) (models.PaginatedCreatorInfo, error) {
 	contentResponse, paginationResponse, err := repository.PaginateResponse[[]models.CreatorInfo](
 		filterConfig,
 		projectionData,
@@ -152,6 +152,7 @@ func (r *EndorsementRepository) GetPaginatedBestCreators(filterConfig bson.M, pr
 		collectionName,
 		sortingFeildName,
 		creators,
+		sort,
 	)
 	var response models.PaginatedCreatorInfo
 	if err != nil {
