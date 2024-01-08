@@ -59,10 +59,10 @@ func (r *CollectionRepository) FindCollectionbyPublickey(idName string, id strin
 	return collections, nil
 }
 
-func (r *CollectionRepository) GetAllCollections() ([]models.NFTCollection, error) {
+func (r *CollectionRepository) GetAllPublicCollections() ([]models.NFTCollection, error) {
 	var collections []models.NFTCollection
 	findOptions := options.Find()
-	result, err := connections.GetSessionClient(Collection).Find(context.TODO(), bson.M{"isprivate": true}, findOptions)
+	result, err := connections.GetSessionClient(Collection).Find(context.TODO(), bson.M{"ispublic": true}, findOptions)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured when trying to connect to DB and excute Find query in GetAllCollection:CollectionRepository.go: ", err.Error())
 		return collections, err
