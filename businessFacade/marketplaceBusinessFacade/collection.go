@@ -10,7 +10,7 @@ func CreateCollection(collection models.NFTCollection) (string, error) {
 	return CollectionRepository.SaveCollection(collection)
 }
 func GetAllCollections() ([]models.NFTCollection, error) {
-	return CollectionRepository.GetAllCollections()
+	return CollectionRepository.GetAllPublicCollections()
 }
 
 func GetCollectionByUserPK(userid string) ([]models.NFTCollection, error) {
@@ -34,7 +34,7 @@ func GetCollectionByUserPKByMail(userid string, publickey string) ([]models.NFTC
 
 func UpdateCollectionVisibility(UpdateObject requestDtos.UpdateCollectionVisibility) (models.NFTCollection, error) {
 	update := bson.M{
-		"$set": bson.M{"isprivate": UpdateObject.IsPrivate},
+		"$set": bson.M{"ispublic": UpdateObject.IsPublic},
 	}
 	return CollectionRepository.UpdateCollectionVisibility(UpdateObject, update)
 }

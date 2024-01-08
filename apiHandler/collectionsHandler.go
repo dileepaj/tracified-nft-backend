@@ -29,19 +29,13 @@ func CreateCollection(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		errors.BadRequest(w, err.Error())
 	} else {
-		_, err1 := marketplaceBusinessFacade.CreateCollection(createCollectionObject)
+		rst, err1 := marketplaceBusinessFacade.CreateCollection(createCollectionObject)
 		if err1 != nil {
 			ErrorMessage := err1.Error()
 			errors.BadRequest(w, ErrorMessage)
 			return
 		} else {
-
-			w.WriteHeader(http.StatusOK)
-			message := "New Collection Added"
-			err = json.NewEncoder(w).Encode(message)
-			if err != nil {
-				logs.ErrorLogger.Println(err)
-			}
+			commonResponse.SuccessStatus[string](w, rst)
 			return
 		}
 	}
