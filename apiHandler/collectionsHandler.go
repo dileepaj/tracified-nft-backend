@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	ipfsbusinessfacade "github.com/dileepaj/tracified-nft-backend/businessFacade/ipfsBusinessFacade"
 	"github.com/dileepaj/tracified-nft-backend/businessFacade/marketplaceBusinessFacade"
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
@@ -17,7 +18,7 @@ import (
 
 func CreateCollection(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	var createCollectionObject models.NFTCollection
+	var createCollectionObject models.IpfsObjectForCollections
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&createCollectionObject)
 	if err != nil {
@@ -25,17 +26,17 @@ func CreateCollection(w http.ResponseWriter, r *http.Request) {
 		errors.BadRequest(w, "Invalid visibility setting.")
 		return
 	}
-	err = validations.ValidateInsertCollection(createCollectionObject)
+	err = validations.ValidateInsertCollection(createCollectionObject.CollectionDetails)
 	if err != nil {
 		errors.BadRequest(w, err.Error())
 	} else {
-		rst, err1 := marketplaceBusinessFacade.CreateCollection(createCollectionObject)
-		if err1 != nil {
-			ErrorMessage := err1.Error()
+		cid, ipfserr := ipfsbusinessfacade.UploadCollectionsToIpfs(createCollectionObject)
+		if ipfserr != nil {
+			ErrorMessage := ipfserr.Error()
 			errors.BadRequest(w, ErrorMessage)
 			return
 		} else {
-			commonResponse.SuccessStatus[string](w, rst)
+			commonResponse.SuccessStatus[string](w, cid)
 			return
 		}
 	}

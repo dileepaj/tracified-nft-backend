@@ -3,6 +3,7 @@ package marketplaceRepository
 import (
 	"context"
 
+	"github.com/dileepaj/tracified-nft-backend/commons"
 	"github.com/dileepaj/tracified-nft-backend/database/connections"
 	"github.com/dileepaj/tracified-nft-backend/database/repository"
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
@@ -15,6 +16,7 @@ import (
 
 type CollectionRepository struct{}
 
+var DbName = commons.GoDotEnvVariable("DATABASE_NAME")
 var Collection = "collections"
 var Svg = "svg"
 var Txn = "txn"
@@ -181,4 +183,48 @@ func (r *CollectionRepository) UpdateCollectionVisibility(UpdateObject requestDt
 		return CollcetionUpdateResponse, err
 	}
 	return CollcetionUpdateResponse, nil
+}
+
+func (r *CollectionRepository) FindCollectionByKeyAndMailAndName(idName1 string, id1 string, idName2 string, id2 string, idName3 string, id3 string) (models.NFTCollection, error) {
+	var collection models.NFTCollection
+	rst, err := repository.FindById1Id2Id3(id1, idName1, id2, idName2, id3, idName3, Collection)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+		return collection, err
+	}
+	for rst.Next(context.TODO()) {
+		err = rst.Decode(&collection)
+		if err != nil {
+			logs.ErrorLogger.Println("Error occured while retreving data from collection document in GetDocumentByID:documentRepository.go: ", err.Error())
+			return collection, err
+		}
+	}
+	return collection, nil
+}
+
+func (r *CollectionRepository) UpdateCollectionDetails(Id primitive.ObjectID, updateObj models.NFTCollection) (models.NFTCollection, error) {
+	var response models.NFTCollection
+	session, err := connections.GetMongoSession()
+	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session : ", err.Error())
+	}
+	defer session.EndSession(context.TODO())
+	upsert := false
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+	update := bson.M{"$set": updateObj}
+	rst := session.Client().Database(DbName).Collection(Collection).FindOneAndUpdate(context.TODO(), bson.M{"_id": Id}, update, &opt)
+	if rst != nil {
+		err := rst.Decode(&response)
+		if err != nil {
+			logs.ErrorLogger.Println("Error occured while updating data from DB : ", err.Error())
+			return response, err
+		}
+		return response, nil
+	} else {
+		return response, nil
+	}
 }
