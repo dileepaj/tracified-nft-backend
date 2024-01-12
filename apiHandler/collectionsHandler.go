@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 
 	ipfsbusinessfacade "github.com/dileepaj/tracified-nft-backend/businessFacade/ipfsBusinessFacade"
 	"github.com/dileepaj/tracified-nft-backend/businessFacade/marketplaceBusinessFacade"
+	"github.com/dileepaj/tracified-nft-backend/commons"
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/commonResponse"
@@ -120,16 +122,57 @@ func GetCollectionByUserPK(w http.ResponseWriter, r *http.Request) {
 
 }
 
+/**
+** /collection/{publickey}?limit=10?page=1?sort=-1/1
+ */
 func GetCollectionByPublicKey(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
 	vars := mux.Vars(r)
-	results, err1 := marketplaceBusinessFacade.GetCollectionByPublicKey(vars["publickey"])
+	var paginationRequest requestDtos.CollectionPagination
+
+	pgsize, err1 := strconv.Atoi(r.URL.Query().Get("limit"))
+	if err1 != nil || pgsize <= 0 {
+		_pgsize, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFUALT_LIMIT"))
+		if envErr != nil {
+			errors.InternalError(w, "Something went wrong")
+			logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+			return
+		}
+		pgsize = _pgsize
+	}
+	paginationRequest.PageSize = int32(pgsize)
+
+	requestedPage, err2 := strconv.Atoi(r.URL.Query().Get("page"))
+	if err2 != nil || requestedPage <= -1 {
+		_requestedPage, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFAULT_PAGE"))
+		if envErr != nil {
+			errors.InternalError(w, "Something went wrong")
+			logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+			return
+		}
+		requestedPage = _requestedPage
+	}
+	paginationRequest.RequestedPage = int32(requestedPage)
+
+	sort, err := strconv.Atoi(r.URL.Query().Get("sort"))
+	if err != nil || sort != -1 && sort != 1 {
+		_sort, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFAULT_SORT"))
+		if envErr != nil {
+			errors.InternalError(w, "Something went wrong")
+			logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+			return
+		}
+		sort = _sort
+	}
+	paginationRequest.SortType = sort
+
+	results, err1 := marketplaceBusinessFacade.GetCollectionByPublicKeyPaginated(paginationRequest, vars["publickey"])
 	if err1 != nil {
 		ErrorMessage := err1.Error()
 		errors.BadRequest(w, ErrorMessage)
 		return
 	} else {
-		if results == nil {
+		if results.Content == nil {
 			errorMessage := "User has no collections"
 			errors.BadRequest(w, errorMessage)
 			return
@@ -144,17 +187,56 @@ func GetCollectionByPublicKey(w http.ResponseWriter, r *http.Request) {
 
 }
 
+/**
+** /collection?limit=10?page=1?sort=-1/1
+ */
 func GetAllCollections(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
 	log.Println("calling func Get All Collections....")
-	results, err1 := marketplaceBusinessFacade.GetAllCollections()
+	var paginationRequest requestDtos.CollectionPagination
+	pgsize, err1 := strconv.Atoi(r.URL.Query().Get("limit"))
+	if err1 != nil || pgsize <= 0 {
+		_pgsize, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFUALT_LIMIT"))
+		if envErr != nil {
+			errors.InternalError(w, "Something went wrong")
+			logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+			return
+		}
+		pgsize = _pgsize
+	}
+	paginationRequest.PageSize = int32(pgsize)
 
+	requestedPage, err2 := strconv.Atoi(r.URL.Query().Get("page"))
+	if err2 != nil || requestedPage <= -1 {
+		_requestedPage, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFAULT_PAGE"))
+		if envErr != nil {
+			errors.InternalError(w, "Something went wrong")
+			logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+			return
+		}
+		requestedPage = _requestedPage
+	}
+	paginationRequest.RequestedPage = int32(requestedPage)
+
+	sort, err := strconv.Atoi(r.URL.Query().Get("sort"))
+	if err != nil || sort != -1 && sort != 1 {
+		_sort, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFAULT_SORT"))
+		if envErr != nil {
+			errors.InternalError(w, "Something went wrong")
+			logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+			return
+		}
+		sort = _sort
+	}
+	paginationRequest.SortType = sort
+
+	results, err1 := marketplaceBusinessFacade.GetAllCollectionsPaginated(paginationRequest)
 	if err1 != nil {
 		ErrorMessage := err1.Error()
 		errors.BadRequest(w, ErrorMessage)
 		return
 	} else {
-		if results == nil {
+		if results.Content == nil {
 			errorMessage := "No collections"
 			errors.BadRequest(w, errorMessage)
 			return
