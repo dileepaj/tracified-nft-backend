@@ -198,7 +198,7 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 							var htmlTimelineFooter string
 							htmlTimelineHeader += fmt.Sprintf(`<div class="card text-center justify-content-center m-3 default-font round-card" style="max-height: fit-content;">
 							<div class="card-header round-card-header">`+timelineData.Title+`</div>
-																<div class="card-body text-center scroll">
+																<div class="card-body card-body-for-timeline text-center scroll">
 							<iframe src="%s" width="800" height="600" frameborder="0"></iframe>`, updatableTimelineUrl)
 							htmlTimelineFooter = `</div></div>`
 							htmlBody += htmlTimelineHeader + htmlTimelineBody + htmlTimelineFooter
