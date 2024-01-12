@@ -10,5 +10,6 @@ type NFTCollection struct {
 	OrganizationName string             `json:"OrganizationName" bson:"organizationname"`
 	PublicKey        string             `json:"PublicKey" bson:"publickey"`
 	IsPublic         bool               `json:"ispublic" bson:"ispublic"`
-	ThumbnailID      string             `json:"thumbnailid" bson:"thumbnailid" validate:"required"`
+	CID              string             `json:"cid" bson:"cid"`
+	Images           []ImageObject      `json:"images" bson:"images"`
 }
