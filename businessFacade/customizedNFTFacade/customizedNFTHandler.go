@@ -15,6 +15,7 @@ import (
 	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
+	"github.com/sirupsen/logrus"
 	"github.com/xlzd/gotp"
 	"go.mongodb.org/mongo-driver/bson"
 	"gopkg.in/gomail.v2"
@@ -178,6 +179,7 @@ func GetDigitalTwinData(batchID string, productID string) ([]models.Component, e
 	dtUrl := configs.GetDigitalTwinUrl()
 
 	url := dtUrl + bEnc + `?itemId=` + productID
+	logrus.Info("NFT URL ", url)
 
 	var bearer = configs.GetBearerToken()
 	req, err := http.NewRequest("GET", url, nil)

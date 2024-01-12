@@ -144,6 +144,42 @@ type Component struct {
 	Batch		string
 }
 
+type Component2 struct {
+	Title       string         `json:"title" bson:"title,omitempty"`
+	Name        string         `json:"name" bson:"name,omitempty"`
+	Item        string         `json:"item" bson:"item,omitempty"`
+	VerticalTab []Component3    `json:"verticalTab" bson:"verticalTab,omitempty"`
+	Tabs        []Component3    `json:"tabs" bson:"tabs,omitempty"`
+	Subtitle    string         `json:"subtitle" bson:"subtitle,omitempty"`
+	Component   string         `json:"component" bson:"component,omitempty"`
+	Icon        string         `json:"icon" bson:"icon,omitempty"`
+	Images      Images         `json:"images" bson:"images,omitempty"`
+	Key         string         `json:"key" bson:"key,omitempty"`
+	Value       any            `json:"value" bson:"value,omitempty"`
+	Coordinates []Coordinate   `json:"coordinates" bson:"coordinates,omitempty"`
+	Children    []Component3    `json:"children" bson:"name,omitempty"`
+	Slides      ValueWithProof `json:"slides" bson:"slides,omitempty"`
+	Batch		string
+}
+
+type Component3 struct {
+	Title       string         `json:"title" bson:"title,omitempty"`
+	Name        string         `json:"name" bson:"name,omitempty"`
+	Item        string         `json:"item" bson:"item,omitempty"`
+	VerticalTab []Component3    `json:"verticalTab" bson:"verticalTab,omitempty"`
+	Tabs        []Component    `json:"tabs" bson:"tabs,omitempty"`
+	Subtitle    string         `json:"subtitle" bson:"subtitle,omitempty"`
+	Component   string         `json:"component" bson:"component,omitempty"`
+	Icon        string         `json:"icon" bson:"icon,omitempty"`
+	Images      Images         `json:"images" bson:"images,omitempty"`
+	Key         string         `json:"key" bson:"key,omitempty"`
+	Value    	ValueWithProof `json:"value" bson:"value,omitempty"`
+	Coordinates []Coordinate   `json:"coordinates" bson:"coordinates,omitempty"`
+	Children    []Component3    `json:"children" bson:"name,omitempty"`
+	Slides      ValueWithProof `json:"slides" bson:"slides,omitempty"`
+	Batch		string
+}
+
 type Coordinate struct {
 	Title       string         `json:"title" bson:"title,omitempty"`
 	Description string         `json:"description" bson:"description,omitempty"`
@@ -162,6 +198,14 @@ type ValueWithProof struct {
 	Provable bool     `json:"provable" bson:"provable,omitempty"`
 	Proofs   []Proof  `json:"proofs" bson:"proofs,omitempty"`
 	Value    any      `json:"value" bson:"value,omitempty"`
+	UserId   []string `json:"userid" bson:"userid,omitempty"`
+	TdpId    []string `json:"tdpid" bson:"tdpid,omitempty"`
+}
+
+type ValueWithProof1 struct {
+	Provable bool     `json:"provable" bson:"provable,omitempty"`
+	Proofs   []Proof  `json:"proofs" bson:"proofs,omitempty"`
+	Value    string      `json:"value" bson:"value,omitempty"`
 	UserId   []string `json:"userid" bson:"userid,omitempty"`
 	TdpId    []string `json:"tdpid" bson:"tdpid,omitempty"`
 }

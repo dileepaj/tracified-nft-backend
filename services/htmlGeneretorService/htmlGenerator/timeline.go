@@ -32,7 +32,7 @@ var (
 	styling         = services.ReadFromFile("services/htmlGeneretorService/templates/timelinetemplate/svgNFTStyles.css") //!Need to implement
 	styleStart1     = `<style>`
 	styleEnd        = `</style></head>`
-	htmlBody        = ""
+	htmlBody        = "</div></div>"
 	mapRepository   customizedNFTrepository.MapRepository
 	backendUrl      = configs.GetNftBackendBaseUrl()
 	proofModalCount = 0
@@ -74,41 +74,23 @@ func (r *JMACNFT) GenerateSVGTemplateforNFT(data []models.Component) (string, st
 		}
 	} */
 
-	htmlStart := `<body><div class="nft-header default-font">
+	htmlStart := `<div class="base-layer"><body><div class="nft-header default-font layer-1">
 						<div class="nft-header-content cont-wrapper d-flex justify-content-between">
 							<div class="c1">
-								<label id="nftName">` + r.ItemName + `</label>
+								<label id="nftName" class="nftName">` + r.ItemName + `</label>
 							</div>
 							<div class="c2">
-							<label id="nftName">` + r.BatchID + `</label>
+							<label id="nftName" class="nftName">` + r.BatchID + `</label>
 							</div>
 						</div>
 					</div>
-					<div class="d-flex justify-content-center align-content-center flex-wrap" id="container">`
+					<div class="d-flex justify-content-center align-content-center flex-wrap layer-2" id="container"><div class="proof-toggle-wrapper cont-wrapper">`
 
 	// iframeImg, thumb := r.GenerateTopSection(data)
 
-	proofToggle := `<div class="proof-toggle-wrapper cont-wrapper">
-							<label>View available blockchain proofs</label>
-							<label class="switch">
-							<input id="proveToggle" type="checkbox" onclick="onChangeProofToggle()" />
-							<span class="slider round">
-							</span>
-							</label>
-									</div>
-						<div class="proof-tip-wrapper cont-wrapper provable-val">
-							<label>
-							Click on 
-							<span class="material-symbols-outlined">
-							check_circle
-							</span>
-							icons to view proofs.
-							</label>
-						</div>`
-
 	r.GenerateContent(data)
 
-	template := svgStart + styleStart1 + styling + styleEnd + htmlStart + proofToggle + htmlBody + svgEnd
+	template := svgStart + styleStart1 + styling + styleEnd + htmlStart + htmlBody + svgEnd
 	htmlBody = ""
 	txnMap = make(map[string][]string)
 	/* template = strings.(template)
@@ -133,7 +115,7 @@ func (r *JMACNFT) GenerateTopSection(data []models.Component) (string, string) {
 			for _, val := range arr {
 				if val.Component == "key-value" && val.Key == "Video Link" {
 
-					var valueWithProof models.ValueWithProof
+					var valueWithProof models.ValueWithProof1
 
 					decodeErr := mapstructure.Decode(val.Value, &valueWithProof)
 					if decodeErr != nil {
@@ -141,17 +123,17 @@ func (r *JMACNFT) GenerateTopSection(data []models.Component) (string, string) {
 					}
 
 					video += `<video style="max-width: 90%" autoplay="true" playsinline="true" controls="true" width="500px" height="300px" allow="autoplay" loop="true" muted="muted">
-									<source src="` + valueWithProof.Value.(string) + `"  type="video/mp4" />
+									<source src="` + valueWithProof.Value + `"  type="video/mp4" />
 							</video>`
 				} else if val.Component == "key-value" && val.Key == "Thumbnail" {
-					var valueWithProof models.ValueWithProof
+					var valueWithProof models.ValueWithProof1
 
 					decodeErr := mapstructure.Decode(val.Value, &valueWithProof)
 					if decodeErr != nil {
 						logs.ErrorLogger.Println("Failed to decode map data : ", decodeErr.Error())
 					}
 
-					thumbnail = valueWithProof.Value.(string)
+					thumbnail = valueWithProof.Value
 
 				} else if val.Component == "image-slider" {
 
@@ -223,37 +205,12 @@ func (r *JMACNFT) GenerateVerticalTabs(data models.Component) {
 		}
 	}
 
-	icon := ""
-
-	if data.Title == "Digital Twin" {
-		icon = `<span class="digital-twin-icon"></span>`
-	} else {
-		icon = `<img src="` + data.Icon + `" />`
-	}
 	htmlBody += `<div class="widget-div cont-wrapper">
 					<div class="wrap-collabsible">
-						<input id="collapsible3" class="toggle" type="radio" name="toggle" checked></input>
-						<label for="collapsible3" class="lbl-toggle" tabindex="0">
-							` + icon + `
-							<label> Timeline and Journey </label>
-							<span class="arrow-down-icon"></span>
-						</label>
-
-						<div class="collapsible-content">
-							<div class="toggle-div">
-								<input id="sidebar-toggle" type="checkbox" checked></input>
-								<label class="tab-header" for="sidebar-toggle"><span class="open-menu-icon"></span> <label id="tab-name"></label></label>
-								<div id="sidebar">
-									<div id="sidebar-inner">
-										<ul class="sidebar-tabs">
-											` + sidebarTabs + `
-										</ul>
-									</div>
-								</div>
-							</div>
+						<div class="collapsible-content-none">
 							<div class="content-inner">
 								<div class="tabbed">
-									<div style="display: flex; flex-direction : row">
+									<div style="display: flex; flex-direction : column">
 										` + radioButtons + `
 										<ul class="tabs">
 											` + mainTabs + `
@@ -299,6 +256,24 @@ func (r *JMACNFT) GenerateOverview(data models.Component) (string, string, strin
 		}
 	}
 
+	proofToggle := `<div class="proof-toggle-btn"><div class="proof-toggle-wrapper cont-wrapper">
+	<label>View available blockchain proofs</label>
+	<label class="switch">
+	<input id="proveToggle" type="checkbox" onclick="onChangeProofToggle()" />
+	<span class="slider round">
+	</span>
+	</label>
+			</div>
+<div class="proof-tip-wrapper cont-wrapper provable-val">
+	<label>
+	Click on 
+	<span class="material-symbols-outlined">
+	check_circle
+	</span>
+	icons to view proofs.
+	</label>
+</div></div>`
+	content += proofToggle
 	return content, mainTabs, sidebarTabs, radioButtons
 }
 
@@ -385,7 +360,7 @@ func (r *JMACNFT) GenerateDecoratedKeyValues(data models.Component, index int) s
 			/* if child.Icon != "" {
 				img = `<img class="dt-icon-img" src="` + child.Icon + `" />`
 			} */
-			if decoratedVal.Value != nil && decoratedVal.Value.(string) != "" {
+			if decoratedVal.Value != "" {
 				val = decoratedVal.Value.(string)
 			}
 
@@ -696,11 +671,14 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 
 	for i, stage := range data.Children {
 		infoStr := ""
+		if stage.Icon == "" {
+			stage.Icon = "https://s3.ap-south-1.amazonaws.com/tracified-image-storage/ecom/data-icons/Tatenokawa/4.png"
+		}
 		for j, info := range stage.Children {
 			if info.Component == "key-value" {
-
 				val := "No Data Available"
 				var decoratedVal models.ValueWithProof
+
 				decodeErr := mapstructure.Decode(info.Value, &decoratedVal)
 				if decodeErr != nil {
 					logs.ErrorLogger.Println("failed to decode map : ", decodeErr.Error())
@@ -764,10 +742,10 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 						nextStr := "carousel__slide" + strconv.Itoa(i) + strconv.Itoa(next) */
 						dateStr := strings.ReplaceAll(strings.Split(image.Time, "T")[0], "-", "/")
 
-						// imgKey := "timeline_" + strconv.Itoa(i) + "_" + strconv.Itoa(j) // create image key
-
-						imgUrl := r.fetchImgURL(image.Img) // upload image to ipfs and get the url
-						// fmt.Println(imgUrl)
+						imgUrl := image.Img
+						if !strings.HasPrefix(image.Img, "http") {
+							imgUrl = r.fetchImgURL(image.Img)
+						}
 
 						if len(imgs) > 1 {
 							imgCont += `<li id="carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `"
@@ -879,8 +857,7 @@ func (r *JMACNFT) GetDecoratedKeyValueIcon(key string) string {
 func (r *JMACNFT) GenerateTabLabels(title string, index int) (string, string, string) {
 	sidebarTab := `<li class="tab">
 						<label for="tab` + strconv.Itoa(index+1) + `" onclick="closeSidebar('` + title + `')">
-							` + title + `
-							<span class="tab-arrow-icon"></span>
+							` + title + `	
 						</label>
 					</li>`
 	checked := ""
@@ -894,7 +871,6 @@ func (r *JMACNFT) GenerateTabLabels(title string, index int) (string, string, st
 	mainTab := `<li class="tab">
 					<label for="tab` + strconv.Itoa(index+1) + `" onclick="setTabName('` + title + `')">
 					` + title + `
-						<span class="tab-arrow-icon"></span>
 					</label>
 				</li>`
 
