@@ -70,7 +70,7 @@ func GetNFTByCollection(paginationData requestDtos.NFTsForMatrixView, collection
 	}
 	projection := GetProjectionDataNFTMatrixView()
 	var nfts []models.NFTContentforMatrix
-	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts)
+	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts, paginationData.SortType)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occurred :", err.Error())
 		return models.Paginateresponse(response), err
@@ -101,7 +101,7 @@ func GetNFTPagination(paginationData requestDtos.NFTsForMatrixView) (models.Pagi
 	}
 	projection := GetProjectionDataNFTMatrixView()
 	var nfts []models.NFTContentforMatrix
-	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts)
+	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts, paginationData.SortType)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occurred :", err.Error())
 		return models.Paginateresponse(response), err
@@ -116,7 +116,7 @@ func GetPaginatedNFTbySellingStatus(paginationData requestDtos.NFTsForMatrixView
 	}
 	projection := GetProjectionDataNFTMatrixView()
 	var nfts []models.NFTContentforMatrix
-	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts)
+	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts, paginationData.SortType)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occurred :", err.Error())
 		return models.Paginateresponse(response), err
@@ -140,7 +140,7 @@ func GetPaginatedNFTbyStatusFilter(paginationData requestDtos.NFTsForMatrixView)
 	projection := GetProjectionDataNFTMatrixView()
 
 	var nfts []models.NFTContentforMatrix
-	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts)
+	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts, paginationData.SortType)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured :", err.Error())
 		return models.Paginateresponse(response), err
@@ -164,7 +164,7 @@ func GetPaginatedOnSaleNFTbyStatusFilter(paginationData requestDtos.NFTsForMatri
 	projection := GetProjectionDataNFTMatrixView()
 
 	var nfts []models.NFTContentforMatrix
-	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts)
+	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts, paginationData.SortType)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured :", err.Error())
 		return models.Paginateresponse(response), err
@@ -180,7 +180,7 @@ func GetPaginatedResponseforBestCreations(paginationData requestDtos.NFTsForMatr
 	}
 	var nfts []models.NFTContentforMatrix
 	projection := GetProjectionDataNFTMatrixView()
-	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts)
+	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts, paginationData.SortType)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured :", err.Error())
 		return models.Paginateresponse(response), err
@@ -223,7 +223,7 @@ func GEtNFTbyTagsName(paginationData requestDtos.NFTsForMatrixView, tagToSearch 
 	}
 	projection := GetProjectionDataNFTMatrixView()
 	var nfts []models.NFTContentforMatrix
-	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts)
+	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts, paginationData.SortType)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occurred :", err.Error())
 		return models.Paginateresponse(response), err
@@ -330,7 +330,7 @@ func GetUserProfileContent(paginationData requestDtos.NFTsForMatrixView, filterq
 	}
 	projection := GetProjectionDataNFTMatrixView()
 
-	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts)
+	response, err := nftRepository.GetNFTPaginatedResponse(filter, projection, paginationData.PageSize, paginationData.RequestedPage, "nft", "_id", nfts, paginationData.SortType)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occurred :", err.Error())
 		return models.Paginateresponse(response), err

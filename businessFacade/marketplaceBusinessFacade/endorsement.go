@@ -112,7 +112,7 @@ func UpdateBestCreators(creatorlist []models.CreatorsList) ([]models.Endorse, er
 	return creator, nil
 }
 
-func GetPaginatedBestCreators(paginationData requestDtos.CreatorInfoforMatrixView) (models.PaginatedCreatorInfo, error) {
+func GetPaginatedBestCreators(paginationData requestDtos.CreatorInfoforMatrixView, sort int) (models.PaginatedCreatorInfo, error) {
 	projection := bson.D{
 		{Key: "name", Value: 1},
 		{Key: "publickey", Value: 1},
@@ -130,7 +130,9 @@ func GetPaginatedBestCreators(paginationData requestDtos.CreatorInfoforMatrixVie
 		paginationData.RequestedPage,
 		"endorsement",
 		"publickey",
-		creatorinfo)
+		creatorinfo,
+		sort,
+	)
 	if err != nil {
 		return response, err
 	}

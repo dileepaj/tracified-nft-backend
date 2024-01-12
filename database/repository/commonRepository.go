@@ -262,7 +262,7 @@ type paginateResponseType interface {
 	[]models.NFTContentforMatrix | []models.CreatorInfo | []models.ReviewsforPagination | []models.WalletNFTContentforMatrix
 }
 
-func PaginateResponse[PaginatedData paginateResponseType](filterConfig bson.M, projectionData bson.D, pagesize int32, pageNo int32, collectionName string, sortingFeildName string, object PaginatedData) (PaginatedData, models.PaginationTemplate, error) {
+func PaginateResponse[PaginatedData paginateResponseType](filterConfig bson.M, projectionData bson.D, pagesize int32, pageNo int32, collectionName string, sortingFeildName string, object PaginatedData, sort int) (PaginatedData, models.PaginationTemplate, error) {
 	var paginationdata models.PaginationTemplate
 	ctx := context.Background()
 	DbName := commons.GoDotEnvVariable("DATABASE_NAME")
@@ -279,7 +279,7 @@ func PaginateResponse[PaginatedData paginateResponseType](filterConfig bson.M, p
 	collection := dbConnection.Collection(collectionName)
 	projection := projectionData
 	// var nfts []models.PaginateResponseMatrix
-	paginatedData, paginateerr := paginate.New(collection).Context(ctx).Limit(limit).Page(page).Sort(sortingFeildName, -1).Select(projection).Filter(filter).Decode(&object).Find()
+	paginatedData, paginateerr := paginate.New(collection).Context(ctx).Limit(limit).Page(page).Sort(sortingFeildName, sort).Select(projection).Filter(filter).Decode(&object).Find()
 	paginationdata.TotalElements = int32(paginatedData.Pagination.Total)
 	paginationdata.TotalPages = int32(paginatedData.Pagination.TotalPage)
 	paginationdata.Currentpage = int32(paginatedData.Pagination.Page)
