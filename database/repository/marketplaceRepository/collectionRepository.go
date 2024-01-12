@@ -228,3 +228,22 @@ func (r *CollectionRepository) UpdateCollectionDetails(Id primitive.ObjectID, up
 		return response, nil
 	}
 }
+func (r *CollectionRepository) PaginateCollectionResponse(filterConfig bson.M, projectionData bson.D, pagesize int32, pageNo int32, collectionName string, sortingFeildName string, collections []models.NFTCollection, sort int) (models.CollectionPaginationResponse, error) {
+	var response models.CollectionPaginationResponse
+	contentResponse, paginationResponse, err := repository.PaginateResponse[[]models.NFTCollection](
+		filterConfig,
+		projectionData,
+		pagesize,
+		pageNo,
+		collectionName,
+		sortingFeildName,
+		collections,
+		sort,
+	)
+	if err != nil {
+		return response, err
+	}
+	response.Content = contentResponse
+	response.PaginationInfo = paginationResponse
+	return response, nil
+}
