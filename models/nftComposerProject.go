@@ -132,6 +132,7 @@ type HtmlGenerator struct {
 	CreatorName      string             `json:"CreatorName" bson:"creatorname"`
 	ContentOrderData []ContentOrderData `json:"ContentOrderData" bson:"Contentorderdata" validate:"required"`
 	NftContent       NFTContent         `json:"NftContent" bson:"nftcontent" validate:"required"`
+	DownloadRequest  bool               `json:"DownloadRequest" bson:"downloadrequest"`
 }
 type NFTComposerProject struct {
 	Id               primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
