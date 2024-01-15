@@ -785,7 +785,7 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 						<section class="carousel ` + disabledClass + `" aria-label="Gallery">
 							<div class="carousel__snapper">
 								<a onclick="moveRight('` + imgSliderId + `')"
-									class="carousel__prev" style="cursor:pointer">Go to last slide</a>
+									class="carousel__prev" style="cursor:none">Go to last slide</a>
 								<a onclick="moveLeft('` + imgSliderId + `')"
 									class="carousel__next" style="cursor:pointer">Go to next slide</a>
 							</div>

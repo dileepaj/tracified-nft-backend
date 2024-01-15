@@ -42,7 +42,7 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 					class="nft-logo"/>
 					<label>` + svgData.NFTName + `</label>
 					</div>
-				<div class="d-flex justify-content-center align-content-center flex-wrap" id="container">`
+				<div class="d-flex justify-content-around align-content-center flex-wrap" id="container">`
 
 	if len(contentOrderData) > 0 {
 		for _, element := range contentOrderData {

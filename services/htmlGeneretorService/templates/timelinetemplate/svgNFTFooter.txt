@@ -146,35 +146,54 @@
 
 			}
 
-			function moveLeft(id) {
-                const carousel = document.getElementById(id)
-                const width = carousel.offsetWidth;
-                const pos = carousel.scrollLeft;
-                const scrollX = Math.ceil(pos + width);
-                
-                if(scrollX < carousel.scrollWidth) {
-                   
-                    carousel.scroll({
-						top: 0,
-						left: scrollX,
-						behavior: "smooth",
-					});
-                } 
-			}
+    function moveLeft(id) {
+      const clickedElement = document.querySelector(`[onclick="moveLeft('${id}')"]`);
+      const clickedElement2 = document.querySelector(`[onclick="moveRight('${id}')"]`);
+      const carousel = document.getElementById(id)
+      const width = carousel.offsetWidth;
+      const pos = carousel.scrollLeft;
+      const scrollX = Math.ceil(pos + width);
+      console.log('scrollX < carousel.scrollWidth', scrollX < carousel.scrollWidth)
+      if (scrollX < carousel.scrollWidth) {
+        carousel.scroll({
+          top: 0,
+          left: scrollX,
+          behavior: "smooth",
+        });
+        if (clickedElement) {
+          clickedElement.style.cursor = "pointer";
+          clickedElement2.style.cursor = "pointer";
+        }
+      } else {
+        // Get the clicked element and change its cursor
+        if (clickedElement) {
+          clickedElement.style.cursor = "none";   
+        }
+      }
+    }
 
-			function moveRight(id) {
-                const carousel = document.getElementById(id)
-                const width = carousel.offsetWidth;
-                const pos = carousel.scrollLeft;
-                const scrollX = Math.ceil(pos - width);
-                
-                if(pos > 0) {
-                     carousel.scroll({
-						top: 0,
-						left: scrollX,
-						behavior: "smooth",
-                	});
-                } 
-			}
+    function moveRight(id) {
+      const clickedElement = document.querySelector(`[onclick="moveRight('${id}')"]`);
+      const clickedElement2 = document.querySelector(`[onclick="moveLeft('${id}')"]`);
+      const carousel = document.getElementById(id)
+      const width = carousel.offsetWidth;
+      const pos = carousel.scrollLeft;
+      const scrollX = Math.ceil(pos - width);
+      if (pos > 0) {
+        carousel.scroll({
+          top: 0,
+          left: scrollX,
+          behavior: "smooth",
+        });
+        if (clickedElement) {
+          clickedElement.style.cursor = "pointer";
+        }
+      } else {
+        if (clickedElement) {
+          clickedElement.style.cursor = "none";
+          clickedElement2.style.cursor = "pointer";
+        }
+      }
+    }
     </script>
 </html>

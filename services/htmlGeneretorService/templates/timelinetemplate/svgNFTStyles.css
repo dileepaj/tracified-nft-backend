@@ -882,7 +882,7 @@ li {
   font-size: 24px;
   text-align: center;
   padding: 0px 0px 0px 0px;
-  cursor: pointer;
+  cursor: none;
   transition: all 0.3s;
 }
 
@@ -896,7 +896,7 @@ li {
   display: none;
   color: #000000;
   width: 100%;
-  height: 68vh;
+  height: 77vh;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -1409,7 +1409,6 @@ li {
   flex-wrap: wrap;
   column-gap: 15px;
   row-gap: 10px;
-  margin-bottom: 10px;
   font-family: "Inter";
   font-style: normal;
   font-weight: 600;
@@ -1958,6 +1957,16 @@ input:checked+.slider:before {
     width: 3rem;
     height: 3rem;
   }
+
+  .tab-content {
+    height: 77vh;
+  }
+}
+
+@media only screen and (max-width: 1300px) {
+  .tab-content {
+    height: 77vh;
+  }
 }
 
 @media only screen and (max-width: 599px) {
@@ -2042,6 +2051,11 @@ right: 0;
     outline: 0;
     z-index: 20;
   }
+
+  .tab-content {
+    height: 77vh;
+  }
+
 }
 
 @media only screen and (max-width: 375px) {
@@ -2057,6 +2071,10 @@ right: 0;
 
   .nft-header-title {
     align-items: center;
+  }
+
+  .tab-content {
+    height: 77vh;
   }
 }
 
