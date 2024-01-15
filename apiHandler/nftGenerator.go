@@ -1,9 +1,12 @@
 package apiHandler
 
 import (
+	"crypto/sha256"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"net/http"
+	"strings"
 
 	"github.com/dileepaj/tracified-nft-backend/businessFacade/nftComposerBusinessFacade"
 	"github.com/dileepaj/tracified-nft-backend/models"
@@ -38,7 +41,7 @@ func HTMLFileGenerator(w http.ResponseWriter, r *http.Request) {
 			// fmt.Println("generateHTMLRequest",generateHTMLRequest)
 			result, err := nftComposerBusinessFacade.GenerateHTMLFile(generateHTMLRequest)
 			if err != nil {
-				errors.BadRequest(w, err.Error())
+				errors.InternalError(w, err.Error())
 				return
 			}
 			commonResponse.SuccessStatus[string](w, result)
@@ -69,7 +72,7 @@ func SVGFileGenerator(w http.ResponseWriter, r *http.Request) {
 		} else {
 			result, err := nftComposerBusinessFacade.GenerateSVGFile(generateSVGRequest)
 			if err != nil {
-				errors.BadRequest(w, err.Error())
+				errors.InternalError(w, err.Error())
 				return
 			}
 			commonResponse.SuccessStatus[string](w, result)
@@ -82,9 +85,11 @@ func SVGFileGenerator(w http.ResponseWriter, r *http.Request) {
 }
 
 func TimelineHTMLFileGenerator(w http.ResponseWriter, r *http.Request) {
-	defer context.Clear(r)
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	// Get the path of the requested URL
+	path := r.URL.Path
 
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	defer context.Clear(r)
 
 	batchBase64, ok := mux.Vars(r)["batchBase64"]
 	if !ok {
@@ -95,7 +100,7 @@ func TimelineHTMLFileGenerator(w http.ResponseWriter, r *http.Request) {
 	decodedBytes, err := base64.StdEncoding.DecodeString(batchBase64)
 	if err != nil {
 		logrus.Error("Error decoding base64:", err)
-		errors.BadRequest(w, "Error decoding base64: "+err.Error())
+		errors.InternalError(w, "Error decoding base64: "+err.Error())
 		return
 	}
 
@@ -103,7 +108,7 @@ func TimelineHTMLFileGenerator(w http.ResponseWriter, r *http.Request) {
 
 	productID, ok := mux.Vars(r)["productId"]
 	if !ok {
-		errors.BadRequest(w, "productId parameter is missing")
+		errors.InternalError(w, "productId parameter is missing")
 		return
 	}
 
@@ -119,12 +124,39 @@ func TimelineHTMLFileGenerator(w http.ResponseWriter, r *http.Request) {
 		errors.BadRequest(w, "Failed to generate HTML template: "+err.Error())
 		return
 	}
+	// Check if the path contains "/nft/timeline/html/hash"
+	if strings.Contains(path, "/nft/timeline/html/hash") {
+		// Create a new SHA-256 hash object
+		hasher := sha256.New()
 
+		// Write the string to the hash object
+		hasher.Write([]byte(rst))
+
+		// Get the hashed bytes
+		hashedBytes := hasher.Sum(nil)
+
+		// Convert the hashed bytes to a hex-encoded string
+		hashedString := hex.EncodeToString(hashedBytes)
+		base64String := base64.StdEncoding.EncodeToString([]byte(rst))
+		result := models.HTMLTimelineHashGenerationResponse{
+			TimelineHtmlBase64: base64String,
+			TimelineHtmlHash:   hashedString,
+		}
+		// Encode the structure as JSON
+		responseJSON, err := json.Marshal(result)
+		if err != nil {
+			errors.InternalError(w, "Failed to marshal JSON response")
+			return
+		}
+		// Example response
+		w.Write(responseJSON)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	// Write the HTML response
 	_, err = w.Write([]byte(rst))
 	if err != nil {
-		errors.BadRequest(w, "Failed to write HTML response: "+err.Error())
+		errors.InternalError(w, "Failed to write HTML response: "+err.Error())
 		return
 	}
 }
-

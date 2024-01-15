@@ -5,6 +5,7 @@ import (
 
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -42,13 +43,18 @@ var (
 )
 
 func (r *JMACNFT) GenerateNFT() (string, error) {
-	tdpData, _ := customizedNFTFacade.GetDigitalTwinData(r.BatchID, r.ProductID)
-
+	tdpData, err := customizedNFTFacade.GetDigitalTwinData(r.BatchID, r.ProductID)
+	if err != nil {
+		return "", fmt.Errorf("Failed to get digital twin data: %v", err)
+	}
+	if len(tdpData) == 0 {
+		return "", fmt.Errorf("no digital twin data found for BatchID: %s, ProductID: %s", r.BatchID, r.ProductID)
+	}
 	r.ItemName = tdpData[0].Item
 	// Svg will be generated using the template
 	svgrst, _, svgGenErr := r.GenerateSVGTemplateforNFT(tdpData)
 	if svgGenErr != nil {
-		logs.InfoLogger.Println("failed to generate SVG : ", svgGenErr.Error())
+		logs.InfoLogger.Println("Failed to generate SVG : ", svgGenErr.Error())
 		return "", svgGenErr
 	}
 

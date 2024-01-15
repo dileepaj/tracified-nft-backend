@@ -189,4 +189,10 @@ var ComposerRoutes = models.Routers{
 		Path:    "/nft/timeline/html/{productId}/{batchBase64}",
 		Handler: apiHandler.TimelineHTMLFileGenerator,
 	},
+	models.Router{
+		Name:    "Generate Html hash for timeline",
+		Method:  "GET",
+		Path:    "/nft/timeline/html/hash/{productId}/{batchBase64}",
+		Handler: apiHandler.TimelineHTMLFileGenerator,
+	},
 }
