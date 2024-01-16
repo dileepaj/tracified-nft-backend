@@ -199,7 +199,7 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 							htmlTimelineHeader += fmt.Sprintf(`<div class="card text-center justify-content-center m-3 default-font round-card" style="max-height: fit-content;">
 							<div class="card-header round-card-header">`+timelineData.Title+` <div class="unique-id" style="display:none">
 								<span class="unique-id tenant-uid"> TenantATRAC:`+svgData.TenentId+` </span>
-								<span class="unique-id product-uid"> ProductBTRAC:`+timelineData.ProductName+` </span>
+								<span class="unique-id product-uid"> ProductBTRAC:`+timelineData.ProductId+` </span>
 								<span class="unique-id batch-uid"> BatchCTRAC:`+timelineData.BatchId+` </span></div></div>
 																<div class="card-body card-body-for-timeline text-center scroll">
 							<iframe src="%s" width="800" height="600" frameborder="0"></iframe>`, updatableTimelineUrl)
