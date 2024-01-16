@@ -534,7 +534,8 @@ func GetNFTStory(w http.ResponseWriter, r *http.Request) {
 }
 
 /**
-**GET /nftcollection/{blockchain}/{collection}?=pubkey?limit=10?page=1?sort=-1/1
+**GET /nftcollection/{blockchain}/{collection}?=pubkey?limit=10?page=1?sort=-1/1&type
+**type = Hotpicks(1) | Trending(2) | BestCreator(3)
 **/
 // GetNFTByCollection retrieves NFTs for the specified blockchain and collection in a paginated format.
 // It takes the blockchain, collection name, public key, page size, page number, and sort order as parameters.
@@ -546,7 +547,12 @@ func GetNFTByCollection(w http.ResponseWriter, r *http.Request) {
 	pagination.Blockchain = vars["blockchain"]
 	var CollectionToSearch = vars["collection"]
 	pubKey := r.URL.Query().Get("pubkey")
-	logs.InfoLogger.Println("pubKey: ", pubKey)
+
+	additionalType, err1 := strconv.Atoi(r.URL.Query().Get("type"))
+	if err1 != nil {
+		additionalType = 0
+	}
+
 	pgsize, err1 := strconv.Atoi(r.URL.Query().Get("limit"))
 	if err1 != nil || pgsize <= 0 {
 		_pgsize, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFUALT_LIMIT"))
@@ -572,7 +578,6 @@ func GetNFTByCollection(w http.ResponseWriter, r *http.Request) {
 	pagination.SortbyFeild = "blockchain"
 
 	sort, err := strconv.Atoi(r.URL.Query().Get("sort"))
-	logs.InfoLogger.Println("sort val: ", sort)
 	if err != nil || sort != -1 && sort != 1 {
 		_sort, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFAULT_SORT"))
 		if envErr != nil {
@@ -584,7 +589,7 @@ func GetNFTByCollection(w http.ResponseWriter, r *http.Request) {
 	}
 	pagination.SortType = sort
 	nftType := r.URL.Query().Get("nfttype")
-	results, err := marketplaceBusinessFacade.GetNFTByCollection(pagination, CollectionToSearch, pubKey, nftType)
+	results, err := marketplaceBusinessFacade.GetNFTByCollection(pagination, CollectionToSearch, pubKey, nftType, additionalType)
 	if err != nil {
 		errors.BadRequest(w, err.Error())
 		return
