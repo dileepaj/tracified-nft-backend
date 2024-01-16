@@ -193,43 +193,58 @@ func GetBlockchainSpecificNFT(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+/**
+ **GET /tag/{tags}?limit=10&page=1&sort=-1/1
+**/
 func GetNFTbyTags(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
 	vars := mux.Vars(r)
 	var pagination requestDtos.NFTsForMatrixView
 	tagToSearch := vars["tag"]
-	pgsize, err1 := strconv.Atoi(vars["pagesize"])
-	if err1 != nil {
-		errors.BadRequest(w, "Requested invalid page size.")
-		return
+	pgsize, err1 := strconv.Atoi(r.URL.Query().Get("limit"))
+	if err1 != nil || pgsize <= 0 {
+		_pgsize, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFUALT_LIMIT"))
+		if envErr != nil {
+			errors.InternalError(w, "Something went wrong")
+			logs.ErrorLogger.Println("failed to load value from env : ", envErr.Error())
+			return
+		}
+		pgsize = _pgsize
 	}
 	pagination.PageSize = int32(pgsize)
-	requestedPage, err2 := strconv.Atoi(vars["requestedPage"])
-	if err2 != nil {
-		errors.BadRequest(w, "Requested page error")
-		return
+	requestedPage, err2 := strconv.Atoi(r.URL.Query().Get("page"))
+	if err2 != nil || requestedPage <= -1 {
+		_requestedPage, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFAULT_PAGE"))
+		if envErr != nil {
+			errors.InternalError(w, "Somthing went wrong")
+			logs.ErrorLogger.Println("failed to load value from env : ", envErr.Error())
+			return
+		}
+		requestedPage = _requestedPage
 	}
 	pagination.RequestedPage = int32(requestedPage)
 	pagination.SortbyFeild = "timestamp"
+
+	sort, err := strconv.Atoi(r.URL.Query().Get("sort"))
+	logs.InfoLogger.Println("sort val: ", sort)
+	if err != nil || sort != -1 && sort != 1 {
+		_sort, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFAULT_SORT"))
+		if envErr != nil {
+			errors.InternalError(w, "Somthing went wrong")
+			logs.ErrorLogger.Println("failed to load value from env : ", envErr.Error())
+			return
+		}
+		sort = _sort
+	}
+	pagination.SortType = sort
+
 	logs.InfoLogger.Println("Received pagination requested: ", pagination)
 	results, err := marketplaceBusinessFacade.GEtNFTbyTagsName(pagination, tagToSearch)
 	if err != nil {
 		errors.BadRequest(w, err.Error())
 	} else {
-		if pagination.PageSize <= 0 {
-			errors.BadRequest(w, "Page size should be greater than zero")
-			return
-		}
-		if pagination.RequestedPage < 0 {
-			errors.BadRequest(w, "Requested page size should be greater than zero")
-			return
-		}
-		if results.PaginationInfo.TotalPages < pagination.RequestedPage {
-			errors.BadRequest(w, "requested page does not exist")
-			return
-		}
 		if results.Content == nil {
-			errors.BadRequest(w, "Requested tag does not exist")
+			commonResponse.NoContent(w, "")
 			return
 		}
 		commonResponse.SuccessStatus[models.Paginateresponse](w, results)
@@ -518,6 +533,9 @@ func GetNFTStory(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+/**
+**GET /nftcollection/{blockchain}/{collection}/{pubkey}?limit=10?page=1?sort=-1/1
+**/
 func GetNFTByCollection(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
 	vars := mux.Vars(r)
@@ -525,84 +543,120 @@ func GetNFTByCollection(w http.ResponseWriter, r *http.Request) {
 	pagination.Blockchain = vars["blockchain"]
 	var CollectionToSearch = vars["collection"]
 	var pubKey = vars["pubkey"]
-	pgsize, err1 := strconv.Atoi(vars["pagesize"])
-	if err1 != nil {
-		errors.BadRequest(w, "Requested invalid page size.")
-		return
+	pgsize, err1 := strconv.Atoi(r.URL.Query().Get("limit"))
+	if err1 != nil || pgsize <= 0 {
+		_pgsize, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFUALT_LIMIT"))
+		if envErr != nil {
+			errors.InternalError(w, "Something went wrong")
+			logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+			return
+		}
+		pgsize = _pgsize
 	}
 	pagination.PageSize = int32(pgsize)
-	requestedPage, err2 := strconv.Atoi(vars["requestedPage"])
-	if err2 != nil {
-		errors.BadRequest(w, "Requested page error")
-		return
+	requestedPage, err2 := strconv.Atoi(r.URL.Query().Get("page"))
+	if err2 != nil || requestedPage <= -1 {
+		_requestedPage, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFAULT_PAGE"))
+		if envErr != nil {
+			errors.InternalError(w, "Something went wrong")
+			logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+			return
+		}
+		requestedPage = _requestedPage
 	}
 	pagination.RequestedPage = int32(requestedPage)
 	pagination.SortbyFeild = "blockchain"
+
+	sort, err := strconv.Atoi(r.URL.Query().Get("sort"))
+	logs.InfoLogger.Println("sort val: ", sort)
+	if err != nil || sort != -1 && sort != 1 {
+		_sort, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFAULT_SORT"))
+		if envErr != nil {
+			errors.InternalError(w, "Something went wrong")
+			logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+			return
+		}
+		sort = _sort
+	}
+	pagination.SortType = sort
+
 	logs.InfoLogger.Println("Received pagination requested: ", pagination)
 	results, err := marketplaceBusinessFacade.GetNFTByCollection(pagination, CollectionToSearch, pubKey)
 	if err != nil {
 		errors.BadRequest(w, err.Error())
-	} else {
-		if pagination.PageSize <= 0 {
-			errors.BadRequest(w, "Page size should be greater than zero")
-			return
-		}
-		if pagination.RequestedPage < 0 {
-			errors.BadRequest(w, "Requested page size should be greater than zero")
-			return
-		}
-		if results.PaginationInfo.TotalPages < pagination.RequestedPage {
-			errors.BadRequest(w, "requested page does not exist")
-			return
-		}
-		if results.Content == nil {
-			errors.BadRequest(w, "Collection does not have any NFTs")
-			return
-		}
-		commonResponse.SuccessStatus[models.Paginateresponse](w, results)
+		return
 	}
+
+	if results.Content == nil {
+		commonResponse.NoContent(w, "")
+		return
+	}
+	commonResponse.SuccessStatus[models.Paginateresponse](w, results)
+
 }
 
 /**
- **Description:Retrieves all nfts for the specified blockchain in a paginated format
- **Returns:Object ID of the new OTP created
+**Description:Retrieves all nfts for the specified blockchain in a paginated format
+**Returns:Object ID of the new OTP created
+**GET /marketplace/nft/{blockchain}?limit=10?page=1?sort=-1/1
  */
 func GetPaginatedNFTs(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
 	vars := mux.Vars(r)
 	var pagination requestDtos.NFTsForMatrixView
 	pagination.Blockchain = vars["blockchain"]
-	pgsize, err1 := strconv.Atoi(vars["pagesize"])
-	if err1 != nil {
-		errors.BadRequest(w, "Requested invalid page size.")
-		return
+	pgsize, err1 := strconv.Atoi(r.URL.Query().Get("limit"))
+	if err1 != nil || pgsize <= 0 {
+		_pgsize, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFUALT_LIMIT"))
+		logs.InfoLogger.Println("val returned from env: ", _pgsize)
+		if envErr != nil {
+			errors.InternalError(w, "Something went wrong")
+			logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+			return
+		}
+		pgsize = _pgsize
 	}
 	pagination.PageSize = int32(pgsize)
-	requestedPage, err2 := strconv.Atoi(vars["requestedPage"])
-	if err2 != nil {
-		errors.BadRequest(w, "Requested page error")
+	requestedPage, err2 := strconv.Atoi(r.URL.Query().Get("page"))
+	if err2 != nil || requestedPage <= -1 {
+		_requestedpage, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFAULT_PAGE"))
+		if envErr != nil {
+			errors.InternalError(w, "Something went wrong")
+			logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+			return
+		}
+		requestedPage = _requestedpage
 	}
 	pagination.RequestedPage = int32(requestedPage)
 	pagination.SortbyFeild = "blockchain"
+	sort, err := strconv.Atoi(r.URL.Query().Get("sort"))
+	if err != nil || sort != -1 && sort != 1 {
+		_sort, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFAULT_PAGE"))
+		if envErr != nil {
+			errors.InternalError(w, "Something went wrong")
+			logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+			return
+		}
+		sort = _sort
+	}
+	pagination.SortType = sort
 	results, err := marketplaceBusinessFacade.GetNFTPagination(pagination)
 	if err != nil {
 		errors.BadRequest(w, err.Error())
-	} else {
-		if pagination.RequestedPage < 0 {
-			errors.NotFound(w, "Requested page size should be greater than zero")
-			return
-		}
-		if results.PaginationInfo.TotalPages < pagination.RequestedPage {
-			errors.NotFound(w, "requested page does not exist")
-			return
-		}
-		commonResponse.SuccessStatus[models.Paginateresponse](w, results)
+		return
 	}
+	if results.Content == nil {
+		commonResponse.NoContent(w, "")
+		return
+	}
+	commonResponse.SuccessStatus[models.Paginateresponse](w, results)
+
 }
 
 /**
  **Description: Retrieves nfts that are having the ON SALE status in a paginated format
  **Returns:Paginated NfT Data
+ **GET /marketplace/nft/{blockchain}/{seelingstatus}?limit=10&page=1&sort=-1/1
  */
 func GetPaginatedNFTbySellingStatus(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
@@ -610,53 +664,85 @@ func GetPaginatedNFTbySellingStatus(w http.ResponseWriter, r *http.Request) {
 	var pagination requestDtos.NFTsForMatrixView
 	if vars["sellingstatus"] == "ON SALE" {
 		pagination.Blockchain = vars["blockchain"]
-		pagesize, err1 := strconv.Atoi(vars["pagesize"])
-		if err1 != nil {
-			errors.BadRequest(w, "Requested invalid page size.")
-			return
+		pagesize, err1 := strconv.Atoi(r.URL.Query().Get("limit"))
+		if err1 != nil || pagesize <= 0 {
+			_pgsize, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFUALT_LIMIT"))
+			if envErr != nil {
+				errors.InternalError(w, "Something went wrong")
+				logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+				return
+			}
+			pagesize = _pgsize
 		}
 		pagination.PageSize = int32(pagesize)
-		requestedPage, err2 := strconv.Atoi(vars["requestedPage"])
-		if err2 != nil {
-			errors.BadRequest(w, "Requested page error")
+		requestedPage, err2 := strconv.Atoi(r.URL.Query().Get("page"))
+		if err2 != nil || requestedPage <= -1 {
+			_requestedpage, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFAULT_PAGE"))
+			if envErr != nil {
+				errors.InternalError(w, "Something went wrong")
+				logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+				return
+			}
+			requestedPage = _requestedpage
 		}
 		pagination.RequestedPage = int32(requestedPage)
 		pagination.SortbyFeild = vars["sellingstatus"]
+		sort, err := strconv.Atoi(r.URL.Query().Get("sort"))
+		if err != nil || sort != -1 && sort != 1 {
+			_sort, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFAULT_SORT"))
+			if envErr != nil {
+				errors.InternalError(w, "Something went wrong")
+				logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+				return
+			}
+			sort = _sort
+		}
+		pagination.SortType = sort
 		results, err := marketplaceBusinessFacade.GetPaginatedNFTbySellingStatus(pagination)
 		if err != nil {
 			errors.BadRequest(w, err.Error())
-		} else {
-			if pagination.RequestedPage < 0 {
-				errors.NotFound(w, "Requested page size should be greater than zero")
-				return
-			}
-			if results.PaginationInfo.TotalPages < int32(requestedPage) {
-				errors.NotFound(w, "requested page does not exist")
-				return
-			}
-			commonResponse.SuccessStatus[models.Paginateresponse](w, results)
+			return
 		}
+		if results.Content == nil {
+			commonResponse.NoContent(w, "")
+			return
+		}
+		commonResponse.SuccessStatus[models.Paginateresponse](w, results)
+
 	}
 }
 
 /**
  **Description:function is used to paginate and return block chain specific nfts which are either trending or under hotpicks
  **Returns:Paginated nft data
+ **GET /nftpaginate/filterby/{type}/{blockchain}?limit=10&page=1&sort=-1/1
  */
 func GetPaginatedNFTforstatusFilters(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
 	vars := mux.Vars(r)
 	var pagination requestDtos.NFTsForMatrixView
 	pagination.Blockchain = vars["blockchain"]
-	pgsize, err1 := strconv.Atoi(vars["pagesize"])
-	if err1 != nil {
-		errors.BadRequest(w, "Requested invalid page size.")
-		return
+	pgsize, err1 := strconv.Atoi(r.URL.Query().Get("limit"))
+	if err1 != nil || pgsize <= 0 {
+		_pgsize, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFUALT_LIMIT"))
+		logs.InfoLogger.Println("val returned from env: ", _pgsize)
+		if envErr != nil {
+			errors.InternalError(w, "Something went wrong")
+			logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+			return
+		}
+		pgsize = _pgsize
 	}
 	pagination.PageSize = int32(pgsize)
-	requestedPage, err2 := strconv.Atoi(vars["requestedPage"])
-	if err2 != nil {
-		errors.BadRequest(w, "Requested page error")
+	requestedPage, err2 := strconv.Atoi(r.URL.Query().Get("page"))
+	if err2 != nil || requestedPage <= -1 {
+		_requestedpage, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFAULT_PAGE"))
+		if envErr != nil {
+			errors.InternalError(w, "Something went wrong")
+			logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+			return
+		}
+		requestedPage = _requestedpage
 	}
 
 	pagination.RequestedPage = int32(requestedPage)
@@ -665,40 +751,63 @@ func GetPaginatedNFTforstatusFilters(w http.ResponseWriter, r *http.Request) {
 	} else if vars["type"] == "trending" {
 		pagination.SortbyFeild = "trending"
 	}
+
+	sort, err := strconv.Atoi(r.URL.Query().Get("sort"))
+	if err != nil || sort != -1 && sort != 1 {
+		_sort, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFAULT_SORT"))
+		if envErr != nil {
+			errors.InternalError(w, "Something went wrong")
+			logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+			return
+		}
+		sort = _sort
+	}
+	pagination.SortType = sort
+
 	results, err := marketplaceBusinessFacade.GetPaginatedNFTbyStatusFilter(pagination)
 	if err != nil {
+
 		errors.BadRequest(w, err.Error())
-	} else {
-		if pagination.RequestedPage < 0 {
-			errors.NotFound(w, "Requested page size should be greater than zero")
-			return
-		}
-		if results.PaginationInfo.TotalPages < pagination.RequestedPage {
-			errors.NotFound(w, "requested page does not exist")
-			return
-		}
-		commonResponse.SuccessStatus[models.Paginateresponse](w, results)
 	}
+	if results.Content == nil {
+		commonResponse.NoContent(w, "")
+		return
+	}
+	commonResponse.SuccessStatus[models.Paginateresponse](w, results)
+
 }
 
 /**
  **Description:function is used to paginate and return block chain specific nfts which are either trending or under hotpicks that are on Sale
  **Returns:Paginated nft data
+ **GET /onsale/{type}/{blockchain}?limit=10&page=1&sort=-1/1
  */
 func GetPaginatedOnSaleNFTforstatusFilters(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
 	vars := mux.Vars(r)
 	var pagination requestDtos.NFTsForMatrixView
 	pagination.Blockchain = vars["blockchain"]
-	pgsize, err1 := strconv.Atoi(vars["pagesize"])
-	if err1 != nil {
-		errors.BadRequest(w, "Requested invalid page size.")
-		return
+	pgsize, err1 := strconv.Atoi(r.URL.Query().Get("limit"))
+	if err1 != nil || pgsize <= 0 {
+		_pgsize, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFUALT_LIMIT"))
+		logs.InfoLogger.Println("val returned from env: ", _pgsize)
+		if envErr != nil {
+			errors.InternalError(w, "Something went wrong")
+			logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+			return
+		}
+		pgsize = _pgsize
 	}
 	pagination.PageSize = int32(pgsize)
-	requestedPage, err2 := strconv.Atoi(vars["requestedPage"])
-	if err2 != nil {
-		errors.BadRequest(w, "Requested page error")
+	requestedPage, err2 := strconv.Atoi(r.URL.Query().Get("page"))
+	if err2 != nil || requestedPage <= -1 {
+		_requestedpage, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFAULT_PAGE"))
+		if envErr != nil {
+			errors.InternalError(w, "Something went wrong")
+			logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+			return
+		}
+		requestedPage = _requestedpage
 	}
 
 	pagination.RequestedPage = int32(requestedPage)
@@ -707,66 +816,99 @@ func GetPaginatedOnSaleNFTforstatusFilters(w http.ResponseWriter, r *http.Reques
 	} else if vars["type"] == "trending" {
 		pagination.SortbyFeild = "trending"
 	}
+
+	sort, err := strconv.Atoi(r.URL.Query().Get("sort"))
+	if err != nil || sort != -1 && sort != 1 {
+		_sort, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFAULT_SORT"))
+		if envErr != nil {
+			errors.InternalError(w, "Something went wrong")
+			logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+			return
+		}
+		sort = _sort
+	}
+	pagination.SortType = sort
+
 	results, err := marketplaceBusinessFacade.GetPaginatedOnSaleNFTbyStatusFilter(pagination)
 	if err != nil {
 		errors.BadRequest(w, err.Error())
-	} else {
-		if pagination.RequestedPage < 0 {
-			errors.NotFound(w, "Requested page size should be greater than zero")
-			return
-		}
-		if results.PaginationInfo.TotalPages < pagination.RequestedPage {
-			errors.NotFound(w, "requested page does not exist")
-			return
-		}
-		commonResponse.SuccessStatus[models.Paginateresponse](w, results)
+		return
 	}
+	if results.Content == nil {
+		commonResponse.NoContent(w, "")
+		return
+	}
+	commonResponse.SuccessStatus[models.Paginateresponse](w, results)
+
 }
 
 /**
  **Description: Get nfts that are on trending and hotpicks
  **Returns : Paginated nft data
+ **GET /explore/bestcreators?limit=10&page=1&sort=-1/1
  */
 func GetBestCreations(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
 	vars := mux.Vars(r)
 	var bestcreations requestDtos.NFTsForMatrixView
 	bestcreations.Blockchain = vars["blockchain"]
-	PageSize, pageSizeerr := strconv.Atoi(vars["pagesize"])
-	if pageSizeerr != nil {
-		errors.BadRequest(w, "Requested page error")
-		return
+	pageSize, pageSizeerr := strconv.Atoi(r.URL.Query().Get("limit"))
+	if pageSizeerr != nil || pageSize <= 0 {
+		_pgsize, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFUALT_LIMIT"))
+		logs.InfoLogger.Println("val returned from env: ", _pgsize)
+		if envErr != nil {
+			errors.InternalError(w, "Something went wrong")
+			logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+			return
+		}
+		pageSize = _pgsize
 	}
-	bestcreations.PageSize = int32(PageSize)
-	RequestedPage, pageReqeustederr := strconv.Atoi(vars["requestedPage"])
-	if pageReqeustederr != nil {
-		errors.BadRequest(w, "Requested page error")
-		return
+	bestcreations.PageSize = int32(pageSize)
+	requestedPage, pageReqeustederr := strconv.Atoi(r.URL.Query().Get("page"))
+	if pageReqeustederr != nil || requestedPage <= -1 {
+		_requestedpage, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFAULT_PAGE"))
+		if envErr != nil {
+			errors.InternalError(w, "Something went wrong")
+			logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+			return
+		}
+		requestedPage = _requestedpage
 	}
-	bestcreations.RequestedPage = int32(RequestedPage)
+	bestcreations.RequestedPage = int32(requestedPage)
+
+	sort, err := strconv.Atoi(r.URL.Query().Get("sort"))
+	if err != nil || sort != -1 && sort != 1 {
+		_sort, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFAULT_SORT"))
+		if envErr != nil {
+			errors.InternalError(w, "Something went wrong")
+			logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+			return
+		}
+		sort = _sort
+	}
+	bestcreations.SortType = sort
+
 	results, err := marketplaceBusinessFacade.GetPaginatedResponseforBestCreations(bestcreations)
 	if err != nil {
 		errors.BadRequest(w, err.Error())
-	} else {
-		if bestcreations.RequestedPage < 0 {
-			errors.NotFound(w, "Requested page size should be greater than zero")
-			return
-		}
-		if results.PaginationInfo.TotalPages < bestcreations.RequestedPage {
-			errors.NotFound(w, "requested page does not exist")
-			return
-		}
-		commonResponse.SuccessStatus[models.Paginateresponse](w, results)
+		return
 	}
+	if results.Content == nil {
+		commonResponse.NoContent(w, "")
+		return
+	}
+	commonResponse.SuccessStatus[models.Paginateresponse](w, results)
+
 }
 
 /**
  **Description:Calcluate the avg rating for creators and return creators having a rating > 4
  **Returns : Paginated creator information(name,email,publickey and avg rating)
+ **GET /explore/bestcreators/{blockchain}?limit=10&page=1&sort=-1/1
  */
 func GetBestCreators(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
-	vars := mux.Vars(r)
+	// vars := mux.Vars(r)
 	var creatorPaginationInfo requestDtos.CreatorInfoforMatrixView
 	result, err := marketplaceBusinessFacade.GetBestCreators()
 	if err != nil {
@@ -777,28 +919,49 @@ func GetBestCreators(w http.ResponseWriter, r *http.Request) {
 		errors.BadRequest(w, updateErr.Error())
 		return
 	}
-	PageSize, pageSizeerr := strconv.Atoi(vars["pagesize"])
-	if pageSizeerr != nil {
-		errors.BadRequest(w, "Requested page error")
-		return
+	pageSize, pageSizeerr := strconv.Atoi(r.URL.Query().Get("limit"))
+	if pageSizeerr != nil || pageSize <= 0 {
+		_pgsize, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFUALT_LIMIT"))
+		logs.InfoLogger.Println("val returned from env: ", _pgsize)
+		if envErr != nil {
+			errors.InternalError(w, "Something went wrong")
+			logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+			return
+		}
+		pageSize = _pgsize
 	}
-	creatorPaginationInfo.PageSize = int32(PageSize)
-	RequestedPage, pageReqeustederr := strconv.Atoi(vars["requestedPage"])
-	if pageReqeustederr != nil {
-		errors.BadRequest(w, "Requested page error")
-		return
+	creatorPaginationInfo.PageSize = int32(pageSize)
+	requestedPage, pageReqeustederr := strconv.Atoi(r.URL.Query().Get("page"))
+	if pageReqeustederr != nil || requestedPage <= -1 {
+		_requestedpage, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFAULT_PAGE"))
+		if envErr != nil {
+			errors.InternalError(w, "Something went wrong")
+			logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+			return
+		}
+		requestedPage = _requestedpage
 	}
-	creatorPaginationInfo.RequestedPage = int32(RequestedPage)
-	res, err := marketplaceBusinessFacade.GetPaginatedBestCreators(creatorPaginationInfo)
+	creatorPaginationInfo.RequestedPage = int32(requestedPage)
+
+	sort, err := strconv.Atoi(r.URL.Query().Get("sort"))
+	if err != nil || sort != -1 && sort != 1 {
+		_sort, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFAULT_SORT"))
+		if envErr != nil {
+			errors.InternalError(w, "Something went wrong")
+			logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+			return
+		}
+		sort = _sort
+	}
+	creatorPaginationInfo.Sort = sort
+
+	res, err := marketplaceBusinessFacade.GetPaginatedBestCreators(creatorPaginationInfo, sort)
 	if err != nil {
 		errors.BadRequest(w, "failed to get data : "+err.Error())
-	}
-	if RequestedPage < 0 {
-		errors.NotFound(w, "Requested page size should be greater than zero")
 		return
 	}
-	if res.PaginationInfo.TotalPages < int32(RequestedPage) {
-		errors.NotFound(w, "requested page does not exist")
+	if res.ArtistInfo == nil {
+		commonResponse.NoContent(w, "")
 		return
 	}
 	commonResponse.SuccessStatus[models.PaginatedCreatorInfo](w, res)
@@ -819,6 +982,9 @@ func GetImagebyID(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+/**
+**GET /profilecontent/{pubkey}/{blockchain}/{filter}?limit=10&page=1&sort=-1/1
+ */
 func GetProfileContent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
 	vars := mux.Vars(r)
@@ -826,42 +992,54 @@ func GetProfileContent(w http.ResponseWriter, r *http.Request) {
 	pagination.SortbyFeild = vars["pubkey"]
 	pagination.Blockchain = vars["blockchain"]
 	filterBy := vars["filter"]
-	pgsize, err1 := strconv.Atoi(vars["pagesize"])
-	if err1 != nil {
-		errors.BadRequest(w, "Requested invalid page size.")
-		return
+	pgsize, err1 := strconv.Atoi(r.URL.Query().Get("limit"))
+	if err1 != nil || pgsize <= 0 {
+		_pgsize, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFUALT_LIMIT"))
+		logs.InfoLogger.Println("val returned from env: ", _pgsize)
+		if envErr != nil {
+			errors.InternalError(w, "Something went wrong")
+			logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+			return
+		}
+		pgsize = _pgsize
 	}
 	pagination.PageSize = int32(pgsize)
-	requestedPage, err2 := strconv.Atoi(vars["requestedPage"])
-	if err2 != nil {
-		errors.BadRequest(w, "Requested page error")
-		return
+	requestedPage, err2 := strconv.Atoi(r.URL.Query().Get("page"))
+	if err2 != nil || requestedPage <= -1 {
+		_requestedpage, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFAULT_PAGE"))
+		if envErr != nil {
+			errors.InternalError(w, "Something went wrong")
+			logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+			return
+		}
+		requestedPage = _requestedpage
 	}
 	pagination.RequestedPage = int32(requestedPage)
+
+	sort, err := strconv.Atoi(r.URL.Query().Get("sort"))
+	if err != nil || sort != -1 && sort != 1 {
+		_sort, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFAULT_SORT"))
+		if envErr != nil {
+			errors.InternalError(w, "Something went wrong")
+			logs.ErrorLogger.Println("Failed to load value from env: ", envErr.Error())
+			return
+		}
+		sort = _sort
+	}
+	pagination.SortType = sort
 
 	logs.InfoLogger.Println("Received pagination requested: ", pagination)
 	results, err := marketplaceBusinessFacade.GetUserProfileContent(pagination, filterBy)
 	if err != nil {
 		errors.BadRequest(w, err.Error())
-	} else {
-		if pagination.PageSize <= 0 {
-			errors.BadRequest(w, "Page size should be greater than zero")
-			return
-		}
-		if pagination.RequestedPage < 0 {
-			errors.BadRequest(w, "Requested page size should be greater than zero")
-			return
-		}
-		if results.PaginationInfo.TotalPages < pagination.RequestedPage {
-			errors.BadRequest(w, "requested page does not exist")
-			return
-		}
-		if results.Content == nil {
-			errors.BadRequest(w, "No Content for account: "+vars["pubkey"])
-			return
-		}
-		commonResponse.SuccessStatus[models.Paginateresponse](w, results)
+		return
 	}
+	if results.Content == nil {
+		commonResponse.NoContent(w, "")
+		return
+	}
+	commonResponse.SuccessStatus[models.Paginateresponse](w, results)
+
 }
 
 func SaveNFTFromWallet(w http.ResponseWriter, r *http.Request) {

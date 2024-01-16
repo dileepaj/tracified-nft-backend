@@ -16,7 +16,6 @@ type FileDetails struct {
 	FileContent string `json:"filecontent" bson:"filecontent"`
 	FileName    string `json:"filename" bson:"filename"`
 }
-
 type TracifiedDataPacket struct {
 	TenetId string
 	ItemId  string
@@ -34,4 +33,10 @@ type ImageObject struct {
 type IpfsResponse struct {
 	Message string
 	Url     string
+}
+
+type IpfsObjectForCollections struct {
+	CollectionDetails NFTCollection `json:"collectiondetails" bson:"collectiondetails"`
+	FileDetails       FileDetails   `json:"filedetails" bson:"filedetails"`
+	FileType          int           `json:"filetype" bson:"filetype"`
 }

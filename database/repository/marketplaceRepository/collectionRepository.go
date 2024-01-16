@@ -3,6 +3,7 @@ package marketplaceRepository
 import (
 	"context"
 
+	"github.com/dileepaj/tracified-nft-backend/commons"
 	"github.com/dileepaj/tracified-nft-backend/database/connections"
 	"github.com/dileepaj/tracified-nft-backend/database/repository"
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
@@ -15,6 +16,7 @@ import (
 
 type CollectionRepository struct{}
 
+var DbName = commons.GoDotEnvVariable("DATABASE_NAME")
 var Collection = "collections"
 var Svg = "svg"
 var Txn = "txn"
@@ -59,10 +61,10 @@ func (r *CollectionRepository) FindCollectionbyPublickey(idName string, id strin
 	return collections, nil
 }
 
-func (r *CollectionRepository) GetAllCollections() ([]models.NFTCollection, error) {
+func (r *CollectionRepository) GetAllPublicCollections() ([]models.NFTCollection, error) {
 	var collections []models.NFTCollection
 	findOptions := options.Find()
-	result, err := connections.GetSessionClient(Collection).Find(context.TODO(), bson.D{{}}, findOptions)
+	result, err := connections.GetSessionClient(Collection).Find(context.TODO(), bson.M{"ispublic": true}, findOptions)
 	if err != nil {
 		logs.ErrorLogger.Println("Error occured when trying to connect to DB and excute Find query in GetAllCollection:CollectionRepository.go: ", err.Error())
 		return collections, err
@@ -161,4 +163,87 @@ func (r *CollectionRepository) FindCollectionByKeyAndMail(idName1 string, id1 st
 		collection = append(collection, collections)
 	}
 	return collection, nil
+}
+
+func (r *CollectionRepository) UpdateCollectionVisibility(UpdateObject requestDtos.UpdateCollectionVisibility, update primitive.M) (models.NFTCollection, error) {
+	var CollcetionUpdateResponse models.NFTCollection
+	upsert := false
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+	rst := connections.GetSessionClient("collections").FindOneAndUpdate(context.TODO(), bson.M{"_id": UpdateObject.Id}, update, &opt)
+	if rst != nil {
+		err := rst.Decode((&CollcetionUpdateResponse))
+		if err != nil {
+			logs.ErrorLogger.Println("Error Occured while Update Collection visibility", err.Error())
+			return CollcetionUpdateResponse, err
+		}
+		return CollcetionUpdateResponse, err
+	}
+	return CollcetionUpdateResponse, nil
+}
+
+func (r *CollectionRepository) FindCollectionByKeyAndMailAndName(idName1 string, id1 string, idName2 string, id2 string, idName3 string, id3 string) (models.NFTCollection, error) {
+	var collection models.NFTCollection
+	rst, err := repository.FindById1Id2Id3(id1, idName1, id2, idName2, id3, idName3, Collection)
+	if err != nil {
+		logs.ErrorLogger.Println(err.Error())
+		return collection, err
+	}
+	for rst.Next(context.TODO()) {
+		err = rst.Decode(&collection)
+		if err != nil {
+			logs.ErrorLogger.Println("Error occured while retreving data from collection document in GetDocumentByID:documentRepository.go: ", err.Error())
+			return collection, err
+		}
+	}
+	return collection, nil
+}
+
+func (r *CollectionRepository) UpdateCollectionDetails(Id primitive.ObjectID, updateObj models.NFTCollection) (models.NFTCollection, error) {
+	var response models.NFTCollection
+	session, err := connections.GetMongoSession()
+	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session : ", err.Error())
+	}
+	defer session.EndSession(context.TODO())
+	upsert := false
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+	update := bson.M{"$set": updateObj}
+	rst := session.Client().Database(DbName).Collection(Collection).FindOneAndUpdate(context.TODO(), bson.M{"_id": Id}, update, &opt)
+	if rst != nil {
+		err := rst.Decode(&response)
+		if err != nil {
+			logs.ErrorLogger.Println("Error occured while updating data from DB : ", err.Error())
+			return response, err
+		}
+		return response, nil
+	} else {
+		return response, nil
+	}
+}
+func (r *CollectionRepository) PaginateCollectionResponse(filterConfig bson.M, projectionData bson.D, pagesize int32, pageNo int32, collectionName string, sortingFeildName string, collections []models.NFTCollection, sort int) (models.CollectionPaginationResponse, error) {
+	var response models.CollectionPaginationResponse
+	contentResponse, paginationResponse, err := repository.PaginateResponse[[]models.NFTCollection](
+		filterConfig,
+		projectionData,
+		pagesize,
+		pageNo,
+		collectionName,
+		sortingFeildName,
+		collections,
+		sort,
+	)
+	if err != nil {
+		return response, err
+	}
+	response.Content = contentResponse
+	response.PaginationInfo = paginationResponse
+	return response, nil
 }

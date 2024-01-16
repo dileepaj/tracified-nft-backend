@@ -88,3 +88,6 @@
             STREAMING_API: "{{lookup('env','STREAMING_API')}}"
             TIMELINE_GENERATION_API: "{{lookup('env','TIMELINE_GENERATION_API')}}"
             TENANT_LIST: "{{lookup('env','TENANT_LIST')}}"
+            PAGINATION_DEFUALT_LIMIT: "{{lookup('env','PAGINATION_DEFUALT_LIMIT')}}"
+            PAGINATION_DEFAULT_PAGE: "{{lookup('env','PAGINATION_DEFAULT_PAGE')}}"
+            PAGINATION_DEFAULT_SORT: "{{lookup('env','PAGINATION_DEFAULT_SORT')}}"
