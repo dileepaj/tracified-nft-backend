@@ -534,15 +534,19 @@ func GetNFTStory(w http.ResponseWriter, r *http.Request) {
 }
 
 /**
-**GET /nftcollection/{blockchain}/{collection}/{pubkey}?limit=10?page=1?sort=-1/1
+**GET /nftcollection/{blockchain}/{collection}?=pubkey?limit=10?page=1?sort=-1/1
 **/
+// GetNFTByCollection retrieves NFTs for the specified blockchain and collection in a paginated format.
+// It takes the blockchain, collection name, public key, page size, page number, and sort order as parameters.
+// It returns a paginated list of NFTs matching the criteria.
 func GetNFTByCollection(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
 	vars := mux.Vars(r)
 	var pagination requestDtos.NFTsForMatrixView
 	pagination.Blockchain = vars["blockchain"]
 	var CollectionToSearch = vars["collection"]
-	var pubKey = vars["pubkey"]
+	pubKey := r.URL.Query().Get("pubkey")
+	logs.InfoLogger.Println("pubKey: ", pubKey)
 	pgsize, err1 := strconv.Atoi(r.URL.Query().Get("limit"))
 	if err1 != nil || pgsize <= 0 {
 		_pgsize, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFUALT_LIMIT"))
@@ -579,9 +583,8 @@ func GetNFTByCollection(w http.ResponseWriter, r *http.Request) {
 		sort = _sort
 	}
 	pagination.SortType = sort
-
-	logs.InfoLogger.Println("Received pagination requested: ", pagination)
-	results, err := marketplaceBusinessFacade.GetNFTByCollection(pagination, CollectionToSearch, pubKey)
+	nftType := r.URL.Query().Get("nfttype")
+	results, err := marketplaceBusinessFacade.GetNFTByCollection(pagination, CollectionToSearch, pubKey, nftType)
 	if err != nil {
 		errors.BadRequest(w, err.Error())
 		return
