@@ -183,4 +183,10 @@ var ComposerRoutes = models.Routers{
 		Path:    "/html/timeline/{widgetId}",
 		Handler: apiHandler.RemoveTimeline,
 	},
+	models.Router{
+		Name:    "Generate Html for timeline",
+		Method:  "GET",
+		Path:    "/nft/timeline/html/{productId}/{batchBase64}",
+		Handler: apiHandler.TimelineHTMLFileGenerator,
+	},
 }

@@ -471,7 +471,7 @@ func (r *NFTRepository) UpdateHotPicks(findBy string, id string, update primitiv
 	}
 }
 
-func (r *NFTRepository) GetNFTPaginatedResponse(filterConfig bson.M, projectionData bson.D, pagesize int32, pageNo int32, collectionName string, sortingFeildName string, nfts []models.NFTContentforMatrix) (models.Paginateresponse, error) {
+func (r *NFTRepository) GetNFTPaginatedResponse(filterConfig bson.M, projectionData bson.D, pagesize int32, pageNo int32, collectionName string, sortingFeildName string, nfts []models.NFTContentforMatrix, sort int) (models.Paginateresponse, error) {
 	contentResponse, paginationResponse, err := repository.PaginateResponse[[]models.NFTContentforMatrix](
 		filterConfig,
 		projectionData,
@@ -480,6 +480,7 @@ func (r *NFTRepository) GetNFTPaginatedResponse(filterConfig bson.M, projectionD
 		collectionName,
 		sortingFeildName,
 		nfts,
+		sort,
 	)
 	var response models.Paginateresponse
 	if err != nil {
@@ -656,6 +657,7 @@ func (r *NFTRepository) GetWalletNFTPaginatedResponse(filterConfig bson.M, proje
 		collectionName,
 		sortingFeildName,
 		nfts,
+		-1,
 	)
 	var response models.PaginateWalletNFTResponse
 	if err != nil {

@@ -1,9 +1,74 @@
   </div>
   <div class="text-center nft-footer">
 		<div class="nft-footer-content default-font">
+    <p class="footer-timestamp"> <img src="https://s3.ap-south-1.amazonaws.com/nft.tracified.com/assets/icons/schedule.svg" alt="Schedule Icon" style="width: 14px; height: 14px;"></img> Last Update: <span class="footer-timestamp-field" id="lastUpdate"></span></p>
 			<label>Powered by </label> <img src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/tracified-logo+(1).png" class="logo"/>
 		</div>
 	</div>
   </div>
   </div>
-  </foreignObject></svg>
+  </foreignObject>
+    <script>
+        <![CDATA[
+function getCurrentDateTime() {
+    var now = new Date();
+    
+    // Format the date
+    var day = now.getDate();
+    var month = now.toLocaleString('en-US', { month: 'long' });
+    var year = now.getFullYear();
+    var formattedDate = day + getOrdinalSuffix(day) + ' ' + month + ' ' + year;
+
+    // Format the time
+    var hours = now.getHours();
+    var minutes = now.getMinutes();
+    var ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // The hour '0' should be '12'
+    var formattedTime = hours + ':' + (minutes < 10 ? '0' : '') + minutes + ' ' + ampm;
+
+    // Get the timezone offset in hours and minutes
+    var timezoneOffsetHours = Math.floor(now.getTimezoneOffset() / 60);
+    var timezoneOffsetMinutes = Math.abs(now.getTimezoneOffset() % 60);
+    var timezoneOffsetString = (timezoneOffsetHours >= 0 ? '+' : '-') +
+        ('00' + Math.abs(timezoneOffsetHours)).slice(-2) +
+        ':' +
+        ('00' + timezoneOffsetMinutes).slice(-2);
+
+    return formattedDate + ' at ' + formattedTime + ' (GMT ' + timezoneOffsetString + ')';
+}
+
+// Helper function to get the ordinal suffix for the day
+function getOrdinalSuffix(day) {
+    if (day > 10 && day < 20) {
+        return 'th';
+    } else {
+        switch (day % 10) {
+            case 1: return 'st';
+            case 2: return 'nd';
+            case 3: return 'rd';
+            default: return 'th';
+        }
+    }
+}
+
+        // Function to update the last update time
+        function updateLastUpdateTime() {
+            var lastUpdateElement = document.getElementById('lastUpdate');
+            if (lastUpdateElement) {
+                lastUpdateElement.textContent = getCurrentDateTime();
+            }
+        }
+
+        // Update last update time on page load
+        window.onload = function() {
+            updateLastUpdateTime();
+        };
+
+        // Update last update time on page refresh
+        window.onbeforeunload = function() {
+            updateLastUpdateTime();
+        };
+          ]]>
+  </script>
+  </svg>
