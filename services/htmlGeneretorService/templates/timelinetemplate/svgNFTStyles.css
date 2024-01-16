@@ -166,6 +166,8 @@ body{
 .proof-toggle-btn {
   margin-top: 22px;
   margin-bottom: 5px;
+  padding-top: 5px;
+  border-top: 1px solid #cfcfcf;
 }
 
 .widget-title-div label {

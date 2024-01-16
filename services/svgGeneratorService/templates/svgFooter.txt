@@ -12,63 +12,38 @@
         <![CDATA[
 function getCurrentDateTime() {
     var now = new Date();
-    
-    // Format the date
-    var day = now.getDate();
-    var month = now.toLocaleString('en-US', { month: 'long' });
-    var year = now.getFullYear();
-    var formattedDate = day + getOrdinalSuffix(day) + ' ' + month + ' ' + year;
 
-    // Format the time
-    var hours = now.getHours();
-    var minutes = now.getMinutes();
-    var ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12;
-    hours = hours ? hours : 12; // The hour '0' should be '12'
-    var formattedTime = hours + ':' + (minutes < 10 ? '0' : '') + minutes + ' ' + ampm;
+    var localDate = now.toLocaleString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+    var localTime = now.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
 
-    // Get the timezone offset in hours and minutes
-    var timezoneOffsetHours = Math.floor(now.getTimezoneOffset() / 60);
-    var timezoneOffsetMinutes = Math.abs(now.getTimezoneOffset() % 60);
-    var timezoneOffsetString = (timezoneOffsetHours >= 0 ? '+' : '-') +
-        ('00' + Math.abs(timezoneOffsetHours)).slice(-2) +
+    var rawTimezoneOffset = now.getTimezoneOffset();
+
+    var timezoneOffsetHours = Math.floor(Math.abs(rawTimezoneOffset) / 60);
+    var timezoneOffsetMinutes = Math.abs(rawTimezoneOffset) % 60;
+
+    var timezoneOffsetString = (rawTimezoneOffset >= 0 ? '-' : '+') +
+        ('00' + timezoneOffsetHours).slice(-2) +
         ':' +
         ('00' + timezoneOffsetMinutes).slice(-2);
 
-    return formattedDate + ' at ' + formattedTime + ' (GMT ' + timezoneOffsetString + ')';
+    return localDate + ' at ' + localTime + ' (GMT ' + timezoneOffsetString + ')';
 }
 
-// Helper function to get the ordinal suffix for the day
-function getOrdinalSuffix(day) {
-    if (day > 10 && day < 20) {
-        return 'th';
-    } else {
-        switch (day % 10) {
-            case 1: return 'st';
-            case 2: return 'nd';
-            case 3: return 'rd';
-            default: return 'th';
-        }
+function updateLastUpdateTime() {
+    var lastUpdateElement = document.getElementById('lastUpdate');
+    if (lastUpdateElement) {
+        lastUpdateElement.textContent = getCurrentDateTime();
     }
 }
 
-        // Function to update the last update time
-        function updateLastUpdateTime() {
-            var lastUpdateElement = document.getElementById('lastUpdate');
-            if (lastUpdateElement) {
-                lastUpdateElement.textContent = getCurrentDateTime();
-            }
-        }
+window.onload = function() {
+    updateLastUpdateTime();
+};
 
-        // Update last update time on page load
-        window.onload = function() {
-            updateLastUpdateTime();
-        };
+window.onbeforeunload = function() {
+    updateLastUpdateTime();
+};
 
-        // Update last update time on page refresh
-        window.onbeforeunload = function() {
-            updateLastUpdateTime();
-        };
           ]]>
   </script>
   </svg>
