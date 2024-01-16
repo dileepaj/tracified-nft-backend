@@ -609,7 +609,6 @@ li {
   position: relative;
   padding-top: 75%;
   perspective: 100px;
-  margin-top: 20px;
 }
 
 .carousel_img {
@@ -639,7 +638,7 @@ li {
   position: relative;
   flex: 0 0 100%;
   width: 100%;
-  background-size: auto 80%;
+  background-size: auto 70%;
   background-repeat: no-repeat;
   background-position: center center;
   object-fit: contain;
@@ -1699,18 +1698,34 @@ input:checked+.slider:before {
 .date-text {
   font-style: normal;
   font-weight: 400;
-  font-size: 18px;
+  font-size: 14px;
   line-height: 22px;
   /* identical to box height */
   display: flex;
   align-items: center;
-
   color: #000;
   word-wrap: break-word;
-
   position: absolute;
   bottom: 0;
   right: 0;
+}
+
+.date-text-comment {
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
+  display: flex;
+  align-items: center;
+  color: #000;
+  word-wrap: break-word;
+  position: absolute;
+  bottom: 0;
+}
+
+.image-text-field {
+  font-weight: normal;
+  font-size: 14px;
 }
 
 .txn-hash-link {

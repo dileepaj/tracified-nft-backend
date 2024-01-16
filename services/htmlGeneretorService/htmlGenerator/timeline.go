@@ -757,6 +757,8 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 							imgCont += `<li id="carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `"
 											tabindex="0"
 											class="carousel__slide" style="background-image: url('` + imgUrl + `');">
+											<label class="image-text-field">`+ image.FieldName +`</label>
+											<label class="date-text-comment">`+ image.Comment +`</label>
 											<label class="date-text">` + dateStr + `<span class="tl-zoom-icon" style="margin-left: 10px" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
 												</span></label>
 											` + proofTickIcon + `
@@ -771,6 +773,8 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 											<a
 												class="carousel__next">Go to next slide</a>
 											</div>
+											<label class="image-text-field">`+ image.FieldName +`</label>
+											<label class="date-text-comment">`+ image.Comment +`</label>
 											<label class="date-text">` + dateStr + `<span class="tl-zoom-icon" style="margin-left: 10px" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
 												
 												</span></label>
