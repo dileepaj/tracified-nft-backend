@@ -50,6 +50,7 @@ type NFTContentforMatrix struct {
 	HotPicks       bool               `json:"hotpicks" bson:"hotpicks" `
 	CurrentOwnerPK string             `json:"currentownerpk" bson:"currentownerpk" validate:"required"`
 	Thumbnail      string             `json:"thumbnail" bson:"thumbnail"`
+	CurrentPrice   string             `json:"currentprice" bson:"currentprice"`
 }
 
 type Paginateresponse struct {
@@ -173,7 +174,7 @@ type PaginateWalletNFTResponse struct {
 	PaginationInfo PaginationTemplate
 }
 
-type HTMLTimelineHashGenerationResponse struct{
+type HTMLTimelineHashGenerationResponse struct {
 	TimelineHtmlBase64 string
-	TimelineHtmlHash string
+	TimelineHtmlHash   string
 }

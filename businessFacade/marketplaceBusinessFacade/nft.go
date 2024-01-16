@@ -62,11 +62,25 @@ func GetNFTStory(id string, blockchain string) ([]models.NFTStory, error) {
 	return nftRepository.FindNFTStory("nftidentifier", id, "blockchain", blockchain)
 }
 
-func GetNFTByCollection(paginationData requestDtos.NFTsForMatrixView, collectiontoSearch string, pubkey string) (models.Paginateresponse, error) {
-	filter := bson.M{
-		"blockchain":    paginationData.Blockchain,
-		"collection":    collectiontoSearch,
-		"creatoruserid": pubkey,
+func GetNFTByCollection(paginationData requestDtos.NFTsForMatrixView, collectiontoSearch string, pubkey string, nfttype string, additionalType int) (models.Paginateresponse, error) {
+	var filter bson.M
+	filter = bson.M{
+		"blockchain": paginationData.Blockchain,
+		"collection": collectiontoSearch,
+	}
+	if pubkey != "" {
+		filter["creatoruserid"] = pubkey
+	}
+	if nfttype != "" {
+		filter["sellingstatus"] = nfttype
+	}
+	switch additionalType {
+	case 1:
+		filter["hotpicks"] = true
+		break
+	case 2:
+		filter["trending"] = true
+		break
 	}
 	projection := GetProjectionDataNFTMatrixView()
 	var nfts []models.NFTContentforMatrix
@@ -90,6 +104,7 @@ func GetProjectionDataNFTMatrixView() bson.D {
 		{Key: "hotpicks", Value: 1},
 		{Key: "currentownerpk", Value: 1},
 		{Key: "attachmenttype", Value: 1},
+		{Key: "currentprice", Value: 1},
 		// {Key: "thumbnail", Value: 0},
 	}
 	return projection
