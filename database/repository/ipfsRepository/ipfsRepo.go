@@ -15,6 +15,7 @@ import (
 type IpfsRepository struct{}
 
 var Collection = "ipfsfiles"
+var WidgetCollection = "images"
 var DbName = commons.GoDotEnvVariable("DATABASE_NAME")
 
 func (r *IpfsRepository) SaveFileDetails(ipfsObj models.TracifiedDataPacket) (string, error) {
@@ -60,5 +61,20 @@ func (r *IpfsRepository) UpdateFileDetails(tdpId string, updateObj models.Tracif
 		return response, nil
 	} else {
 		return response, nil
+	}
+}
+
+func GetImageWidgetDetails(key string, id string) (models.SaveImageData, error) {
+	var imageDetailsArray models.SaveImageData
+	rst := repository.FindOne(key, id, WidgetCollection)
+	if rst != nil {
+		err := rst.Decode(&imageDetailsArray)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return imageDetailsArray, nil
+		}
+		return imageDetailsArray, nil
+	} else {
+		return imageDetailsArray, nil
 	}
 }
