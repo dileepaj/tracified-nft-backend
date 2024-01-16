@@ -9,4 +9,11 @@ type NFTCollection struct {
 	CollectionName   string             `json:"CollectionName" bson:"collectionname"`
 	OrganizationName string             `json:"OrganizationName" bson:"organizationname"`
 	PublicKey        string             `json:"PublicKey" bson:"publickey"`
+	IsPublic         bool               `json:"ispublic" bson:"ispublic"`
+	CID              string             `json:"cid" bson:"cid"`
+	Images           []ImageObject      `json:"images" bson:"images"`
+}
+type CollectionPaginationResponse struct {
+	Content        []NFTCollection
+	PaginationInfo PaginationTemplate
 }

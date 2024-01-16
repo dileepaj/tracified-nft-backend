@@ -16,3 +16,14 @@ type DeleteCollectionById struct {
 type DeleteCollectionByUserPK struct {
 	UserId string `json:"userid" bson:"userid"`
 }
+
+type UpdateCollectionVisibility struct {
+	Id       primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
+	IsPublic bool               `json:"ispublic" bson:"ispublic"`
+}
+
+type CollectionPagination struct {
+	PageSize      int32 `json:"pagesize"`
+	RequestedPage int32 `json:"requestedPage"`
+	SortType      int   `json:"sorttype"`
+}

@@ -42,12 +42,14 @@ type NFTsForMatrixView struct {
 	PageSize      int32  `json:"pagesize" bson:"pagesize"`
 	RequestedPage int32  `json:"requestedPage" bson:"requestedPage" `
 	SortbyFeild   string `json:"sortbyfeild" bson:"sortbyfeild" `
+	SortType      int    `json:"sorttype" bson:"sorttype"`
 }
 
 type CreatorInfoforMatrixView struct {
 	//CreatorPK     string `json:"userpk" bson:"userpk"`
 	PageSize      int32 `json:"pagesize" bson:"pagesize"`
 	RequestedPage int32 `json:"requestedPage" bson:"requestedPage" `
+	Sort          int   `json:"sort" bson:"sort"`
 }
 
 type UpdateNFTState struct {
