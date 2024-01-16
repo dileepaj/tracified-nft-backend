@@ -5,6 +5,7 @@ import (
 
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -42,13 +43,18 @@ var (
 )
 
 func (r *JMACNFT) GenerateNFT() (string, error) {
-	tdpData, _ := customizedNFTFacade.GetDigitalTwinData(r.BatchID, r.ProductID)
-
+	tdpData, err := customizedNFTFacade.GetDigitalTwinData(r.BatchID, r.ProductID)
+	if err != nil {
+		return "", fmt.Errorf("Failed to get digital twin data: %v", err)
+	}
+	if len(tdpData) == 0 {
+		return "", fmt.Errorf("no digital twin data found for BatchID: %s, ProductID: %s", r.BatchID, r.ProductID)
+	}
 	r.ItemName = tdpData[0].Item
 	// Svg will be generated using the template
 	svgrst, _, svgGenErr := r.GenerateSVGTemplateforNFT(tdpData)
 	if svgGenErr != nil {
-		logs.InfoLogger.Println("failed to generate SVG : ", svgGenErr.Error())
+		logs.InfoLogger.Println("Failed to generate SVG : ", svgGenErr.Error())
 		return "", svgGenErr
 	}
 
@@ -751,6 +757,8 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 							imgCont += `<li id="carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `"
 											tabindex="0"
 											class="carousel__slide" style="background-image: url('` + imgUrl + `');">
+											<label class="image-text-field">`+ image.FieldName +`</label>
+											<label class="date-text-comment">`+ image.Comment +`</label>
 											<label class="date-text">` + dateStr + `<span class="tl-zoom-icon" style="margin-left: 10px" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
 												</span></label>
 											` + proofTickIcon + `
@@ -765,6 +773,8 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 											<a
 												class="carousel__next">Go to next slide</a>
 											</div>
+											<label class="image-text-field">`+ image.FieldName +`</label>
+											<label class="date-text-comment">`+ image.Comment +`</label>
 											<label class="date-text">` + dateStr + `<span class="tl-zoom-icon" style="margin-left: 10px" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
 												
 												</span></label>
@@ -785,7 +795,7 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 						<section class="carousel ` + disabledClass + `" aria-label="Gallery">
 							<div class="carousel__snapper">
 								<a onclick="moveRight('` + imgSliderId + `')"
-									class="carousel__prev" style="cursor:pointer">Go to last slide</a>
+									class="carousel__prev" style="cursor:none">Go to last slide</a>
 								<a onclick="moveLeft('` + imgSliderId + `')"
 									class="carousel__next" style="cursor:pointer">Go to next slide</a>
 							</div>

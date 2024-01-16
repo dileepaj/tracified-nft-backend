@@ -912,6 +912,62 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+  /nft/timeline/html/hash/{productId}/{batchBase64}:
+    get:
+      tags:
+        - nft routes
+      description: get html timeline hash(sha256) with base64 html as json
+      parameters:
+        - name: productId
+          in: path
+          description: nft generated item-id (product-id)
+          required: true
+          schema:
+            type: string
+        - name: batchBase64
+          in: path
+          description: batch name (tdp name) in base64 format
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Retrive NFT filtered by selling status and userPK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/htmlTimelineHashResponse"
+        400:
+          description: bad request.
+
+  /nft/timeline/html/{productId}/{batchBase64}:
+    get:
+      tags:
+        - nft routes
+      description: get html of the updatable timeline
+      parameters:
+        - name: productId
+          in: path
+          description: nft generated item-id (product-id)
+          required: true
+          schema:
+            type: string
+        - name: batchBase64
+          in: path
+          description: batch name (tdp name) in base64 format
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Retrive NFT filtered by selling status and userPK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/htmlTimelineResponse"
+        400:
+          description: bad request.
+
   /generate/svg:
     post:
       tags:
@@ -3818,3 +3874,15 @@ components:
           type: string
         URL:
           type: string
+
+    htmlTimelineHashResponse:
+      type: object
+      properties:
+        TimelineHtmlBase64:
+          type: string
+        TimelineHtmlHash:
+          type: string
+
+    htmlTimelineResponse:
+      type: Html
+

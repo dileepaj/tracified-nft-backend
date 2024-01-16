@@ -172,3 +172,8 @@ type PaginateWalletNFTResponse struct {
 	Content        []WalletNFTContentforMatrix `json:"walletcontent" bson:"walletcontent" validate:"required"`
 	PaginationInfo PaginationTemplate
 }
+
+type HTMLTimelineHashGenerationResponse struct{
+	TimelineHtmlBase64 string
+	TimelineHtmlHash string
+}

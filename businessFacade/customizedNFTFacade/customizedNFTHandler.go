@@ -4,6 +4,7 @@ import (
 	b64 "encoding/base64"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -194,6 +195,18 @@ func GetDigitalTwinData(batchID string, productID string) ([]models.Component, e
 	if err1 != nil {
 		logs.ErrorLogger.Println("unable to get data :", err.Error())
 		return digitalTwinData, err
+	}
+	if resp.StatusCode != http.StatusOK {
+		// Handle HTTP status code other than 200 OK
+		errorMessage := fmt.Sprintf("failed to get data. Status Code: %d, Response Body", resp.StatusCode)
+		logs.ErrorLogger.Println(errorMessage)
+
+		// Return a specific error for 400 Bad Request
+		if resp.StatusCode == http.StatusBadRequest {
+			return digitalTwinData, fmt.Errorf("bad request")
+		}
+
+		return digitalTwinData, fmt.Errorf("failed to get data")
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
