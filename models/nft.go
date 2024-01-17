@@ -36,6 +36,7 @@ type NFT struct {
 	Royalty           string             `json:"royalty" bson:"royalty"`
 	Thumbnail         string             `json:"thumbnail" bson:"thumbnail"`
 	Commission        string             `json:"commission" bson:"commission"`
+	IsFiat            bool               `json:"isfiat" bson:"isfiat"`
 }
 type NFTContentforMatrix struct {
 	Id             primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
@@ -51,6 +52,7 @@ type NFTContentforMatrix struct {
 	CurrentOwnerPK string             `json:"currentownerpk" bson:"currentownerpk" validate:"required"`
 	Thumbnail      string             `json:"thumbnail" bson:"thumbnail"`
 	CurrentPrice   string             `json:"currentprice" bson:"currentprice"`
+	IsFiat         bool               `json:"isfiat" bson:"isfiat"`
 }
 
 type Paginateresponse struct {
