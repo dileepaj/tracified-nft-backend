@@ -105,6 +105,7 @@ func GetProjectionDataNFTMatrixView() bson.D {
 		{Key: "currentownerpk", Value: 1},
 		{Key: "attachmenttype", Value: 1},
 		{Key: "currentprice", Value: 1},
+		{Key: "isfiat", Value: 1},
 		// {Key: "thumbnail", Value: 0},
 	}
 	return projection
