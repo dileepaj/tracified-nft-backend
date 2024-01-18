@@ -749,9 +749,6 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 						dateStr := strings.ReplaceAll(strings.Split(image.Time, "T")[0], "-", "/")
 
 						imgUrl := image.Img
-						if !strings.HasPrefix(image.Img, "http") {
-							imgUrl = r.fetchImgURL(image.Img)
-						}
 
 						if len(imgs) > 1 {
 							imgCont += `<li id="carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `"
