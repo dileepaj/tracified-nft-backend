@@ -8,7 +8,6 @@ type NFTCollection struct {
 	Timestamp        primitive.DateTime `json:"Timestamp" bson:"timestamp,omitempty"`
 	CollectionName   string             `json:"CollectionName" bson:"collectionname"`
 	OrganizationName string             `json:"OrganizationName" bson:"organizationname"`
-	PublicKey        string             `json:"PublicKey" bson:"publickey"`
 	IsPublic         bool               `json:"ispublic" bson:"ispublic"`
 	CID              string             `json:"cid" bson:"cid"`
 	Images           []ImageObject      `json:"images" bson:"images"`

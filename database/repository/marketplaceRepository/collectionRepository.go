@@ -185,9 +185,9 @@ func (r *CollectionRepository) UpdateCollectionVisibility(UpdateObject requestDt
 	return CollcetionUpdateResponse, nil
 }
 
-func (r *CollectionRepository) FindCollectionByKeyAndMailAndName(idName1 string, id1 string, idName2 string, id2 string, idName3 string, id3 string) (models.NFTCollection, error) {
+func (r *CollectionRepository) FindCollectionbyUserID(idName1 string, id1 string) (models.NFTCollection, error) {
 	var collection models.NFTCollection
-	rst, err := repository.FindById1Id2Id3(id1, idName1, id2, idName2, id3, idName3, Collection)
+	rst, err := repository.FindById(id1, idName1, Collection)
 	if err != nil {
 		logs.ErrorLogger.Println(err.Error())
 		return collection, err
@@ -246,4 +246,26 @@ func (r *CollectionRepository) PaginateCollectionResponse(filterConfig bson.M, p
 	response.Content = contentResponse
 	response.PaginationInfo = paginationResponse
 	return response, nil
+}
+
+// IsCollectionNameTaken checks if a collection with the given name already exists.
+// It returns a bool indicating if the name is taken, and an error.
+func (r *CollectionRepository) IsCollectionNameTaken(name string) (bool, error) {
+	session, err := connections.GetMongoSession()
+	if err != nil {
+		logs.ErrorLogger.Println("Error while getting session : ", err.Error())
+		return false, err
+	}
+	defer session.EndSession(context.TODO())
+	filter := bson.M{"collectionname": name}
+	rst, countErr := session.Client().Database(DbName).Collection(Collection).CountDocuments(context.TODO(), filter)
+	if countErr != nil {
+		logs.ErrorLogger.Println("Error while counting documents : ", countErr.Error())
+		return false, countErr
+	}
+	if rst > 0 {
+		return true, nil
+	}
+	return false, nil
+
 }

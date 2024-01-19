@@ -47,9 +47,9 @@ func GetCollectionByUserPK(userid string) ([]models.NFTCollection, error) {
 	return CollectionRepository.FindCollectionbyUserPK("userid", userid)
 }
 
-func GetCollectionByPublicKeyPaginated(pagination requestDtos.CollectionPagination, publicKey string) (models.CollectionPaginationResponse, error) {
+func GetCollectionByPublicKeyPaginated(pagination requestDtos.CollectionPagination, userID string) (models.CollectionPaginationResponse, error) {
 	filter := bson.M{
-		"publickey": publicKey,
+		"userid": userID,
 	}
 	var collections []models.NFTCollection
 	projection := getCollectionProjection()
@@ -83,10 +83,14 @@ func UpdateCollectionVisibility(UpdateObject requestDtos.UpdateCollectionVisibil
 	return CollectionRepository.UpdateCollectionVisibility(UpdateObject, update)
 }
 
-func FindCollectionByKeyAndMailAndName(publickey string, userid string, collection string) (models.NFTCollection, error) {
-	return CollectionRepository.FindCollectionByKeyAndMailAndName(publickey, "publickey", userid, "userid", collection, "collectionname")
+func FindCollectionbyUserID(userid string) (models.NFTCollection, error) {
+	return CollectionRepository.FindCollectionbyUserID(userid, "userid")
 }
 
 func UpdateCollectionDetails(id primitive.ObjectID, UpdateObject models.NFTCollection) (models.NFTCollection, error) {
 	return CollectionRepository.UpdateCollectionDetails(id, UpdateObject)
+}
+
+func IsCollectionNameTaken(name string) (bool, error) {
+	return CollectionRepository.IsCollectionNameTaken(name)
 }
