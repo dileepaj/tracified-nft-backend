@@ -181,7 +181,7 @@ func GetCollectionByPublicKey(w http.ResponseWriter, r *http.Request) {
 		sort = _sort
 	}
 	paginationRequest.SortType = sort
-	results, err1 := marketplaceBusinessFacade.GetCollectionByUserIDPaginated(paginationRequest, vars["userid"])
+	results, err1 := marketplaceBusinessFacade.GetCollectionByUserIDPaginated(paginationRequest, vars["pubkey"])
 	if err1 != nil {
 		ErrorMessage := err1.Error()
 		errors.BadRequest(w, ErrorMessage)
