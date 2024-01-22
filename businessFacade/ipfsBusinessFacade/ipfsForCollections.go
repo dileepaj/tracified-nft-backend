@@ -20,7 +20,7 @@ func UploadCollectionsToIpfs(fileObj models.IpfsObjectForCollections) (string, e
 
 	switch fileObj.FileType {
 	case constants.ImageFile:
-		folderPath = "nftcollection/" + fileObj.CollectionDetails.PublicKey + "/" + fileObj.CollectionDetails.CollectionName
+		folderPath = "nftcollection/" + fileObj.CollectionDetails.UserId + "/" + fileObj.CollectionDetails.CollectionName
 	// case constants.ImageFile:
 	default:
 		return "", errors.New("Invalid file type")
@@ -39,43 +39,31 @@ func UploadCollectionsToIpfs(fileObj models.IpfsObjectForCollections) (string, e
 	if errWhenUploadingFileToIpfs != nil {
 		return "", errWhenUploadingFileToIpfs
 	}
-
-	//check if the collection is already added
-	collectionDetails, errWhenGettingCollectionDetails := marketplaceBusinessFacade.FindCollectionByKeyAndMailAndName(fileObj.CollectionDetails.PublicKey, fileObj.CollectionDetails.UserId, fileObj.CollectionDetails.CollectionName)
-	if errWhenGettingCollectionDetails != nil {
-		return "", errWhenGettingCollectionDetails
-	} else {
-		if collectionDetails.CID == "" && collectionDetails.CollectionName == "" && collectionDetails.PublicKey == "" {
-			//enter new record
-			insertObj := models.NFTCollection{
-				UserId:           fileObj.CollectionDetails.UserId,
-				Timestamp:        fileObj.CollectionDetails.Timestamp,
-				CollectionName:   fileObj.CollectionDetails.CollectionName,
-				OrganizationName: fileObj.CollectionDetails.OrganizationName,
-				PublicKey:        fileObj.CollectionDetails.PublicKey,
-				IsPublic:         fileObj.CollectionDetails.IsPublic,
-			}
-
-			if fileObj.FileType == 2 {
-				img := models.ImageObject{
-					ImageName: fileObj.FileDetails.FileName,
-					ImageCid:  cid,
-				}
-				insertObj.CID = cid
-				insertObj.Images = append(insertObj.Images, img)
-			}
-			_, errWhenSavingDetails := marketplaceBusinessFacade.CreateCollection(insertObj) //can i use to save in savecollections itself
-			if errWhenSavingDetails != nil {
-				logs.ErrorLogger.Println("Error when saving file details on collection : ", errWhenSavingDetails)
-				return "", errWhenSavingDetails
-			}
-			logs.InfoLogger.Println("CID Hash : " + cid)
-
-			return cid, nil
-		} else {
-			return "", errors.New("Collection already exists!")
-		}
+	insertObj := models.NFTCollection{
+		UserId:           fileObj.CollectionDetails.UserId,
+		Timestamp:        fileObj.CollectionDetails.Timestamp,
+		CollectionName:   fileObj.CollectionDetails.CollectionName,
+		OrganizationName: fileObj.CollectionDetails.OrganizationName,
+		IsPublic:         fileObj.CollectionDetails.IsPublic,
 	}
+
+	if fileObj.FileType == 2 {
+		img := models.ImageObject{
+			ImageName: fileObj.FileDetails.FileName,
+			ImageCid:  cid,
+		}
+		insertObj.CID = cid
+		insertObj.Images = append(insertObj.Images, img)
+	}
+
+	_, errWhenSavingDetails := marketplaceBusinessFacade.CreateCollection(insertObj)
+	if errWhenSavingDetails != nil {
+		logs.ErrorLogger.Println("Error when saving file details on collection : ", errWhenSavingDetails)
+		return "", errWhenSavingDetails
+	}
+	logs.InfoLogger.Println("CID Hash : " + cid)
+
+	return cid, nil
 
 }
 
