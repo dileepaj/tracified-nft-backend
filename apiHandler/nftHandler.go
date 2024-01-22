@@ -534,7 +534,7 @@ func GetNFTStory(w http.ResponseWriter, r *http.Request) {
 }
 
 /**
-**GET /nftcollection/{blockchain}/{collection}?=pubkey?limit=10?page=1?sort=-1/1&type
+**GET /nftcollection/{collection}?=pubkey&blockchian=stellar&limit=10&page=1&sort=-1/1&type
 **type = Hotpicks(1) | Trending(2) | BestCreator(3)
 **/
 // GetNFTByCollection retrieves NFTs for the specified blockchain and collection in a paginated format.
@@ -544,7 +544,7 @@ func GetNFTByCollection(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
 	vars := mux.Vars(r)
 	var pagination requestDtos.NFTsForMatrixView
-	pagination.Blockchain = vars["blockchain"]
+	pagination.Blockchain = r.URL.Query().Get("blockchain")
 	var CollectionToSearch = vars["collection"]
 	pubKey := r.URL.Query().Get("pubkey")
 
