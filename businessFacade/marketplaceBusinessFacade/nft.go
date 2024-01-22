@@ -65,11 +65,13 @@ func GetNFTStory(id string, blockchain string) ([]models.NFTStory, error) {
 func GetNFTByCollection(paginationData requestDtos.NFTsForMatrixView, collectiontoSearch string, pubkey string, nfttype string, additionalType int) (models.Paginateresponse, error) {
 	var filter bson.M
 	filter = bson.M{
-		"blockchain": paginationData.Blockchain,
 		"collection": collectiontoSearch,
 	}
+	if paginationData.Blockchain != "" {
+		filter["blockchain"] = paginationData.Blockchain
+	}
 	if pubkey != "" {
-		filter["creatoruserid"] = pubkey
+		filter["currentownerpk"] = pubkey
 	}
 	if nfttype != "" {
 		filter["sellingstatus"] = nfttype
