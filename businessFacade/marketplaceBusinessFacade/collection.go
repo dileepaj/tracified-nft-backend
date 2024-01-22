@@ -47,7 +47,7 @@ func GetCollectionByUserPK(userid string) ([]models.NFTCollection, error) {
 	return CollectionRepository.FindCollectionbyUserPK("userid", userid)
 }
 
-func GetCollectionByPublicKeyPaginated(pagination requestDtos.CollectionPagination, userID string) (models.CollectionPaginationResponse, error) {
+func GetCollectionByUserIDPaginated(pagination requestDtos.CollectionPagination, userID string) (models.CollectionPaginationResponse, error) {
 	filter := bson.M{
 		"userid": userID,
 	}
