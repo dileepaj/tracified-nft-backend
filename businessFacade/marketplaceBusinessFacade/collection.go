@@ -47,9 +47,13 @@ func GetCollectionByUserPK(userid string) ([]models.NFTCollection, error) {
 	return CollectionRepository.FindCollectionbyUserPK("userid", userid)
 }
 
-func GetCollectionByUserIDPaginated(pagination requestDtos.CollectionPagination, userID string) (models.CollectionPaginationResponse, error) {
+func GetCollectionByUserIDPaginated(pagination requestDtos.CollectionPagination, publickey string) (models.CollectionPaginationResponse, error) {
+	//if pubkey is given send pubkey and get endorsment ID and and attach it to userID in filter. if no response attach to publckey filter in Filter(backwards compatiablity)
+	//TODO : write function to get endorsment ID
+
+	//temp filter until endorsment check funtion is made
 	filter := bson.M{
-		"userid": userID,
+		"publickey": publickey,
 	}
 	var collections []models.NFTCollection
 	projection := getCollectionProjection()
