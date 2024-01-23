@@ -270,14 +270,13 @@ func (r *CollectionRepository) IsCollectionNameTaken(name string) (bool, error) 
 
 }
 
-func (r *CollectionRepository) GetNFTCountInCollection(collectionName string) (int64, error) {
+func (r *CollectionRepository) GetNFTCountInCollection(filter bson.M) (int64, error) {
 	session, err := connections.GetMongoSession()
 	if err != nil {
 		logs.ErrorLogger.Println("Error while getting session : ", err.Error())
 		return 0, err
 	}
 	defer session.EndSession(context.TODO())
-	filter := bson.M{"collection": collectionName}
 	rst, countErr := session.Client().Database(DbName).Collection("nft").CountDocuments(context.TODO(), filter)
 	if countErr != nil {
 		logs.ErrorLogger.Println("Error while counting documents : ", countErr.Error())
