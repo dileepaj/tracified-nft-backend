@@ -11,6 +11,7 @@ type NFTCollection struct {
 	IsPublic         bool               `json:"ispublic" bson:"ispublic"`
 	CID              string             `json:"cid" bson:"cid"`
 	Images           []ImageObject      `json:"images" bson:"images"`
+	NFTCount         int64              `json:"nftcount" bson:"nftcount"`
 }
 type CollectionPaginationResponse struct {
 	Content        []NFTCollection

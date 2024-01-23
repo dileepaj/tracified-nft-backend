@@ -24,6 +24,9 @@ func getCollectionProjection() bson.D {
 	}
 	return projection
 }
+func GetNFTCountInCollection(collectionName string) (int64, error) {
+	return CollectionRepository.GetNFTCountInCollection(collectionName)
+}
 
 func GetAllCollectionsPaginated(pagination requestDtos.CollectionPagination) (models.CollectionPaginationResponse, error) {
 	filter := bson.M{

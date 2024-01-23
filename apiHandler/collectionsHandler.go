@@ -246,6 +246,16 @@ func GetAllCollections(w http.ResponseWriter, r *http.Request) {
 	paginationRequest.SortType = sort
 
 	results, err1 := marketplaceBusinessFacade.GetAllCollectionsPaginated(paginationRequest)
+	//iterate through each collection names and get the NFT count
+	for i := range results.Content {
+		count, err := marketplaceBusinessFacade.GetNFTCountInCollection(results.Content[i].CollectionName)
+		if err != nil {
+			logs.WarningLogger.Println("Failed to generate NFT count for collection: " + results.Content[i].CollectionName + " : " + err.Error())
+			results.Content[i].NFTCount = 0
+		}
+		results.Content[i].NFTCount = count
+
+	}
 	if err1 != nil {
 		ErrorMessage := err1.Error()
 		errors.BadRequest(w, ErrorMessage)
