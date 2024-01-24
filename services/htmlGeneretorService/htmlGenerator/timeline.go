@@ -30,7 +30,7 @@ type JMACNFT struct {
 var (
 	svgStart        = services.ReadFromFile("services/htmlGeneretorService/templates/timelinetemplate/svgNFTHeader.txt")
 	svgEnd          = services.ReadFromFile("services/htmlGeneretorService/templates/timelinetemplate/svgNFTFooter.txt")
-	styling         = services.ReadFromFile("services/htmlGeneretorService/templates/timelinetemplate/svgNFTStyles.css") //!Need to implement
+	styling         = services.ReadFromFile("services/htmlGeneretorService/templates/timelinetemplate/svgNFTStyles.css")
 	styleStart1     = `<style>`
 	styleEnd        = `</style></head>`
 	htmlBody        = "</div></div>"
@@ -238,6 +238,7 @@ func (r *JMACNFT) GenerateOverview(data models.Component) (string, string, strin
 	sidebarTabs := ""
 	radioButtons := ""
 	content := ""
+	isHasMapAndTimeline := hasMapAndTimeline(data.Children)
 
 	for index, tab := range data.Children {
 		// if tab.Component == "vertical-card-container" {
@@ -250,13 +251,17 @@ func (r *JMACNFT) GenerateOverview(data models.Component) (string, string, strin
 		if tab.Component == "map" {
 			cont, mainTbs, sidebarTbs, radioBtns := r.GenerateJourneyMap(tab, index)
 			content += cont
-			mainTabs += mainTbs
+			if isHasMapAndTimeline {
+				mainTabs += mainTbs
+			}
 			sidebarTabs += sidebarTbs
 			radioButtons += radioBtns
 		} else if tab.Component == "timeline" {
 			cont, mainTbs, sidebarTbs, radioBtns := r.GenerateTimeline(tab, index)
 			content += cont
-			mainTabs += mainTbs
+			if isHasMapAndTimeline {
+				mainTabs += mainTbs
+			}
 			sidebarTabs += sidebarTbs
 			radioButtons += radioBtns
 		}
@@ -754,8 +759,8 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 							imgCont += `<li id="carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `"
 											tabindex="0"
 											class="carousel__slide" style="background-image: url('` + imgUrl + `');">
-											<label class="image-text-field">`+ image.FieldName +`</label>
-											<label class="date-text-comment">`+ image.Comment +`</label>
+											<label class="image-text-field">` + image.FieldName + `</label>
+											<label class="date-text-comment">` + image.Comment + `</label>
 											<label class="date-text">` + dateStr + `<span class="tl-zoom-icon" style="margin-left: 10px" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
 												</span></label>
 											` + proofTickIcon + `
@@ -770,8 +775,8 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 											<a
 												class="carousel__next">Go to next slide</a>
 											</div>
-											<label class="image-text-field">`+ image.FieldName +`</label>
-											<label class="date-text-comment">`+ image.Comment +`</label>
+											<label class="image-text-field">` + image.FieldName + `</label>
+											<label class="date-text-comment">` + image.Comment + `</label>
 											<label class="date-text">` + dateStr + `<span class="tl-zoom-icon" style="margin-left: 10px" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
 												
 												</span></label>
@@ -1117,4 +1122,24 @@ func (r *JMACNFT) fetchImg(img string) ([]byte, string) {
 	res.Body.Close()
 
 	return data, fType
+}
+
+// Check for the presence of both "map" and "timeline" components
+func hasMapAndTimeline(components []models.Component) bool {
+	hasMap := false
+	hasTimeline := false
+
+	for _, comp := range components {
+		if comp.Component == "map" {
+			hasMap = true
+		} else if comp.Component == "timeline" {
+			hasTimeline = true
+		}
+
+		// Recursively check in the VerticalTab and Tabs fields
+		hasMap = hasMap || hasMapAndTimeline(comp.VerticalTab)
+		hasTimeline = hasTimeline || hasMapAndTimeline(comp.Tabs)
+	}
+
+	return hasMap && hasTimeline
 }
