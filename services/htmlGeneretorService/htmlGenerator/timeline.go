@@ -92,8 +92,6 @@ func (r *JMACNFT) GenerateSVGTemplateforNFT(data []models.Component) (string, st
 					</div>
 					<div class="d-flex justify-content-center align-content-center flex-wrap layer-2" id="container"><div class="proof-toggle-wrapper cont-wrapper">`
 
-	// iframeImg, thumb := r.GenerateTopSection(data)
-
 	r.GenerateContent(data)
 
 	template := svgStart + styleStart1 + styling + styleEnd + htmlStart + htmlBody + svgEnd
@@ -105,86 +103,6 @@ func (r *JMACNFT) GenerateSVGTemplateforNFT(data []models.Component) (string, st
 	template = strings.Replace(template, "\t", " ", -1)
 	template = strings.Replace(template, "\n", " ", -1) */
 	return template, "", nil
-}
-
-// Generate section with video and physical tag
-func (r *JMACNFT) GenerateTopSection(data []models.Component) (string, string) {
-	content := ""
-	video := ""
-	physicalTag := ""
-	thumbnail := ""
-
-	for _, data := range data {
-		if data.Component == "expandableTab" && len(data.Tabs) > 0 && data.Title == "NFT Content" {
-			arr := data.Tabs[0].Children
-
-			for _, val := range arr {
-				if val.Component == "key-value" && val.Key == "Video Link" {
-
-					var valueWithProof models.ValueWithProof1
-
-					decodeErr := mapstructure.Decode(val.Value, &valueWithProof)
-					if decodeErr != nil {
-						logs.ErrorLogger.Println("Failed to decode map data : ", decodeErr.Error())
-					}
-
-					video += `<video style="max-width: 90%" autoplay="true" playsinline="true" controls="true" width="500px" height="300px" allow="autoplay" loop="true" muted="muted">
-									<source src="` + valueWithProof.Value + `"  type="video/mp4" />
-							</video>`
-				} else if val.Component == "key-value" && val.Key == "Thumbnail" {
-					var valueWithProof models.ValueWithProof1
-
-					decodeErr := mapstructure.Decode(val.Value, &valueWithProof)
-					if decodeErr != nil {
-						logs.ErrorLogger.Println("Failed to decode map data : ", decodeErr.Error())
-					}
-
-					thumbnail = valueWithProof.Value
-
-				} else if val.Component == "image-slider" {
-
-					var imgs []models.ImageValue
-
-					decodeErr := mapstructure.Decode(val.Slides.Value, &imgs)
-					if decodeErr != nil {
-						logs.ErrorLogger.Println("failed to decode map : ", decodeErr.Error())
-					}
-
-					imgstr := ""
-
-					for i, img := range imgs {
-						imgstr += `<div id="gemimg` + strconv.Itoa(i) + `" style="position: relative; min-width: 150px; height: 125px; background-position: center center; background-repeat: no-repeat; background-size: contain; background-image:url('` + img.Img + `');">
-										<span class="material-symbols-outlined provable-tick-wrapper provable-val" style="position: absolute; top: 5px; right: 5px; cursor: pointer;" onclick="openModal('PhysicalTag-modal')">
-											check_circle
-										</span>
-										<span class="tl-zoom-icon" style="position: absolute; bottom: 5px; right: 5px; cursor: pointer; font-size: 18px" onclick="openFullScreenImg('gemimg` + strconv.Itoa(i) + `')">
-											
-										</span>
-									</div>`
-					}
-
-					proofStr := ""
-
-					if val.Slides.Provable && len(val.Slides.TdpId) > 0 {
-						proofStr, _ = r.GenerateProofContentStr("Physical Tag", val.Slides)
-					}
-
-					physicalTag += `<div class="gemimages" style="margin-top: 10px; max-width: 100%; display: flex; flex-direction: row; column-gap: 10px; row-gap: 10px; overflow-x: auto;">
-											` + imgstr + proofStr + `
-									</div>
-									`
-
-				}
-			}
-
-		}
-	}
-
-	if video != "" || physicalTag != "" {
-		content = `<div class="iframe-wrapper cont-wrapper">` + video + physicalTag + `</div>`
-	}
-
-	return content, thumbnail
 }
 
 func (r *JMACNFT) GenerateContent(data []models.Component) {
@@ -378,7 +296,7 @@ func (r *JMACNFT) GenerateDecoratedKeyValues(data models.Component, index int) s
 			proofContentStr := ""
 			proofTick := ""
 			if decoratedVal.Provable && len(decoratedVal.TdpId) > 0 {
-				proofContentStr, proofTick = r.GenerateProofContentStr(child.Key, decoratedVal)
+				proofContentStr, proofTick = r.GenerateProofContentStr(child.Key, decoratedVal.TdpId[0])
 			}
 
 			cards += `<div class="tab-cont-card ` + color + `">
@@ -701,8 +619,11 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 
 				proofContentStr := ""
 				proofTick := ""
+				// fmt.Println("info.Key",info.Key)
+				// fmt.Println("info.decoratedVal",decoratedVal)
+				// fmt.Println("jjjjjjjjjjjjjjjj  ",j)
 				if decoratedVal.Provable && len(decoratedVal.TdpId) > 0 {
-					proofContentStr, proofTick = r.GenerateProofContentStr(info.Key, decoratedVal)
+					proofContentStr, proofTick = r.GenerateProofContentStr(info.Key, decoratedVal.TdpId[0])
 				}
 
 				infoStr += `<div class="tl-info-container tl-key-value">
@@ -720,40 +641,26 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 				}
 
 				proofModalStr := ""
-				proofTickIcon := ""
-				if info.Slides.Provable && len(info.Slides.TdpId) > 0 {
-					id := "slider" + strconv.Itoa(imgSliderCount) + "-modal"
-					proofTickIcon = `<span class="material-symbols-outlined provable-tick-wrapper provable-val" onclick="openModal('` + id + `')">
-														check_circle
-													</span>
-									`
-					proofModalStr = r.GenerateImgProofModalStr(info.Slides, id)
-					imgSliderCount++
-				}
+
 
 				if len(imgs) > 0 {
 
 					for j, image := range imgs {
-						/* var prev = 0
-						var next = 0
-
-						if j == 0 {
-							prev = len(imgs) - 1
-						} else {
-							prev = j - 1
+						proofTickIcon := ""
+						if info.Slides.Provable && len(info.Slides.TdpId) > 0 {
+							id := "slider" + strconv.Itoa(imgSliderCount) + "-modal"
+							proofTickIcon = `<span class="material-symbols-outlined provable-tick-wrapper provable-val" onclick="openModal('` + id + `')">
+																check_circle
+															</span>
+											`
+							proofModalStr += r.GenerateImgProofModalStr(info.Slides.TdpId[j], id)
+							imgSliderCount++
 						}
 
-						if j == len(imgs)-1 {
-							next = 0
-						} else {
-							next = j + 1
-						}
-
-						prevStr := "carousel__slide" + strconv.Itoa(i) + strconv.Itoa(prev)
-						nextStr := "carousel__slide" + strconv.Itoa(i) + strconv.Itoa(next) */
 						dateStr := strings.ReplaceAll(strings.Split(image.Time, "T")[0], "-", "/")
 
 						imgUrl := image.Img
+
 
 						if len(imgs) > 1 {
 							imgCont += `<li id="carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `"
@@ -890,7 +797,7 @@ func (r *JMACNFT) GenerateTabLabels(title string, index int) (string, string, st
 }
 
 // Generate proof modal for key value pairs
-func (r *JMACNFT) GenerateProofContentStr(key string, proofInfo models.ValueWithProof) (string, string) {
+func (r *JMACNFT) GenerateProofContentStr(key, tdpId string) (string, string) {
 	id := strings.ReplaceAll(key, " ", "") + "-modal"
 
 	// txnHash, url, err := r.GetTxnHash(proofInfo.TdpId[0])
@@ -905,7 +812,7 @@ func (r *JMACNFT) GenerateProofContentStr(key string, proofInfo models.ValueWith
 	// 	return "", ""
 	// }
 
-	table := r.GenerateProofTable(proofInfo.TdpId[0], "", proofInfo)
+	table := r.GenerateProofTable(tdpId, "")
 
 	proofTick := `<span class="material-symbols-outlined provable-tick-wrapper provable-val" onclick="openModal('` + id + `')">
 						check_circle
@@ -947,19 +854,14 @@ func (r *JMACNFT) GenerateProofContentStr(key string, proofInfo models.ValueWith
 }
 
 // Generate proof modal for image sliders
-func (r *JMACNFT) GenerateImgProofModalStr(proofInfo models.ValueWithProof, id string) string {
-	txnHash, url, err := r.GetTxnHash(proofInfo.TdpId[0])
-	if err != nil {
-		return ""
-	}
-
+func (r *JMACNFT) GenerateImgProofModalStr(tdpId string, id string) string {
 	tab1 := proofModalCount
 	tab2 := proofModalCount + 1
 	tab3 := proofModalCount + 2
 
 	proofModalCount += 3
 
-	table := r.GenerateProofTable(txnHash, url, proofInfo)
+	table := r.GenerateProofTable(tdpId, "")
 
 	proofContentStr := `<!--modal for proof-->
 										<div id="` + id + `" class="modal-window">
@@ -997,40 +899,18 @@ func (r *JMACNFT) GenerateImgProofModalStr(proofInfo models.ValueWithProof, id s
 }
 
 // Generate proof table displayed in the modal
-func (r *JMACNFT) GenerateProofTable(tdpid string, url string, proofInfo models.ValueWithProof) string {
-	table := ""
-
-	for _, proof := range proofInfo.Proofs {
-		// txnStr := ""
-
-		// if proof.Name == "" {
-		// 	continue
-		// }
-
-		// if len(txnHash) > 0 {
-		// 	txnStr = txnHash[0:10] + "..."
-		// } else {
-		// 	txnStr = "N/A"
-		// }
-
-		descStyle := ""
-
-		if len(strings.Split(proof.Description, " ")) == 1 {
-			descStyle = "; word-break: break-all;"
-		}
-
-		proofName := r.GetProofName(proof.Name)
-
-		table += `<tr>
-						<td style="width : 15%">` + proofName + `</td>
-						<td style="width : 40%` + descStyle + `">` + proof.Description + `</td>
-						<td><a class="proof-link" href="` + configs.GetTillitUrl() + `/search/` + tdpid + `" target="_blank">Proof <span class="material-symbols-outlined">
-							open_in_new
-							</span></a>
-						</td>
-					</tr>`
-	}
-
+func (r *JMACNFT) GenerateProofTable(tdpid string, url string) string {
+	table := ""	
+	descStyle := ""
+	proofName := r.GetProofName("POE")
+	table += `<tr>
+				<td style="width : 15%">` + proofName + `</td>
+				<td style="width : 40%` + descStyle + `">` + "Proof that a given data packet existed in the blockchain" + `</td>
+				<td><a class="proof-link" href="` + configs.GetTillitUrl() + `/search/` + tdpid + `" target="_blank">Proof <span class="material-symbols-outlined">
+					open_in_new
+				</span></a>
+				</td>
+			</tr>`
 	return table
 }
 
