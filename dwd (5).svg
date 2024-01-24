@@ -1,0 +1,600 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100vw" height="100vh"><foreignObject width="100vw" height="100vh" x="0" y="0" externalResourcesRequired="true">
+<div  style="width:100vw; height:100vh; overflow-y:auto; overflow-x:auto;" xmlns="http://www.w3.org/1999/xhtml">
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"></link>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet" />
+      <title>Tracified NFT</title><style>* {
+  font-family: "Inter";
+}
+
+.cont-div {
+  margin: 0;
+  display: flex;
+  min-height: 97vh;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* width */
+.scroll::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+/* Track */
+.scroll::-webkit-scrollbar-track {
+  background: #f5f5f5;
+  margin-bottom: 20px;
+}
+
+/* Handle */
+.scroll::-webkit-scrollbar-thumb {
+  background: #717171;
+}
+
+/* Handle on hover */
+.scroll::-webkit-scrollbar-thumb:hover {
+  background: #717171;
+}
+
+.default-font {
+  font-family: "Inter";
+  color: #021d27;
+}
+
+.nft-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+  height: 74px;
+  background: #021d27;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 29px;
+  text-align: center;
+  color: #ffffff;
+  padding-left: 70px;
+  padding-right: 70px;
+}
+
+.nft-logo {
+  width: 238px;
+  height: 51px;
+}
+
+.nft-footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  height: 54px;
+}
+
+.nft-footer-content {
+  width: 100%;
+  margin: 0px 70px 0px 70px;
+  height: 68px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  border-top: 0.5px solid #b5b5b5;
+  column-gap: 7px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 22px;
+  color: #000000;
+}
+
+.round-card {
+  border-radius: 20px;
+  width: 640px;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 620px;
+  overflow: auto;
+}
+
+.round-card-header {
+  border-radius: 20px 20px 0px 0px !important;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 22px;
+  text-align: center;
+  width: 100%;
+  color: #021d27;
+}
+
+ul.timeline {
+  list-style-type: none;
+  position: relative;
+}
+
+ul.timeline:before {
+  content: " ";
+  background: #47da34;
+  display: inline-block;
+  position: absolute;
+  left: 27px;
+  width: 4px;
+  height: 100%;
+  z-index: 1;
+}
+
+ul.timeline > li {
+  margin: 20px 0;
+  margin-left: 25px;
+  padding-left: 20px;
+}
+
+ul.point > li {
+  margin-left: 50px;
+  padding-left: 5px;
+}
+
+.timeline-date {
+  color: rgb(56, 56, 56);
+}
+
+.timeline-header {
+  color: #000000;
+  font-size: 28px;
+  font-weight: 500;
+}
+
+.timeline-key {
+  font-size: 14px;
+  color: #a6a7a6;
+  font-weight: 500;
+}
+
+.timeline-value {
+  font-size: 14px;
+  color: #242424;
+  font-style: italic;
+}
+
+.timeline-value p {
+  margin: 0;
+  padding: 0;
+}
+
+.timeline-key p {
+  margin: 0;
+  padding: 0;
+}
+
+.timeline-header img {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  margin-left: -53px;
+  z-index: 500;
+}
+
+.point {
+  margin-left: 60px;
+}
+
+.timeline-stage {
+  margin-left: 10px;
+  font-size: 16px;
+}
+
+.timeline-icon {
+  position: absolute;
+  z-index: 4000;
+  transform: scale(0.8);
+}
+
+.botCard {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: #f5f5f5;
+  margin-bottom: 10px;
+  padding: 10px;
+  row-gap: 10px;
+}
+
+.botCard p {
+  font-weight: 500;
+  font-size: 12px;
+  margin-top: 1px;
+  margin-bottom: 1px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.common-widget-title {
+  font-size: 12px;
+  margin-bottom: 5px;
+  font-weight: 700;
+  color: #7c7c7c;
+}
+
+.img-widget-image {
+  background-origin: content-box;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  width: 440px;
+  height: 300px;
+}
+
+.img-timeline-image {
+  background-origin: content-box;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  width: 300px;
+  height: 200px;
+  margin-bottom: 5px;
+}
+
+.timeline-heading {
+  display: flex;
+  flex-direction: column;
+  margin-left: 12%;
+  margin-bottom: 25px;
+}
+
+.timeline-product {
+  font-size: 16px;
+}
+
+.timeline-batch {
+  font-size: 16px;
+}
+
+.bold-text {
+  font-weight: 500;
+}
+
+.proofbot-data-field {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  color: #021d27;
+}
+
+.proofbot-value-field {
+  font-style: normal;
+  font-weight: bold;
+  font-size: 12px;
+  color: #021d27;
+  word-break: break-all;
+  text-align: left;
+}
+
+.proof-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  column-gap: 5px;
+}
+
+.proof-url {
+  background: #006d2d;
+  border-radius: 7.17703px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 12px;
+  color: #ffffff;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  height: 25.1px;
+  margin-bottom: 3px;
+  padding: 2px 10px 6px 10px;
+}
+
+.proof-anchor {
+  text-decoration: none;
+  color: #fff;
+}
+.proof-anchor1{
+  text-decoration: none;
+}
+.proof-anchor:hover {
+  text-decoration: none;
+  color: #fff;
+}
+.proof-anchor1:hover{
+  text-decoration: none;
+  color: #fff;
+}
+
+.open-icon {
+  transform: scale(0.55);
+}
+
+.logo {
+  width: 122.41px;
+  height: 25px;
+  margin-bottom: 10px;
+}
+
+.tdp-added-date {
+  margin-bottom: 5px;
+  color: #006d2d;
+  font-weight: 500;
+  font-family: "Inter" !important;
+}
+
+@media only screen and (max-width: 1300px) {
+  .card-body {
+   min-height: 620px;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .nft-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: fit-content;
+    padding-top: 10px;
+    padding-bottom: 20px;
+    background: #021d27;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 29px;
+    text-align: center;
+    color: #ffffff;
+    padding-left: 60px;
+    padding-right: 70px;
+  }
+
+  .img-widget-image {
+    background-origin: content-box;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    min-height: 150px;
+    width: 280px;
+    height: 300px;
+  }
+
+  .nft-footer-content {
+    width: 100%;
+    margin: 0px 20px 0px 20px;
+    height: 68px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    border-top: 0.5px solid #b5b5b5;
+    column-gap: 7px;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 22px;
+    color: #000000;
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 620px;
+    overflow: auto;
+  }
+
+  .img-timeline-image {
+    background-origin: content-box;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    width: 100%;
+    height: 200px;
+    margin-bottom: 5px;
+  }
+
+  .round-card {
+    border-radius: 20px;
+    width: 100%;
+  }
+  .iframe-proofbot{
+    height:100%; 
+    width:100%;
+  }
+  .modalDialog > div {
+    width: 93%;
+    height: 95%;
+    bottom:1%;
+    position: relative;
+    margin: 10% auto;
+    padding: 5px 10px 13px 4px;
+    border-radius: 10px;
+    background: #fff;
+    background: -moz-linear-gradient(#fff, #999);
+    background: -webkit-linear-gradient(#fff, #999);
+    background: -o-linear-gradient(#fff, #999);
+  }
+  .close {
+    background: #606061;
+    color: #FFFFFF;
+    line-height: 3px;
+    position: absolute;
+    right: -9px;
+    text-align: center;
+    top: -13px;
+    width: 23px;
+    text-decoration: none;
+    font-weight: bold;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    border-radius: 12px;
+    -moz-box-shadow: 1px 1px 3px #000;
+    -webkit-box-shadow: 1px 1px 3px #000;
+    box-shadow: 1px 1px 3px #000;
+}
+  .close:hover {
+    background: #00d9ff;
+}
+
+}
+
+@media only screen and (min-width: 600px){
+  .iframe-proofbot{
+    height:100%; 
+    width:100%;
+  }
+  .modalDialog > div {
+    width: 98%;
+    height: 98%;
+    bottom: 19%;
+    position: relative;
+    margin: 10% auto;
+    padding: 5px 20px 13px 20px;
+    border-radius: 10px;
+    background: #fff;
+    background: -moz-linear-gradient(#fff, #999);
+    background: -webkit-linear-gradient(#fff, #999);
+    background: -o-linear-gradient(#fff, #999);
+  }
+  .close {
+    background: #606061;
+    color: #FFFFFF;
+    line-height: 5px;
+    position: absolute;
+    right: -8px;
+    text-align: center;
+    top: -3px;
+    width: 25px;
+    text-decoration: none;
+    font-weight: bold;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    border-radius: 16px;
+    -moz-box-shadow: 1px 1px 3px #000;
+    -webkit-box-shadow: 1px 1px 3px #000;
+    box-shadow: 1px 1px 3px #000;
+}
+  .close:hover {
+    background: #00d9ff;
+}
+}
+
+.modalDialog {
+    position: fixed;
+    font-family: Arial, Helvetica, sans-serif;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 99999;
+    opacity:0;
+    -webkit-transition: opacity 400ms ease-in;
+    -moz-transition: opacity 400ms ease-in;
+    transition: opacity 400ms ease-in;
+    pointer-events: none;
+}
+.modalDialog:target {
+    opacity:1;
+    pointer-events: auto;
+}
+.close:hover {
+    background: #00d9ff;
+}
+
+iframe {
+  width: 100%;
+  height: 100%;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+.card-body-for-timeline {
+  padding: 0rem 0rem !important;
+}
+
+.footer-timestamp {
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.footer-timestamp-field {
+  font-size: 14px;
+  font-weight: 700;
+}</style>	<div class="cont-div">
+					<div class="nft-header default-font">
+					<img src="https://s3.ap-south-1.amazonaws.com/qa.marketplace.nft.tracified.com/Tracified-RT-Logo-White.svg"
+					class="nft-logo"/>
+					<label>dwd</label>
+					</div>
+				<div class="d-flex justify-content-around align-content-center flex-wrap" id="container"><div class="card text-center justify-content-center m-3 default-font round-card" style="max-height: fit-content;">
+							<div class="card-header round-card-header">Timeline 1 <div class="unique-id" style="display:none">
+								<span class="unique-id tenant-uid"> TenantATRAC:2b466320-0e80-11ee-aba9-1b85573f66d7 </span>
+								<span class="unique-id product-uid"> ProductBTRAC:6492913a7a7aec967181b6b6 </span>
+								<span class="unique-id batch-uid"> BatchCTRAC:jmact002 </span></div></div>
+																<div class="card-body card-body-for-timeline text-center scroll">
+							<iframe src="https://qa.api.nft.tracified.com/nft/timeline/html/6492913a7a7aec967181b6b6/am1hY3QwMDI=" width="800" height="600" frameborder="0"></iframe></div></div>  </div>
+  <div class="text-center nft-footer">
+		<div class="nft-footer-content default-font">
+    <p class="footer-timestamp"> <img src="https://s3.ap-south-1.amazonaws.com/nft.tracified.com/assets/icons/schedule.svg" alt="Schedule Icon" style="width: 14px; height: 14px;"></img> Last Update: <span class="footer-timestamp-field" id="lastUpdate"></span></p>
+			<label>Powered by </label> <img src="https://tracified-platform-images.s3.ap-south-1.amazonaws.com/tracified-logo+(1).png" class="logo"/>
+		</div>
+	</div>
+  </div>
+  </div>
+  </foreignObject>
+    <script>
+        <![CDATA[
+function getCurrentDateTime() {
+    var now = new Date();
+
+    var localDate = now.toLocaleString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+    var localTime = now.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+
+    var rawTimezoneOffset = now.getTimezoneOffset();
+
+    var timezoneOffsetHours = Math.floor(Math.abs(rawTimezoneOffset) / 60);
+    var timezoneOffsetMinutes = Math.abs(rawTimezoneOffset) % 60;
+
+    var timezoneOffsetString = (rawTimezoneOffset >= 0 ? '-' : '+') +
+        ('00' + timezoneOffsetHours).slice(-2) +
+        ':' +
+        ('00' + timezoneOffsetMinutes).slice(-2);
+
+    return localDate + ' at ' + localTime + ' (GMT ' + timezoneOffsetString + ')';
+}
+
+function updateLastUpdateTime() {
+    var lastUpdateElement = document.getElementById('lastUpdate');
+    if (lastUpdateElement) {
+        lastUpdateElement.textContent = getCurrentDateTime();
+    }
+}
+
+window.onload = function() {
+    updateLastUpdateTime();
+};
+
+window.onbeforeunload = function() {
+    updateLastUpdateTime();
+};
+
+          ]]>
+  </script>
+  </svg>
