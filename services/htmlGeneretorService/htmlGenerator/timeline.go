@@ -799,18 +799,11 @@ func (r *JMACNFT) GenerateTabLabels(title string, index int) (string, string, st
 // Generate proof modal for key value pairs
 func (r *JMACNFT) GenerateProofContentStr(key, tdpId string) (string, string) {
 	id := strings.ReplaceAll(key, " ", "") + "-modal"
-
 	// txnHash, url, err := r.GetTxnHash(proofInfo.TdpId[0])
-
-	tab1 := proofModalCount
-	tab2 := proofModalCount + 1
-	tab3 := proofModalCount + 2
-
+	// tab1 := proofModalCount
+	// tab2 := proofModalCount + 1
+	// tab3 := proofModalCount + 2
 	proofModalCount += 3
-
-	// if err != nil {
-	// 	return "", ""
-	// }
 
 	table := r.GenerateProofTable(tdpId, "")
 
@@ -828,11 +821,7 @@ func (r *JMACNFT) GenerateProofContentStr(key, tdpId string) (string, string) {
 								</span>
 							</div>
 							<div class="modal-cont">
-								<div class="modal-tab">		
-									<label id="modal-tab-lbl-` + strconv.Itoa(tab2) + `" class="modal-tab-label" onclick="openTab('modal-tab-` + strconv.Itoa(tab2) + `', 'modal-tab-` + strconv.Itoa(tab1) + `', 'modal-tab-` + strconv.Itoa(tab3) + `', 'modal-tab-lbl-` + strconv.Itoa(tab2) + `', 'modal-tab-lbl-` + strconv.Itoa(tab1) + `', 'modal-tab-lbl-` + strconv.Itoa(tab3) + `')">Blockchain Proofs</label>	
-								</div>
-								<div id="modal-tab-` + strconv.Itoa(tab2) + `" class="modal-tab-cont">
-									<table class="table proof-table">
+							<table class="table proof-table">
 										<thead>
 											<tr>
 												<th scope="col">Proof Type</th>
@@ -845,7 +834,6 @@ func (r *JMACNFT) GenerateProofContentStr(key, tdpId string) (string, string) {
 											` + table + `
 										</tbody>
 									</table>
-								</div>
 							</div>
 						</div>
 					</div>`
@@ -855,9 +843,9 @@ func (r *JMACNFT) GenerateProofContentStr(key, tdpId string) (string, string) {
 
 // Generate proof modal for image sliders
 func (r *JMACNFT) GenerateImgProofModalStr(tdpId string, id string) string {
-	tab1 := proofModalCount
-	tab2 := proofModalCount + 1
-	tab3 := proofModalCount + 2
+	//tab1 := proofModalCount
+	//tab2 := proofModalCount + 1
+	//tab3 := proofModalCount + 2
 
 	proofModalCount += 3
 
@@ -873,11 +861,7 @@ func (r *JMACNFT) GenerateImgProofModalStr(tdpId string, id string) string {
 													</span>
 												</div>
 												<div class="modal-cont">
-													<div class="modal-tab">	
-														<label id="modal-tab-lbl-` + strconv.Itoa(tab2) + `" class="modal-tab-label" onclick="openTab('modal-tab-` + strconv.Itoa(tab2) + `', 'modal-tab-` + strconv.Itoa(tab1) + `', 'modal-tab-` + strconv.Itoa(tab3) + `', 'modal-tab-lbl-` + strconv.Itoa(tab2) + `', 'modal-tab-lbl-` + strconv.Itoa(tab1) + `', 'modal-tab-lbl-` + strconv.Itoa(tab3) + `')">Blockchain Proofs</label>
-													</div>
-													<div id="modal-tab-` + strconv.Itoa(tab2) + `" class="modal-tab-cont">
-														<table class="table proof-table">
+												<table class="table proof-table">
 															<thead>
 																<tr>
 																	<th scope="col">Proof Type</th>
@@ -890,7 +874,6 @@ func (r *JMACNFT) GenerateImgProofModalStr(tdpId string, id string) string {
 																` + table + `
 															</tbody>
 														</table>
-													</div>
 												</div>
 											</div>
 										</div>`
