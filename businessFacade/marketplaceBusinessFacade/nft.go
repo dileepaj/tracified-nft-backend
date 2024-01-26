@@ -179,6 +179,9 @@ func GetPaginatedOnSaleNFTbyStatusFilter(paginationData requestDtos.NFTsForMatri
 			"trending":      true,
 		}
 	}
+	if paginationData.Blockchain != "" {
+		filter["blockchain"] = paginationData.Blockchain
+	}
 	projection := GetProjectionDataNFTMatrixView()
 
 	var nfts []models.NFTContentforMatrix
