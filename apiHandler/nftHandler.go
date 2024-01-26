@@ -788,13 +788,13 @@ func GetPaginatedNFTforstatusFilters(w http.ResponseWriter, r *http.Request) {
 /**
  **Description:function is used to paginate and return block chain specific nfts which are either trending or under hotpicks that are on Sale
  **Returns:Paginated nft data
- **GET /onsale/{type}/{blockchain}?limit=10&page=1&sort=-1/1
+ **GET /onsale/{type}?blockchain=&limit=10&page=1&sort=-1/1
  */
 func GetPaginatedOnSaleNFTforstatusFilters(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
 	vars := mux.Vars(r)
 	var pagination requestDtos.NFTsForMatrixView
-	pagination.Blockchain = vars["blockchain"]
+	pagination.Blockchain = r.URL.Query().Get("blockchain")
 	pgsize, err1 := strconv.Atoi(r.URL.Query().Get("limit"))
 	if err1 != nil || pgsize <= 0 {
 		_pgsize, envErr := strconv.Atoi(commons.GoDotEnvVariable("PAGINATION_DEFUALT_LIMIT"))
@@ -823,6 +823,9 @@ func GetPaginatedOnSaleNFTforstatusFilters(w http.ResponseWriter, r *http.Reques
 		pagination.SortbyFeild = "hotpicks"
 	} else if vars["type"] == "trending" {
 		pagination.SortbyFeild = "trending"
+	} else {
+		errors.BadRequest(w, "type should be hotpicks or trending")
+		return
 	}
 
 	sort, err := strconv.Atoi(r.URL.Query().Get("sort"))

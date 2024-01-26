@@ -202,7 +202,7 @@ var NftRoutes = models.Routers{
 		Name:   "Get NFT pagination by On Sale Hotpick or trending status",
 		Method: "Get",
 		// Path:    "/onsale/{type}/{blockchain}/{pagesize}/{requestedPage}",
-		Path:    "/onsale/{type}/{blockchain}",
+		Path:    "/onsale/{type}",
 		Handler: apiHandler.GetPaginatedOnSaleNFTforstatusFilters,
 	},
 	models.Router{
