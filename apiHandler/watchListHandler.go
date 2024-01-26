@@ -47,6 +47,11 @@ func GetWatchListByUserPK(w http.ResponseWriter, r *http.Request) {
 		errors.BadRequest(w, ErrorMessage)
 		return
 	} else {
+		if results == nil {
+			logs.WarningLogger.Println("User " + vars["user"] + " does not have any watchlist")
+			commonResponse.NoContent(w, "")
+			return
+		}
 		w.WriteHeader(http.StatusOK)
 		err := json.NewEncoder(w).Encode(results)
 		if err != nil {
