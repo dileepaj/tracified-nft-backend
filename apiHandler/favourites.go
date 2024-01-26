@@ -54,6 +54,11 @@ func GetFavouritesByUserPK(w http.ResponseWriter, r *http.Request) {
 		errors.BadRequest(w, ErrorMessage)
 		return
 	} else {
+		if results == nil {
+			logs.WarningLogger.Println("User " + vars["user"] + " does not have any favourites")
+			commonResponse.NoContent(w, "")
+			return
+		}
 		w.WriteHeader(http.StatusOK)
 		err := json.NewEncoder(w).Encode(results)
 		if err != nil {
