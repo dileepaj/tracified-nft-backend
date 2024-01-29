@@ -601,7 +601,7 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 	for i, stage := range data.Children {
 		infoStr := ""
 		if stage.Icon == "" {
-			stage.Icon = "https://s3.ap-south-1.amazonaws.com/tracified-image-storage/ecom/data-icons/Tatenokawa/4.png"
+			stage.Icon = "https://s3.ap-south-1.amazonaws.com/nft.tracified.com/assets/icons/common-stage.png"
 		}
 		for j, info := range stage.Children {
 			if info.Component == "key-value" {
@@ -619,9 +619,6 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 
 				proofContentStr := ""
 				proofTick := ""
-				// fmt.Println("info.Key",info.Key)
-				// fmt.Println("info.decoratedVal",decoratedVal)
-				// fmt.Println("jjjjjjjjjjjjjjjj  ",j)
 				if decoratedVal.Provable && len(decoratedVal.TdpId) > 0 {
 					proofContentStr, proofTick = r.GenerateProofContentStr(info.Key, decoratedVal.TdpId[0])
 				}
