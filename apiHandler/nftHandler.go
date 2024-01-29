@@ -589,7 +589,8 @@ func GetNFTByCollection(w http.ResponseWriter, r *http.Request) {
 	}
 	pagination.SortType = sort
 	nftType := r.URL.Query().Get("nfttype")
-	results, err := marketplaceBusinessFacade.GetNFTByCollection(pagination, CollectionToSearch, pubKey, nftType, additionalType)
+	isfiat := r.URL.Query().Get("isfiat")
+	results, err := marketplaceBusinessFacade.GetNFTByCollection(pagination, CollectionToSearch, pubKey, nftType, additionalType, isfiat)
 	if err != nil {
 		errors.BadRequest(w, err.Error())
 		return
