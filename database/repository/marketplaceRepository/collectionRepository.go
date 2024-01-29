@@ -284,3 +284,21 @@ func (r *CollectionRepository) GetNFTCountInCollection(filter bson.M) (int64, er
 	}
 	return rst, nil
 }
+
+func (r *CollectionRepository) GetCollectionByEndorsementId(idName string, id string) ([]models.NFTCollection, error) {
+	var collections []models.NFTCollection
+	rst, err := repository.FindById(idName, id, Collection)
+	if err != nil {
+		return collections, err
+	}
+	for rst.Next(context.TODO()) {
+		var collection models.NFTCollection
+		err = rst.Decode(&collection)
+		if err != nil {
+			logs.ErrorLogger.Println(err.Error())
+			return collections, err
+		}
+		collections = append(collections, collection)
+	}
+	return collections, nil
+}

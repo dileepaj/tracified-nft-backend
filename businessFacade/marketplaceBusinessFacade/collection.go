@@ -107,3 +107,7 @@ func UpdateCollectionDetails(id primitive.ObjectID, UpdateObject models.NFTColle
 func IsCollectionNameTaken(name string) (bool, error) {
 	return CollectionRepository.IsCollectionNameTaken(name)
 }
+
+func GetCollectionByEndorsementId(objectid string) ([]models.NFTCollection, error) {
+	return CollectionRepository.GetCollectionByEndorsementId("_id", objectid)
+}

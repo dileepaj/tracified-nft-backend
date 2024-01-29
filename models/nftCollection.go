@@ -4,6 +4,7 @@ import "go.mongodb.org/mongo-driver/bson/primitive"
 
 type NFTCollection struct {
 	Id               primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
+	Publickey        string             `json:"Publickey" bson:"publickey"`
 	UserId           string             `json:"UserId" bson:"userid" `
 	Timestamp        primitive.DateTime `json:"Timestamp" bson:"timestamp,omitempty"`
 	CollectionName   string             `json:"CollectionName" bson:"collectionname"`
