@@ -639,7 +639,6 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 
 				proofModalStr := ""
 
-
 				if len(imgs) > 0 {
 
 					for j, image := range imgs {
@@ -705,22 +704,39 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 					}
 
 					if imgCont != "" {
-						infoStr += `<div class="tl-info-container">
-						<section class="carousel ` + disabledClass + `" aria-label="Gallery">
+						if len(imgs) == 1 {
+							infoStr += `<div class="tl-info-container">
+							<section class="carousel ` + disabledClass + `" aria-label="Gallery">
+		
+							<div class=" arrow-right" id="right ` + imgSliderId + `" onclick="moveRight('` + imgSliderId + `','left ` + imgSliderId + `','right ` + imgSliderId + `')">
+							</div>
+							<div class=" arrow-left" id="left ` + imgSliderId + `" onclick="moveLeft('` + imgSliderId + `','left ` + imgSliderId + `','right ` + imgSliderId + `')">
+							</div>
 	
-						<div class=" arrow-right" id="right `+ imgSliderId + `" onclick="moveRight('` + imgSliderId + `','left `+ imgSliderId + `','right `+ imgSliderId + `')">
-							<span class="material-symbols-outlined icon-container"> chevron_right</span>
-						</div>
-						<div class=" arrow-left" id="left `+ imgSliderId + `" onclick="moveLeft('` + imgSliderId + `','left `+ imgSliderId + `','right `+ imgSliderId + `')">
-						   <span class="material-symbols-outlined icon-container">chevron_left</span>
-						</div>
-
-							<ol id="` + imgSliderId + `" class="carousel__viewport">
-							` + imgCont + `
-							</ol>
-						</section>
-						` + proofModalStr + `
-					</div>`
+								<ol id="` + imgSliderId + `" class="carousel__viewport">
+								` + imgCont + `
+								</ol>
+							</section>
+							` + proofModalStr + `
+						</div>`
+						} else {
+							infoStr += `<div class="tl-info-container">
+							<section class="carousel ` + disabledClass + `" aria-label="Gallery">
+		
+							<div class=" arrow-right" id="right ` + imgSliderId + `" onclick="moveRight('` + imgSliderId + `','left ` + imgSliderId + `','right ` + imgSliderId + `')">
+								<span class="material-symbols-outlined icon-container"> chevron_right</span>
+							</div>
+							<div class=" arrow-left" id="left ` + imgSliderId + `" onclick="moveLeft('` + imgSliderId + `','left ` + imgSliderId + `','right ` + imgSliderId + `')">
+							   <span class="material-symbols-outlined icon-container">chevron_left</span>
+							</div>
+	
+								<ol id="` + imgSliderId + `" class="carousel__viewport">
+								` + imgCont + `
+								</ol>
+							</section>
+							` + proofModalStr + `
+						</div>`
+						}
 					}
 				}
 			}
@@ -850,9 +866,9 @@ func (r *JMACNFT) GenerateProofContentStr(key, tdpId string) (string, string) {
 
 // Generate proof modal for image sliders
 func (r *JMACNFT) GenerateImgProofModalStr(tdpId string, id string) string {
-	//tab1 := proofModalCount
-	//tab2 := proofModalCount + 1
-	//tab3 := proofModalCount + 2
+	// tab1 := proofModalCount
+	// tab2 := proofModalCount + 1
+	// tab3 := proofModalCount + 2
 
 	proofModalCount += 3
 
@@ -890,7 +906,7 @@ func (r *JMACNFT) GenerateImgProofModalStr(tdpId string, id string) string {
 
 // Generate proof table displayed in the modal
 func (r *JMACNFT) GenerateProofTable(tdpid string, url string) string {
-	table := ""	
+	table := ""
 	descStyle := ""
 	proofName := r.GetProofName("POE")
 	table += `<tr>
