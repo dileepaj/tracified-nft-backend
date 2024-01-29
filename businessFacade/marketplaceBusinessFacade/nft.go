@@ -2,6 +2,7 @@ package marketplaceBusinessFacade
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
@@ -62,11 +63,36 @@ func GetNFTStory(id string, blockchain string) ([]models.NFTStory, error) {
 	return nftRepository.FindNFTStory("nftidentifier", id, "blockchain", blockchain)
 }
 
-func GetNFTByCollection(paginationData requestDtos.NFTsForMatrixView, collectiontoSearch string, pubkey string) (models.Paginateresponse, error) {
-	filter := bson.M{
-		"blockchain":    paginationData.Blockchain,
-		"collection":    collectiontoSearch,
-		"creatoruserid": pubkey,
+func GetNFTByCollection(paginationData requestDtos.NFTsForMatrixView, collectiontoSearch string, pubkey string, nfttype string, additionalType int, fiatState string) (models.Paginateresponse, error) {
+	var filter bson.M
+	filter = bson.M{
+		"collection": collectiontoSearch,
+	}
+	if paginationData.Blockchain != "" {
+		filter["blockchain"] = paginationData.Blockchain
+	}
+	if pubkey != "" {
+		filter["currentownerpk"] = pubkey
+	}
+	if nfttype != "" {
+		filter["sellingstatus"] = nfttype
+	}
+	switch additionalType {
+	case 1:
+		filter["hotpicks"] = true
+		break
+	case 2:
+		filter["trending"] = true
+		break
+	}
+	if fiatState != "" {
+		isfiat, fiatErr := strconv.ParseBool(fiatState)
+		if fiatErr != nil {
+			logs.WarningLogger.Println("Invalid bool value for isfiat! setting filter to false")
+			filter["isfiat"] = false
+		} else {
+			filter["isfiat"] = isfiat
+		}
 	}
 	projection := GetProjectionDataNFTMatrixView()
 	var nfts []models.NFTContentforMatrix
@@ -90,6 +116,8 @@ func GetProjectionDataNFTMatrixView() bson.D {
 		{Key: "hotpicks", Value: 1},
 		{Key: "currentownerpk", Value: 1},
 		{Key: "attachmenttype", Value: 1},
+		{Key: "currentprice", Value: 1},
+		{Key: "isfiat", Value: 1},
 		// {Key: "thumbnail", Value: 0},
 	}
 	return projection
@@ -160,6 +188,9 @@ func GetPaginatedOnSaleNFTbyStatusFilter(paginationData requestDtos.NFTsForMatri
 			"sellingstatus": "ON SALE",
 			"trending":      true,
 		}
+	}
+	if paginationData.Blockchain != "" {
+		filter["blockchain"] = paginationData.Blockchain
 	}
 	projection := GetProjectionDataNFTMatrixView()
 

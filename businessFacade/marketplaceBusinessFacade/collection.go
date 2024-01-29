@@ -24,7 +24,16 @@ func getCollectionProjection() bson.D {
 	}
 	return projection
 }
-
+func GetNFTCountInPublicCollection(collectionName string) (int64, error) {
+	filter := bson.M{"collection": collectionName, "sellingstatus": "ON SALE"}
+	return CollectionRepository.GetNFTCountInCollection(filter)
+}
+func GetNFTCountForUserProfile(collectionName string) (int64, error) {
+	filter := bson.M{
+		"collection": collectionName,
+	}
+	return CollectionRepository.GetNFTCountInCollection(filter)
+}
 func GetAllCollectionsPaginated(pagination requestDtos.CollectionPagination) (models.CollectionPaginationResponse, error) {
 	filter := bson.M{
 		"ispublic": true,
@@ -47,9 +56,13 @@ func GetCollectionByUserPK(userid string) ([]models.NFTCollection, error) {
 	return CollectionRepository.FindCollectionbyUserPK("userid", userid)
 }
 
-func GetCollectionByPublicKeyPaginated(pagination requestDtos.CollectionPagination, publicKey string) (models.CollectionPaginationResponse, error) {
+func GetCollectionByUserIDPaginated(pagination requestDtos.CollectionPagination, publickey string) (models.CollectionPaginationResponse, error) {
+	//if pubkey is given send pubkey and get endorsment ID and and attach it to userID in filter. if no response attach to publckey filter in Filter(backwards compatiablity)
+	//TODO : write function to get endorsment ID
+
+	//temp filter until endorsment check funtion is made
 	filter := bson.M{
-		"publickey": publicKey,
+		"publickey": publickey,
 	}
 	var collections []models.NFTCollection
 	projection := getCollectionProjection()
@@ -83,10 +96,18 @@ func UpdateCollectionVisibility(UpdateObject requestDtos.UpdateCollectionVisibil
 	return CollectionRepository.UpdateCollectionVisibility(UpdateObject, update)
 }
 
-func FindCollectionByKeyAndMailAndName(publickey string, userid string, collection string) (models.NFTCollection, error) {
-	return CollectionRepository.FindCollectionByKeyAndMailAndName(publickey, "publickey", userid, "userid", collection, "collectionname")
+func FindCollectionbyUserID(userid string) (models.NFTCollection, error) {
+	return CollectionRepository.FindCollectionbyUserID(userid, "userid")
 }
 
 func UpdateCollectionDetails(id primitive.ObjectID, UpdateObject models.NFTCollection) (models.NFTCollection, error) {
 	return CollectionRepository.UpdateCollectionDetails(id, UpdateObject)
+}
+
+func IsCollectionNameTaken(name string) (bool, error) {
+	return CollectionRepository.IsCollectionNameTaken(name)
+}
+
+func GetCollectionByEndorsementId(objectid string) ([]models.NFTCollection, error) {
+	return CollectionRepository.GetCollectionByEndorsementId("_id", objectid)
 }
