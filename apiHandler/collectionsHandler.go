@@ -382,12 +382,21 @@ func GetCollectionByEndorsementId(w http.ResponseWriter, r *http.Request) {
 		errors.BadRequest(w, ErrorMessage)
 		return
 	} else {
-		w.WriteHeader(http.StatusOK)
-		err := json.NewEncoder(w).Encode(results)
-		if err != nil {
-			logs.ErrorLogger.Println(err)
+		if results == nil {
+			w.WriteHeader(http.StatusNoContent)
+			err := json.NewEncoder(w).Encode(results)
+			if err != nil {
+				logs.ErrorLogger.Println(err)
+			}
+			return
+		} else {
+			w.WriteHeader(http.StatusOK)
+			err := json.NewEncoder(w).Encode(results)
+			if err != nil {
+				logs.ErrorLogger.Println(err)
+			}
+			return
 		}
-		return
 	}
 
 }
