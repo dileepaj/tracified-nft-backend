@@ -346,7 +346,7 @@ body{
 }
 
 .td-carousel {
-  height: 700px !important;
+  height: 720px !important;
 }
 
 .dt-icon-img {
@@ -1755,6 +1755,18 @@ input:checked+.slider:before {
 .image-text-field {
   font-weight: normal;
   font-size: 14px;
+}
+
+.comment-text-field {
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.date-text-field {
+  font-weight: normal;
+  font-size: 14px;
+  text-align: end;
 }
 
 .txn-hash-link {
