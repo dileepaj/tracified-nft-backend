@@ -109,5 +109,5 @@ func IsCollectionNameTaken(name string) (bool, error) {
 }
 
 func GetCollectionByEndorsementId(objectid string) ([]models.NFTCollection, error) {
-	return CollectionRepository.GetCollectionByEndorsementId("_id", objectid)
+	return CollectionRepository.GetCollectionByEndorsementId("userid", objectid)
 }
