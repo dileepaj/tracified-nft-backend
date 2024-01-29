@@ -4,8 +4,8 @@
                     close
                 </span>
             </label>
-            <div id="img-fs-view" class="img-div">
-            </div>
+            <div> <img src="" alt="" id="img-fs-view" class="img-div"> </div>
+            
 		</div>
         </div>
         </div>
@@ -78,11 +78,10 @@
         }
 
         function openFullScreenImg(id) {
-            var url = document.getElementById(id).style.backgroundImage;
+            var url = document.getElementById(id).src;
             var imgFs = document.getElementById('img-fs-div');
             var img = document.getElementById('img-fs-view');
-
-            img.style.backgroundImage =url;
+            img.src = url;
             imgFs.style.display = "flex";
             pinchZoom(img);
         }
@@ -146,53 +145,55 @@
 
 			}
 
-    function moveLeft(id) {
-      const clickedElement = document.querySelector(`[onclick="moveLeft('${id}')"]`);
-      const clickedElement2 = document.querySelector(`[onclick="moveRight('${id}')"]`);
+    function moveLeft(id,idL, idR) {
+      const carousel = document.getElementById(id)
+      const width = carousel.offsetWidth;
+      const pos = carousel.scrollLeft;
+      const scrollX = Math.ceil(pos - width);
+   
+      arrowL = document.getElementById(idL)
+      arrowR = document.getElementById(idR)
+
+      if (pos > 0 ) {
+        carousel.scroll({
+          top: 0,
+          left: scrollX,
+          behavior: "smooth",
+        });
+      }
+
+      if (scrollX == 0) {
+        arrowL.style.display = "none"
+      }
+      else {
+        arrowR.style.display = "block"
+      }
+    }
+
+    function moveRight(id,idL,idR) {
       const carousel = document.getElementById(id)
       const width = carousel.offsetWidth;
       const pos = carousel.scrollLeft;
       const scrollX = Math.ceil(pos + width);
-      console.log('scrollX < carousel.scrollWidth', scrollX < carousel.scrollWidth)
+      const count =  Math.floor(carousel.scrollWidth/width)
+      const totalWidth = width*count
+  
+      arrowL = document.getElementById(idL)
+      arrowR = document.getElementById(idR)
+
       if (scrollX < carousel.scrollWidth) {
         carousel.scroll({
           top: 0,
           left: scrollX,
           behavior: "smooth",
         });
-        if (clickedElement) {
-          clickedElement.style.cursor = "pointer";
-          clickedElement2.style.cursor = "pointer";
-        }
-      } else {
-        // Get the clicked element and change its cursor
-        if (clickedElement) {
-          clickedElement.style.cursor = "none";   
-        }
-      }
-    }
+      } 
 
-    function moveRight(id) {
-      const clickedElement = document.querySelector(`[onclick="moveRight('${id}')"]`);
-      const clickedElement2 = document.querySelector(`[onclick="moveLeft('${id}')"]`);
-      const carousel = document.getElementById(id)
-      const width = carousel.offsetWidth;
-      const pos = carousel.scrollLeft;
-      const scrollX = Math.ceil(pos - width);
-      if (pos > 0) {
-        carousel.scroll({
-          top: 0,
-          left: scrollX,
-          behavior: "smooth",
-        });
-        if (clickedElement) {
-          clickedElement.style.cursor = "pointer";
-        }
-      } else {
-        if (clickedElement) {
-          clickedElement.style.cursor = "none";
-          clickedElement2.style.cursor = "pointer";
-        }
+      if ((totalWidth) == (scrollX+width)) {
+        arrowR.style.display = "none"
+      }
+      else {
+        arrowL.style.display = "block"
       }
     }
     </script>

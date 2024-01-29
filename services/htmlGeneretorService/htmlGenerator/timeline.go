@@ -663,15 +663,27 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 
 
 						if len(imgs) > 1 {
-							imgCont += `<li id="carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `"
-											tabindex="0"
-											class="carousel__slide" style="background-image: url('` + imgUrl + `');">
-											<label class="image-text-field">` + image.FieldName + `</label>
-											<label class="date-text-comment">` + image.Comment + `</label>
-											<label class="date-text">` + dateStr + `<span class="tl-zoom-icon" style="margin-left: 10px" onclick="openFullScreenImg('carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
-												</span></label>
-											` + proofTickIcon + `
-										</li>`
+							imgCont += `<li id="carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `" tabindex="0" class="carousel__slide">
+											
+											<div>
+												<div class="row"> <label class="image-text-field">` +  image.FieldName + `</label> </div>
+												
+												<div class="row flex justify-content-center">
+													<img class="carosal-img" id="img` + strconv.Itoa(i) + strconv.Itoa(j) + `"
+													src="` + imgUrl + `"> 
+												</div>
+											
+												<div class="row d-grid justify-content-center pt-1">` + proofTickIcon + `</div>
+													
+												<div class="row flex justify-content-center pt-1">
+													<span class="tl-zoom-icon"
+														onclick="openFullScreenImg('img` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
+													</span> 
+												</div>	
+												
+												<div class="row"> <label class="image-text-field">` + dateStr + `</label> </div>
+											</div>
+										</li>`		
 						} else {
 							imgCont += `<li id="carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `"
 											tabindex="0"
@@ -702,12 +714,14 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 					if imgCont != "" {
 						infoStr += `<div class="tl-info-container">
 						<section class="carousel ` + disabledClass + `" aria-label="Gallery">
-							<div class="carousel__snapper">
-								<a onclick="moveRight('` + imgSliderId + `')"
-									class="carousel__prev" style="cursor:none">Go to last slide</a>
-								<a onclick="moveLeft('` + imgSliderId + `')"
-									class="carousel__next" style="cursor:pointer">Go to next slide</a>
-							</div>
+	
+						<div class=" arrow-right" id="right `+ imgSliderId + `" onclick="moveRight('` + imgSliderId + `','left `+ imgSliderId + `','right `+ imgSliderId + `')">
+							<span class="material-symbols-outlined icon-container"> chevron_right</span>
+						</div>
+						<div class=" arrow-left" id="left `+ imgSliderId + `" onclick="moveLeft('` + imgSliderId + `','left `+ imgSliderId + `','right `+ imgSliderId + `')">
+						   <span class="material-symbols-outlined icon-container">chevron_left</span>
+						</div>
+
 							<ol id="` + imgSliderId + `" class="carousel__viewport">
 							` + imgCont + `
 							</ol>
