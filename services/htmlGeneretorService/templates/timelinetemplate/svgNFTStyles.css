@@ -645,6 +645,7 @@ li {
   background-position: center center;
   object-fit: contain;
   scroll-snap-align: center;
+  overflow-y: auto;
 }
 
 .carousel__slide:before {
@@ -1755,18 +1756,18 @@ input:checked+.slider:before {
 .image-text-field {
   font-weight: normal;
   font-size: 14px;
+  height: 20px;
 }
 
 .comment-text-field {
   font-weight: normal;
   font-size: 14px;
-  line-height: 20px;
+  line-height: 18px;
 }
 
 .date-text-field {
   font-weight: normal;
   font-size: 14px;
-  text-align: end;
 }
 
 .txn-hash-link {
@@ -2097,7 +2098,7 @@ input:checked+.slider:before {
   }
 
   .carousel {
-    height: 375px;
+    height: 385px;
   }
 
   .carousel__slide {
