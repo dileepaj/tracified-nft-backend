@@ -800,7 +800,7 @@ li {
 }
 
 .arrow-left {
-  display: block;
+  display: none;
   position: absolute;
   top: 45%;
   left: 0px;
