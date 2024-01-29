@@ -44,6 +44,7 @@ func UploadCollectionsToIpfs(fileObj models.IpfsObjectForCollections) (string, e
 		Timestamp:        fileObj.CollectionDetails.Timestamp,
 		CollectionName:   fileObj.CollectionDetails.CollectionName,
 		OrganizationName: fileObj.CollectionDetails.OrganizationName,
+		Publickey:        fileObj.CollectionDetails.Publickey,
 		IsPublic:         fileObj.CollectionDetails.IsPublic,
 	}
 
