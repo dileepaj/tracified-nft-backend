@@ -21,7 +21,7 @@ var CollectionRoutes = models.Routers{
 	models.Router{
 		Name:    "GET Collection by Publickey",
 		Method:  "Get",
-		Path:    "/collection/{publickey}",
+		Path:    "/collection/{pubkey}",
 		Handler: apiHandler.GetCollectionByPublicKey,
 	},
 	models.Router{

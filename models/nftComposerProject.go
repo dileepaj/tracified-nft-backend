@@ -93,6 +93,7 @@ type ImageData struct {
 	Type        string `json:"Type" bson:"type" validate:"required"`
 	Base64Image string `json:"Base64Image" bson:"base64image" validate:"required"`
 	TenetId     string `json:"TenetId" bson:"tenetid" validate:"required"`
+	Cid         string `json:"Cid" bson:"cid"`
 }
 
 type SaveImageData struct {
@@ -131,6 +132,7 @@ type HtmlGenerator struct {
 	CreatorName      string             `json:"CreatorName" bson:"creatorname"`
 	ContentOrderData []ContentOrderData `json:"ContentOrderData" bson:"Contentorderdata" validate:"required"`
 	NftContent       NFTContent         `json:"NftContent" bson:"nftcontent" validate:"required"`
+	DownloadRequest  bool               `json:"DownloadRequest" bson:"downloadrequest"`
 }
 type NFTComposerProject struct {
 	Id               primitive.ObjectID `json:"Id" bson:"_id,omitempty"`

@@ -36,6 +36,7 @@ type NFT struct {
 	Royalty           string             `json:"royalty" bson:"royalty"`
 	Thumbnail         string             `json:"thumbnail" bson:"thumbnail"`
 	Commission        string             `json:"commission" bson:"commission"`
+	IsFiat            bool               `json:"isfiat" bson:"isfiat"`
 }
 type NFTContentforMatrix struct {
 	Id             primitive.ObjectID `json:"Id" bson:"_id,omitempty"`
@@ -50,6 +51,8 @@ type NFTContentforMatrix struct {
 	HotPicks       bool               `json:"hotpicks" bson:"hotpicks" `
 	CurrentOwnerPK string             `json:"currentownerpk" bson:"currentownerpk" validate:"required"`
 	Thumbnail      string             `json:"thumbnail" bson:"thumbnail"`
+	CurrentPrice   string             `json:"currentprice" bson:"currentprice"`
+	IsFiat         bool               `json:"isfiat" bson:"isfiat"`
 }
 
 type Paginateresponse struct {
@@ -173,7 +176,7 @@ type PaginateWalletNFTResponse struct {
 	PaginationInfo PaginationTemplate
 }
 
-type HTMLTimelineHashGenerationResponse struct{
+type HTMLTimelineHashGenerationResponse struct {
 	TimelineHtmlBase64 string
-	TimelineHtmlHash string
+	TimelineHtmlHash   string
 }

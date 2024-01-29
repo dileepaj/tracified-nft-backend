@@ -175,7 +175,7 @@ var NftRoutes = models.Routers{
 		Name:   "Get NFT By Collection Name",
 		Method: "Get",
 		// Path:    "/nftcollection/{blockchain}/{collection}/{pubkey}/{pagesize}/{requestedPage}",
-		Path:    "/nftcollection/{blockchain}/{collection}/{pubkey}",
+		Path:    "/nftcollection/{collection}",
 		Handler: apiHandler.GetNFTByCollection,
 	},
 	models.Router{
@@ -202,7 +202,7 @@ var NftRoutes = models.Routers{
 		Name:   "Get NFT pagination by On Sale Hotpick or trending status",
 		Method: "Get",
 		// Path:    "/onsale/{type}/{blockchain}/{pagesize}/{requestedPage}",
-		Path:    "/onsale/{type}/{blockchain}",
+		Path:    "/onsale/{type}",
 		Handler: apiHandler.GetPaginatedOnSaleNFTforstatusFilters,
 	},
 	models.Router{
