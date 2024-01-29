@@ -657,30 +657,10 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 
 						imgUrl := image.Img
 
-
-						if len(imgs) > 1 {
-							imgCont += `<li id="carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `" tabindex="0" class="carousel__slide">
-											
-											<div>
-												<div class="row pb-1"> <label class="image-text-field">` +  image.FieldName + `</label> </div>
-												
-												<div class="row flex justify-content-center">
-													<img class="carosal-img" id="img` + strconv.Itoa(i) + strconv.Itoa(j) + `"
-													onclick="openFullScreenImg('img` + strconv.Itoa(i) + strconv.Itoa(j) + `')"
-													src="` + imgUrl + `"> 
-												</div>
-											
-												<div class="row d-grid justify-content-center pt-1">` + proofTickIcon + `</div>																									
-												<div class="row"> <label class="date-text-field">Date : ` + dateStr + `</label> </div>
-												<div class="row"> <label class="comment-text-field">Comment : ` + image.Comment  + `</label> </div>
-											</div>
-										</li>`		
-						} else {
-							imgCont += `<li id="carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `"
+						imgCont += `<li id="carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `"
 											tabindex="0" class="carousel__slide">										
-
 											<div>
-												<div class="row pb-1"> <label class="image-text-field">` +  image.FieldName + `</label> </div>
+												<div class="row pb-1"> <label class="image-text-field">` + image.FieldName + `</label> </div>
 											
 												<div class="row flex justify-content-center">
 													<img class="carosal-img" id="img` + strconv.Itoa(i) + strconv.Itoa(j) + `"
@@ -690,10 +670,9 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 										
 												<div class="row d-grid justify-content-center pt-1">` + proofTickIcon + `</div>																									
 												<div class="row"> <label class="date-text-field">Date : ` + dateStr + `</label> </div>
-												<div class="row"> <label class="comment-text-field">Comment :` + image.Comment  + `</label> </div>
+												<div class="row"> <label class="comment-text-field">Comment :` + image.Comment + `</label> </div>
 											</div>
 										</li>`
-						}
 
 					}
 
