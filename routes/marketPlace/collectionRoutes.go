@@ -54,4 +54,10 @@ var CollectionRoutes = models.Routers{
 		Path:    "/collection-visibility",
 		Handler: apiHandler.UpdateCollectionVisibility,
 	},
+	models.Router{
+		Name:    "GET Collection by UserID",
+		Method:  "Get",
+		Path:    "/collection/owner/{objectid}",
+		Handler: apiHandler.GetCollectionByEndorsementId,
+	},
 }
