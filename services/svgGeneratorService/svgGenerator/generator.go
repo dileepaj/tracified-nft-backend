@@ -115,9 +115,9 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 								return "", errWhenGettingImageDetails
 							}
 							ipfsLink := "https://ipfs.io/ipfs/" + imageDetails.Cid
-							base64String = `<a href="` + ipfsLink + `"><div class="img-widget-image" style="background-image: url(` + ipfsLink + `);"></div>`
+							base64String = `<a href="` + ipfsLink + `"><div class="img-widget-image" style="background-image: url(` + ipfsLink + `);" target="_blank"></div>`
 						} else {
-							base64String = `<a href="` + image.Base64Image + `"><div class="img-widget-image" style="background-image: url(` + image.Base64Image + `);"></div>`
+							base64String = `<a href="` + image.Base64Image + `" target="_blank"><div class="img-widget-image" style="background-image: url(` + image.Base64Image + `);"></div>`
 						}
 						if image.Base64Image != "" && element.WidgetId == image.WidgetId {
 							htmlBody += `<div class="card text-center justify-content-center m-3 default-font round-card" style="max-height: fit-content;">
