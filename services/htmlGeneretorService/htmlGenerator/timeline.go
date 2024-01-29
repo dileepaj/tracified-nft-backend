@@ -826,8 +826,7 @@ func (r *JMACNFT) GenerateProofContentStr(key, tdpId string) (string, string) {
 							<table class="table proof-table">
 										<thead>
 											<tr>
-												<th scope="col">Proof Type</th>
-												
+												<th scope="col">Type</th>
 												<th scope="col">Description</th>
 												<th scope="col">Proofs</th>
 											</tr>
@@ -866,8 +865,7 @@ func (r *JMACNFT) GenerateImgProofModalStr(tdpId string, id string) string {
 												<table class="table proof-table">
 															<thead>
 																<tr>
-																	<th scope="col">Proof Type</th>
-																
+																	<th scope="col">Type</th>
 																	<th scope="col">Description</th>
 																	<th scope="col">Proofs</th>
 																</tr>
@@ -889,7 +887,7 @@ func (r *JMACNFT) GenerateProofTable(tdpid string, url string) string {
 	descStyle := ""
 	proofName := r.GetProofName("POE")
 	table += `<tr>
-				<td style="width : 15%">` + proofName + `</td>
+				<td style="width : 30%">` + proofName + `</td>
 				<td style="width : 40%` + descStyle + `">` + "Proof that a given data packet existed in the blockchain" + `</td>
 				<td><a class="proof-link" href="` + configs.GetTillitUrl() + `/search/` + tdpid + `" target="_blank">Proof <span class="material-symbols-outlined">
 					open_in_new

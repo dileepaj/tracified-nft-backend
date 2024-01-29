@@ -108,7 +108,6 @@ body{
   height: 53px;
   width: 50%;
   vertical-align: middle;
-  padding: 30px 30px 30px 30px;
 }
 
 .tbl-text-bold {
@@ -1603,6 +1602,14 @@ input:checked+.slider:before {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+.modal-cont{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem;
 }
 
 .modal-heading {
