@@ -670,16 +670,11 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 												
 												<div class="row flex justify-content-center">
 													<img class="carosal-img" id="img` + strconv.Itoa(i) + strconv.Itoa(j) + `"
+													onclick="openFullScreenImg('img` + strconv.Itoa(i) + strconv.Itoa(j) + `')"
 													src="` + imgUrl + `"> 
 												</div>
 											
-												<div class="row d-grid justify-content-center pt-1">` + proofTickIcon + `</div>
-													
-												<div class="row flex justify-content-center pt-1">
-													<span class="tl-zoom-icon"
-														onclick="openFullScreenImg('img` + strconv.Itoa(i) + strconv.Itoa(j) + `')">
-													</span> 
-												</div>	
+												<div class="row d-grid justify-content-center pt-1">` + proofTickIcon + `</div>																									
 												
 												<div class="row"> <label class="image-text-field">` + dateStr + `</label> </div>
 											</div>

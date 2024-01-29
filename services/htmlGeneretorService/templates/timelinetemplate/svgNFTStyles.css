@@ -1924,6 +1924,7 @@ input:checked+.slider:before {
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
 
 @media only screen and (min-width: 960px) {
@@ -1977,10 +1978,6 @@ input:checked+.slider:before {
 
   .tl-inner-wrapper {
     grid-template-columns: auto;
-  }
-
-  .img-div {
-    height: 60%;
   }
 
   .tab>label {
