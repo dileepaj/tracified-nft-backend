@@ -109,7 +109,7 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 							htmlBody += `<div class="card text-center justify-content-center m-3 default-font round-card" style="max-height: fit-content;">
 											<div class="card-header round-card-header">` + image.Title + `</div>
 											<div class="card-body justify-content-center scroll">
-											<a href="` + image.Base64Image + `"><div class="img-widget-image" style="background-image: url(` + image.Base64Image + `);"></div>
+											<a href="` + image.Base64Image + `" target="_blank"><div class="img-widget-image" style="background-image: url(` + image.Base64Image + `);"></div>
 											</a></div>
 										</div>`
 						}
