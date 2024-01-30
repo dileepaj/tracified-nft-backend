@@ -21,7 +21,7 @@ var CollectionRoutes = models.Routers{
 	models.Router{
 		Name:    "GET Collection by Publickey",
 		Method:  "Get",
-		Path:    "/collection/{publickey}",
+		Path:    "/collection/{pubkey}",
 		Handler: apiHandler.GetCollectionByPublicKey,
 	},
 	models.Router{
@@ -53,5 +53,11 @@ var CollectionRoutes = models.Routers{
 		Method:  "PUT",
 		Path:    "/collection-visibility",
 		Handler: apiHandler.UpdateCollectionVisibility,
+	},
+	models.Router{
+		Name:    "GET Collection by UserID",
+		Method:  "Get",
+		Path:    "/collection/owner/{objectid}",
+		Handler: apiHandler.GetCollectionByEndorsementId,
 	},
 }

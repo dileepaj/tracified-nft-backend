@@ -3884,5 +3884,5 @@ components:
           type: string
 
     htmlTimelineResponse:
-      type: Html
+      type: string
 
