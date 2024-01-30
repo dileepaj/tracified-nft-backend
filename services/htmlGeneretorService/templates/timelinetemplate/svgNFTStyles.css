@@ -2221,6 +2221,18 @@ right: 0;
   }
 }
 
+@media only screen and (min-width: 581px) and (max-width: 620px) {
+  .carousel {
+    height: 630px;
+  }
+}
+
+@media only screen and (min-width: 621px) and (max-width: 660px) {
+  .carousel {
+    height: 665px;
+  }
+}
+
 .base-layer {
   display: flex;
   flex-direction: column;
