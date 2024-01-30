@@ -64,9 +64,9 @@ func GetNFTStory(id string, blockchain string) ([]models.NFTStory, error) {
 }
 
 func GetNFTByCollection(paginationData requestDtos.NFTsForMatrixView, collectiontoSearch string, pubkey string, nfttype string, additionalType int, fiatState string) (models.Paginateresponse, error) {
-	var filter bson.M
-	filter = bson.M{
-		"collection": collectiontoSearch,
+	var filter = bson.M{}
+	if collectiontoSearch != "" {
+		filter["collection"] = collectiontoSearch
 	}
 	if paginationData.Blockchain != "" {
 		filter["blockchain"] = paginationData.Blockchain
@@ -114,6 +114,7 @@ func GetProjectionDataNFTMatrixView() bson.D {
 		{Key: "sellingstatus", Value: 1},
 		{Key: "trending", Value: 1},
 		{Key: "hotpicks", Value: 1},
+		{Key: "collection", Value: 1},
 		{Key: "currentownerpk", Value: 1},
 		{Key: "attachmenttype", Value: 1},
 		{Key: "currentprice", Value: 1},
