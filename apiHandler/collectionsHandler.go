@@ -257,6 +257,7 @@ func GetAllCollections(w http.ResponseWriter, r *http.Request) {
 
 	results, err1 := marketplaceBusinessFacade.GetAllCollectionsPaginated(paginationRequest)
 	//iterate through each collection names and get the NFT count
+	var updateList []models.NFTCollection
 	for i := range results.Content {
 		count, err := marketplaceBusinessFacade.GetNFTCountInPublicCollection(results.Content[i].CollectionName)
 		if err != nil {
@@ -264,8 +265,11 @@ func GetAllCollections(w http.ResponseWriter, r *http.Request) {
 			results.Content[i].NFTCount = 0
 		}
 		results.Content[i].NFTCount = count
-
+		if results.Content[i].NFTCount > 0 {
+			updateList = append(updateList, results.Content[i])
+		}
 	}
+	results.Content = updateList
 	if err1 != nil {
 		ErrorMessage := err1.Error()
 		errors.BadRequest(w, ErrorMessage)

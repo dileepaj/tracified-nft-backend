@@ -47,6 +47,7 @@ type NFTContentforMatrix struct {
 	Imagebase64    string             `json:"imagebase64" bson:"imagebase64" validate:"required"`
 	AttachmentType string             `json:"attachmenttype" bson:"attachmenttype" validate:"required"`
 	SellingStatus  string             `json:"sellingstatus" bson:"sellingstatus" validate:"required"`
+	Collection     string             `json:"collection" bson:"collection" validate:"required"`
 	Trending       bool               `json:"trending" bson:"trending" `
 	HotPicks       bool               `json:"hotpicks" bson:"hotpicks" `
 	CurrentOwnerPK string             `json:"currentownerpk" bson:"currentownerpk" validate:"required"`
