@@ -2,14 +2,11 @@ package nftComposerBusinessFacade
 
 import (
 	"net/http"
-	"time"
 
-	"github.com/dileepaj/tracified-nft-backend/constants"
 	"github.com/dileepaj/tracified-nft-backend/database/repository"
 	"github.com/dileepaj/tracified-nft-backend/dtos/requestDtos"
 	"github.com/dileepaj/tracified-nft-backend/dtos/responseDtos"
 	"github.com/dileepaj/tracified-nft-backend/models"
-	"github.com/dileepaj/tracified-nft-backend/services/composerimgservice"
 	"github.com/dileepaj/tracified-nft-backend/utilities/commonResponse"
 	"github.com/dileepaj/tracified-nft-backend/utilities/errors"
 	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
@@ -181,17 +178,6 @@ func UpdateProofBot(w http.ResponseWriter, updateProofBot requestDtos.UpdateProo
 }
 
 func UpdateImages(w http.ResponseWriter, updateImage requestDtos.UpdateImageRequest) {
-	//append timestamp to key before uploading to IPFS
-	timestamp := time.Now().Format("20060102150405") //YYYYMMDDHHMMSS
-	updatedImageTitle := updateImage.Title + timestamp
-
-	//Upload new image to IPFS
-	cidHash, errWhenUploadingImageToIpfs := composerimgservice.UploadImageToIpfsWithFolder(constants.ImageWidget, updateImage.Base64Image, updateImage.ProjectId, updateImage.WidgetId, updateImage.TenetId, updatedImageTitle)
-	if errWhenUploadingImageToIpfs != nil {
-		logs.ErrorLogger.Println(errWhenUploadingImageToIpfs.Error())
-		errors.BadRequest(w, errWhenUploadingImageToIpfs.Error())
-	}
-
 	//Add the new CID hash to update Object
 	updateObj := requestDtos.SaveUpdatedImage{
 		WidgetId:    updateImage.WidgetId,
@@ -199,7 +185,7 @@ func UpdateImages(w http.ResponseWriter, updateImage requestDtos.UpdateImageRequ
 		Type:        updateImage.Type,
 		Base64Image: updateImage.Base64Image,
 		ProjectId:   updateImage.ProjectId,
-		Cid:         cidHash,
+		Cid:         "",
 	}
 
 	rst, err := nftProjectRepository.UpdateImage(updateObj)

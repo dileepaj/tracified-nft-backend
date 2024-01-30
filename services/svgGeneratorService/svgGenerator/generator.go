@@ -4,12 +4,16 @@ import (
 	"encoding/base64"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/dileepaj/tracified-nft-backend/commons"
 	"github.com/dileepaj/tracified-nft-backend/configs"
-	"github.com/dileepaj/tracified-nft-backend/database/repository/ipfsRepository"
+	"github.com/dileepaj/tracified-nft-backend/constants"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/services"
+	"github.com/dileepaj/tracified-nft-backend/services/composerimgservice"
+	svgipfsimagehandler "github.com/dileepaj/tracified-nft-backend/services/svgGeneratorService/svgIpfsImageHandler"
+	"github.com/dileepaj/tracified-nft-backend/utilities/logs"
 )
 
 var (
@@ -37,6 +41,7 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 	var images []models.ImageData = svgData.NftContent.Images
 	var Timelines []models.Timeline = svgData.NftContent.TimeLine
 	var contentOrderData []models.ContentOrderData = svgData.ContentOrderData
+	var ipfsImageArray []models.ImageData
 	htmlStart := `	<div class="cont-div">
 					<div class="nft-header default-font">
 					<img src="https://s3.ap-south-1.amazonaws.com/qa.marketplace.nft.tracified.com/Tracified-RT-Logo-White.svg"
@@ -44,6 +49,45 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 					<label>` + svgData.NFTName + `</label>
 					</div>
 				<div class="d-flex justify-content-around align-content-center flex-wrap" id="container">`
+
+	//check the download request to upload the images to IPFS
+	if len(images) > 0 {
+		if svgData.DownloadRequest {
+			for _, image := range images {
+				timestamp := time.Now().Format("20060102150405") //YYYYMMDDHHMMSS
+				updatedImageTitle := image.Title + "_" + timestamp
+
+				// Get the base64 from the payload and upload to IPFS for each array item
+				cidHash, errWhenUploadingImageToIpfs := composerimgservice.UploadImageToIpfsWithFolder(constants.ImageWidget, image.Base64Image, svgData.ProjectId, image.WidgetId, svgData.TenentId, updatedImageTitle)
+				if errWhenUploadingImageToIpfs != nil {
+					logs.ErrorLogger.Println(errWhenUploadingImageToIpfs.Error())
+					return "", errWhenUploadingImageToIpfs
+				}
+
+				// Update the image's cid hash in the images collection
+				errWhenUpdatingTheImageCollection := svgipfsimagehandler.UpdateImageWithNewIpfsHash(image, cidHash)
+				if errWhenUpdatingTheImageCollection != nil {
+					return "", errWhenUpdatingTheImageCollection
+				}
+
+				//populate array
+				newImgObj := models.ImageData{
+					WidgetId:    image.WidgetId,
+					ProjectId:   image.ProjectId,
+					Title:       image.Title,
+					Type:        image.Type,
+					Base64Image: "https://ipfs.io/ipfs/" + cidHash,
+					TenetId:     image.TenetId,
+					Cid:         cidHash,
+				}
+				ipfsImageArray = append(ipfsImageArray, newImgObj)
+			}
+		} else {
+			for _, image := range images {
+				ipfsImageArray = append(ipfsImageArray, image)
+			}
+		}
+	}
 
 	if len(contentOrderData) > 0 {
 		for _, element := range contentOrderData {
@@ -105,24 +149,13 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 				}
 			} else if element.Type == "Image" {
 				if len(images) > 0 {
-					base64String := ``
-					for _, image := range images {
-						//check the request type
-						if svgData.DownloadRequest {
-							//find the cid hashes for the widgets
-							imageDetails, errWhenGettingImageDetails := ipfsRepository.GetImageWidgetDetails("widgetid", image.WidgetId)
-							if errWhenGettingImageDetails != nil {
-								return "", errWhenGettingImageDetails
-							}
-							ipfsLink := "https://ipfs.io/ipfs/" + imageDetails.Cid
-							base64String = `<a href="` + ipfsLink + `"><div class="img-widget-image" style="background-image: url(` + ipfsLink + `);"></div>`
-						} else {
-							base64String = `<a href="` + image.Base64Image + `"><div class="img-widget-image" style="background-image: url(` + image.Base64Image + `);"></div>`
-						}
+					for _, image := range ipfsImageArray {
 						if image.Base64Image != "" && element.WidgetId == image.WidgetId {
 							htmlBody += `<div class="card text-center justify-content-center m-3 default-font round-card" style="max-height: fit-content;">
 											<div class="card-header round-card-header">` + image.Title + `</div>
-											<div class="card-body justify-content-center scroll">` + base64String + `</a></div>
+											<div class="card-body justify-content-center scroll">
+											<a href="` + image.Base64Image + `"><div class="img-widget-image" style="background-image: url(` + image.Base64Image + `);"></div>
+											</a></div>
 										</div>`
 						}
 					}
