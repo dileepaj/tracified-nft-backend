@@ -7,6 +7,7 @@ import (
 
 	"github.com/dileepaj/tracified-nft-backend/commons"
 	"github.com/dileepaj/tracified-nft-backend/configs"
+	"github.com/dileepaj/tracified-nft-backend/database/repository/ipfsRepository"
 	"github.com/dileepaj/tracified-nft-backend/models"
 	"github.com/dileepaj/tracified-nft-backend/services"
 )
@@ -104,13 +105,24 @@ func GenerateSVGTemplate(svgData models.HtmlGenerator) (string, error) {
 				}
 			} else if element.Type == "Image" {
 				if len(images) > 0 {
+					base64String := ``
 					for _, image := range images {
+						//check the request type
+						if svgData.DownloadRequest {
+							//find the cid hashes for the widgets
+							imageDetails, errWhenGettingImageDetails := ipfsRepository.GetImageWidgetDetails("widgetid", image.WidgetId)
+							if errWhenGettingImageDetails != nil {
+								return "", errWhenGettingImageDetails
+							}
+							ipfsLink := "https://ipfs.io/ipfs/" + imageDetails.Cid
+							base64String = `<a href="` + ipfsLink + `"><div class="img-widget-image" style="background-image: url(` + ipfsLink + `);" target="_blank"></div>`
+						} else {
+							base64String = `<a href="` + image.Base64Image + `" target="_blank"><div class="img-widget-image" style="background-image: url(` + image.Base64Image + `);"></div>`
+						}
 						if image.Base64Image != "" && element.WidgetId == image.WidgetId {
 							htmlBody += `<div class="card text-center justify-content-center m-3 default-font round-card" style="max-height: fit-content;">
 											<div class="card-header round-card-header">` + image.Title + `</div>
-											<div class="card-body justify-content-center scroll">
-											<a href="` + image.Base64Image + `"><div class="img-widget-image" style="background-image: url(` + image.Base64Image + `);"></div>
-											</a></div>
+											<div class="card-body justify-content-center scroll">` + base64String + `</a></div>
 										</div>`
 						}
 					}

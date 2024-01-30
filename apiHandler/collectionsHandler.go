@@ -18,6 +18,11 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// CreateCollection handles creating a new collection.
+// It decodes the request body into a CreateCollectionObject,
+// validates the data, checks if the collection name is available,
+// uploads the collection to IPFS, and returns the IPFS CID
+// or an error response.
 func CreateCollection(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	var createCollectionObject models.IpfsObjectForCollections
@@ -32,6 +37,17 @@ func CreateCollection(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		errors.BadRequest(w, err.Error())
 	} else {
+		availableRst, err := marketplaceBusinessFacade.IsCollectionNameTaken(createCollectionObject.CollectionDetails.CollectionName)
+		if err != nil {
+			logs.ErrorLogger.Println("Error while checking if collection name is taken: ", err.Error())
+			errors.InternalError(w, "Somthing Went Wrong!")
+			return
+		}
+		if availableRst {
+			logs.ErrorLogger.Println("Collection name " + createCollectionObject.CollectionDetails.CollectionName + " already taken!")
+			errors.BadRequest(w, "Collection name "+createCollectionObject.CollectionDetails.CollectionName+" already taken!")
+			return
+		}
 		cid, ipfserr := ipfsbusinessfacade.UploadCollectionsToIpfs(createCollectionObject)
 		if ipfserr != nil {
 			ErrorMessage := ipfserr.Error()
@@ -165,8 +181,17 @@ func GetCollectionByPublicKey(w http.ResponseWriter, r *http.Request) {
 		sort = _sort
 	}
 	paginationRequest.SortType = sort
+	results, err1 := marketplaceBusinessFacade.GetCollectionByUserIDPaginated(paginationRequest, vars["pubkey"])
+	//iterate through each collection names and get the NFT count
+	for i := range results.Content {
+		count, err := marketplaceBusinessFacade.GetNFTCountInPublicCollection(results.Content[i].CollectionName)
+		if err != nil {
+			logs.WarningLogger.Println("Failed to generate NFT count for collection: " + results.Content[i].CollectionName + " : " + err.Error())
+			results.Content[i].NFTCount = 0
+		}
+		results.Content[i].NFTCount = count
 
-	results, err1 := marketplaceBusinessFacade.GetCollectionByPublicKeyPaginated(paginationRequest, vars["publickey"])
+	}
 	if err1 != nil {
 		ErrorMessage := err1.Error()
 		errors.BadRequest(w, ErrorMessage)
@@ -231,6 +256,16 @@ func GetAllCollections(w http.ResponseWriter, r *http.Request) {
 	paginationRequest.SortType = sort
 
 	results, err1 := marketplaceBusinessFacade.GetAllCollectionsPaginated(paginationRequest)
+	//iterate through each collection names and get the NFT count
+	for i := range results.Content {
+		count, err := marketplaceBusinessFacade.GetNFTCountInPublicCollection(results.Content[i].CollectionName)
+		if err != nil {
+			logs.WarningLogger.Println("Failed to generate NFT count for collection: " + results.Content[i].CollectionName + " : " + err.Error())
+			results.Content[i].NFTCount = 0
+		}
+		results.Content[i].NFTCount = count
+
+	}
 	if err1 != nil {
 		ErrorMessage := err1.Error()
 		errors.BadRequest(w, ErrorMessage)
@@ -336,4 +371,32 @@ func UpdateCollectionVisibility(w http.ResponseWriter, r *http.Request) {
 		}
 		commonResponse.SuccessStatus[models.NFTCollection](w, result)
 	}
+}
+
+func GetCollectionByEndorsementId(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset-UTF-8")
+	vars := mux.Vars(r)
+	results, err1 := marketplaceBusinessFacade.GetCollectionByEndorsementId(vars["objectid"])
+	if err1 != nil {
+		ErrorMessage := err1.Error()
+		errors.BadRequest(w, ErrorMessage)
+		return
+	} else {
+		if results == nil {
+			w.WriteHeader(http.StatusNoContent)
+			err := json.NewEncoder(w).Encode(results)
+			if err != nil {
+				logs.ErrorLogger.Println(err)
+			}
+			return
+		} else {
+			w.WriteHeader(http.StatusOK)
+			err := json.NewEncoder(w).Encode(results)
+			if err != nil {
+				logs.ErrorLogger.Println(err)
+			}
+			return
+		}
+	}
+
 }

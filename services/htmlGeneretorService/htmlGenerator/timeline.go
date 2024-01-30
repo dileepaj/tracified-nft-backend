@@ -601,7 +601,7 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 	for i, stage := range data.Children {
 		infoStr := ""
 		if stage.Icon == "" {
-			stage.Icon = "https://s3.ap-south-1.amazonaws.com/tracified-image-storage/ecom/data-icons/Tatenokawa/4.png"
+			stage.Icon = "https://s3.ap-south-1.amazonaws.com/nft.tracified.com/assets/icons/common-stage.png"
 		}
 		for j, info := range stage.Children {
 			if info.Component == "key-value" {
@@ -619,9 +619,6 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 
 				proofContentStr := ""
 				proofTick := ""
-				// fmt.Println("info.Key",info.Key)
-				// fmt.Println("info.decoratedVal",decoratedVal)
-				// fmt.Println("jjjjjjjjjjjjjjjj  ",j)
 				if decoratedVal.Provable && len(decoratedVal.TdpId) > 0 {
 					proofContentStr, proofTick = r.GenerateProofContentStr(info.Key, decoratedVal.TdpId[0])
 				}
@@ -641,7 +638,6 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 				}
 
 				proofModalStr := ""
-
 
 				if len(imgs) > 0 {
 
@@ -682,7 +678,6 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 						} else {
 							imgCont += `<li id="carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `"
 											tabindex="0" class="carousel__slide">										
-
 											<div>
 												<div class="row pb-2"> <label class="image-text-field">` +  image.FieldName + `</label> </div>
 											
@@ -694,10 +689,9 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 										
 												<div class="row d-grid justify-content-center pt-1">` + proofTickIcon + `</div>																									
 												<div class="row"> <label class="date-text-field">Date : ` + dateStr + `</label> </div>
-												<div class="row"> <label class="comment-text-field">Comment :` + image.Comment  + `</label> </div>
+												<div class="row"> <label class="comment-text-field">Comment :` + image.Comment + `</label> </div>
 											</div>
 										</li>`
-						}
 
 					}
 
@@ -708,22 +702,39 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 					}
 
 					if imgCont != "" {
-						infoStr += `<div class="tl-info-container">
-						<section class="carousel ` + disabledClass + `" aria-label="Gallery">
+						if len(imgs) == 1 {
+							infoStr += `<div class="tl-info-container">
+							<section class="carousel ` + disabledClass + `" aria-label="Gallery">
+		
+							<div class=" arrow-right" id="right ` + imgSliderId + `" onclick="moveRight('` + imgSliderId + `','left ` + imgSliderId + `','right ` + imgSliderId + `')">
+							</div>
+							<div class=" arrow-left" id="left ` + imgSliderId + `" onclick="moveLeft('` + imgSliderId + `','left ` + imgSliderId + `','right ` + imgSliderId + `')">
+							</div>
 	
-						<div class=" arrow-right" id="right `+ imgSliderId + `" onclick="moveRight('` + imgSliderId + `','left `+ imgSliderId + `','right `+ imgSliderId + `')">
-							<span class="material-symbols-outlined icon-container"> chevron_right</span>
-						</div>
-						<div class=" arrow-left" id="left `+ imgSliderId + `" onclick="moveLeft('` + imgSliderId + `','left `+ imgSliderId + `','right `+ imgSliderId + `')">
-						   <span class="material-symbols-outlined icon-container">chevron_left</span>
-						</div>
-
-							<ol id="` + imgSliderId + `" class="carousel__viewport">
-							` + imgCont + `
-							</ol>
-						</section>
-						` + proofModalStr + `
-					</div>`
+								<ol id="` + imgSliderId + `" class="carousel__viewport">
+								` + imgCont + `
+								</ol>
+							</section>
+							` + proofModalStr + `
+						</div>`
+						} else {
+							infoStr += `<div class="tl-info-container">
+							<section class="carousel ` + disabledClass + `" aria-label="Gallery">
+		
+							<div class=" arrow-right" id="right ` + imgSliderId + `" onclick="moveRight('` + imgSliderId + `','left ` + imgSliderId + `','right ` + imgSliderId + `')">
+								<span class="material-symbols-outlined icon-container"> chevron_right</span>
+							</div>
+							<div class=" arrow-left" id="left ` + imgSliderId + `" onclick="moveLeft('` + imgSliderId + `','left ` + imgSliderId + `','right ` + imgSliderId + `')">
+							   <span class="material-symbols-outlined icon-container">chevron_left</span>
+							</div>
+	
+								<ol id="` + imgSliderId + `" class="carousel__viewport">
+								` + imgCont + `
+								</ol>
+							</section>
+							` + proofModalStr + `
+						</div>`
+						}
 					}
 				}
 			}
@@ -834,8 +845,7 @@ func (r *JMACNFT) GenerateProofContentStr(key, tdpId string) (string, string) {
 							<table class="table proof-table">
 										<thead>
 											<tr>
-												<th scope="col">Proof Type</th>
-												
+												<th scope="col">Type</th>
 												<th scope="col">Description</th>
 												<th scope="col">Proofs</th>
 											</tr>
@@ -853,9 +863,9 @@ func (r *JMACNFT) GenerateProofContentStr(key, tdpId string) (string, string) {
 
 // Generate proof modal for image sliders
 func (r *JMACNFT) GenerateImgProofModalStr(tdpId string, id string) string {
-	//tab1 := proofModalCount
-	//tab2 := proofModalCount + 1
-	//tab3 := proofModalCount + 2
+	// tab1 := proofModalCount
+	// tab2 := proofModalCount + 1
+	// tab3 := proofModalCount + 2
 
 	proofModalCount += 3
 
@@ -874,8 +884,7 @@ func (r *JMACNFT) GenerateImgProofModalStr(tdpId string, id string) string {
 												<table class="table proof-table">
 															<thead>
 																<tr>
-																	<th scope="col">Proof Type</th>
-																
+																	<th scope="col">Type</th>
 																	<th scope="col">Description</th>
 																	<th scope="col">Proofs</th>
 																</tr>
@@ -893,11 +902,11 @@ func (r *JMACNFT) GenerateImgProofModalStr(tdpId string, id string) string {
 
 // Generate proof table displayed in the modal
 func (r *JMACNFT) GenerateProofTable(tdpid string, url string) string {
-	table := ""	
+	table := ""
 	descStyle := ""
 	proofName := r.GetProofName("POE")
 	table += `<tr>
-				<td style="width : 15%">` + proofName + `</td>
+				<td style="width : 30%">` + proofName + `</td>
 				<td style="width : 40%` + descStyle + `">` + "Proof that a given data packet existed in the blockchain" + `</td>
 				<td><a class="proof-link" href="` + configs.GetTillitUrl() + `/search/` + tdpid + `" target="_blank">Proof <span class="material-symbols-outlined">
 					open_in_new

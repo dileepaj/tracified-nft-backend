@@ -49,6 +49,7 @@ func GenerateHTMLTemplate(htmlData models.HtmlGenerator) (string, error) {
 					</div>
 				</div>
 			  </body>`
+
 	// take json data convert it to string
 	dataString, err := json.Marshal(htmlData)
 	if err != nil {
