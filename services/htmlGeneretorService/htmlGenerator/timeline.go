@@ -661,7 +661,7 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 											tabindex="0" class="carousel__slide">										
 
 											<div>
-												<div class="row pb-1"> <label class="image-text-field">` + image.FieldName + `</label> </div>
+												<div class="row pb-2"> <label class="image-text-field">` + image.FieldName + `</label> </div>
 											
 												<div class="row flex justify-content-center">
 													<img class="carosal-img" id="img` + strconv.Itoa(i) + strconv.Itoa(j) + `"
