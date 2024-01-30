@@ -542,10 +542,9 @@ func GetNFTStory(w http.ResponseWriter, r *http.Request) {
 // It returns a paginated list of NFTs matching the criteria.
 func GetNFTByCollection(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;")
-	vars := mux.Vars(r)
 	var pagination requestDtos.NFTsForMatrixView
 	pagination.Blockchain = r.URL.Query().Get("blockchain")
-	var CollectionToSearch = vars["collection"]
+	var CollectionToSearch = r.URL.Query().Get("collection")
 	pubKey := r.URL.Query().Get("pubkey")
 
 	additionalType, err1 := strconv.Atoi(r.URL.Query().Get("type"))
