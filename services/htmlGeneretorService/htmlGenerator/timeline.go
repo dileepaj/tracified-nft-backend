@@ -640,7 +640,6 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 				proofModalStr := ""
 
 				if len(imgs) > 0 {
-
 					for j, image := range imgs {
 						proofTickIcon := ""
 						if info.Slides.Provable && len(info.Slides.TdpId) > 0 {
@@ -657,12 +656,11 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 
 						imgUrl := image.Img
 
-
 						if len(imgs) > 1 {
 							imgCont += `<li id="carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `" tabindex="0" class="carousel__slide">
 											
 											<div>
-												<div class="row pb-2"> <label class="image-text-field">` +  image.FieldName + `</label> </div>
+												<div class="row pb-2"> <label class="image-text-field">` + image.FieldName + `</label> </div>
 												
 												<div class="row flex justify-content-center">
 													<img class="carosal-img" id="img` + strconv.Itoa(i) + strconv.Itoa(j) + `"
@@ -672,14 +670,14 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 											
 												<div class="row d-grid justify-content-center pt-1">` + proofTickIcon + `</div>																									
 												<div class="row"> <label class="date-text-field">Date : ` + dateStr + `</label> </div>
-												<div class="row"> <label class="comment-text-field">Comment : ` + image.Comment  + `</label> </div>
+												<div class="row"> <label class="comment-text-field">Comment : ` + image.Comment + `</label> </div>
 											</div>
-										</li>`		
+										</li>`
 						} else {
 							imgCont += `<li id="carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `"
 											tabindex="0" class="carousel__slide">										
 											<div>
-												<div class="row pb-2"> <label class="image-text-field">` +  image.FieldName + `</label> </div>
+												<div class="row pb-2"> <label class="image-text-field">` + image.FieldName + `</label> </div>
 											
 												<div class="row flex justify-content-center">
 													<img class="carosal-img" id="img` + strconv.Itoa(i) + strconv.Itoa(j) + `"
@@ -692,18 +690,17 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 												<div class="row"> <label class="comment-text-field">Comment :` + image.Comment + `</label> </div>
 											</div>
 										</li>`
+						}
 
-					}
+						disabledClass := ""
 
-					disabledClass := ""
-
-					if len(imgs) == 1 {
-						disabledClass = "disabled-carousel"
-					}
-
-					if imgCont != "" {
 						if len(imgs) == 1 {
-							infoStr += `<div class="tl-info-container">
+							disabledClass = "disabled-carousel"
+						}
+
+						if imgCont != "" {
+							if len(imgs) == 1 {
+								infoStr += `<div class="tl-info-container">
 							<section class="carousel ` + disabledClass + `" aria-label="Gallery">
 		
 							<div class=" arrow-right" id="right ` + imgSliderId + `" onclick="moveRight('` + imgSliderId + `','left ` + imgSliderId + `','right ` + imgSliderId + `')">
@@ -717,8 +714,8 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 							</section>
 							` + proofModalStr + `
 						</div>`
-						} else {
-							infoStr += `<div class="tl-info-container">
+							} else {
+								infoStr += `<div class="tl-info-container">
 							<section class="carousel ` + disabledClass + `" aria-label="Gallery">
 		
 							<div class=" arrow-right" id="right ` + imgSliderId + `" onclick="moveRight('` + imgSliderId + `','left ` + imgSliderId + `','right ` + imgSliderId + `')">
@@ -734,13 +731,13 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 							</section>
 							` + proofModalStr + `
 						</div>`
+							}
 						}
 					}
 				}
 			}
-		}
 
-		tlCont += `<div class="tl-stage">
+			tlCont += `<div class="tl-stage">
 					<div class="tl-heading">
 						<div class="tl-circle">
 							<span class="tl-stage-icon" style="background-image: url('` + stage.Icon + `');"></span>
@@ -751,13 +748,15 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 						<div class="tl-inner-wrapper">` + infoStr + `</div>
 					</div>
 					</div>`
-	}
+		}
 
-	content = `<div class="tab-content">
+		content = `<div class="tab-content">
 					<div class="tl-wrapper">
 					` + tlCont + `
 					</div>
 				</div>`
+
+	}
 
 	return content, mainTab, sidebarTab, radioButton
 }
