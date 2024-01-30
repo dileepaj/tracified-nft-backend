@@ -645,7 +645,6 @@ li {
   background-position: center center;
   object-fit: contain;
   scroll-snap-align: center;
-  overflow-y: auto;
 }
 
 .carousel__slide:before {
@@ -798,6 +797,7 @@ li {
   align-items: center;
   position: absolute;
   z-index: 10;
+  opacity: 0.7;
 }
 
 .arrow-left {
@@ -1320,7 +1320,7 @@ li {
   border-radius: 0.25rem !important;
   /* display: grid;
   grid-template-columns: auto auto; */
-  padding: 20px 20px 0px 20px;
+  padding: 10px 20px 5px 20px;
   /* gap: 30px; */
   display: flex;
   flex-direction: column;
@@ -2019,7 +2019,13 @@ input:checked+.slider:before {
   }
 
   .arrow-right {
-    right: 30px;
+    right: 35px;
+    top: 40%
+  }
+
+  .arrow-left{
+    left: 5px;
+    top: 40%
   }
 
   .tab-content {
@@ -2034,22 +2040,20 @@ input:checked+.slider:before {
 }
 
 @media only screen and (min-width: 381px) and (max-width:450px) {
-  .carousel {
-      height: 420px;
-  }
-
+ 
   .icon-container {
     width: 20px;
     height: 20px;
   }
 
   .arrow-right {
-    right: 20px;
+    right: 25px;
     top: 37.5%;
   }
 
   .arrow-left{
     top: 37.5%;
+    left: 5px;
   }
 }
 
@@ -2097,10 +2101,6 @@ input:checked+.slider:before {
     font-size: 24px;
   }
 
-  .carousel {
-    height: 385px;
-  }
-
   .carousel__slide {
     background-size: contain;
     object-fit: contain;
@@ -2126,12 +2126,12 @@ right: 0;
   }
 
   .arrow-right {
-    top: 37.5%;
-    right: 20px;
+    top: 32%;
+    right: 25px;
   }
 
   .arrow-left{
-    top: 37.5%;
+    top: 30%;
   }
 
   .tab-content {
@@ -2163,6 +2163,54 @@ right: 0;
 @media only screen and (max-width: 579px) {
   .ruri-logo {
     margin-bottom: 0px;
+  }
+}
+
+@media only screen and (max-width: 300px) {
+  .carousel {
+    height: 365px;
+  }
+}
+
+@media only screen and (min-width: 301px) and (max-width: 340px) {
+  .carousel {
+    height: 388px;
+  }
+}
+
+@media only screen and (min-width: 341px) and (max-width: 380px) {
+  .carousel {
+    height: 420px;
+  }
+}
+
+@media only screen and (min-width: 381px) and (max-width: 420px) {
+  .carousel {
+    height: 450px;
+  }
+}
+
+@media only screen and (min-width: 421px) and (max-width: 460px) {
+  .carousel {
+    height: 480px;
+  }
+}
+
+@media only screen and (min-width: 461px) and (max-width: 500px) {
+  .carousel {
+    height: 510px;
+  }
+}
+
+@media only screen and (min-width: 501px) and (max-width: 540px) {
+  .carousel {
+    height: 550px;
+  }
+}
+
+@media only screen and (min-width: 541px) and (max-width: 580px) {
+  .carousel {
+    height: 585px;
   }
 }
 
