@@ -600,9 +600,9 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 
 	for i, stage := range data.Children {
 		infoStr := ""
-		if stage.Icon == "" {
-			stage.Icon = "https://s3.ap-south-1.amazonaws.com/nft.tracified.com/assets/icons/common-stage.png"
-		}
+
+		stage.Icon = "https://s3.ap-south-1.amazonaws.com/nft.tracified.com/assets/icons/common-stage.png"
+
 		for j, info := range stage.Children {
 			if info.Component == "key-value" {
 				val := "No Data Available"
