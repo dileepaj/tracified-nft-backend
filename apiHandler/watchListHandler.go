@@ -141,21 +141,21 @@ func FindWatchListsByBlockchainAndIdentifier(w http.ResponseWriter, r *http.Requ
 		if err != nil {
 			errors.BadRequest(w, err.Error())
 		} else {
+			var trend models.Trending
+			trend.Trending = false
+			trend.NFTIdentifier = id
 			if len(result) > 5 {
-				var trend models.Trending
-				trend = models.Trending{
-					NFTIdentifier: id,
-					Trending:      true,
-				}
-				result, err := marketplaceBusinessFacade.UpdateTrending(trend)
-				if err != nil {
-					errors.BadRequest(w, err.Error())
-				} else {
-					commonResponse.SuccessStatus[models.NFT](w, result)
-				}
+				trend.Trending = true
 			}
-			commonResponse.SuccessStatus[[]models.WatchList](w, result)
+			logs.InfoLogger.Println("indentifier : ", len(result), id)
 
+			result, err := marketplaceBusinessFacade.UpdateTrending(trend)
+			if err != nil {
+				errors.BadRequest(w, err.Error())
+				return
+			}
+			commonResponse.SuccessStatus[models.NFT](w, result)
+			// commonResponse.SuccessStatus[[]models.WatchList](w, result)
 		}
 	} else {
 		errors.BadRequest(w, "")
