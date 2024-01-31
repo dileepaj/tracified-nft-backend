@@ -166,7 +166,7 @@ body{
   margin-bottom: 5px;
   padding-top: 5px;
   border-top: 1px solid #cfcfcf;
-  z-index: 9999999999;
+  z-index: 1;
 }
 
 .widget-title-div label {
@@ -933,7 +933,7 @@ li {
 
 .img-div {
   width: 100%;
-  height: 90%;
+  max-height: 630px;
   padding: 30px 30px 30px 30px;
   background-origin: content-box;
   background-repeat: no-repeat;
