@@ -28,6 +28,14 @@ func CreateFavourites(w http.ResponseWriter, r *http.Request) {
 		errors.BadRequest(w, err.Error())
 	} else {
 		_, err1 := marketplaceBusinessFacade.CreateFavourites(favObject)
+
+		updateErr := _updateTrendingState(favObject.Blockchain, favObject.NFTIdentifier)
+		if updateErr != nil {
+			logs.ErrorLogger.Println("Failed update nft state : ", updateErr.Error())
+			errors.InternalError(w, "Failed to save NFT sate.")
+			return
+		}
+
 		if err1 != nil {
 			ErrorMessage := err1.Error()
 			errors.BadRequest(w, ErrorMessage)
@@ -43,6 +51,28 @@ func CreateFavourites(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+}
+
+func _updateTrendingState(blockchain, nftidentifer string) error {
+	result, id, err := marketplaceBusinessFacade.GetFavouritesByBlockchainAndIdentifier(blockchain, nftidentifer)
+	logs.InfoLogger.Println("indentifier : ", len(result), id)
+	if err != nil {
+		return err
+	} else {
+		var hotpicks models.Hotpicks
+		hotpicks = models.Hotpicks{
+			NFTIdentifier: id,
+			HotPicks:      false,
+		}
+		if len(result) > 5 {
+			hotpicks.HotPicks = true
+		}
+		_, err := marketplaceBusinessFacade.UpdateHotPicks(hotpicks)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func GetFavouritesByUserPK(w http.ResponseWriter, r *http.Request) {
@@ -144,28 +174,30 @@ func GetFavouritesByBlockchainAndIdentifier(w http.ResponseWriter, r *http.Reque
 	w.Header().Set("Content-Type", "application/json;")
 	vars := mux.Vars(r)
 	if vars["blockchain"] != "" && vars["nftidentifier"] != "" {
-
 		result, id, err := marketplaceBusinessFacade.GetFavouritesByBlockchainAndIdentifier(vars["blockchain"], vars["nftidentifier"])
+		logs.InfoLogger.Println("indentifier : ", len(result), id)
 		if err != nil {
 			errors.BadRequest(w, err.Error())
+			return
 		} else {
+			var hotpicks models.Hotpicks
+			hotpicks = models.Hotpicks{
+				NFTIdentifier: id,
+				HotPicks:      false,
+			}
 			if len(result) > 5 {
-				var hotpicks models.Hotpicks
-				hotpicks = models.Hotpicks{
-					NFTIdentifier: id,
-					HotPicks:      true,
-				}
-				result, err := marketplaceBusinessFacade.UpdateHotPicks(hotpicks)
-				if err != nil {
-					errors.BadRequest(w, err.Error())
-				} else {
-					commonResponse.SuccessStatus[models.NFT](w, result)
-				}
+				hotpicks.HotPicks = true
+			}
+			rst, err := marketplaceBusinessFacade.UpdateHotPicks(hotpicks)
+			if err != nil {
+				errors.BadRequest(w, err.Error())
+			} else {
+				commonResponse.SuccessStatus[models.NFT](w, rst)
 			}
 			commonResponse.SuccessStatus[[]models.Favourite](w, result)
 		}
 	} else {
-		errors.BadRequest(w, "")
+		errors.BadRequest(w, "Blockchain or nftidentifier is empty!")
 	}
 
 }
