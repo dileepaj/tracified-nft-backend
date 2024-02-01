@@ -657,7 +657,8 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 
 						imgUrl := image.Img
 						if j == 1 {
-							imgCont += `<div class="carousel-item active">
+							imgCont += `<p class="comment-text-field">` + image.FieldName + `</p>
+							<div class="carousel-item active">
 							<img src="` + imgUrl + `" class="d-block w-100" alt="Image 1" onclick="openFullScreenImg('img` + strconv.Itoa(m) + strconv.Itoa(j) + `')">
 							<div class="image-caption">
 							<div class="text-center">	
@@ -668,7 +669,8 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 							</div>
 							</div>`
 						} else {
-							imgCont += `<div class="carousel-item ">
+							imgCont += `<p class="comment-text-field">` + image.FieldName + `</p>
+							<div class="carousel-item ">
 							<img src="` + imgUrl + `" class="d-block w-100" alt="Image 1" onclick="openFullScreenImg('img` + strconv.Itoa(m) + strconv.Itoa(j) + `')">
 							<div class="image-caption">
 							<div class="text-center">	
