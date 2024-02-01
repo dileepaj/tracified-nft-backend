@@ -686,7 +686,7 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 
 					if imgCont != "" {
 						infoStr += `
-							<div id="carousel-` + strconv.Itoa(m) + `-` + strconv.Itoa(i) + `" class="carousel slide" data-bs-ride="carousel"  data-bs-interval="false">
+							<div id="carousel-` + strconv.Itoa(m) + `-` + strconv.Itoa(i) + `" class="carousel slide" data-bs-ride="carousel"  data-bs-interval="false" data-bs-wrap="false">
 							<div class="carousel-inner">
 							` + imgCont + `
 							</div>
