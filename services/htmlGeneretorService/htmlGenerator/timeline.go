@@ -655,7 +655,7 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 						dateStr := strings.ReplaceAll(strings.Split(image.Time, "T")[0], "-", "/")
 
 						imgUrl := image.Img
-						if j == 1 {
+						if j == 0 {
 							imgCont += `
 							<div class="carousel-item active">
 							<p class="comment-text-field">` + image.FieldName + `</p>
