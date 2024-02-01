@@ -603,7 +603,7 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 
 		stage.Icon = "https://s3.ap-south-1.amazonaws.com/nft.tracified.com/assets/icons/common-stage.png"
 
-		for j, info := range stage.Children {
+		for m, info := range stage.Children {
 			if info.Component == "key-value" {
 				val := "No Data Available"
 				var decoratedVal models.ValueWithProof
@@ -629,7 +629,6 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 							</div>` + proofContentStr
 
 			} else if info.Component == "image-slider" {
-				imgSliderId := "slider_" + strconv.Itoa(i) + "_" + strconv.Itoa(j)
 				imgCont := ""
 				var imgs []models.ImageValue
 				decodeErr := mapstructure.Decode(info.Slides.Value, &imgs)
@@ -656,72 +655,56 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 						dateStr := strings.ReplaceAll(strings.Split(image.Time, "T")[0], "-", "/")
 
 						imgUrl := image.Img
-
-						imgCont += `<li id="carousel__slide` + strconv.Itoa(i) + strconv.Itoa(j) + `"
-							tabindex="0" class="carousel__slide">										
-
-							<div>
-								<div class="row pb-2"> <label class="image-text-field">` + image.FieldName + `</label> </div>
-							
-								<div class="row flex justify-content-center">
-									<img class="carosal-img" id="img` + strconv.Itoa(i) + strconv.Itoa(j) + `"
-									onclick="openFullScreenImg('img` + strconv.Itoa(i) + strconv.Itoa(j) + `')"
-									src="` + imgUrl + `"> 
-								</div>
-						
-								<div class="row d-grid justify-content-center pt-1">` + proofTickIcon + `</div>																									
-								<div class="row"> <label class="date-text-field">` + dateStr + `</label> </div>
-								<div class="row"> <label class="comment-text-field">` + image.Comment + `</label> </div>
+						if j == 0 {
+							imgCont += `
+							<div class="carousel-item active">
+							<p class="comment-text-field">` + image.FieldName + `</p>
+							<img src="` + imgUrl + `" id = "img` + strconv.Itoa(m) + strconv.Itoa(j) + `" class="carousal_image d-block w-100" alt="Image 1" onclick="openFullScreenImg('img` + strconv.Itoa(m) + strconv.Itoa(j) + `')">
+							<div class="image-caption">
+							<div class="text-center">	
+							<div >` + proofTickIcon + `</div>		
+							</div>																									
+							<div class="date-text-field" >` + dateStr + ` </div>
+							<div class="comment-text-field">` + image.Comment + `</div>
 							</div>
-						</li>`
-
-					}
-
-					disabledClass := ""
-
-					if len(imgs) == 1 {
-						disabledClass = "disabled-carousel"
+							</div>`
+						} else {
+							imgCont += `
+							<div class="carousel-item ">
+							<p class="comment-text-field">` + image.FieldName + `</p>
+							<img src="` + imgUrl + `"  id = "img` + strconv.Itoa(m) + strconv.Itoa(j) + `" class="carousal_image d-block w-100" alt="Image 1" onclick="openFullScreenImg('img` + strconv.Itoa(m) + strconv.Itoa(j) + `')">
+							<div class="image-caption">
+							<div class="text-center">	
+							<div >` + proofTickIcon + `</div>		
+							</div>																					
+							<div class="date-text-field" >` + dateStr + ` </div>
+							<div class="comment-text-field">` + image.Comment + `</div>
+							</div>
+							</div>`
+						}
 					}
 
 					if imgCont != "" {
-						if len(imgs) == 1 {
-							infoStr += `<div class="tl-info-container">
-							<section class="carousel ` + disabledClass + `" aria-label="Gallery">
-		
-							<div class=" arrow-right" id="right ` + imgSliderId + `" onclick="moveRight('` + imgSliderId + `','left ` + imgSliderId + `','right ` + imgSliderId + `')">
+						infoStr += `
+							<div id="carousel-` + strconv.Itoa(m) + `-` + strconv.Itoa(i) + `" class="carousel slide" data-bs-ride="carousel"  data-bs-interval="false" data-bs-wrap="false">
+							<div class="carousel-inner">
+							` + imgCont + `
 							</div>
-							<div class=" arrow-left" id="left ` + imgSliderId + `" onclick="moveLeft('` + imgSliderId + `','left ` + imgSliderId + `','right ` + imgSliderId + `')">
-							</div>
-	
-								<ol id="` + imgSliderId + `" class="carousel__viewport">
-								` + imgCont + `
-								</ol>
-							</section>
-							` + proofModalStr + `
+							
+							<button class="carousel-control-prev" type="button" data-bs-target="#carousel-` + strconv.Itoa(m) + `-` + strconv.Itoa(i) + `" data-bs-slide="prev">
+							<span class="carousel-btn carousel-control-prev-icon" aria-hidden="true"></span>
+							<span class="visually-hidden">Previous</span>
+						  </button>
+						  <button class="carousel-control-next" type="button" data-bs-target="#carousel-` + strconv.Itoa(m) + `-` + strconv.Itoa(i) + `" data-bs-slide="next">
+							<span class="carousel-btn carousel-control-next-icon" aria-hidden="true"></span>
+							<span class="visually-hidden">Next</span>
+						  </button>
+						` + proofModalStr + `
 						</div>`
-						} else {
-							infoStr += `<div class="tl-info-container">
-							<section class="carousel ` + disabledClass + `" aria-label="Gallery">
-		
-							<div class=" arrow-right" id="right ` + imgSliderId + `" onclick="moveRight('` + imgSliderId + `','left ` + imgSliderId + `','right ` + imgSliderId + `')">
-								<span class="material-symbols-outlined icon-container"> chevron_right</span>
-							</div>
-							<div class=" arrow-left" id="left ` + imgSliderId + `" onclick="moveLeft('` + imgSliderId + `','left ` + imgSliderId + `','right ` + imgSliderId + `')">
-							   <span class="material-symbols-outlined icon-container">chevron_left</span>
-							</div>
-	
-								<ol id="` + imgSliderId + `" class="carousel__viewport">
-								` + imgCont + `
-								</ol>
-							</section>
-							` + proofModalStr + `
-						</div>`
-						}
 					}
 				}
 			}
 		}
-
 		tlCont += `<div class="tl-stage">
 					<div class="tl-heading">
 						<div class="tl-circle">

@@ -195,5 +195,50 @@
         arrowL.style.display = "block"
       }
     }
+
+
+  $(document).ready(function(){
+    function hidePrevControlOnLoad() {
+      $('.carousel').each(function() {
+        var $carousel = $(this);
+
+        // Initially hide previous control if at the beginning
+        if ($carousel.find('.carousel-item.active').is(':first-child')) {
+          $carousel.find('.carousel-control-prev').hide();
+        }
+      });
+    }
+
+    // Call the function to hide previous control on document ready
+    hidePrevControlOnLoad();
+
+    // Function to initialize carousels with the specified class
+    function initializeCarousels() {
+      $('.carousel').carousel({
+        wrap: false
+      });
+
+      // Check and hide arrows when necessary
+      $('.carousel').on('slid.bs.carousel', function () {
+        var $carousel = $(this);
+
+        if ($carousel.find('.carousel-item.active').is(':first-child')) {
+          $carousel.find('.carousel-control-prev').hide();
+        } else {
+          $carousel.find('.carousel-control-prev').show();
+        }
+
+        if ($carousel.find('.carousel-item.active').is(':last-child')) {
+          $carousel.find('.carousel-control-next').hide();
+        } else {
+          $carousel.find('.carousel-control-next').show();
+        }
+      });
+    }
+
+    // Call the function to initialize carousels on document ready
+    initializeCarousels();
+  });
+
     </script>
 </html>

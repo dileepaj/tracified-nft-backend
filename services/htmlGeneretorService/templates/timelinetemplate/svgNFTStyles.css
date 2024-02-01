@@ -606,7 +606,7 @@ li {
   padding: 0;
 }
 
-.carousel {
+.carousel-2 {
   position: relative;
   height: 700px;
   perspective: 100px;
@@ -689,8 +689,8 @@ li {
   }
 } */
 
-.carousel:hover .carousel__snapper,
-.carousel:focus-within .carousel__snapper {
+.carousel-2:hover .carousel__snapper,
+.carousel-2:focus-within .carousel__snapper {
   animation-name: none;
 }
 
@@ -719,8 +719,8 @@ li {
   transition: transform 0.1s;
 }
 /* 
-.carousel::before,
-.carousel::after,
+.carousel-2::before,
+.carousel-2::after,
 .carousel__prev,
 .carousel__next {
   position: absolute;
@@ -734,18 +734,18 @@ li {
   z-index: 20;
 }
 
-.carousel::before,
+.carousel-2::before,
 .carousel__prev {
   left: -1rem;
 }
 
-.carousel::after,
+.carousel-2::after,
 .carousel__next {
   right: -1rem;
 }
 
-.carousel::before,
-.carousel::after {
+.carousel-2::before,
+.carousel-2::after {
   content: "";
   z-index: 1;
   background-color: #333;
@@ -759,7 +759,7 @@ li {
   pointer-events: none;
 }
 
-.carousel::before {
+.carousel-2::before {
   background-color: #fff;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
   background-position: center center;
@@ -767,7 +767,7 @@ li {
   background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0Ij48cGF0aCBkPSJNMTUuNDEgMTYuNTlMMTAuODMgMTJsNC41OC00LjU5TDE0IDZsLTYgNiA2IDYgMS40MS0xLjQxeiIvPjxwYXRoIGQ9Ik0wIDBoMjR2MjRIMFYweiIgZmlsbD0ibm9uZSIvPjwvc3ZnPg==);
 }
 
-.carousel::after {
+.carousel-2::after {
   background-color: #fff;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
   background-position: center center;
@@ -2174,61 +2174,61 @@ right: 0;
 }
 
 @media only screen and (max-width: 300px) {
-  .carousel {
+  .carousel-2 {
     height: 365px;
   }
 }
 
 @media only screen and (min-width: 301px) and (max-width: 340px) {
-  .carousel {
+  .carousel-2 {
     height: 388px;
   }
 }
 
 @media only screen and (min-width: 341px) and (max-width: 380px) {
-  .carousel {
+  .carousel-2 {
     height: 420px;
   }
 }
 
 @media only screen and (min-width: 381px) and (max-width: 420px) {
-  .carousel {
+  .carousel-2 {
     height: 450px;
   }
 }
 
 @media only screen and (min-width: 421px) and (max-width: 460px) {
-  .carousel {
+  .carousel-2 {
     height: 480px;
   }
 }
 
 @media only screen and (min-width: 461px) and (max-width: 500px) {
-  .carousel {
+  .carousel-2 {
     height: 510px;
   }
 }
 
 @media only screen and (min-width: 501px) and (max-width: 540px) {
-  .carousel {
+  .carousel-2 {
     height: 550px;
   }
 }
 
 @media only screen and (min-width: 541px) and (max-width: 580px) {
-  .carousel {
+  .carousel-2 {
     height: 585px;
   }
 }
 
 @media only screen and (min-width: 581px) and (max-width: 620px) {
-  .carousel {
+  .carousel-2 {
     height: 630px;
   }
 }
 
 @media only screen and (min-width: 621px) and (max-width: 660px) {
-  .carousel {
+  .carousel-2 {
     height: 665px;
   }
 }
@@ -2242,4 +2242,19 @@ right: 0;
 
 .layer-2 {
   border-radius: 124px;
+}
+
+.image-caption {
+  font-size: 12px;
+  font-weight: normal;
+}
+
+.carousal_image{
+  cursor: pointer;
+}
+
+.carousel-btn {
+  background-color: rgb(36, 35, 35);
+  border: 3px solid #dfd2d2;
+  border-radius: 24px;
 }
