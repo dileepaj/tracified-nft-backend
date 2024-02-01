@@ -37,6 +37,12 @@ var CollectionRoutes = models.Routers{
 		Handler: apiHandler.UpdateCollection,
 	},
 	models.Router{
+		Name:    "Check Collectionam Name Availablity",
+		Method:  "GET",
+		Path:    "/collection/available/{collectionname}",
+		Handler: apiHandler.GetCollectionName,
+	},
+	models.Router{
 		Name:    "Delete Collection by userPK",
 		Method:  "DELETE",
 		Path:    "/collection/userpk/{userid}",
