@@ -60,6 +60,23 @@ func CreateCollection(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func GetCollectionName(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	vars := mux.Vars(r)
+	availableRst, err := marketplaceBusinessFacade.IsCollectionNameTaken(vars["collectionname"])
+	if err != nil {
+		logs.ErrorLogger.Println("Error while checking if collection name is taken: ", err.Error())
+		errors.InternalError(w, "Somthing Went Wrong!")
+		return
+	}
+	if availableRst {
+		logs.ErrorLogger.Println("Collection name " + vars["collectionname"] + " already taken!")
+		errors.BadRequest(w, "Collection name "+vars["collectionname"]+" already taken!")
+		return
+	}
+	commonResponse.SuccessStatus[string](w, "Collection name is available.")
+}
+
 func CreateSVG(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	var createSVGObject models.SVG
