@@ -2248,3 +2248,13 @@ right: 0;
   font-size: 12px;
   font-weight: normal;
 }
+
+.carousal_image{
+  cursor: pointer;
+}
+
+.carousel-btn {
+  background-color: rgb(36, 35, 35);
+  border: 3px solid #dfd2d2;
+  border-radius: 24px;
+}

@@ -598,7 +598,7 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 
 	mainTab, sidebarTab, radioButton := r.GenerateTabLabels(data.Title, index)
 
-	for _, stage := range data.Children {
+	for i, stage := range data.Children {
 		infoStr := ""
 
 		stage.Icon = "https://s3.ap-south-1.amazonaws.com/nft.tracified.com/assets/icons/common-stage.png"
@@ -629,7 +629,6 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 							</div>` + proofContentStr
 
 			} else if info.Component == "image-slider" {
-				// imgSliderId := "slider_" + strconv.Itoa(i) + "_" + strconv.Itoa(j)
 				imgCont := ""
 				var imgs []models.ImageValue
 				decodeErr := mapstructure.Decode(info.Slides.Value, &imgs)
@@ -657,9 +656,10 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 
 						imgUrl := image.Img
 						if j == 1 {
-							imgCont += `<p class="comment-text-field">` + image.FieldName + `</p>
+							imgCont += `
 							<div class="carousel-item active">
-							<img src="` + imgUrl + `" class="d-block w-100" alt="Image 1" onclick="openFullScreenImg('img` + strconv.Itoa(m) + strconv.Itoa(j) + `')">
+							<p class="comment-text-field">` + image.FieldName + `</p>
+							<img src="` + imgUrl + `" id = "img` + strconv.Itoa(m) + strconv.Itoa(j) + `" class="carousal_image d-block w-100" alt="Image 1" onclick="openFullScreenImg('img` + strconv.Itoa(m) + strconv.Itoa(j) + `')">
 							<div class="image-caption">
 							<div class="text-center">	
 							<div >` + proofTickIcon + `</div>		
@@ -669,9 +669,10 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 							</div>
 							</div>`
 						} else {
-							imgCont += `<p class="comment-text-field">` + image.FieldName + `</p>
+							imgCont += `
 							<div class="carousel-item ">
-							<img src="` + imgUrl + `" class="d-block w-100" alt="Image 1" onclick="openFullScreenImg('img` + strconv.Itoa(m) + strconv.Itoa(j) + `')">
+							<p class="comment-text-field">` + image.FieldName + `</p>
+							<img src="` + imgUrl + `"  id = "img` + strconv.Itoa(m) + strconv.Itoa(j) + `" class="carousal_image d-block w-100" alt="Image 1" onclick="openFullScreenImg('img` + strconv.Itoa(m) + strconv.Itoa(j) + `')">
 							<div class="image-caption">
 							<div class="text-center">	
 							<div >` + proofTickIcon + `</div>		
@@ -685,17 +686,17 @@ func (r *JMACNFT) GenerateTimeline(data models.Component, index int) (string, st
 
 					if imgCont != "" {
 						infoStr += `
-							<div id="carousel-` + strconv.Itoa(m) + `" class="carousel slide" data-bs-ride="carousel"  data-bs-interval="false">
+							<div id="carousel-` + strconv.Itoa(m) + `-` + strconv.Itoa(i) + `" class="carousel slide" data-bs-ride="carousel"  data-bs-interval="false">
 							<div class="carousel-inner">
 							` + imgCont + `
 							</div>
 							
-							<button class="carousel-control-prev" type="button" data-bs-target="#carousel-` + strconv.Itoa(m) + `" data-bs-slide="prev">
-							<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+							<button class="carousel-control-prev" type="button" data-bs-target="#carousel-` + strconv.Itoa(m) + `-` + strconv.Itoa(i) + `" data-bs-slide="prev">
+							<span class="carousel-btn carousel-control-prev-icon" aria-hidden="true"></span>
 							<span class="visually-hidden">Previous</span>
 						  </button>
-						  <button class="carousel-control-next" type="button" data-bs-target="#carousel-` + strconv.Itoa(m) + `" data-bs-slide="next">
-							<span class="carousel-control-next-icon" aria-hidden="true"></span>
+						  <button class="carousel-control-next" type="button" data-bs-target="#carousel-` + strconv.Itoa(m) + `-` + strconv.Itoa(i) + `" data-bs-slide="next">
+							<span class="carousel-btn carousel-control-next-icon" aria-hidden="true"></span>
 							<span class="visually-hidden">Next</span>
 						  </button>
 						` + proofModalStr + `
